@@ -1908,4 +1908,50 @@ const v1_1_2 = {
 	},
 };
 
-export default [v1_0_7, v1_0_8, v1_0_9, v1_0_10, v1_1_1, v1_1_2];
+/**
+ * v1_1_3 - Migration for blockId prefix change
+ * Converts 'gslider-xxx' to 'gslider-base-xxx' format
+ * This allows existing blocks to work with the new naming convention
+ */
+const v1_1_3 = {
+	attributes,
+	supports: {
+		html: false,
+		className: false,
+	},
+	/**
+	 * Check if this deprecated version should be used
+	 * Returns true if blockId starts with 'gslider-' but NOT 'gslider-base-'
+	 */
+	isEligible(attrs) {
+		return attrs.blockId && 
+			   attrs.blockId.startsWith('gslider-') && 
+			   !attrs.blockId.startsWith('gslider-base-');
+	},
+	/**
+	 * Migrate old blockId to new format
+	 * 'gslider-abc12345' -> 'gslider-base-abc12345'
+	 */
+	migrate(attrs) {
+		const newBlockId = attrs.blockId.replace(/^gslider-/, 'gslider-base-');
+		
+		// Also migrate blockStyle CSS selectors if they exist
+		let newBlockStyle = attrs.blockStyle;
+		if (attrs.blockStyle && attrs.blockId) {
+			newBlockStyle = attrs.blockStyle.replace(
+				new RegExp(attrs.blockId, 'g'),
+				newBlockId
+			);
+		}
+
+		return {
+			...attrs,
+			blockId: newBlockId,
+			blockStyle: newBlockStyle,
+		};
+	},
+	// Use the same save as v1_1_2 (previous version)
+	save: v1_1_2.save,
+};
+
+export default [v1_0_7, v1_0_8, v1_0_9, v1_0_10, v1_1_1, v1_1_2, v1_1_3];

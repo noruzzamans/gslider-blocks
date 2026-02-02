@@ -12,6 +12,7 @@ import {
 import { useState, useEffect, useRef, useMemo } from "@wordpress/element";
 import renderSVG from "@Components/icon-picker/components/icon-picker/controls/renderIcon";
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
+import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import { arrayMove } from '@dnd-kit/sortable';
 import Inspector from './inspector';
 
@@ -33,7 +34,7 @@ import {
 } from 'swiper/modules';
 import 'swiper/css/bundle';
 
-export default function Edit({ attributes, setAttributes, clientId }) {
+export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
 		blockId,
         deviceType,
@@ -85,6 +86,16 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
         layoutHeightSwitcher,
 	} = attributes;
+
+	// Handle block ID generation (handles duplication and initial ID)
+	useBlockIdGenerator({
+		clientId,
+		blockId,
+		blockPrefix: 'gslider-base',
+		isSelected,
+		attributes,
+		setAttributes,
+	});
 
 	// Block props for container
 	const blockProps = useBlockProps({

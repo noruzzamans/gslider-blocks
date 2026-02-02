@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useMemo, useCallback } from '@wordpress/element';
+import { useState, useEffect, useMemo, useCallback, memo } from '@wordpress/element';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, } from '@dnd-kit/sortable';
 import { PanelBody, ToggleControl, BaseControl, Button, } from '@wordpress/components';
@@ -50,7 +50,7 @@ import SelectControls from '@Components/select-controls';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
 
-export default function Inspector({ attributes, setAttributes, clientId, handleAddItem, handleChangeItem, handleDuplicateItem, handleDragEnd, handleDeleteItem }) {
+const Inspector = ({ attributes, setAttributes, clientId, handleAddItem, handleChangeItem, handleDuplicateItem, handleDragEnd, handleDeleteItem }) => {
     const {
         blockId,
         deviceType,
@@ -696,13 +696,6 @@ export default function Inspector({ attributes, setAttributes, clientId, handleA
     useEffect(() => {
         setAttributes({ deviceType: currentDeviceType });
     }, [currentDeviceType]);
-
-    /** Set Block ID */
-    useEffect(() => {
-        if (clientId) {
-            setAttributes({ blockId: `gslider-${clientId.slice(0, 8)}` });
-        }
-    }, [clientId]);
 
     const defaultOpenPanels = {
         general: 'show-hide-elements',
@@ -4930,4 +4923,6 @@ export default function Inspector({ attributes, setAttributes, clientId, handleA
             />
         </>
     );
-}
+};
+
+export default memo(Inspector);
