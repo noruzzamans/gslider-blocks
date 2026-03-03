@@ -12,13 +12,13 @@
 namespace GSlider;
 
 use GSlider\Traits\SingletonTrait;
-use GSlider\Classes\StyleGenerator;
+use GSlider\Core\StyleGenerator;
 use GSlider\Assets\FrontendAssets;
 use GSlider\Assets\AdminAssets;
-use GSlider\Classes\RegistrationBlocks;
-use GSlider\Classes\RegistrationCategory;
-use GSlider\Classes\FontLoader;
-use GSlider\Classes\SupportSVG;
+use GSlider\Core\RegistrationBlocks;
+use GSlider\Core\RegistrationCategory;
+use GSlider\Core\FontLoader;
+use GSlider\Core\SupportSVG;
 use GSlider\Utils\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,6 +41,34 @@ if ( ! class_exists( 'Plugin' ) ) {
 		use SingletonTrait;
 
 		/**
+		 * Service classes to register on all requests.
+		 *
+		 * @since 1.1.7
+		 *
+		 * @var string[]
+		 */
+		private $services = [
+			StyleGenerator::class,
+			FrontendAssets::class,
+			AdminAssets::class,
+			RegistrationBlocks::class,
+			RegistrationCategory::class,
+			FontLoader::class,
+			Utils::class,
+		];
+
+		/**
+		 * Service classes to register on admin requests only.
+		 *
+		 * @since 1.1.7
+		 *
+		 * @var string[]
+		 */
+		private $admin_services = [
+			SupportSVG::class,
+		];
+
+		/**
 		 * Sets up core plugin hooks.
 		 *
 		 * Registers the plugins_loaded and init actions
@@ -48,7 +76,7 @@ if ( ! class_exists( 'Plugin' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		public function __construct() {
+		private function __construct() {
 			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
 			add_action( 'init', [ $this, 'gslider_load_textdomain' ] );
 		}
@@ -56,26 +84,22 @@ if ( ! class_exists( 'Plugin' ) ) {
 		/**
 		 * Initializes all plugin components.
 		 *
-		 * Registers style generation, frontend and admin assets,
-		 * block registration, block categories, font loading,
-		 * analytics tracking, and SVG support (admin only).
+		 * Registers all service classes by calling their register()
+		 * method. Admin-only services are loaded conditionally.
 		 *
 		 * @since 1.0.0
 		 *
 		 * @return void
 		 */
 		public function plugins_loaded() {
-			StyleGenerator::getInstance()->register();
-			FrontendAssets::getInstance()->register();
-			AdminAssets::getInstance()->register();
-			RegistrationBlocks::getInstance()->register();
-			RegistrationCategory::getInstance()->register();
-			FontLoader::getInstance()->register();
-			Utils::getInstance()->register();
+			foreach ( $this->services as $service ) {
+				$service::getInstance()->register();
+			}
 
-			// SVG Support (admin only).
 			if ( is_admin() ) {
-				SupportSVG::getInstance()->register();
+				foreach ( $this->admin_services as $service ) {
+					$service::getInstance()->register();
+				}
 			}
 		}
 
@@ -94,4 +118,3 @@ if ( ! class_exists( 'Plugin' ) ) {
 }
 
 Plugin::getInstance();
-

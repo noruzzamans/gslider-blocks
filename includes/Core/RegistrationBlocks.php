@@ -5,12 +5,13 @@
  * Dynamically discovers and registers all Gutenberg blocks
  * found in the build/blocks directory.
  *
- * @package GSlider\Classes
+ * @package GSlider\Core
  * @since   1.0.0
  */
 
-namespace GSlider\Classes;
+namespace GSlider\Core;
 
+use GSlider\Contracts\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,7 +28,7 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
      *
      * @since 1.0.0
      */
-    class RegistrationBlocks {
+    class RegistrationBlocks implements Registrable {
         use SingletonTrait;
 
         /**
@@ -37,7 +38,7 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_action( 'init', [ $this, 'register_blocks' ] );
         }
 

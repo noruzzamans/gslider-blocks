@@ -5,12 +5,13 @@
  * Registers a custom block category in the Gutenberg editor
  * to group all GSlider blocks together.
  *
- * @package GSlider\Classes
+ * @package GSlider\Core
  * @since   1.0.0
  */
 
-namespace GSlider\Classes;
+namespace GSlider\Core;
 
+use GSlider\Contracts\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -27,7 +28,7 @@ if ( ! class_exists( 'RegistrationCategory' ) ) {
      *
      * @since 1.0.0
      */
-    class RegistrationCategory {
+    class RegistrationCategory implements Registrable {
 
         use SingletonTrait;
 
@@ -47,7 +48,7 @@ if ( ! class_exists( 'RegistrationCategory' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_filter( 'block_categories_all', [ $this, 'register_category' ], 99999999, 2 );
         }
 
