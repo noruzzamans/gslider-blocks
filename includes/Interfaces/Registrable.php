@@ -5,11 +5,11 @@
  * Defines a contract for classes that register
  * WordPress hooks, actions, and filters.
  *
- * @package GSlider\Contracts
+ * @package GSlider\Interfaces
  * @since   1.1.7
  */
 
-namespace GSlider\Contracts;
+namespace GSlider\Interfaces;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

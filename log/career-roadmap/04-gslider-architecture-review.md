@@ -126,11 +126,9 @@ Singleton pattern-এ constructor **private** হওয়া উচিত স�
 
 ### 🟡 Medium Issues
 
-#### 4. No Interface/Contract
-- Classes গুলোর কোনো Interface নেই
-- প্রতিটা service `register()` method আছে কিন্তু কোনো `Registrable` interface define করা হয়নি
+#### 4. No Interface
+> Currently, service classes (StyleGenerator, AssetManager, etc.) are directly initialized. Adding a `Registrable` interface ensures a standard `register()` method across all services.
 ```php
-// এটা থাকা উচিত:
 interface Registrable {
     public function register(): void;
 }
@@ -178,9 +176,9 @@ interface Registrable {
 | 🔴 P0 | Styling.js files split করুন | Same |
 | 🔴 P0 | Attributes.js files split করুন | Same |
 | 🟡 P1 | Double initialization fix | Clean code |
-| 🟡 P1 | Interface/Contract add করুন | Architecture |
+| 🟡 P1 | Interface add করুন | Architecture |
 | 🟡 P1 | Cross-block code duplication remove | DRY |
-| 🟢 P2 | Basic unit tests add করুন | Quality |
+| � P2 | Basic unit tests add করুন | Quality |
 | 🟢 P2 | CI/CD setup | Automation |
 | 🟢 P3 | TypeScript migration | Type safety |
 

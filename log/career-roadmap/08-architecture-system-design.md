@@ -52,7 +52,7 @@ gslider-blocks/
 ```
 gslider-blocks/
   ├── includes/
-  │   ├── Contracts/               (Interfaces)
+  │   ├── Interfaces/               (Interfaces)
   │   │   ├── Registrable.php
   │   │   └── Renderable.php
   │   ├── Classes/

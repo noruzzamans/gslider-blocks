@@ -5,13 +5,13 @@
  * Dynamically discovers and registers all Gutenberg blocks
  * found in the build/blocks directory.
  *
- * @package GSlider\Core
+ * @package GSlider\Interfaces
  * @since   1.0.0
  */
 
 namespace GSlider\Core;
 
-use GSlider\Contracts\Registrable;
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {

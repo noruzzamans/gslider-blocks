@@ -5,13 +5,13 @@
  * Enables SVG file uploads in WordPress with security
  * validation and sanitization to prevent XSS attacks.
  *
- * @package GSlider\Core
+ * @package GSlider\Interfaces
  * @since   1.0.0
  */
 
 namespace GSlider\Core;
 
-use GSlider\Contracts\Registrable;
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {

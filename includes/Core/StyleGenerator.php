@@ -5,13 +5,13 @@
  * Collects block styles during rendering and generates
  * minified per-page CSS files in the uploads directory.
  *
- * @package GSlider\Core
+ * @package GSlider\Interfaces
  * @since   1.0.0
  */
 
 namespace GSlider\Core;
 
-use GSlider\Contracts\Registrable;
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {

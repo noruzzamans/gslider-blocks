@@ -5,13 +5,13 @@
  * Handles registration and enqueueing of frontend-specific
  * styles and scripts including Swiper and fsLightbox.
  *
- * @package GSlider\Assets
+ * @package GSlider\Interfaces
  * @since   1.0.0
  */
 
 namespace GSlider\Assets;
 
-use GSlider\Contracts\Registrable;
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {

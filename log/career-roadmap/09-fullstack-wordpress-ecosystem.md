@@ -73,7 +73,7 @@
 ### কি?
 - WordPress.com VIP = Enterprise-grade managed WordPress hosting
 - বড় বড় কোম্পানী ব্যবহার করে (TechCrunch, CNN, Facebook Newsroom)
-- **Very high-paying jobs and contracts**
+- **Very high-paying jobs and interfaces**
 
 ### কেন জানবেন?
 - VIP developers-এর salary **$100K-200K+/year**

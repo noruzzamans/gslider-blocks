@@ -5,13 +5,13 @@
  * Registers a custom block category in the Gutenberg editor
  * to group all GSlider blocks together.
  *
- * @package GSlider\Core
+ * @package GSlider\Interfaces
  * @since   1.0.0
  */
 
 namespace GSlider\Core;
 
-use GSlider\Contracts\Registrable;
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {

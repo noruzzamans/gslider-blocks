@@ -35,7 +35,7 @@
 | **Singleton Pattern** | Consistent `SingletonTrait` across all classes | Prevents duplicate instantiation |
 | **Service Registration** | `Plugin.php` bootstraps all services via `register()` | Clean orchestration |
 | **Auto Block Discovery** | `RegistrationBlocks` scans `build/blocks/` dynamically | New blocks require zero manual registration |
-| **Separated Concerns** | `Core/`, `Assets/`, `Contracts/`, `Traits/`, `Utils/` directories | Logical grouping |
+| **Separated Concerns** | `Core/`, `Assets/`, `Interfaces/`, `Traits/`, `Utils/` directories | Logical grouping |
 | **Consistent Block Structure** | Each block has `index.js`, `edit.js`, `save.js`, `inspector.js`, `view.js`, `attributes.js`, `styling.js` | Predictable pattern |
 | **Component Library** | 23 reusable components (color-control, spacing-control, etc.) | DRY principle |
 | **Redux Store** | Centralized state management (`store/actions.js`, `reducer.js`, `selectors.js`) | Proper state architecture |
@@ -48,8 +48,8 @@
 #### ~~🔴 Constructor Visibility Mismatch~~ ✅ RESOLVED
 > Constructors made `private` in `gslider-blocks.php` and `Plugin.php`. Singleton pattern now properly enforced.
 
-#### ~~🟡 No Interfaces / Contracts~~ ✅ RESOLVED
-> Created `Contracts/Registrable.php` interface. All 8 service classes now `implements Registrable` with `register(): void`.
+#### ~~🟡 No Interfaces~~ ✅ RESOLVED
+> Created `Interfaces/Registrable.php` interface. All 8 service classes now `implements Registrable` with `register(): void`.
 
 #### ~~🟡 No Service Container / DI~~ ✅ RESOLVED (N/A)
 > For a plugin of this scale, the new service array loop in `Plugin.php` provides sufficient decoupling. Full DI container deemed overengineering.
@@ -372,7 +372,7 @@ If the plugin needs to change block attribute schemas or add custom tables, ther
 |---|---|---|
 | No file > 300 lines | ❌ 9 files over 2,000 lines | Split into modules |
 | Single Responsibility per class | ✅ PHP / ❌ JS | Split JS files |
-| Interfaces / Contracts | ✅ `Registrable` added | Add more (`Renderable`, `Bootable`) |
+| Interfaces | ✅ `Registrable` added | Add more (`Renderable`, `Bootable`) |
 | Dependency Injection | ❌ Static singletons | Service container |
 | Automated tests | ❌ Zero | PHPUnit + Jest + E2E |
 | CI/CD pipeline | ❌ None | GitHub Actions |
