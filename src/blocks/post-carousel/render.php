@@ -15,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Extract attributes with defaults
 $block_id         = isset( $attributes['blockId'] ) ? sanitize_html_class( $attributes['blockId'] ) : '';
-$posts_per_page   = isset( $attributes['postsPerPage'] ) ? absint( $attributes['postsPerPage'] ) : 6;
 $global_id        = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
 $global_class     = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
 $enable_lazy_load = ! empty( $attributes['enableLazyLoad'] );
@@ -38,8 +37,6 @@ $pagination_type         = isset( $attributes['paginationType'] ) ? sanitize_tex
 $dynamic_bullets         = ! empty( $attributes['dynamicBullets'] );
 
 // Show/Hide Elements
-$show_featured_image = isset( $attributes['showFeaturedImage'] ) ? $attributes['showFeaturedImage'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
-$show_title          = isset( $attributes['showTitle'] ) ? $attributes['showTitle'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_navigation     = isset( $attributes['showNavigation'] ) ? $attributes['showNavigation'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_pagination     = isset( $attributes['showPagination'] ) ? $attributes['showPagination'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 
@@ -48,16 +45,14 @@ $pagination_position_type     = isset( $attributes['paginationPositionType'] ) ?
 $navigation_arrow_position_type = isset( $attributes['navigationArrowPositionType'] ) ? sanitize_text_field( $attributes['navigationArrowPositionType'] ) : 'inside';
 $navigation_arrow_position      = isset( $attributes['navigationArrowPosition'] ) ? sanitize_text_field( $attributes['navigationArrowPosition'] ) : 'center';
 
-// Check if any device has elements enabled
-$any_featured_image_enabled = ! empty( $show_featured_image['Desktop'] ) || ! empty( $show_featured_image['Tablet'] ) || ! empty( $show_featured_image['Mobile'] );
-$any_title_enabled          = ! empty( $show_title['Desktop'] ) || ! empty( $show_title['Tablet'] ) || ! empty( $show_title['Mobile'] );
+// Check if elements enabled
 $any_navigation_enabled     = ! empty( $show_navigation['Desktop'] ) || ! empty( $show_navigation['Tablet'] ) || ! empty( $show_navigation['Mobile'] );
 $any_pagination_enabled     = ! empty( $show_pagination['Desktop'] ) || ! empty( $show_pagination['Tablet'] ) || ! empty( $show_pagination['Mobile'] );
 
 // Query posts
 $query_args = array(
     'post_type'      => 'post',
-    'posts_per_page' => $posts_per_page,
+    'posts_per_page' => 6,
     'post_status'    => 'publish',
     'orderby'        => 'date',
     'order'          => 'DESC',
@@ -176,7 +171,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
                 <div class="swiper-slide">
                     <div class="gslider-post-carousel-content-wrapper <?php echo esc_attr( $global_class ); ?>"<?php echo $global_id ? ' id="' . esc_attr( $global_id ) . '"' : ''; ?>>
                         <div class="gslider-post-carousel-card">
-                            <?php if ( $any_featured_image_enabled && has_post_thumbnail( $post_id ) ) : ?>
+                            <?php if ( has_post_thumbnail( $post_id ) ) : ?>
                                 <div class="gslider-post-carousel-image">
                                     <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
                                         <?php
@@ -192,11 +187,9 @@ $wrapper_attributes = get_block_wrapper_attributes(
                                 </div>
                             <?php endif; ?>
 
-                            <?php if ( $any_title_enabled ) : ?>
-                                <div class="gslider-post-carousel-title">
-                                    <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-                                </div>
-                            <?php endif; ?>
+                            <div class="gslider-post-carousel-title">
+                                <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                            </div>
                         </div>
                     </div>
                 </div>

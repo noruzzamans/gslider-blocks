@@ -16,7 +16,6 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		blockId,
 		blockStyle,
 		deviceType,
-		postsPerPage,
 		carouselPerColumn,
 		carouselPerColumnGap,
 		speed,
@@ -33,8 +32,6 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		paginationType,
 		dynamicBullets,
 
-		showFeaturedImage,
-		showTitle,
 		paginationPositionType,
 		showNavigation,
 		showPagination,
@@ -82,7 +79,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	const { posts, isLoading } = useSelect((select) => {
 		const { getEntityRecords, isResolving } = select('core');
 		const query = {
-			per_page: postsPerPage,
+			per_page: 6,
 			_embed: true,
 			status: 'publish',
 			orderby: 'date',
@@ -92,7 +89,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 			posts: getEntityRecords('postType', 'post', query),
 			isLoading: isResolving('getEntityRecords', ['postType', 'post', query]),
 		};
-	}, [postsPerPage]);
+	}, []);
 
 	// Block props for container
 	const blockProps = useBlockProps({
@@ -295,7 +292,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
 										<div className="gslider-post-carousel-card">
-											{showFeaturedImage?.[deviceType] && featuredImageUrl && (
+											{featuredImageUrl && (
 												<div className="gslider-post-carousel-image">
 													<img
 														src={featuredImageUrl}
@@ -304,7 +301,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 													/>
 												</div>
 											)}
-											{showTitle?.[deviceType] && (
+											{(
 												<div className="gslider-post-carousel-title">
 													<h3>{decodeHtmlEntities(post.title.rendered)}</h3>
 												</div>
