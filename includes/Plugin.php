@@ -20,6 +20,7 @@ use GSlider\Classes\RegistrationCategory;
 use GSlider\Classes\FontLoader;
 use GSlider\Classes\SupportSVG;
 use GSlider\Utils\Utils;
+use GSlider\RestApi\QueryManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -72,6 +73,7 @@ if ( ! class_exists( 'Plugin' ) ) {
 			RegistrationCategory::getInstance()->register();
 			FontLoader::getInstance()->register();
 			Utils::getInstance()->register();
+			QueryManager::getInstance()->register();
 
 			// SVG Support (admin only).
 			if ( is_admin() ) {

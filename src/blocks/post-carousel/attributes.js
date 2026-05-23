@@ -1532,6 +1532,74 @@ const attributes = {
     contentOrder: {
         type: "array",
         default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
+    },
+    postType: {
+        type: "string",
+        default: "post"
+    },
+    postsPerPage: {
+        type: "number",
+        default: 6
+    },
+    categories: {
+        type: "array",
+        default: []
+    },
+    tags: {
+        type: "array",
+        default: []
+    },
+    authors: {
+        type: "array",
+        default: []
+    },
+    excludePosts: {
+        type: "string",
+        default: ""
+    },
+    offset: {
+        type: "number",
+        default: 0
+    },
+    orderBy: {
+        type: "string",
+        default: "date"
+    },
+    order: {
+        type: "string",
+        default: "desc"
+    },
+    searchQuery: {
+        type: "string",
+        default: ""
+    },
+    stickyPosts: {
+        type: "string",
+        default: "include"
+    },
+    taxonomyQuery: {
+        type: "object",
+        default: {}
+    },
+    metaKey: {
+        type: "string",
+        default: ""
+    },
+    metaValue: {
+        type: "string",
+        default: ""
+    },
+    metaCompare: {
+        type: "string",
+        default: "="
+    },
+    dateRange: {
+        type: "string",
+        default: "any"
+    },
+    excludeCurrentPost: {
+        type: "boolean",
+        default: false
     }
 };
 

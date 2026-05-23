@@ -57,9 +57,37 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		enableLazyLoad,
 		contentOrder,
 
+		postType,
+		postsPerPage,
+		categories,
+		tags,
+		authors,
+		excludePosts,
+		offset,
+		orderBy,
+		order,
+		searchQuery,
+		stickyPosts,
+		taxonomyQuery,
+		metaKey,
+		metaValue,
+		metaCompare,
+		dateRange,
+		excludeCurrentPost,
+
 	} = attributes;
 
 	const normalizedContentOrder = normalizeContentOrder(contentOrder);
+
+	// Fetch current post ID and CPT taxonomies for query mapping
+	const { currentPostId, taxonomies } = useSelect((select) => {
+		const { getCurrentPostId } = select('core/editor') || {};
+		const { getTaxonomies } = select('core');
+		return {
+			currentPostId: getCurrentPostId ? getCurrentPostId() : null,
+			taxonomies: getTaxonomies ? getTaxonomies({ per_page: -1 }) || [] : [],
+		};
+	}, []);
 
 	/** Handle block ID generation (handles duplication and initial ID) */
 	useBlockIdGenerator({
@@ -80,13 +108,97 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	}, [attributes, blockId]);
 	/** End Generate Block Style */
 
-	// Fetch posts using global usePostQuery hook
-	const { posts, isLoading } = usePostQuery({
-		per_page: 6,
+	// Construct dynamic query arguments for the REST API
+	const queryArgs = {
+		per_page: postsPerPage,
 		status: 'publish',
-		orderby: 'date',
-		order: 'desc',
-	});
+		orderby: orderBy,
+		order: order,
+	};
+
+	if (offset) {
+		queryArgs.offset = offset;
+	}
+	if (categories && categories.length > 0) {
+		queryArgs.categories = categories.join(',');
+	}
+	if (tags && tags.length > 0) {
+		queryArgs.tags = tags.join(',');
+	}
+	if (authors && authors.length > 0) {
+		queryArgs.author = authors.join(',');
+	}
+
+	// Dynamic taxonomies mapping for REST API
+	if (taxonomyQuery && Object.keys(taxonomyQuery).length > 0 && taxonomies.length > 0) {
+		taxonomies.forEach(tax => {
+			if (tax.types.includes(postType) && taxonomyQuery[tax.slug] && taxonomyQuery[tax.slug].length > 0) {
+				// Backward compatible check: categories and tags are handled separately
+				if (tax.slug !== 'category' && tax.slug !== 'post_tag') {
+					const restBase = tax.rest_base || tax.slug;
+					queryArgs[restBase] = taxonomyQuery[tax.slug].join(',');
+				}
+			}
+		});
+	}
+
+	// Post exclusions calculation
+	const excludedIds = excludePosts
+		? excludePosts.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id))
+		: [];
+
+	if (excludeCurrentPost && currentPostId) {
+		excludedIds.push(currentPostId);
+	}
+
+	if (excludedIds.length > 0) {
+		queryArgs.exclude = excludedIds;
+	}
+
+	// Relative date range calculations
+	if (dateRange && dateRange !== 'any') {
+		const now = new Date();
+		let afterDate;
+		if (dateRange === 'last_24_hours') {
+			afterDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+		} else if (dateRange === 'last_7_days') {
+			afterDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+		} else if (dateRange === 'last_30_days') {
+			afterDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+		} else if (dateRange === 'last_365_days') {
+			afterDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
+		} else if (dateRange === 'current_month') {
+			afterDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+		} else if (dateRange === 'current_year') {
+			afterDate = new Date(now.getFullYear(), 0, 1).toISOString();
+		}
+		if (afterDate) {
+			queryArgs.after = afterDate;
+		}
+	}
+
+	// Meta query parameters (custom fields)
+	if (metaKey) {
+		queryArgs.meta_key = metaKey;
+		if (metaValue) {
+			queryArgs.meta_value = metaValue;
+		}
+		if (metaCompare) {
+			queryArgs.meta_compare = metaCompare;
+		}
+	}
+
+	if (searchQuery) {
+		queryArgs.search = searchQuery;
+	}
+	if (stickyPosts === 'exclude') {
+		queryArgs.sticky = false;
+	} else if (stickyPosts === 'only') {
+		queryArgs.sticky = true;
+	}
+
+	// Fetch posts using global usePostQuery hook
+	const { posts, isLoading } = usePostQuery(queryArgs, postType);
 
 	// Block props for container
 	const blockProps = useBlockProps({

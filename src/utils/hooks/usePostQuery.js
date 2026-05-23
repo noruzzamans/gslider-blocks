@@ -1,28 +1,46 @@
 import { useSelect } from '@wordpress/data';
 
 /**
- * Custom React Hook to fetch posts from the WordPress database.
- * Designed to be reusable plugin-wide across different blocks (Carousel, Grid, etc.).
+ * Custom hook to fetch post type records using WP Core entity stores.
  *
- * @param {Object} queryArgs - Arguments for the post query (e.g., per_page, categories, tags, etc.)
- * @param {string} postType - WordPress Post Type (defaults to 'post')
- * @returns {Object} - Object containing { posts, isLoading }
+ * @param {Object} queryArgs Query parameters for the request.
+ * @param {string} postType  WordPress post type slug (e.g. 'post', 'page', 'product').
+ * @return {Object}          Returns { posts, isLoading }
  */
 export const usePostQuery = (queryArgs = {}, postType = 'post') => {
+    // Sanitize and filter empty parameters to prevent REST query pollution
+    const sanitizedQueryArgs = Object.keys(queryArgs).reduce((acc, key) => {
+        const val = queryArgs[key];
+        if (val !== undefined && val !== null && val !== '') {
+            if (Array.isArray(val)) {
+                if (val.length > 0) {
+                    acc[key] = val;
+                }
+            } else {
+                acc[key] = val;
+            }
+        }
+        return acc;
+    }, {});
+
     return useSelect((select) => {
         const { getEntityRecords, isResolving } = select('core');
         
-        // Ensure _embed is always set to true so we get author and featured image data
         const query = {
-            _embed: true,
-            ...queryArgs,
+            _embed: true, // Always embed author and media entities
+            ...sanitizedQueryArgs,
         };
+
+        // Format exclude to integer array as expected by core store API
+        if (query.exclude && typeof query.exclude === 'string') {
+            query.exclude = query.exclude.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id));
+        }
 
         return {
             posts: getEntityRecords('postType', postType, query),
             isLoading: isResolving('core', 'getEntityRecords', ['postType', postType, query]),
         };
-    }, [JSON.stringify(queryArgs), postType]);
+    }, [JSON.stringify(sanitizedQueryArgs), postType]);
 };
 
 export default usePostQuery;

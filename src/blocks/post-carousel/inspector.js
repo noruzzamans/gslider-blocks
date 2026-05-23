@@ -1,6 +1,7 @@
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useMemo, memo, useCallback } from '@wordpress/element';
-import { PanelBody, ToggleControl, BaseControl, Button, } from '@wordpress/components';
+import { PanelBody, ToggleControl, BaseControl, Button, RangeControl, SelectControl, TextControl, FormTokenField } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal Dependencies
@@ -80,6 +81,24 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         layoutHeightUnits,
         contentOrder,
         /** End Layout & Content Setting */
+
+        postType,
+        postsPerPage,
+        categories,
+        tags,
+        authors,
+        excludePosts,
+        offset,
+        orderBy,
+        order,
+        searchQuery,
+        stickyPosts,
+        taxonomyQuery,
+        metaKey,
+        metaValue,
+        metaCompare,
+        dateRange,
+        excludeCurrentPost,
 
         /** Start Navigation Custom Arrows */
         navigationArrowsIconSwitcher,
@@ -396,6 +415,89 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
     const normalizedContentOrder = normalizeContentOrder(contentOrder);
 
+    // Fetch viewable post types, taxonomies, terms, and authors dynamically based on postType
+    const { postTypes, taxonomies, termsData, allAuthors } = useSelect((select) => {
+        const { getPostTypes, getTaxonomies, getEntityRecords } = select('core');
+        const activePostTypes = getPostTypes({ per_page: -1 }) || [];
+        const allTax = getTaxonomies({ per_page: -1 }) || [];
+        
+        // Filter taxonomies that belong to the active postType and are show_in_rest
+        const postTax = allTax.filter(tax => tax.types.includes(postType) && tax.show_in_rest);
+        
+        // Fetch terms for each taxonomy of the active post type
+        const termsMap = {};
+        postTax.forEach(tax => {
+            termsMap[tax.slug] = getEntityRecords('taxonomy', tax.slug, { per_page: -1 }) || [];
+        });
+
+        return {
+            postTypes: activePostTypes,
+            taxonomies: postTax,
+            termsData: termsMap,
+            allAuthors: getEntityRecords('postType', 'user', { per_page: -1 }) || [],
+        };
+    }, [postType]);
+
+    // Helper mappings for FormTokenField and SelectControls
+    const postTypeOptions = useMemo(() => {
+        if (!postTypes) return [];
+        return postTypes
+            .filter(type => type.viewable)
+            .map(type => ({ value: type.slug, label: type.name }));
+    }, [postTypes]);
+
+    // Dynamic taxonomy suggestions and selection mapping
+    const getTaxonomyHelpers = (taxSlug) => {
+        const terms = termsData[taxSlug] || [];
+        const suggestions = terms.map(t => t.name);
+
+        let selectedIds = [];
+        if (taxSlug === 'category') {
+            selectedIds = categories || [];
+        } else if (taxSlug === 'post_tag') {
+            selectedIds = tags || [];
+        } else {
+            selectedIds = (taxonomyQuery && taxonomyQuery[taxSlug]) || [];
+        }
+
+        const selectedNames = selectedIds
+            .map(id => terms.find(t => t.id === id)?.name)
+            .filter(Boolean);
+
+        const onChange = (names) => {
+            const newIds = names
+                .map(name => terms.find(t => t.name === name)?.id)
+                .filter(Boolean);
+
+            if (taxSlug === 'category') {
+                setAttributes({ categories: newIds });
+            } else if (taxSlug === 'post_tag') {
+                setAttributes({ tags: newIds });
+            } else {
+                setAttributes({
+                    taxonomyQuery: {
+                        ...taxonomyQuery,
+                        [taxSlug]: newIds
+                    }
+                });
+            }
+        };
+
+        return { suggestions, selectedNames, onChange };
+    };
+
+    // Authors token field helpers
+    const authorSuggestions = useMemo(() => allAuthors.map(user => user.name), [allAuthors]);
+    const selectedAuthorsNames = useMemo(() => {
+        if (!authors || !allAuthors.length) return [];
+        return authors.map(id => allAuthors.find(user => user.id === id)?.name).filter(Boolean);
+    }, [authors, allAuthors]);
+
+    const handleAuthorsChange = (names) => {
+        const newIds = names.map(name => allAuthors.find(user => user.name === name)?.id).filter(Boolean);
+        setAttributes({ authors: newIds });
+    };
+
     /** Get Current Device Type */
     const currentDeviceType = useDeviceType();
 
@@ -518,6 +620,187 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     className="gslider-vertical-alignment"
                 />
 
+            </PanelBody>
+
+            <PanelBody
+                title={__("Query Settings", "gslider-blocks")}
+                opened={openPanels.general === "query-settings"}
+                onToggle={() => togglePanel("general", "query-settings")}
+            >
+                <SelectControl
+                    label={__("Post Type", "gslider-blocks")}
+                    value={postType}
+                    options={postTypeOptions}
+                    onChange={(value) => setAttributes({ postType: value })}
+                />
+
+                <RangeControl
+                    label={__("Posts Count", "gslider-blocks")}
+                    value={postsPerPage}
+                    onChange={(value) => setAttributes({ postsPerPage: value })}
+                    min={1}
+                    max={100}
+                />
+
+                {taxonomies.map(taxonomy => {
+                    const { suggestions, selectedNames, onChange } = getTaxonomyHelpers(taxonomy.slug);
+                    return (
+                        <BaseControl
+                            key={taxonomy.slug}
+                            label={taxonomy.name}
+                            help={sprintf(__('Select %s to filter posts.', 'gslider-blocks'), taxonomy.name)}
+                        >
+                            <FormTokenField
+                                value={selectedNames}
+                                suggestions={suggestions}
+                                onChange={onChange}
+                            />
+                        </BaseControl>
+                    );
+                })}
+
+                <BaseControl
+                    label={__("Authors", "gslider-blocks")}
+                    help={__("Select authors to filter posts.", "gslider-blocks")}
+                >
+                    <FormTokenField
+                        value={selectedAuthorsNames}
+                        suggestions={authorSuggestions}
+                        onChange={handleAuthorsChange}
+                    />
+                </BaseControl>
+
+                <RangeControl
+                    label={__("Offset", "gslider-blocks")}
+                    value={offset}
+                    onChange={(value) => setAttributes({ offset: value })}
+                    min={0}
+                    max={100}
+                    help={__("Number of posts to displace or bypass.", "gslider-blocks")}
+                />
+
+                <SelectControl
+                    label={__("Order By", "gslider-blocks")}
+                    value={orderBy}
+                    options={[
+                        { value: 'date', label: __('Date', 'gslider-blocks') },
+                        { value: 'title', label: __('Title', 'gslider-blocks') },
+                        { value: 'name', label: __('Post Slug', 'gslider-blocks') },
+                        { value: 'id', label: __('Post ID', 'gslider-blocks') },
+                        { value: 'relevance', label: __('Relevance', 'gslider-blocks') },
+                        { value: 'rand', label: __('Random', 'gslider-blocks') },
+                        { value: 'comment_count', label: __('Comment Count', 'gslider-blocks') },
+                        { value: 'menu_order', label: __('Menu Order', 'gslider-blocks') },
+                        { value: 'meta_value', label: __('Meta Value', 'gslider-blocks') },
+                        { value: 'meta_value_num', label: __('Meta Value (Numeric)', 'gslider-blocks') },
+                    ]}
+                    onChange={(value) => setAttributes({ orderBy: value })}
+                />
+
+                <SelectControl
+                    label={__("Sort Order", "gslider-blocks")}
+                    value={order}
+                    options={[
+                        { value: 'desc', label: __('Descending', 'gslider-blocks') },
+                        { value: 'asc', label: __('Ascending', 'gslider-blocks') },
+                    ]}
+                    onChange={(value) => setAttributes({ order: value })}
+                />
+
+                <SelectControl
+                    label={__("Sticky Posts", "gslider-blocks")}
+                    value={stickyPosts}
+                    options={[
+                        { value: 'include', label: __('Include Sticky Posts', 'gslider-blocks') },
+                        { value: 'exclude', label: __('Exclude Sticky Posts', 'gslider-blocks') },
+                        { value: 'only', label: __('Show Only Sticky Posts', 'gslider-blocks') },
+                    ]}
+                    onChange={(value) => setAttributes({ stickyPosts: value })}
+                />
+
+                <SelectControl
+                    label={__("Date Range", "gslider-blocks")}
+                    value={dateRange}
+                    options={[
+                        { value: 'any', label: __('Any Time', 'gslider-blocks') },
+                        { value: 'last_24_hours', label: __('Last 24 Hours', 'gslider-blocks') },
+                        { value: 'last_7_days', label: __('Last 7 Days', 'gslider-blocks') },
+                        { value: 'last_30_days', label: __('Last 30 Days', 'gslider-blocks') },
+                        { value: 'last_365_days', label: __('Last Year', 'gslider-blocks') },
+                        { value: 'current_month', label: __('Current Month', 'gslider-blocks') },
+                        { value: 'current_year', label: __('Current Year', 'gslider-blocks') },
+                    ]}
+                    onChange={(value) => setAttributes({ dateRange: value })}
+                />
+
+                <ToggleControl
+                    label={__("Filter by Custom Field (Meta)", "gslider-blocks")}
+                    checked={!!metaKey}
+                    onChange={(value) => {
+                        if (!value) {
+                            setAttributes({ metaKey: '', metaValue: '', metaCompare: '=' });
+                        } else {
+                            setAttributes({ metaKey: 'featured' });
+                        }
+                    }}
+                />
+
+                {!!metaKey && (
+                    <div className="gslider-meta-query-settings" style={{ paddingLeft: '15px', borderLeft: '2px solid #ccc', marginBottom: '15px' }}>
+                        <TextControl
+                            label={__("Meta Key", "gslider-blocks")}
+                            value={metaKey}
+                            onChange={(value) => setAttributes({ metaKey: value })}
+                            help={__("Enter the custom field name/key.", "gslider-blocks")}
+                        />
+                        <SelectControl
+                            label={__("Comparison Operator", "gslider-blocks")}
+                            value={metaCompare}
+                            options={[
+                                { value: '=', label: __('Equals (=)', 'gslider-blocks') },
+                                { value: '!=', label: __('Not Equals (!=)', 'gslider-blocks') },
+                                { value: '>', label: __('Greater Than (>)', 'gslider-blocks') },
+                                { value: '>=', label: __('Greater or Equal (>=)', 'gslider-blocks') },
+                                { value: '<', label: __('Less Than (<)', 'gslider-blocks') },
+                                { value: '<=', label: __('Less or Equal (<=)', 'gslider-blocks') },
+                                { value: 'LIKE', label: __('Like', 'gslider-blocks') },
+                                { value: 'NOT LIKE', label: __('Not Like', 'gslider-blocks') },
+                                { value: 'EXISTS', label: __('Exists', 'gslider-blocks') },
+                                { value: 'NOT EXISTS', label: __('Not Exists', 'gslider-blocks') },
+                            ]}
+                            onChange={(value) => setAttributes({ metaCompare: value })}
+                        />
+                        {!['EXISTS', 'NOT EXISTS'].includes(metaCompare) && (
+                            <TextControl
+                                label={__("Meta Value", "gslider-blocks")}
+                                value={metaValue}
+                                onChange={(value) => setAttributes({ metaValue: value })}
+                                help={__("Enter the custom field value to compare.", "gslider-blocks")}
+                            />
+                        )}
+                    </div>
+                )}
+
+                <TextControl
+                    label={__("Search Keyword", "gslider-blocks")}
+                    value={searchQuery}
+                    onChange={(value) => setAttributes({ searchQuery: value })}
+                    help={__("Filter posts by search terms.", "gslider-blocks")}
+                />
+
+                <TextControl
+                    label={__("Exclude Post IDs", "gslider-blocks")}
+                    value={excludePosts}
+                    onChange={(value) => setAttributes({ excludePosts: value })}
+                    help={__("Comma-separated list of post IDs to exclude.", "gslider-blocks")}
+                />
+
+                <ToggleControl
+                    label={__("Exclude Current Post", "gslider-blocks")}
+                    checked={excludeCurrentPost}
+                    onChange={(value) => setAttributes({ excludeCurrentPost: value })}
+                    help={__("Prevent the current post from showing up in the carousel.", "gslider-blocks")}
+                />
             </PanelBody>
 
             <PanelBody
