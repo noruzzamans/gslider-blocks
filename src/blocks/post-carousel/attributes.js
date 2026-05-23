@@ -1529,6 +1529,10 @@ const attributes = {
     },
     /** End Global Custom CSS */
 
+    contentOrder: {
+        type: "array",
+        default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
+    }
 };
 
 export default attributes;

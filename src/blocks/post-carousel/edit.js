@@ -10,6 +10,7 @@ import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
 import Inspector from './inspector';
 import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generatePostCarouselStyle from './styling';
+import { normalizeContentOrder } from './content-order';
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
@@ -53,8 +54,11 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		navigationArrowsIconRightImageAlt,
 
 		enableLazyLoad,
+		contentOrder,
 
 	} = attributes;
+
+	const normalizedContentOrder = normalizeContentOrder(contentOrder);
 
 	/** Handle block ID generation (handles duplication and initial ID) */
 	useBlockIdGenerator({
@@ -247,6 +251,50 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	};
 
 	/**
+	 * Get categories from embedded post data
+	 */
+	const getPostCategories = (post) => {
+		if (post._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][0]) {
+			return post._embedded['wp:term'][0].filter(term => term.taxonomy === 'category');
+		}
+		return [];
+	};
+
+	/**
+	 * Get excerpt text from post (strip HTML, limit words)
+	 */
+	const getExcerpt = (post, wordLimit = 20) => {
+		let text = post?.excerpt?.rendered || post?.content?.rendered || '';
+		const div = document.createElement('div');
+		div.innerHTML = text;
+		text = div.textContent || div.innerText || '';
+		const words = text.trim().split(/\s+/);
+		if (words.length > wordLimit) {
+			return words.slice(0, wordLimit).join(' ') + '...';
+		}
+		return text.trim();
+	};
+
+	/**
+	 * Get author name from embedded post data
+	 */
+	const getAuthorName = (post) => {
+		if (post._embedded && post._embedded.author && post._embedded.author[0]) {
+			return post._embedded.author[0].name || post._embedded.author[0].slug;
+		}
+		return '';
+	};
+
+	/**
+	 * Format post date
+	 */
+	const getFormattedDate = (post) => {
+		if (!post.date) return '';
+		const date = new Date(post.date);
+		return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+	};
+
+	/**
 	 * Decode HTML entities in post title
 	 */
 	const decodeHtmlEntities = (text) => {
@@ -288,24 +336,73 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 						<div className="swiper-wrapper">
 						{posts.map((post) => {
 							const featuredImageUrl = getFeaturedImageUrl(post);
+							const categories = getPostCategories(post);
+							const excerpt = getExcerpt(post);
+							const authorName = getAuthorName(post);
+							const formattedDate = getFormattedDate(post);
+
 							return (
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
 										<div className="gslider-post-carousel-card">
-											{featuredImageUrl && (
-												<div className="gslider-post-carousel-image">
-													<img
-														src={featuredImageUrl}
-														alt={decodeHtmlEntities(post.title.rendered)}
-														loading={enableLazyLoad ? "lazy" : undefined}
-													/>
-												</div>
-											)}
-											{(
-												<div className="gslider-post-carousel-title">
-													<h3>{decodeHtmlEntities(post.title.rendered)}</h3>
-												</div>
-											)}
+											{(() => {
+												const renderGroupMap = {
+													thumbnail: featuredImageUrl ? (
+														<div key="thumbnail" className="gslider-post-carousel-image">
+															<img
+																src={featuredImageUrl}
+																alt={decodeHtmlEntities(post.title.rendered)}
+																loading={enableLazyLoad ? "lazy" : undefined}
+															/>
+														</div>
+													) : null,
+
+													categories: categories.length > 0 ? (
+														<div key="categories" className="gslider-post-carousel-categories">
+															{categories.map((cat) => (
+																<span key={cat.id}>{cat.name}</span>
+															))}
+														</div>
+													) : null,
+
+													title: (
+														<div key="title" className="gslider-post-carousel-title">
+															<h3>{decodeHtmlEntities(post.title.rendered)}</h3>
+														</div>
+													),
+
+													excerpt: excerpt ? (
+														<div key="excerpt" className="gslider-post-carousel-excerpt">
+															<p>{excerpt}</p>
+														</div>
+													) : null,
+
+													meta: (authorName || formattedDate) ? (
+														<div key="meta" className="gslider-post-carousel-meta">
+															{authorName && (
+																<span className="gslider-post-author">
+																	<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+																	{authorName}
+																</span>
+															)}
+															{formattedDate && (
+																<span className="gslider-post-date">
+																	<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+																	{formattedDate}
+																</span>
+															)}
+														</div>
+													) : null,
+
+													readmore: (
+														<div key="readmore" className="gslider-post-carousel-readmore">
+															<a href="#">{__('Read More', 'gslider-blocks')} →</a>
+														</div>
+													),
+												};
+
+												return normalizedContentOrder.map((groupKey) => renderGroupMap[groupKey] || null);
+											})()}
 										</div>
 									</div>
 								</div>

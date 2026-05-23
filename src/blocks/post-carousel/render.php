@@ -49,6 +49,16 @@ $navigation_arrow_position      = isset( $attributes['navigationArrowPosition'] 
 $any_navigation_enabled     = ! empty( $show_navigation['Desktop'] ) || ! empty( $show_navigation['Tablet'] ) || ! empty( $show_navigation['Mobile'] );
 $any_pagination_enabled     = ! empty( $show_pagination['Desktop'] ) || ! empty( $show_pagination['Tablet'] ) || ! empty( $show_pagination['Mobile'] );
 
+// Content Order Normalization
+$default_content_order = array( 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' );
+$content_order         = isset( $attributes['contentOrder'] ) && is_array( $attributes['contentOrder'] ) ? $attributes['contentOrder'] : $default_content_order;
+$content_order         = array_values( array_unique( array_intersect( $content_order, $default_content_order ) ) );
+foreach ( $default_content_order as $key ) {
+    if ( ! in_array( $key, $content_order, true ) ) {
+        $content_order[] = $key;
+    }
+}
+
 // Query posts
 $query_args = array(
     'post_type'      => 'post',
@@ -166,30 +176,91 @@ $wrapper_attributes = get_block_wrapper_attributes(
             <?php
             while ( $posts_query->have_posts() ) :
                 $posts_query->the_post();
-                $post_id = get_the_ID();
+                $post_id    = get_the_ID();
+                $categories = get_the_category( $post_id );
+                $excerpt    = wp_trim_words( get_the_excerpt(), 20, '...' );
                 ?>
                 <div class="swiper-slide">
                     <div class="gslider-post-carousel-content-wrapper <?php echo esc_attr( $global_class ); ?>"<?php echo $global_id ? ' id="' . esc_attr( $global_id ) . '"' : ''; ?>>
                         <div class="gslider-post-carousel-card">
-                            <?php if ( has_post_thumbnail( $post_id ) ) : ?>
-                                <div class="gslider-post-carousel-image">
-                                    <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
-                                        <?php
-                                        the_post_thumbnail(
-                                            'medium_large',
-                                            array(
-                                                'loading' => $enable_lazy_load ? 'lazy' : 'eager',
-                                                'alt'     => get_the_title(),
-                                            )
-                                        );
-                                        ?>
-                                    </a>
-                                </div>
-                            <?php endif; ?>
+                            <?php
+                            foreach ( $content_order as $element ) {
+                                switch ( $element ) {
+                                    case 'thumbnail':
+                                        if ( has_post_thumbnail( $post_id ) ) :
+                                            ?>
+                                            <div class="gslider-post-carousel-image">
+                                                <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
+                                                    <?php
+                                                    the_post_thumbnail(
+                                                        'medium_large',
+                                                        array(
+                                                            'loading' => $enable_lazy_load ? 'lazy' : 'eager',
+                                                            'alt'     => get_the_title(),
+                                                        )
+                                                    );
+                                                    ?>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        endif;
+                                        break;
 
-                            <div class="gslider-post-carousel-title">
-                                <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-                            </div>
+                                    case 'categories':
+                                        if ( ! empty( $categories ) ) :
+                                            ?>
+                                            <div class="gslider-post-carousel-categories">
+                                                <?php foreach ( $categories as $cat ) : ?>
+                                                    <span><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
+                                                <?php endforeach; ?>
+                                            </div>
+                                            <?php
+                                        endif;
+                                        break;
+
+                                    case 'title':
+                                        ?>
+                                        <div class="gslider-post-carousel-title">
+                                            <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                                        </div>
+                                        <?php
+                                        break;
+
+                                    case 'excerpt':
+                                        if ( $excerpt ) :
+                                            ?>
+                                            <div class="gslider-post-carousel-excerpt">
+                                                <p><?php echo esc_html( $excerpt ); ?></p>
+                                            </div>
+                                            <?php
+                                        endif;
+                                        break;
+
+                                    case 'meta':
+                                        ?>
+                                        <div class="gslider-post-carousel-meta">
+                                            <span class="gslider-post-author">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                                <?php the_author(); ?>
+                                            </span>
+                                            <span class="gslider-post-date">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                                <?php echo get_the_date(); ?>
+                                            </span>
+                                        </div>
+                                        <?php
+                                        break;
+
+                                    case 'readmore':
+                                        ?>
+                                        <div class="gslider-post-carousel-readmore">
+                                            <a href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read More', 'gslider-blocks' ); ?> →</a>
+                                        </div>
+                                        <?php
+                                        break;
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>

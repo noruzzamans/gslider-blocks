@@ -43,6 +43,8 @@ import InputControls from '@Components/input-control';
 import SelectControls from '@Components/select-controls';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
+import ContentOrderControl from '@Components/content-order-control';
+import { normalizeContentOrder } from './content-order';
 
 const Inspector = ({ attributes, setAttributes, clientId }) => {
     const {
@@ -76,6 +78,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         /** Start Layout & Content Setting */
         layoutHeight,
         layoutHeightUnits,
+        contentOrder,
         /** End Layout & Content Setting */
 
         /** Start Navigation Custom Arrows */
@@ -391,6 +394,8 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
     } = attributes;
 
+    const normalizedContentOrder = normalizeContentOrder(contentOrder);
+
     /** Get Current Device Type */
     const currentDeviceType = useDeviceType();
 
@@ -513,6 +518,27 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     className="gslider-vertical-alignment"
                 />
 
+            </PanelBody>
+
+            <PanelBody
+                title={__("Content Order", "gslider-blocks")}
+                opened={openPanels.general === "content-order"}
+                onToggle={() => togglePanel("general", "content-order")}
+            >
+                <ContentOrderControl
+                    label={__("Post Elements Order", "gslider-blocks")}
+                    items={[
+                        { key: 'thumbnail', label: __('Featured Image', 'gslider-blocks'), icon: 'format-image' },
+                        { key: 'categories', label: __('Categories', 'gslider-blocks'), icon: 'category' },
+                        { key: 'title', label: __('Title', 'gslider-blocks'), icon: 'editor-textcolor' },
+                        { key: 'excerpt', label: __('Excerpt', 'gslider-blocks'), icon: 'editor-alignleft' },
+                        { key: 'meta', label: __('Author & Date Meta', 'gslider-blocks'), icon: 'admin-users' },
+                        { key: 'readmore', label: __('Read More Link', 'gslider-blocks'), icon: 'admin-links' },
+                    ]}
+                    order={normalizedContentOrder}
+                    onChange={(newOrder) => setAttributes({ contentOrder: newOrder })}
+                    help={__("Drag items to reorder inside the post card", "gslider-blocks")}
+                />
             </PanelBody>
 
             <PanelBody
