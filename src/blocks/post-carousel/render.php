@@ -59,7 +59,84 @@ foreach ( $default_content_order as $key ) {
     }
 }
 
-$posts_query = \GSlider\Utils\Helper::get_posts( $attributes );
+// Parse query attributes with defaults (Block-specific)
+$post_type            = isset( $attributes['postType'] ) ? sanitize_text_field( $attributes['postType'] ) : 'post';
+$posts_per_page       = isset( $attributes['postsPerPage'] ) ? intval( $attributes['postsPerPage'] ) : 6;
+$categories           = isset( $attributes['categories'] ) ? array_map( 'intval', $attributes['categories'] ) : array();
+$tags                 = isset( $attributes['tags'] ) ? array_map( 'intval', $attributes['tags'] ) : array();
+$authors              = isset( $attributes['authors'] ) ? array_map( 'intval', $attributes['authors'] ) : array();
+$exclude_posts        = isset( $attributes['excludePosts'] ) ? sanitize_text_field( $attributes['excludePosts'] ) : '';
+$offset               = isset( $attributes['offset'] ) ? intval( $attributes['offset'] ) : 0;
+$orderby              = isset( $attributes['orderBy'] ) ? sanitize_text_field( $attributes['orderBy'] ) : 'date';
+$order                = isset( $attributes['order'] ) ? sanitize_text_field( $attributes['order'] ) : 'desc';
+$search_query         = isset( $attributes['searchQuery'] ) ? sanitize_text_field( $attributes['searchQuery'] ) : '';
+$sticky_posts         = isset( $attributes['stickyPosts'] ) ? sanitize_text_field( $attributes['stickyPosts'] ) : 'include';
+$taxonomy_query       = isset( $attributes['taxonomyQuery'] ) ? $attributes['taxonomyQuery'] : array();
+$meta_key             = isset( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
+$meta_value           = isset( $attributes['metaValue'] ) ? sanitize_text_field( $attributes['metaValue'] ) : '';
+$meta_compare         = isset( $attributes['metaCompare'] ) ? sanitize_text_field( $attributes['metaCompare'] ) : '=';
+$date_range           = isset( $attributes['dateRange'] ) ? sanitize_text_field( $attributes['dateRange'] ) : 'any';
+$exclude_current_post = ! empty( $attributes['excludeCurrentPost'] );
+
+// Construct query arguments for WP_Query
+$query_args = array(
+    'post_type'      => $post_type,
+    'posts_per_page' => $posts_per_page,
+    'post_status'    => 'publish',
+    'orderby'        => $orderby,
+    'order'          => $order,
+);
+
+// Call Helper methods to compile dynamic options
+$tax_query = \GSlider\Utils\Helper::build_tax_query( $categories, $tags, $taxonomy_query );
+if ( ! empty( $tax_query ) ) {
+    $query_args['tax_query'] = $tax_query;
+}
+
+if ( ! empty( $authors ) ) {
+    $query_args['author__in'] = $authors;
+}
+
+if ( $offset > 0 ) {
+    $query_args['offset'] = $offset;
+}
+
+$excluded_ids = \GSlider\Utils\Helper::build_excluded_posts( $exclude_posts, $exclude_current_post );
+if ( ! empty( $excluded_ids ) ) {
+    $query_args['post__not_in'] = $excluded_ids;
+}
+
+if ( ! empty( $search_query ) ) {
+    $query_args['s'] = $search_query;
+}
+
+$date_query = \GSlider\Utils\Helper::build_date_query( $date_range );
+if ( ! empty( $date_query ) ) {
+    $query_args['date_query'] = $date_query;
+}
+
+$meta_query = \GSlider\Utils\Helper::build_meta_query( $meta_key, $meta_value, $meta_compare );
+if ( ! empty( $meta_query ) ) {
+    $query_args['meta_query'] = $meta_query;
+    if ( in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) ) {
+        $query_args['meta_key'] = $meta_key;
+    }
+}
+
+// Construct Sticky Posts rules
+if ( 'exclude' === $sticky_posts ) {
+    $sticky_ids = get_option( 'sticky_posts' );
+    if ( ! empty( $sticky_ids ) ) {
+        $query_args['post__not_in'] = isset( $query_args['post__not_in'] )
+            ? array_merge( $query_args['post__not_in'], $sticky_ids )
+            : $sticky_ids;
+    }
+} elseif ( 'only' === $sticky_posts ) {
+    $sticky_ids = get_option( 'sticky_posts' );
+    $query_args['post__in'] = ! empty( $sticky_ids ) ? $sticky_ids : array( 0 );
+}
+
+$posts_query = new WP_Query( $query_args );
 
 if ( ! $posts_query->have_posts() ) {
     wp_reset_postdata();
