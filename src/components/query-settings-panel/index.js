@@ -1,0 +1,562 @@
+import { __ } from '@wordpress/i18n';
+import { useMemo, useCallback } from '@wordpress/element';
+import {
+    PanelBody,
+    BaseControl,
+    RangeControl,
+    ToggleControl,
+    TextControl,
+} from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
+import Select from 'react-select';
+import SwitcherControl from '@Components/switcher-control';
+import ResponsiveRangeControl from '@Components/responsive-range-control';
+import {
+    ORDER_BY_OPTIONS,
+    SORT_ORDER_OPTIONS,
+    STICKY_POSTS_OPTIONS,
+    DATE_RANGE_OPTIONS,
+    META_COMPARE_OPTIONS,
+    INCLUDE_EXCLUDE_OPTIONS,
+} from '@Constants/query-constants';
+
+import './editor.scss';
+
+/**
+ * QuerySettingsPanel — Reusable query settings component
+ *
+ * Uses react-select for all dropdowns, SwitcherControl for Include/Exclude toggles.
+ * Dynamically fetches post types, taxonomies, terms, and authors via WordPress REST API.
+ *
+ * Usage:
+ *   import QuerySettingsPanel from '@Components/query-settings-panel';
+ *   <QuerySettingsPanel attributes={attributes} setAttributes={setAttributes} />
+ */
+const QuerySettingsPanel = ({
+    attributes,
+    setAttributes,
+    showMetaQuery = true,
+    showDateRange = true,
+    showStickyPosts = true,
+    showSearchQuery = true,
+    showExcludePosts = true,
+    showExcludeCurrentPost = true,
+    showOffset = true,
+    maxPosts = 100,
+    panelTitle = __('Query', 'gslider-blocks'),
+    initialOpen = false,
+    opened,
+    onToggle,
+    deviceType = 'Desktop',
+}) => {
+    const {
+        postType,
+        postsPerPage,
+        categories,
+        categoryFilterType,
+        tags,
+        tagFilterType,
+        authors,
+        authorFilterType,
+        excludePosts,
+        offset,
+        orderBy,
+        order,
+        searchQuery,
+        stickyPosts,
+        taxonomyQuery,
+        taxonomyFilterTypes,
+        metaKey,
+        metaValue,
+        metaCompare,
+        dateRange,
+        excludeCurrentPost,
+    } = attributes;
+
+    // ─── Data Fetching (REST API) ───────────────────────────
+    const { postTypes, taxonomies, termsData, allAuthors } = useSelect(
+        (select) => {
+            const { getPostTypes, getTaxonomies, getEntityRecords } = select('core');
+
+            const activePostTypes = getPostTypes({ per_page: -1 }) || [];
+            const allTax = getTaxonomies({ per_page: -1 }) || [];
+
+            // Filter taxonomies belonging to the selected postType
+            const postTax = allTax.filter(
+                (tax) => tax.types.includes(postType) && tax.show_in_rest
+            );
+
+            // Fetch terms for each taxonomy
+            const termsMap = {};
+            postTax.forEach((tax) => {
+                termsMap[tax.slug] =
+                    getEntityRecords('taxonomy', tax.slug, { per_page: -1 }) || [];
+            });
+
+            return {
+                postTypes: activePostTypes,
+                taxonomies: postTax,
+                termsData: termsMap,
+                allAuthors:
+                    getEntityRecords('root', 'user', { per_page: -1 }) || [],
+            };
+        },
+        [postType]
+    );
+
+    // ─── Post Type Options ──────────────────────────────────
+    const postTypeOptions = useMemo(() => {
+        if (!postTypes) return [];
+        return postTypes
+            .filter((type) => type.viewable)
+            .map((type) => ({ value: type.slug, label: type.name }));
+    }, [postTypes]);
+
+    const selectedPostType = useMemo(
+        () => postTypeOptions.find((opt) => opt.value === postType) || null,
+        [postTypeOptions, postType]
+    );
+
+    const handlePostTypeChange = useCallback(
+        (option) => {
+            if (option) {
+                setAttributes({
+                    postType: option.value,
+                    categories: [],
+                    tags: [],
+                    taxonomyQuery: {},
+                    taxonomyFilterTypes: {},
+                });
+            }
+        },
+        [setAttributes]
+    );
+
+    // ─── Taxonomy Helpers ───────────────────────────────────
+    const getTaxonomyData = useCallback(
+        (taxSlug) => {
+            const terms = termsData[taxSlug] || [];
+            const options = terms.map((t) => ({ value: t.id, label: t.name }));
+
+            let selectedIds = [];
+            let filterType = 'include';
+
+            if (taxSlug === 'category') {
+                selectedIds = categories || [];
+                filterType = categoryFilterType || 'include';
+            } else if (taxSlug === 'post_tag') {
+                selectedIds = tags || [];
+                filterType = tagFilterType || 'include';
+            } else {
+                selectedIds = (taxonomyQuery && taxonomyQuery[taxSlug]) || [];
+                filterType = (taxonomyFilterTypes && taxonomyFilterTypes[taxSlug]) || 'include';
+            }
+
+            const selectedOptions = selectedIds
+                .map((id) => options.find((opt) => opt.value === id))
+                .filter(Boolean);
+
+            return { options, selectedOptions, filterType };
+        },
+        [termsData, categories, categoryFilterType, tags, tagFilterType, taxonomyQuery, taxonomyFilterTypes]
+    );
+
+    const handleTaxonomyChange = useCallback(
+        (taxSlug, selectedOptions) => {
+            const newIds = selectedOptions
+                ? selectedOptions.map((opt) => opt.value)
+                : [];
+
+            if (taxSlug === 'category') {
+                setAttributes({ categories: newIds });
+            } else if (taxSlug === 'post_tag') {
+                setAttributes({ tags: newIds });
+            } else {
+                setAttributes({
+                    taxonomyQuery: {
+                        ...taxonomyQuery,
+                        [taxSlug]: newIds,
+                    },
+                });
+            }
+        },
+        [setAttributes, taxonomyQuery]
+    );
+
+    const handleTaxonomyFilterTypeChange = useCallback(
+        (taxSlug, value) => {
+            if (taxSlug === 'category') {
+                setAttributes({ categoryFilterType: value });
+            } else if (taxSlug === 'post_tag') {
+                setAttributes({ tagFilterType: value });
+            } else {
+                setAttributes({
+                    taxonomyFilterTypes: {
+                        ...taxonomyFilterTypes,
+                        [taxSlug]: value,
+                    },
+                });
+            }
+        },
+        [setAttributes, taxonomyFilterTypes]
+    );
+
+    // ─── Author Helpers ─────────────────────────────────────
+    const authorOptions = useMemo(
+        () => allAuthors.map((user) => ({ value: user.id, label: user.name })),
+        [allAuthors]
+    );
+
+    const selectedAuthorOptions = useMemo(() => {
+        if (!authors || !authorOptions.length) return [];
+        return authors
+            .map((id) => authorOptions.find((opt) => opt.value === id))
+            .filter(Boolean);
+    }, [authors, authorOptions]);
+
+    const handleAuthorsChange = useCallback(
+        (selectedOptions) => {
+            const newIds = selectedOptions
+                ? selectedOptions.map((opt) => opt.value)
+                : [];
+            setAttributes({ authors: newIds });
+        },
+        [setAttributes]
+    );
+
+    // ─── Order By / Sort Order ──────────────────────────────
+    const selectedOrderBy = useMemo(
+        () => ORDER_BY_OPTIONS.find((opt) => opt.value === orderBy) || ORDER_BY_OPTIONS[0],
+        [orderBy]
+    );
+
+    const selectedSortOrder = useMemo(
+        () => SORT_ORDER_OPTIONS.find((opt) => opt.value === order) || SORT_ORDER_OPTIONS[0],
+        [order]
+    );
+
+    // ─── Sticky Posts ───────────────────────────────────────
+    const selectedStickyPosts = useMemo(
+        () => STICKY_POSTS_OPTIONS.find((opt) => opt.value === stickyPosts) || STICKY_POSTS_OPTIONS[0],
+        [stickyPosts]
+    );
+
+    // ─── Date Range ─────────────────────────────────────────
+    const selectedDateRange = useMemo(
+        () => DATE_RANGE_OPTIONS.find((opt) => opt.value === dateRange) || DATE_RANGE_OPTIONS[0],
+        [dateRange]
+    );
+
+    // ─── Meta Compare ───────────────────────────────────────
+    const selectedMetaCompare = useMemo(
+        () => META_COMPARE_OPTIONS.find((opt) => opt.value === metaCompare) || META_COMPARE_OPTIONS[0],
+        [metaCompare]
+    );
+
+    // ─── Get Taxonomy Label ─────────────────────────────────
+    const getTaxLabel = (filterType, taxonomyName) => {
+        if (filterType === 'exclude') {
+            return __('Exclude', 'gslider-blocks') + ' ' + taxonomyName;
+        }
+        return __('Include', 'gslider-blocks') + ' ' + taxonomyName;
+    };
+
+    // ─── Panel Props ────────────────────────────────────────
+    const panelProps = {};
+    if (typeof opened !== 'undefined') {
+        panelProps.opened = opened;
+    }
+    if (typeof onToggle === 'function') {
+        panelProps.onToggle = onToggle;
+    }
+    if (typeof opened === 'undefined') {
+        panelProps.initialOpen = initialOpen;
+    }
+
+    // ─── Render ─────────────────────────────────────────────
+    return (
+        <PanelBody
+            title={panelTitle}
+            {...panelProps}
+        >
+            <div className="gslider-query-settings-panel">
+
+                {/* Post Type */}
+                <BaseControl
+                    label={__('Post Type', 'gslider-blocks')}
+                    className="gslider-query-post-type"
+                >
+                    <Select
+                        options={postTypeOptions}
+                        value={selectedPostType}
+                        onChange={handlePostTypeChange}
+                        className="gslider-query-select2-control"
+                        classNamePrefix="gslider-select2"
+                    />
+                </BaseControl>
+
+                {/* Dynamic Taxonomies (Category, Tag, Custom Taxonomies) */}
+                {taxonomies && taxonomies.map((taxonomy) => {
+                    const { options, selectedOptions, filterType } = getTaxonomyData(taxonomy.slug);
+
+                    return (
+                        <div key={taxonomy.slug} className="gslider-query-taxonomy-section">
+                            <SwitcherControl
+                                label={taxonomy.name}
+                                options={INCLUDE_EXCLUDE_OPTIONS}
+                                value={filterType}
+                                onChange={(value) =>
+                                    handleTaxonomyFilterTypeChange(taxonomy.slug, value)
+                                }
+                            />
+
+                            <BaseControl
+                                label={getTaxLabel(filterType, taxonomy.name)}
+                                className="gslider-query-taxonomy-select"
+                            >
+                                <Select
+                                    options={options}
+                                    value={selectedOptions}
+                                    onChange={(selected) =>
+                                        handleTaxonomyChange(taxonomy.slug, selected)
+                                    }
+                                    isMulti
+                                    isClearable
+                                    placeholder={__('Select...', 'gslider-blocks')}
+                                    className="gslider-query-select2-control"
+                                    classNamePrefix="gslider-select2"
+                                />
+                            </BaseControl>
+                        </div>
+                    );
+                })}
+
+                {/* Authors */}
+                <div className="gslider-query-taxonomy-section">
+                    <SwitcherControl
+                        label={__('Author', 'gslider-blocks')}
+                        options={INCLUDE_EXCLUDE_OPTIONS}
+                        value={authorFilterType || 'include'}
+                        onChange={(value) =>
+                            setAttributes({ authorFilterType: value })
+                        }
+                    />
+
+                    <BaseControl
+                        label={
+                            (authorFilterType || 'include') === 'exclude'
+                                ? __('Exclude Authors', 'gslider-blocks')
+                                : __('Include Authors', 'gslider-blocks')
+                        }
+                        className="gslider-query-author-select"
+                    >
+                        <Select
+                            options={authorOptions}
+                            value={selectedAuthorOptions}
+                            onChange={handleAuthorsChange}
+                            isMulti
+                            isClearable
+                            placeholder={__('Select...', 'gslider-blocks')}
+                            className="gslider-query-select2-control"
+                            classNamePrefix="gslider-select2"
+                        />
+                    </BaseControl>
+                </div>
+
+                {/* Order By */}
+                <BaseControl
+                    label={__('Order By', 'gslider-blocks')}
+                    className="gslider-query-order-by"
+                >
+                    <Select
+                        options={ORDER_BY_OPTIONS}
+                        value={selectedOrderBy}
+                        onChange={(option) =>
+                            setAttributes({ orderBy: option.value })
+                        }
+                        className="gslider-query-select2-control"
+                        classNamePrefix="gslider-select2"
+                    />
+                </BaseControl>
+
+                {/* Sort Order */}
+                <BaseControl
+                    label={__('Sort Order', 'gslider-blocks')}
+                    className="gslider-query-sort-order"
+                >
+                    <Select
+                        options={SORT_ORDER_OPTIONS}
+                        value={selectedSortOrder}
+                        onChange={(option) =>
+                            setAttributes({ order: option.value })
+                        }
+                        className="gslider-query-select2-control"
+                        classNamePrefix="gslider-select2"
+                    />
+                </BaseControl>
+
+                {/* Posts Per Page */}
+                <ResponsiveRangeControl
+                    label={panelTitle === __('Query Settings', 'gslider-blocks') ? __('Posts Count', 'gslider-blocks') : __('Post Per Page', 'gslider-blocks')}
+                    rangeValue={postsPerPage}
+                    onChangeValue={(value) => setAttributes({ postsPerPage: value })}
+                    deviceType={deviceType}
+                    min={1}
+                    max={maxPosts}
+                    step={1}
+                    resetFallbackValue="6"
+                    isRangeUnit={false}
+                />
+
+                {/* Offset */}
+                {showOffset && (
+                    <ResponsiveRangeControl
+                        label={__('Offset', 'gslider-blocks')}
+                        rangeValue={offset}
+                        onChangeValue={(value) => setAttributes({ offset: value })}
+                        deviceType={deviceType}
+                        min={0}
+                        max={100}
+                        step={1}
+                        resetFallbackValue="0"
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {/* Sticky Posts */}
+                {showStickyPosts && (
+                    <BaseControl
+                        label={__('Sticky Posts', 'gslider-blocks')}
+                        className="gslider-query-sticky-posts"
+                    >
+                        <Select
+                            options={STICKY_POSTS_OPTIONS}
+                            value={selectedStickyPosts}
+                            onChange={(option) =>
+                                setAttributes({ stickyPosts: option.value })
+                            }
+                            className="gslider-query-select2-control"
+                            classNamePrefix="gslider-select2"
+                        />
+                    </BaseControl>
+                )}
+
+                {/* Date Range */}
+                {showDateRange && (
+                    <BaseControl
+                        label={__('Date Range', 'gslider-blocks')}
+                        className="gslider-query-date-range"
+                    >
+                        <Select
+                            options={DATE_RANGE_OPTIONS}
+                            value={selectedDateRange}
+                            onChange={(option) =>
+                                setAttributes({ dateRange: option.value })
+                            }
+                            className="gslider-query-select2-control"
+                            classNamePrefix="gslider-select2"
+                        />
+                    </BaseControl>
+                )}
+
+                {/* Meta Query */}
+                {showMetaQuery && (
+                    <>
+                        <ToggleControl
+                            label={__('Filter by Custom Field (Meta)', 'gslider-blocks')}
+                            checked={!!metaKey}
+                            onChange={(value) => {
+                                if (!value) {
+                                    setAttributes({
+                                        metaKey: '',
+                                        metaValue: '',
+                                        metaCompare: '=',
+                                    });
+                                } else {
+                                    setAttributes({ metaKey: 'featured' });
+                                }
+                            }}
+                        />
+
+                        {!!metaKey && (
+                            <div className="gslider-meta-query-settings">
+                                <TextControl
+                                    label={__('Meta Key', 'gslider-blocks')}
+                                    value={metaKey}
+                                    onChange={(value) =>
+                                        setAttributes({ metaKey: value })
+                                    }
+                                    help={__('Enter the custom field name/key.', 'gslider-blocks')}
+                                />
+
+                                <BaseControl
+                                    label={__('Comparison Operator', 'gslider-blocks')}
+                                    className="gslider-query-meta-compare"
+                                >
+                                    <Select
+                                        options={META_COMPARE_OPTIONS}
+                                        value={selectedMetaCompare}
+                                        onChange={(option) =>
+                                            setAttributes({ metaCompare: option.value })
+                                        }
+                                        className="gslider-query-select2-control"
+                                        classNamePrefix="gslider-select2"
+                                    />
+                                </BaseControl>
+
+                                {!['EXISTS', 'NOT EXISTS'].includes(metaCompare) && (
+                                    <TextControl
+                                        label={__('Meta Value', 'gslider-blocks')}
+                                        value={metaValue}
+                                        onChange={(value) =>
+                                            setAttributes({ metaValue: value })
+                                        }
+                                        help={__('Enter the custom field value to compare.', 'gslider-blocks')}
+                                    />
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {/* Search Keyword */}
+                {showSearchQuery && (
+                    <TextControl
+                        label={__('Search Keyword', 'gslider-blocks')}
+                        value={searchQuery}
+                        onChange={(value) =>
+                            setAttributes({ searchQuery: value })
+                        }
+                        help={__('Filter posts by search terms.', 'gslider-blocks')}
+                    />
+                )}
+
+                {/* Exclude Post IDs */}
+                {showExcludePosts && (
+                    <TextControl
+                        label={__('Exclude Post IDs', 'gslider-blocks')}
+                        value={excludePosts}
+                        onChange={(value) =>
+                            setAttributes({ excludePosts: value })
+                        }
+                        help={__('Comma-separated list of post IDs to exclude.', 'gslider-blocks')}
+                    />
+                )}
+
+                {/* Exclude Current Post */}
+                {showExcludeCurrentPost && (
+                    <ToggleControl
+                        label={__('Exclude Current Post', 'gslider-blocks')}
+                        checked={excludeCurrentPost}
+                        onChange={(value) =>
+                            setAttributes({ excludeCurrentPost: value })
+                        }
+                        help={__('Prevent the current post from showing up.', 'gslider-blocks')}
+                    />
+                )}
+            </div>
+        </PanelBody>
+    );
+};
+
+export default QuerySettingsPanel;

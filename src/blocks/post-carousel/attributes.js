@@ -1,3 +1,5 @@
+import { queryAttributes } from '@Components/query-settings-panel/query-attributes';
+
 const attributes = {
     blockId: {
         type: "string",
@@ -16,7 +18,7 @@ const attributes = {
     carouselPerColumn: {
         type: "object",
         default: {
-            Desktop: 2,
+            Desktop: 3,
             Tablet: 2,
             Mobile: 1,
         },
@@ -1533,74 +1535,9 @@ const attributes = {
         type: "array",
         default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
     },
-    postType: {
-        type: "string",
-        default: "post"
-    },
-    postsPerPage: {
-        type: "number",
-        default: 6
-    },
-    categories: {
-        type: "array",
-        default: []
-    },
-    tags: {
-        type: "array",
-        default: []
-    },
-    authors: {
-        type: "array",
-        default: []
-    },
-    excludePosts: {
-        type: "string",
-        default: ""
-    },
-    offset: {
-        type: "number",
-        default: 0
-    },
-    orderBy: {
-        type: "string",
-        default: "date"
-    },
-    order: {
-        type: "string",
-        default: "desc"
-    },
-    searchQuery: {
-        type: "string",
-        default: ""
-    },
-    stickyPosts: {
-        type: "string",
-        default: "include"
-    },
-    taxonomyQuery: {
-        type: "object",
-        default: {}
-    },
-    metaKey: {
-        type: "string",
-        default: ""
-    },
-    metaValue: {
-        type: "string",
-        default: ""
-    },
-    metaCompare: {
-        type: "string",
-        default: "="
-    },
-    dateRange: {
-        type: "string",
-        default: "any"
-    },
-    excludeCurrentPost: {
-        type: "boolean",
-        default: false
-    }
+
+    /** Query Attributes (shared reusable) */
+    ...queryAttributes,
 };
 
 export default attributes;

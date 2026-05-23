@@ -60,8 +60,11 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		postType,
 		postsPerPage,
 		categories,
+		categoryFilterType,
 		tags,
+		tagFilterType,
 		authors,
+		authorFilterType,
 		excludePosts,
 		offset,
 		orderBy,
@@ -109,24 +112,39 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	/** End Generate Block Style */
 
 	// Construct dynamic query arguments for the REST API
+	const activePostsPerPage = typeof postsPerPage === 'object' ? (parseInt(postsPerPage?.[deviceType]) || 6) : (parseInt(postsPerPage) || 6);
+	const activeOffset = typeof offset === 'object' ? (parseInt(offset?.[deviceType]) || 0) : (parseInt(offset) || 0);
+
 	const queryArgs = {
-		per_page: postsPerPage,
+		per_page: activePostsPerPage,
 		status: 'publish',
 		orderby: orderBy,
 		order: order,
 	};
 
-	if (offset) {
-		queryArgs.offset = offset;
+	if (activeOffset) {
+		queryArgs.offset = activeOffset;
 	}
 	if (categories && categories.length > 0) {
-		queryArgs.categories = categories.join(',');
+		if (categoryFilterType === 'exclude') {
+			queryArgs.categories_exclude = categories.join(',');
+		} else {
+			queryArgs.categories = categories.join(',');
+		}
 	}
 	if (tags && tags.length > 0) {
-		queryArgs.tags = tags.join(',');
+		if (tagFilterType === 'exclude') {
+			queryArgs.tags_exclude = tags.join(',');
+		} else {
+			queryArgs.tags = tags.join(',');
+		}
 	}
 	if (authors && authors.length > 0) {
-		queryArgs.author = authors.join(',');
+		if (authorFilterType === 'exclude') {
+			queryArgs.author_exclude = authors.join(',');
+		} else {
+			queryArgs.author = authors.join(',');
+		}
 	}
 
 	// Dynamic taxonomies mapping for REST API
@@ -419,16 +437,30 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 			<div {...blockProps}>
 
-				{isLoading && (
-					<Placeholder
-						icon={<span className="dashicons dashicons-admin-post" />}
-						label={__('Post Carousel', 'gslider-blocks')}
-					>
-						<Spinner />
-					</Placeholder>
+				{(isLoading || !posts) && (
+					<div className="gslider-post-carousel-loading-container">
+						<div className="gslider-post-carousel-skeleton-wrapper" style={{ 
+							display: 'grid', 
+							gridTemplateColumns: `repeat(${carouselPerColumn?.[deviceType] || 3}, 1fr)`, 
+							gap: `${carouselPerColumnGap?.[deviceType] || 20}px` 
+						}}>
+							{Array.from({ length: carouselPerColumn?.[deviceType] || 3 }).map((_, idx) => (
+								<div key={idx} className="gslider-post-carousel-skeleton-card">
+									<div className="gslider-skeleton-item gslider-skeleton-image"></div>
+									<div className="gslider-skeleton-content">
+										<div className="gslider-skeleton-item gslider-skeleton-category"></div>
+										<div className="gslider-skeleton-item gslider-skeleton-title"></div>
+										<div className="gslider-skeleton-item gslider-skeleton-text"></div>
+										<div className="gslider-skeleton-item gslider-skeleton-text short"></div>
+										<div className="gslider-skeleton-item gslider-skeleton-meta"></div>
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
 				)}
 
-				{!isLoading && (!posts || posts.length === 0) && (
+				{!isLoading && posts && posts.length === 0 && (
 					<Placeholder
 						icon={<span className="dashicons dashicons-admin-post" />}
 						label={__('Post Carousel', 'gslider-blocks')}

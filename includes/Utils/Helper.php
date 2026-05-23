@@ -34,35 +34,48 @@ if ( ! class_exists( 'Helper' ) ) {
          * @param array $taxonomies Custom taxonomy slug => term IDs array.
          * @return array Compiled tax_query array.
          */
-        public static function build_tax_query( array $categories = [], array $tags = [], array $taxonomies = [] ) {
+        public static function build_tax_query( array $categories = [], $category_filter_type = 'include', array $tags = [], $tag_filter_type = 'include', array $taxonomies = [], array $taxonomy_filter_types = [] ) {
+            // Backward compatibility checks
+            if ( is_array( $category_filter_type ) ) {
+                $taxonomies            = $tags;
+                $tags                  = $category_filter_type;
+                $category_filter_type  = 'include';
+                $tag_filter_type       = 'include';
+                $taxonomy_filter_types = [];
+            }
+
             $tax_query = array();
 
             if ( ! empty( $categories ) ) {
+                $operator    = ( 'exclude' === $category_filter_type ) ? 'NOT IN' : 'IN';
                 $tax_query[] = array(
                     'taxonomy' => 'category',
                     'field'    => 'term_id',
                     'terms'    => array_map( 'intval', $categories ),
-                    'operator' => 'IN',
+                    'operator' => $operator,
                 );
             }
 
             if ( ! empty( $tags ) ) {
+                $operator    = ( 'exclude' === $tag_filter_type ) ? 'NOT IN' : 'IN';
                 $tax_query[] = array(
                     'taxonomy' => 'post_tag',
                     'field'    => 'term_id',
                     'terms'    => array_map( 'intval', $tags ),
-                    'operator' => 'IN',
+                    'operator' => $operator,
                 );
             }
 
             if ( ! empty( $taxonomies ) && is_array( $taxonomies ) ) {
                 foreach ( $taxonomies as $tax_slug => $term_ids ) {
                     if ( ! empty( $term_ids ) ) {
-                        $tax_query[] = array(
+                        $tax_filter_type = isset( $taxonomy_filter_types[ $tax_slug ] ) ? $taxonomy_filter_types[ $tax_slug ] : 'include';
+                        $operator        = ( 'exclude' === $tax_filter_type ) ? 'NOT IN' : 'IN';
+                        $tax_query[]     = array(
                             'taxonomy' => sanitize_text_field( $tax_slug ),
                             'field'    => 'term_id',
                             'terms'    => array_map( 'intval', (array) $term_ids ),
-                            'operator' => 'IN',
+                            'operator' => $operator,
                         );
                     }
                 }
@@ -75,6 +88,30 @@ if ( ! class_exists( 'Helper' ) ) {
             }
 
             return $tax_query;
+        }
+
+        /**
+         * Compiles author query parameters into WP_Query author parameters.
+         *
+         * @since 1.2.0
+         *
+         * @param array  $authors            Author IDs array.
+         * @param string $author_filter_type Include or exclude switcher.
+         * @return array Compiled author query parameters.
+         */
+        public static function build_author_query( array $authors = [], string $author_filter_type = 'include' ) {
+            $author_query = array();
+            if ( empty( $authors ) ) {
+                return $author_query;
+            }
+
+            if ( 'exclude' === $author_filter_type ) {
+                $author_query['author__not_in'] = array_map( 'intval', $authors );
+            } else {
+                $author_query['author__in'] = array_map( 'intval', $authors );
+            }
+
+            return $author_query;
         }
 
         /**

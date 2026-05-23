@@ -21,7 +21,7 @@ $enable_lazy_load = ! empty( $attributes['enableLazyLoad'] );
 
 // Carousel settings
 $carousel_per_column     = isset( $attributes['carouselPerColumn'] ) ? $attributes['carouselPerColumn'] : array( 'Desktop' => 3, 'Tablet' => 2, 'Mobile' => 1 );
-$carousel_per_column_gap = isset( $attributes['carouselPerColumnGap'] ) ? $attributes['carouselPerColumnGap'] : array( 'Desktop' => 20, 'Tablet' => 15, 'Mobile' => 10 );
+$carousel_per_column_gap = isset( $attributes['carouselPerColumnGap'] ) ? $attributes['carouselPerColumnGap'] : array( 'Desktop' => 10, 'Tablet' => 10, 'Mobile' => 10 );
 $speed                   = isset( $attributes['speed'] ) ? $attributes['speed'] : array( 'Desktop' => 800, 'Tablet' => 800, 'Mobile' => 800 );
 $autoplay                = ! empty( $attributes['autoplay'] );
 $autoplay_delay          = isset( $attributes['autoplayDelay'] ) ? $attributes['autoplayDelay'] : array( 'Desktop' => 1000, 'Tablet' => 1000, 'Mobile' => 1000 );
@@ -60,23 +60,41 @@ foreach ( $default_content_order as $key ) {
 }
 
 // Parse query attributes with defaults (Block-specific)
-$post_type            = isset( $attributes['postType'] ) ? sanitize_text_field( $attributes['postType'] ) : 'post';
-$posts_per_page       = isset( $attributes['postsPerPage'] ) ? intval( $attributes['postsPerPage'] ) : 6;
-$categories           = isset( $attributes['categories'] ) ? array_map( 'intval', $attributes['categories'] ) : array();
-$tags                 = isset( $attributes['tags'] ) ? array_map( 'intval', $attributes['tags'] ) : array();
-$authors              = isset( $attributes['authors'] ) ? array_map( 'intval', $attributes['authors'] ) : array();
-$exclude_posts        = isset( $attributes['excludePosts'] ) ? sanitize_text_field( $attributes['excludePosts'] ) : '';
-$offset               = isset( $attributes['offset'] ) ? intval( $attributes['offset'] ) : 0;
-$orderby              = isset( $attributes['orderBy'] ) ? sanitize_text_field( $attributes['orderBy'] ) : 'date';
-$order                = isset( $attributes['order'] ) ? sanitize_text_field( $attributes['order'] ) : 'desc';
-$search_query         = isset( $attributes['searchQuery'] ) ? sanitize_text_field( $attributes['searchQuery'] ) : '';
-$sticky_posts         = isset( $attributes['stickyPosts'] ) ? sanitize_text_field( $attributes['stickyPosts'] ) : 'include';
-$taxonomy_query       = isset( $attributes['taxonomyQuery'] ) ? $attributes['taxonomyQuery'] : array();
-$meta_key             = isset( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
-$meta_value           = isset( $attributes['metaValue'] ) ? sanitize_text_field( $attributes['metaValue'] ) : '';
-$meta_compare         = isset( $attributes['metaCompare'] ) ? sanitize_text_field( $attributes['metaCompare'] ) : '=';
-$date_range           = isset( $attributes['dateRange'] ) ? sanitize_text_field( $attributes['dateRange'] ) : 'any';
-$exclude_current_post = ! empty( $attributes['excludeCurrentPost'] );
+$post_type             = isset( $attributes['postType'] ) ? sanitize_text_field( $attributes['postType'] ) : 'post';
+$posts_per_page        = 6;
+if ( isset( $attributes['postsPerPage'] ) ) {
+    if ( is_array( $attributes['postsPerPage'] ) ) {
+        $posts_per_page = isset( $attributes['postsPerPage']['Desktop'] ) ? intval( $attributes['postsPerPage']['Desktop'] ) : 6;
+    } else {
+        $posts_per_page = intval( $attributes['postsPerPage'] );
+    }
+}
+$categories            = isset( $attributes['categories'] ) ? array_map( 'intval', $attributes['categories'] ) : array();
+$category_filter_type  = isset( $attributes['categoryFilterType'] ) ? sanitize_text_field( $attributes['categoryFilterType'] ) : 'include';
+$tags                  = isset( $attributes['tags'] ) ? array_map( 'intval', $attributes['tags'] ) : array();
+$tag_filter_type       = isset( $attributes['tagFilterType'] ) ? sanitize_text_field( $attributes['tagFilterType'] ) : 'include';
+$authors               = isset( $attributes['authors'] ) ? array_map( 'intval', $attributes['authors'] ) : array();
+$author_filter_type    = isset( $attributes['authorFilterType'] ) ? sanitize_text_field( $attributes['authorFilterType'] ) : 'include';
+$exclude_posts         = isset( $attributes['excludePosts'] ) ? sanitize_text_field( $attributes['excludePosts'] ) : '';
+$offset                = 0;
+if ( isset( $attributes['offset'] ) ) {
+    if ( is_array( $attributes['offset'] ) ) {
+        $offset = isset( $attributes['offset']['Desktop'] ) ? intval( $attributes['offset']['Desktop'] ) : 0;
+    } else {
+        $offset = intval( $attributes['offset'] );
+    }
+}
+$orderby               = isset( $attributes['orderBy'] ) ? sanitize_text_field( $attributes['orderBy'] ) : 'date';
+$order                 = isset( $attributes['order'] ) ? sanitize_text_field( $attributes['order'] ) : 'desc';
+$search_query          = isset( $attributes['searchQuery'] ) ? sanitize_text_field( $attributes['searchQuery'] ) : '';
+$sticky_posts          = isset( $attributes['stickyPosts'] ) ? sanitize_text_field( $attributes['stickyPosts'] ) : 'include';
+$taxonomy_query        = isset( $attributes['taxonomyQuery'] ) ? $attributes['taxonomyQuery'] : array();
+$taxonomy_filter_types = isset( $attributes['taxonomyFilterTypes'] ) ? $attributes['taxonomyFilterTypes'] : array();
+$meta_key              = isset( $attributes['metaKey'] ) ? sanitize_text_field( $attributes['metaKey'] ) : '';
+$meta_value            = isset( $attributes['metaValue'] ) ? sanitize_text_field( $attributes['metaValue'] ) : '';
+$meta_compare          = isset( $attributes['metaCompare'] ) ? sanitize_text_field( $attributes['metaCompare'] ) : '=';
+$date_range            = isset( $attributes['dateRange'] ) ? sanitize_text_field( $attributes['dateRange'] ) : 'any';
+$exclude_current_post  = ! empty( $attributes['excludeCurrentPost'] );
 
 // Construct query arguments for WP_Query
 $query_args = array(
@@ -88,13 +106,14 @@ $query_args = array(
 );
 
 // Call Helper methods to compile dynamic options
-$tax_query = \GSlider\Utils\Helper::build_tax_query( $categories, $tags, $taxonomy_query );
+$tax_query = \GSlider\Utils\Helper::build_tax_query( $categories, $category_filter_type, $tags, $tag_filter_type, $taxonomy_query, $taxonomy_filter_types );
 if ( ! empty( $tax_query ) ) {
     $query_args['tax_query'] = $tax_query;
 }
 
-if ( ! empty( $authors ) ) {
-    $query_args['author__in'] = $authors;
+$author_query = \GSlider\Utils\Helper::build_author_query( $authors, $author_filter_type );
+if ( ! empty( $author_query ) ) {
+    $query_args = array_merge( $query_args, $author_query );
 }
 
 if ( $offset > 0 ) {
