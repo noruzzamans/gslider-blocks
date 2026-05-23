@@ -11,6 +11,7 @@ import Inspector from './inspector';
 import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generatePostCarouselStyle from './styling';
 import { normalizeContentOrder } from './content-order';
+import usePostQuery from '@Utils/hooks/usePostQuery';
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
@@ -79,21 +80,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	}, [attributes, blockId]);
 	/** End Generate Block Style */
 
-	// Fetch posts using WordPress data store
-	const { posts, isLoading } = useSelect((select) => {
-		const { getEntityRecords, isResolving } = select('core');
-		const query = {
-			per_page: 6,
-			_embed: true,
-			status: 'publish',
-			orderby: 'date',
-			order: 'desc',
-		};
-		return {
-			posts: getEntityRecords('postType', 'post', query),
-			isLoading: isResolving('getEntityRecords', ['postType', 'post', query]),
-		};
-	}, []);
+	// Fetch posts using global usePostQuery hook
+	const { posts, isLoading } = usePostQuery({
+		per_page: 6,
+		status: 'publish',
+		orderby: 'date',
+		order: 'desc',
+	});
 
 	// Block props for container
 	const blockProps = useBlockProps({
