@@ -13,15 +13,6 @@
 		flex-direction: column;
 		height: 100%;
 		overflow: hidden;
-		border-radius: 8px;
-		background: #fff;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-		transition: box-shadow 0.3s ease, transform 0.3s ease;
-
-		&:hover {
-			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-			transform: translateY(-2px);
-		}
 
 		// Apply padding to all child elements except the image wrapper
 		> :not(.gslider-post-carousel-image) {
@@ -48,17 +39,13 @@
 	.gslider-post-carousel-image {
 		position: relative;
 		overflow: hidden;
+		height: 200px;
 
 		img {
 			display: block;
 			width: 100%;
-			height: auto;
+			height: 100%;
 			object-fit: cover;
-			transition: transform 0.3s ease;
-		}
-
-		&:hover img {
-			transform: scale(1.03);
 		}
 	}
 

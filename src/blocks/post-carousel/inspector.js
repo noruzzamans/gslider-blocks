@@ -412,6 +412,72 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         globalCustomCSS,
         /** End Global Custom CSS */
 
+        /** Start Image Settings */
+        imageMaxWidth,
+        imageMaxWidthUnits,
+        imageHeight,
+        imageHeightUnits,
+        imageObjectFit,
+        imageObjectPosition,
+        imagePaddingUnits,
+        imagePaddingDesktop,
+        imagePaddingDesktopCssStyle,
+        imagePaddingTablet,
+        imagePaddingTabletCssStyle,
+        imagePaddingMobile,
+        imagePaddingMobileCssStyle,
+        imagePaddingLink,
+        imageMarginUnits,
+        imageMarginDesktop,
+        imageMarginDesktopCssStyle,
+        imageMarginTablet,
+        imageMarginTabletCssStyle,
+        imageMarginMobile,
+        imageMarginMobileCssStyle,
+        imageMarginLink,
+        imageNormalBackgroundType,
+        imageNormalClassicColor,
+        imageNormalGradientColor,
+        imageNormalCustomGradientSwitcher,
+        imageNormalCustomGradientInputValue,
+        imageHoverBackgroundType,
+        imageHoverClassicColor,
+        imageHoverGradientColor,
+        imageHoverCustomGradientSwitcher,
+        imageHoverCustomGradientInputValue,
+        imageBorder,
+        imageBorderColorSwitcher,
+        imageBorderColor,
+        imageBorderHoverColor,
+        imageBorderUnits,
+        imageBorderDesktop,
+        imageBorderDesktopCssStyle,
+        imageBorderTablet,
+        imageBorderTabletCssStyle,
+        imageBorderMobile,
+        imageBorderMobileCssStyle,
+        imageBorderLink,
+        imageBorderRadiusUnits,
+        imageBorderRadiusDesktop,
+        imageBorderRadiusDesktopCssStyle,
+        imageBorderRadiusTablet,
+        imageBorderRadiusTabletCssStyle,
+        imageBorderRadiusMobile,
+        imageBorderRadiusMobileCssStyle,
+        imageBorderRadiusLink,
+        imageBoxShadowValuesSwitcher,
+        imageBoxShadowValues,
+        imageBoxShadowCssValue,
+        imageBoxShadowHoverValues,
+        imageBoxShadowHoverCssValue,
+        imageHoverEffect,
+        imageHoverOpacity,
+        imageHoverScale,
+        imageHoverLift,
+        imageHoverLiftUnits,
+        imageTransitionDuration,
+        /** End Image Settings */
+
     } = attributes;
 
     /** Get Current Device Type and set device Type */
@@ -1048,6 +1114,307 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
      */
     const styleControls = (
         <>
+            <PanelBody
+                title={__("Image", "gslider-blocks")}
+                opened={openPanels.styles === "image"}
+                onToggle={() => togglePanel("styles", "image")}
+            >
+                <ResponsiveRangeControl
+                    label={__("Max Width", "gslider-blocks")}
+                    rangeValue={imageMaxWidth}
+                    onChangeValue={(value) => setAttributes({ imageMaxWidth: value })}
+                    onUnitChange={(value) => setAttributes({ imageMaxWidthUnits: value })}
+                    deviceType={deviceType}
+                    units={imageMaxWidthUnits}
+                    resetFallbackValue={""}
+                    unitBounds={{
+                        px: { min: 0, max: 1000, step: 1 },
+                    }}
+                />
+
+                <ResponsiveRangeControl
+                    label={__("Height", "gslider-blocks")}
+                    rangeValue={imageHeight}
+                    onChangeValue={(value) => setAttributes({ imageHeight: value })}
+                    onUnitChange={(value) => setAttributes({ imageHeightUnits: value })}
+                    deviceType={deviceType}
+                    units={imageHeightUnits}
+                    resetFallbackValue={""}
+                    unitBounds={{
+                        px: { min: 0, max: 1000, step: 1 },
+                    }}
+                />
+
+                <SelectControls
+                    label={__("Object Fit", "gslider-blocks")}
+                    options={[
+                        { label: __('Cover', 'gslider-blocks'), value: 'cover' },
+                        { label: __('Contain', 'gslider-blocks'), value: 'contain' },
+                        { label: __('Fill', 'gslider-blocks'), value: 'fill' },
+                        { label: __('None', 'gslider-blocks'), value: 'none' },
+                    ]}
+                    value={imageObjectFit}
+                    onChange={(value) => setAttributes({ imageObjectFit: value })}
+                />
+
+                <SelectControls
+                    label={__("Object Position", "gslider-blocks")}
+                    options={[
+                        { label: __('Center', 'gslider-blocks'), value: 'center' },
+                        { label: __('Top', 'gslider-blocks'), value: 'top' },
+                        { label: __('Bottom', 'gslider-blocks'), value: 'bottom' },
+                        { label: __('Left', 'gslider-blocks'), value: 'left' },
+                        { label: __('Right', 'gslider-blocks'), value: 'right' },
+                        { label: __('Left Top', 'gslider-blocks'), value: 'left top' },
+                        { label: __('Right Top', 'gslider-blocks'), value: 'right top' },
+                        { label: __('Left Bottom', 'gslider-blocks'), value: 'left bottom' },
+                        { label: __('Right Bottom', 'gslider-blocks'), value: 'right bottom' },
+                    ]}
+                    value={imageObjectPosition}
+                    onChange={(value) => setAttributes({ imageObjectPosition: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Padding", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={imagePaddingUnits}
+                    onChangeUnits={(value) => setAttributes({ imagePaddingUnits: value })}
+                    desktopSpacing={imagePaddingDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ imagePaddingDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ imagePaddingDesktopCssStyle: value })}
+                    tabletSpacing={imagePaddingTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ imagePaddingTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ imagePaddingTabletCssStyle: value })}
+                    mobileSpacing={imagePaddingMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ imagePaddingMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ imagePaddingMobileCssStyle: value })}
+                    isLinked={imagePaddingLink}
+                    onChangeLink={(value) => setAttributes({ imagePaddingLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Margin", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={imageMarginUnits}
+                    onChangeUnits={(value) => setAttributes({ imageMarginUnits: value })}
+                    desktopSpacing={imageMarginDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ imageMarginDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ imageMarginDesktopCssStyle: value })}
+                    tabletSpacing={imageMarginTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ imageMarginTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ imageMarginTabletCssStyle: value })}
+                    mobileSpacing={imageMarginMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ imageMarginMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ imageMarginMobileCssStyle: value })}
+                    isLinked={imageMarginLink}
+                    onChangeLink={(value) => setAttributes({ imageMarginLink: value })}
+                />
+
+                <BackgroundControl
+                    label={__("Background Color", "gslider-blocks")}
+                    deviceType={deviceType}
+
+                    normalBackgroundType={imageNormalBackgroundType}
+                    setNormalBackgroundType={(value) => setAttributes({ imageNormalBackgroundType: value })}
+                    normalClassicColor={imageNormalClassicColor}
+                    setNormalClassicColor={(value) => setAttributes({ imageNormalClassicColor: value })}
+                    normalGradientColor={imageNormalGradientColor}
+                    setNormalGradientColor={(value) => setAttributes({ imageNormalGradientColor: value })}
+                    normalCustomGradientSwitcher={imageNormalCustomGradientSwitcher}
+                    setNormalCustomGradientSwitcher={(value) => setAttributes({ imageNormalCustomGradientSwitcher: value })}
+                    normalCustomGradientInputValue={imageNormalCustomGradientInputValue}
+                    setNormalCustomGradientInputValue={(value) => setAttributes({ imageNormalCustomGradientInputValue: value })}
+
+                    hoverBackgroundType={imageHoverBackgroundType}
+                    setHoverBackgroundType={(value) => setAttributes({ imageHoverBackgroundType: value })}
+                    hoverClassicColor={imageHoverClassicColor}
+                    setHoverClassicColor={(value) => setAttributes({ imageHoverClassicColor: value })}
+                    hoverGradientColor={imageHoverGradientColor}
+                    setHoverGradientColor={(value) => setAttributes({ imageHoverGradientColor: value })}
+                    hoverCustomGradientSwitcher={imageHoverCustomGradientSwitcher}
+                    setHoverCustomGradientSwitcher={(value) => setAttributes({ imageHoverCustomGradientSwitcher: value })}
+                    hoverCustomGradientInputValue={imageHoverCustomGradientInputValue}
+                    setHoverCustomGradientInputValue={(value) => setAttributes({ imageHoverCustomGradientInputValue: value })}
+                    setAttributes={setAttributes}
+                    isBackgroundImage={false}
+                />
+
+                <SelectControls
+                    label={__("Border Style", "gslider-blocks")}
+                    options={BORDER_STYLES}
+                    value={imageBorder}
+                    onChange={(value) => setAttributes({ imageBorder: value })}
+                />
+
+                <SwitcherControl
+                    label={__("Border Color", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={imageBorderColorSwitcher}
+                    onChange={(value) => setAttributes({ imageBorderColorSwitcher: value })}
+                />
+
+                {imageBorderColorSwitcher === 'normal' && (
+                    <ColorControl
+                        label={__("Normal Color", "gslider-blocks")}
+                        color={imageBorderColor}
+                        onChangeColor={(value) => setAttributes({ imageBorderColor: value })}
+                    />
+                )}
+
+                {imageBorderColorSwitcher === 'hover' && (
+                    <ColorControl
+                        label={__("Hover Color", "gslider-blocks")}
+                        color={imageBorderHoverColor}
+                        onChangeColor={(value) => setAttributes({ imageBorderHoverColor: value })}
+                    />
+                )}
+
+                <ResponsiveSpacingControl
+                    label={__("Border Width", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={imageBorderUnits}
+                    onChangeUnits={(value) => setAttributes({ imageBorderUnits: value })}
+                    desktopSpacing={imageBorderDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ imageBorderDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ imageBorderDesktopCssStyle: value })}
+                    tabletSpacing={imageBorderTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ imageBorderTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ imageBorderTabletCssStyle: value })}
+                    mobileSpacing={imageBorderMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ imageBorderMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ imageBorderMobileCssStyle: value })}
+                    isLinked={imageBorderLink}
+                    onChangeLink={(value) => setAttributes({ imageBorderLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Border Radius", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={imageBorderRadiusUnits}
+                    onChangeUnits={(value) => setAttributes({ imageBorderRadiusUnits: value })}
+                    desktopSpacing={imageBorderRadiusDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ imageBorderRadiusDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ imageBorderRadiusDesktopCssStyle: value })}
+                    tabletSpacing={imageBorderRadiusTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ imageBorderRadiusTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ imageBorderRadiusTabletCssStyle: value })}
+                    mobileSpacing={imageBorderRadiusMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ imageBorderRadiusMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ imageBorderRadiusMobileCssStyle: value })}
+                    isLinked={imageBorderRadiusLink}
+                    onChangeLink={(value) => setAttributes({ imageBorderRadiusLink: value })}
+                />
+
+                <SwitcherControl
+                    label={__("Box Shadow", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={imageBoxShadowValuesSwitcher}
+                    onChange={(value) => setAttributes({ imageBoxShadowValuesSwitcher: value })}
+                />
+
+                {imageBoxShadowValuesSwitcher === 'normal' && (
+                    <BoxShadowSettingsControl
+                        label={__("Normal Shadow", "gslider-blocks")}
+                        onBoxShadowChange={(value) => setAttributes({ imageBoxShadowValues: value })}
+                        initialShadowValue={imageBoxShadowValues}
+                        onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowCssValue: value })}
+                    />
+                )}
+
+                {imageBoxShadowValuesSwitcher === 'hover' && (
+                    <BoxShadowSettingsControl
+                        label={__("Hover Shadow", "gslider-blocks")}
+                        onBoxShadowChange={(value) => setAttributes({ imageBoxShadowHoverValues: value })}
+                        initialShadowValue={imageBoxShadowHoverValues}
+                        onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowHoverCssValue: value })}
+                    />
+                )}
+
+                <SelectControls
+                    label={__('Hover Effect', 'gslider-blocks')}
+                    options={[
+                        { label: __('None', 'gslider-blocks'), value: 'none' },
+                        { label: __('Opacity', 'gslider-blocks'), value: 'opacity' },
+                        { label: __('Scale', 'gslider-blocks'), value: 'scale' },
+                        { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
+                        { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
+                        { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
+                    ]}
+                    value={imageHoverEffect}
+                    onChange={(value) => setAttributes({ imageHoverEffect: value })}
+                />
+
+                {(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') && (
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        label={__("Hover Opacity", "gslider-blocks")}
+                        rangeValue={imageHoverOpacity}
+                        onChangeValue={(value) => setAttributes({ imageHoverOpacity: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"0.8"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {(imageHoverEffect === 'scale' || imageHoverEffect === 'both') && (
+                    <ResponsiveRangeControl
+                        min={0.8}
+                        max={1.5}
+                        step={0.05}
+                        label={__("Hover Scale", "gslider-blocks")}
+                        rangeValue={imageHoverScale}
+                        onChangeValue={(value) => setAttributes({ imageHoverScale: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"1.05"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {(imageHoverEffect === 'move-up') && (
+                    <ResponsiveRangeControl
+                        label={__("Lift Amount", "gslider-blocks")}
+                        rangeValue={imageHoverLift}
+                        onChangeValue={(value) => setAttributes({ imageHoverLift: value })}
+                        onUnitChange={(value) => setAttributes({ imageHoverLiftUnits: value })}
+                        deviceType={deviceType}
+                        units={imageHoverLiftUnits}
+                        resetFallbackValue={{
+                            px: "10",
+                            "%": "5",
+                            em: "1",
+                            rem: "1",
+                            vw: "1",
+                            vh: "1"
+                        }}
+                        isRangeUnit={true}
+                        unitBounds={{
+                            px: { min: 0, max: 200, step: 1 },
+                            em: { min: 0, max: 10, step: 0.1 },
+                            rem: { min: 0, max: 10, step: 0.1 },
+                            '%': { min: 0, max: 100, step: 1 },
+                        }}
+                    />
+                )}
+
+                <ResponsiveRangeControl
+                    min={100}
+                    max={1000}
+                    step={50}
+                    label={__("Transition Duration (ms)", "gslider-blocks")}
+                    rangeValue={imageTransitionDuration}
+                    onChangeValue={(value) => setAttributes({ imageTransitionDuration: value })}
+                    deviceType={deviceType}
+                    resetFallbackValue={"300"}
+                    isRangeUnit={false}
+                />
+            </PanelBody>
+
             {showNavigation?.[deviceType] && (
                 <PanelBody
                     title={__("Navigation", "gslider-blocks")}

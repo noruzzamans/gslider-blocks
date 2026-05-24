@@ -357,6 +357,72 @@ const generatePostCarouselStyle = (attributes) => {
         globalCustomCSS,
         /** End Global Custom CSS */
 
+        /** Start Image Settings */
+        imageMaxWidth,
+        imageMaxWidthUnits,
+        imageHeight,
+        imageHeightUnits,
+        imageObjectFit,
+        imageObjectPosition,
+        imagePaddingUnits,
+        imagePaddingDesktop,
+        imagePaddingDesktopCssStyle,
+        imagePaddingTablet,
+        imagePaddingTabletCssStyle,
+        imagePaddingMobile,
+        imagePaddingMobileCssStyle,
+        imagePaddingLink,
+        imageMarginUnits,
+        imageMarginDesktop,
+        imageMarginDesktopCssStyle,
+        imageMarginTablet,
+        imageMarginTabletCssStyle,
+        imageMarginMobile,
+        imageMarginMobileCssStyle,
+        imageMarginLink,
+        imageNormalBackgroundType,
+        imageNormalClassicColor,
+        imageNormalGradientColor,
+        imageNormalCustomGradientSwitcher,
+        imageNormalCustomGradientInputValue,
+        imageHoverBackgroundType,
+        imageHoverClassicColor,
+        imageHoverGradientColor,
+        imageHoverCustomGradientSwitcher,
+        imageHoverCustomGradientInputValue,
+        imageBorder,
+        imageBorderColorSwitcher,
+        imageBorderColor,
+        imageBorderHoverColor,
+        imageBorderUnits,
+        imageBorderDesktop,
+        imageBorderDesktopCssStyle,
+        imageBorderTablet,
+        imageBorderTabletCssStyle,
+        imageBorderMobile,
+        imageBorderMobileCssStyle,
+        imageBorderLink,
+        imageBorderRadiusUnits,
+        imageBorderRadiusDesktop,
+        imageBorderRadiusDesktopCssStyle,
+        imageBorderRadiusTablet,
+        imageBorderRadiusTabletCssStyle,
+        imageBorderRadiusMobile,
+        imageBorderRadiusMobileCssStyle,
+        imageBorderRadiusLink,
+        imageBoxShadowValuesSwitcher,
+        imageBoxShadowValues,
+        imageBoxShadowCssValue,
+        imageBoxShadowHoverValues,
+        imageBoxShadowHoverCssValue,
+        imageHoverEffect,
+        imageHoverOpacity,
+        imageHoverScale,
+        imageHoverLift,
+        imageHoverLiftUnits,
+        imageTransitionDuration,
+        /** End Image Settings */
+
     } = attributes;
 
     /**
@@ -467,6 +533,57 @@ const generatePostCarouselStyle = (attributes) => {
     const globalDesktopBackgroundHoverStyles = globalBackgroundStyleObjectToString(getGlobalBackgroundHoverStyles('Desktop'));
     const globalTabletBackgroundHoverStyles = globalBackgroundStyleObjectToString(getGlobalBackgroundHoverStyles('Tablet'));
     const globalMobileBackgroundHoverStyles = globalBackgroundStyleObjectToString(getGlobalBackgroundHoverStyles('Mobile'));
+
+    /**
+     * Get image background normal styles
+     */
+    const getImageBackgroundNormalStyles = () => {
+        const bgType = imageNormalBackgroundType;
+        const bgColor = imageNormalClassicColor;
+        const bgGradient = imageNormalGradientColor;
+        const customGradient = imageNormalCustomGradientInputValue;
+        const customGradientEnabled = imageNormalCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    /**
+     * Get image background hover styles
+     */
+    const getImageBackgroundHoverStyles = () => {
+        const bgType = imageHoverBackgroundType;
+        const bgColor = imageHoverClassicColor;
+        const bgGradient = imageHoverGradientColor;
+        const customGradient = imageHoverCustomGradientInputValue;
+        const customGradientEnabled = imageHoverCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    const imageBackgroundNormalStyles = globalBackgroundStyleObjectToString(getImageBackgroundNormalStyles());
+    const imageBackgroundHoverStyles = globalBackgroundStyleObjectToString(getImageBackgroundHoverStyles());
 
     /** Start All Block Style */
     const postCarouselCSS = `
@@ -708,6 +825,48 @@ const generatePostCarouselStyle = (attributes) => {
             margin-bottom: 30px;
         }
 
+        .${blockId} .gslider-post-carousel-image {
+            ${imageBackgroundNormalStyles ? `${imageBackgroundNormalStyles}` : ''}
+            ${imageHeight.Desktop ? `height: ${imageHeight.Desktop}${imageHeightUnits.Desktop} !important;` : ''}
+            ${imageMarginDesktopCssStyle ? `margin: ${imageMarginDesktopCssStyle};` : ''} 
+            ${imagePaddingDesktopCssStyle ? `padding: ${imagePaddingDesktopCssStyle};` : ''}
+            ${imageBorder ? `border: ${imageBorder};` : ''}
+            ${imageBorderDesktopCssStyle ? `border-width: ${imageBorderDesktopCssStyle};` : ''}  
+            ${imageBorderRadiusDesktopCssStyle ? `border-radius: ${imageBorderRadiusDesktopCssStyle} !important;` : ''}
+            ${imageBorderColor ? `border-color: ${imageBorderColor};` : ''}
+            ${imageBoxShadowCssValue ? `box-shadow: ${imageBoxShadowCssValue} !important;` : ''}
+            display: block;
+            overflow: hidden;
+            transition: all ${(imageTransitionDuration?.Desktop || 300)}ms ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-image:hover {
+            ${imageBackgroundHoverStyles ? `${imageBackgroundHoverStyles}` : ''}
+            ${imageBorderHoverColor ? `border-color: ${imageBorderHoverColor};` : ''}
+            ${imageBoxShadowHoverCssValue ? `box-shadow: ${imageBoxShadowHoverCssValue} !important;` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-image img {
+            ${imageMaxWidth.Desktop ? `max-width: ${imageMaxWidth.Desktop}${imageMaxWidthUnits.Desktop} !important;` : ''}
+            height: 100% !important;
+            ${imageObjectFit ? `object-fit: ${imageObjectFit} !important;` : ''}
+            ${imageObjectPosition ? `object-position: ${imageObjectPosition} !important;` : ''}
+            display: block;
+            width: 100%;
+            transition: all ${(imageTransitionDuration?.Desktop || 300)}ms ease-in-out;
+            --hover-opacity: ${imageHoverOpacity?.Desktop || 0.8};
+            --hover-scale: ${imageHoverScale?.Desktop || 1.05};
+            --hover-lift: ${imageHoverLift?.Desktop || 10}${imageHoverLiftUnits?.Desktop || 'px'};
+            ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(1);' : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-image:hover img {
+            ${(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') ? 'opacity: var(--hover-opacity);' : ''}
+            ${(imageHoverEffect === 'scale' || imageHoverEffect === 'both') ? 'transform: scale(var(--hover-scale));' : ''}
+            ${imageHoverEffect === 'move-up' ? 'transform: translateY(calc(-1 * var(--hover-lift)));' : ''}
+            ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(0);' : ''}
+        }
+
 
         @media only screen and (max-width: 1024px) {
 
@@ -844,6 +1003,22 @@ const generatePostCarouselStyle = (attributes) => {
             .${blockId} .swiper-pagination-progressbar {
                 ${paginationProgressbarHeight.Tablet ? `height: ${paginationProgressbarHeight.Tablet}${paginationProgressbarHeightUnits.Tablet};` : ''}
             }
+
+            .${blockId} .gslider-post-carousel-image {
+                ${imageHeight.Tablet ? `height: ${imageHeight.Tablet}${imageHeightUnits.Tablet} !important;` : ''}
+                ${imageMarginTabletCssStyle ? `margin: ${imageMarginTabletCssStyle};` : ''} 
+                ${imagePaddingTabletCssStyle ? `padding: ${imagePaddingTabletCssStyle};` : ''}
+                ${imageBorderTabletCssStyle ? `border-width: ${imageBorderTabletCssStyle};` : ''}  
+                ${imageBorderRadiusTabletCssStyle ? `border-radius: ${imageBorderRadiusTabletCssStyle} !important;` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-image img {
+                ${imageMaxWidth.Tablet ? `max-width: ${imageMaxWidth.Tablet}${imageMaxWidthUnits.Tablet} !important;` : ''}
+                height: 100% !important;
+                --hover-opacity: ${imageHoverOpacity?.Tablet || 0.8};
+                --hover-scale: ${imageHoverScale?.Tablet || 1.05};
+                --hover-lift: ${imageHoverLift?.Tablet || 10}${imageHoverLiftUnits?.Tablet || 'px'};
+            }
         }
         
         @media only screen and (max-width: 767px) {
@@ -979,6 +1154,22 @@ const generatePostCarouselStyle = (attributes) => {
 
             .${blockId} .swiper-pagination-progressbar {
                 ${paginationProgressbarHeight.Mobile ? `height: ${paginationProgressbarHeight.Mobile}${paginationProgressbarHeightUnits.Mobile};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-image {
+                ${imageHeight.Mobile ? `height: ${imageHeight.Mobile}${imageHeightUnits.Mobile} !important;` : ''}
+                ${imageMarginMobileCssStyle ? `margin: ${imageMarginMobileCssStyle};` : ''} 
+                ${imagePaddingMobileCssStyle ? `padding: ${imagePaddingMobileCssStyle};` : ''}
+                ${imageBorderMobileCssStyle ? `border-width: ${imageBorderMobileCssStyle};` : ''}  
+                ${imageBorderRadiusMobileCssStyle ? `border-radius: ${imageBorderRadiusMobileCssStyle} !important;` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-image img {
+                ${imageMaxWidth.Mobile ? `max-width: ${imageMaxWidth.Mobile}${imageMaxWidthUnits.Mobile} !important;` : ''}
+                height: 100% !important;
+                --hover-opacity: ${imageHoverOpacity?.Mobile || 0.8};
+                --hover-scale: ${imageHoverScale?.Mobile || 1.05};
+                --hover-lift: ${imageHoverLift?.Mobile || 10}${imageHoverLiftUnits?.Mobile || 'px'};
             }
         }
     `;

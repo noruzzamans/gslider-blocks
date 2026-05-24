@@ -1531,6 +1531,394 @@ const attributes = {
     },
     /** End Global Custom CSS */
 
+    /** Start Image Settings */
+    imageMaxWidth: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    imageMaxWidthUnits: {
+        type: "object",
+        default: {
+            Desktop: "%",
+            Tablet: "%",
+            Mobile: "%",
+        },
+    },
+    imageHeight: {
+        type: "object",
+        default: {
+            Desktop: "200",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    imageHeightUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    imageObjectFit: {
+        type: "string",
+        default: "cover",
+    },
+    imageObjectPosition: {
+        type: "string",
+        default: "center",
+    },
+
+    /** Start image Padding */
+    imagePaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    imagePaddingDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imagePaddingDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imagePaddingTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imagePaddingTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imagePaddingMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imagePaddingMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imagePaddingLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End image Padding */
+
+    /** Start image Margin */
+    imageMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    imageMarginDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageMarginDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageMarginTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageMarginTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageMarginMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageMarginMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageMarginLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End image Margin */
+
+    /** Start image Background */
+    imageNormalBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    imageNormalClassicColor: {
+        type: "string",
+        default: "",
+    },
+    imageNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    imageNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    imageNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+
+    imageHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    imageHoverClassicColor: {
+        type: "string",
+        default: "",
+    },
+    imageHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    imageHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    imageHoverCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End image Background */
+
+    /** Start image Border */
+    imageBorder: {
+        type: "string",
+        default: "none",
+    },
+    imageBorderColorSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    imageBorderColor: {
+        type: "string",
+        default: "",
+    },
+    imageBorderHoverColor: {
+        type: "string",
+        default: "",
+    },
+    imageBorderUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    imageBorderDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End image Border */
+
+    /** Start image Border Radius */
+    imageBorderRadiusUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    imageBorderRadiusDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderRadiusDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderRadiusTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderRadiusTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderRadiusMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    imageBorderRadiusMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    imageBorderRadiusLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End image Border Radius */
+
+    /** Start image Box Shadow */
+    imageBoxShadowValuesSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    imageBoxShadowValues: {
+        type: "array",
+        default: [],
+    },
+    imageBoxShadowCssValue: {
+        type: "string",
+        default: "",
+    },
+    imageBoxShadowHoverValues: {
+        type: "array",
+        default: [],
+    },
+    imageBoxShadowHoverCssValue: {
+        type: "string",
+        default: "",
+    },
+    /** End image Box Shadow */
+
+    /** Start Image Hover Settings */
+    imageHoverEffect: {
+        type: "string",
+        default: "none",
+    },
+    imageHoverOpacity: {
+        type: "object",
+        default: {
+            Desktop: 0.8,
+            Tablet: 0.8,
+            Mobile: 0.8,
+        },
+    },
+    imageHoverScale: {
+        type: "object",
+        default: {
+            Desktop: 1.05,
+            Tablet: 1.05,
+            Mobile: 1.05,
+        },
+    },
+    imageHoverLift: {
+        type: "object",
+        default: {
+            Desktop: 10,
+            Tablet: 10,
+            Mobile: 10,
+        },
+    },
+    imageHoverLiftUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    imageTransitionDuration: {
+        type: "object",
+        default: {
+            Desktop: 300,
+            Tablet: 300,
+            Mobile: 300,
+        },
+    },
+    /** End Image Hover Settings */
+
     contentOrder: {
         type: "array",
         default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
