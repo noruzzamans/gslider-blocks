@@ -1909,7 +1909,7 @@ const attributes = {
             Mobile: "px",
         },
     },
-    imageTransitionDuration: {
+        imageTransitionDuration: {
         type: "object",
         default: {
             Desktop: 300,
@@ -1918,6 +1918,455 @@ const attributes = {
         },
     },
     /** End Image Hover Settings */
+
+    /** Start Post Title Alignment & Heading Tag */
+    postTitleAlign: {
+        type: "object",
+        default: {
+            Desktop: "left",
+            Tablet: "left",
+            Mobile: "left",
+        },
+    },
+    postTitleHtmlTag: {
+        type: "string",
+        default: "h3",
+    },
+
+    /** Start Post Title Typography */
+    postTitleFontFamily: {
+        type: "string",
+        default: "",
+    },
+    postTitleFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '18',
+            Tablet: '18',
+            Mobile: '18'
+        }
+    },
+    postTitleFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postTitleFontWeight: {
+        type: "string",
+        default: "600",
+    },
+    postTitleFontStyle: {
+        type: "string",
+        default: "",
+    },
+    postTitleTextTransform: {
+        type: "string",
+        default: "",
+    },
+    postTitleTextDecoration: {
+        type: "string",
+        default: "",
+    },
+    postTitleLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postTitleLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postTitleLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postTitleLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postTitleWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },  
+    postTitleWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Post Title Typography */
+
+    /** Start Post Title Color */
+    postTitleColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    postTitleColor: {
+        type: "string",
+        default: "",
+    },
+    postTitleColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Title Color */
+
+    /** Start Post Title Margin */
+    postTitleMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postTitleDesktopMargin: {
+        type: "object", 
+        default: {
+            top: "0",
+            bottom: "8",
+            left: "0",
+            right: "0",
+        },
+    },
+    postTitleDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitleTabletMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postTitleTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitleMobileMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postTitleMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitleMarginLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Title Margin */
+
+    /** Start Post Title Padding */
+    postTitlePaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postTitleDesktopPadding: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postTitleDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitleTabletPadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postTitleTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitleMobilePadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postTitleMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postTitlePaddingLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Title Padding */
+
+    /** Start Post Excerpt Styling */
+    postExcerptAlign: {
+        type: "object",
+        default: {
+            Desktop: "left",
+            Tablet: "left",
+            Mobile: "left",
+        },
+    },
+    postExcerptHtmlTag: {
+        type: "string",
+        default: "p",
+    },
+
+    /** Start Post Excerpt Typography */
+    postExcerptFontFamily: {
+        type: "string",
+        default: "",
+    },
+    postExcerptFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '16',
+            Tablet: '16',
+            Mobile: '16'
+        }
+    },
+    postExcerptFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postExcerptFontWeight: {
+        type: "string",
+        default: "",
+    },
+    postExcerptFontStyle: {
+        type: "string",
+        default: "",
+    },
+    postExcerptTextTransform: {
+        type: "string",
+        default: "",
+    },
+    postExcerptTextDecoration: {
+        type: "string",
+        default: "",
+    },
+    postExcerptLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postExcerptLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postExcerptLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postExcerptLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postExcerptWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },  
+    postExcerptWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Post Excerpt Typography */
+
+    /** Start Post Excerpt Color */
+    postExcerptColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    postExcerptColor: {
+        type: "string",
+        default: "",
+    },
+    postExcerptColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Excerpt Color */
+
+    /** Start Post Excerpt Margin */
+    postExcerptMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postExcerptDesktopMargin: {
+        type: "object", 
+        default: {
+            top: "0",
+            bottom: "12",
+            left: "0",
+            right: "0",
+        },
+    },
+    postExcerptDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptTabletMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postExcerptTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptMobileMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postExcerptMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptMarginLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Excerpt Margin */
+
+    /** Start Post Excerpt Padding */
+    postExcerptPaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postExcerptDesktopPadding: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postExcerptDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptTabletPadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postExcerptTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptMobilePadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postExcerptMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postExcerptPaddingLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Excerpt Padding */
+    /** End Post Excerpt Styling */
 
     contentOrder: {
         type: "array",

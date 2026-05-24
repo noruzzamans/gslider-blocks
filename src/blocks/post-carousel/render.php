@@ -14,10 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Extract attributes with defaults
-$block_id         = isset( $attributes['blockId'] ) ? sanitize_html_class( $attributes['blockId'] ) : '';
-$global_id        = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
-$global_class     = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
-$enable_lazy_load = ! empty( $attributes['enableLazyLoad'] );
+$block_id            = isset( $attributes['blockId'] ) ? sanitize_html_class( $attributes['blockId'] ) : '';
+$global_id           = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
+$global_class        = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
+$enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
+$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
+$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
 
 // Carousel settings
 $carousel_per_column     = isset( $attributes['carouselPerColumn'] ) ? $attributes['carouselPerColumn'] : array( 'Desktop' => 3, 'Tablet' => 2, 'Mobile' => 1 );
@@ -269,7 +271,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
                 ?>
                 <div class="swiper-slide">
                     <div class="gslider-post-carousel-content-wrapper <?php echo esc_attr( $global_class ); ?>"<?php echo $global_id ? ' id="' . esc_attr( $global_id ) . '"' : ''; ?>>
-                        <div class="gslider-post-carousel-card">
+                        <article class="gslider-post-carousel-card">
                             <?php
                             foreach ( $content_order as $element ) {
                                 switch ( $element ) {
@@ -307,8 +309,8 @@ $wrapper_attributes = get_block_wrapper_attributes(
 
                                     case 'title':
                                         ?>
-                                        <div class="gslider-post-carousel-title">
-                                            <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+                                        <div class="gslider-post-carousel-title-wrapper">
+                                            <<?php echo esc_attr( $post_title_html_tag ); ?> class="gslider-post-carousel-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></<?php echo esc_attr( $post_title_html_tag ); ?>>
                                         </div>
                                         <?php
                                         break;
@@ -316,8 +318,8 @@ $wrapper_attributes = get_block_wrapper_attributes(
                                     case 'excerpt':
                                         if ( $excerpt ) :
                                             ?>
-                                            <div class="gslider-post-carousel-excerpt">
-                                                <p><?php echo esc_html( $excerpt ); ?></p>
+                                            <div class="gslider-post-carousel-excerpt-wrapper">
+                                                <<?php echo esc_attr( $post_excerpt_html_tag ); ?> class="gslider-post-carousel-excerpt"><?php echo esc_html( $excerpt ); ?></<?php echo esc_attr( $post_excerpt_html_tag ); ?>>
                                             </div>
                                             <?php
                                         endif;
@@ -348,7 +350,7 @@ $wrapper_attributes = get_block_wrapper_attributes(
                                 }
                             }
                             ?>
-                        </div>
+                        </article>
                     </div>
                 </div>
             <?php endwhile; ?>

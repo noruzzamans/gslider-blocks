@@ -14,17 +14,12 @@ const ResponsiveAlignmentControl = ({
  }) => {
 
 	const handleAlignmentChange = (value) => {
-		setAlignmentValue({
-			...alignmentValue,
-			[deviceType]: value
-		});
-
-		setAttributes({
-			alignmentValue: {
+		if (setAlignmentValue) {
+			setAlignmentValue({
 				...alignmentValue,
 				[deviceType]: value
-			}
-		});
+			});
+		}
 	};
 
 	return (

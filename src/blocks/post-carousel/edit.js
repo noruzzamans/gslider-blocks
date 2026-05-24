@@ -67,7 +67,8 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		contentOrder,
 
 		postType,
-
+		postTitleHtmlTag,
+		postExcerptHtmlTag,
 	} = attributes;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
@@ -293,11 +294,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							const excerpt = getExcerpt(post);
 							const authorName = getAuthorName(post);
 							const formattedDate = getFormattedDate(post);
+							const TagName = postTitleHtmlTag || 'h3';
+							const ExcerptTagName = postExcerptHtmlTag || 'p';
 
 							return (
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
-										<div className="gslider-post-carousel-card">
+										<article className="gslider-post-carousel-card">
 											{(() => {
 												const renderGroupMap = {
 													thumbnail: featuredImageUrl ? (
@@ -319,14 +322,14 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 													) : null,
 
 													title: (
-														<div key="title" className="gslider-post-carousel-title">
-															<h3>{decodeHtmlEntities(post.title.rendered)}</h3>
+														<div key="title" className="gslider-post-carousel-title-wrapper">
+															<TagName className="gslider-post-carousel-title">{decodeHtmlEntities(post.title.rendered)}</TagName>
 														</div>
 													),
 
 													excerpt: excerpt ? (
-														<div key="excerpt" className="gslider-post-carousel-excerpt">
-															<p>{excerpt}</p>
+														<div key="excerpt" className="gslider-post-carousel-excerpt-wrapper">
+															<ExcerptTagName className="gslider-post-carousel-excerpt">{excerpt}</ExcerptTagName>
 														</div>
 													) : null,
 
@@ -356,7 +359,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 												return normalizedContentOrder.map((groupKey) => renderGroupMap[groupKey] || null);
 											})()}
-										</div>
+										</article>
 									</div>
 								</div>
 							);

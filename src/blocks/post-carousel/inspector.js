@@ -22,6 +22,7 @@ import {
     NAVIGATION_ARROW_POSITION,
     NAVIGATION_ARROW_DIRECTION,
     LAYOUT_HEIGHT_SWITCHER,
+    HTML_TAGS,
 
 } from "@Constants";
 
@@ -47,12 +48,15 @@ import ResponsiveToggleControl from '@Components/responsive-toggle-control';
 import ContentOrderControl from '@Components/content-order-control';
 import { normalizeContentOrder } from './content-order';
 import QuerySettingsPanel from '@Components/query-settings-panel';
+import HtmlTagControl from '@Components/html-tag-control';
 
 const Inspector = ({ attributes, setAttributes, clientId }) => {
     const {
         blockId,
         deviceType,
         blockStyle,
+
+        /** Start Carousel Settings */
         carouselPerColumn,
         carouselPerColumnGap,
         speed,
@@ -70,6 +74,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         keyboardNavigation,
         paginationType,
         dynamicBullets,
+        /** End Carousel Settings */
 
         /** Start Show/Hide Elements */
         paginationPositionType,
@@ -83,6 +88,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         contentOrder,
         /** End Layout & Content Setting */
 
+        /** Start Query Settings */
         postType,
         postsPerPage,
         categories,
@@ -100,6 +106,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         metaCompare,
         dateRange,
         excludeCurrentPost,
+        /** End Query Settings */
 
         /** Start Navigation Custom Arrows */
         navigationArrowsIconSwitcher,
@@ -119,6 +126,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         /** Start Arrows Style */
         navigationArrowSize,
         navigationArrowSizeUnits,
+        /** End Arrows Style */
 
         /** Start Arrows Color */
         navigationArrowColorSwitcher,
@@ -132,6 +140,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         navigationArrowNormalGradientColor,
         navigationArrowNormalCustomGradientSwitcher,
         navigationArrowNormalCustomGradientInputValue,
+
         navigationArrowHoverBackgroundType,
         navigationArrowHoverClassicColor,
         navigationArrowHoverGradientColor,
@@ -268,9 +277,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationActiveDotsBorderColorSwitcher,
         paginationActiveDotsBorderColor,
         paginationActiveDotsBorderHoverColor,
-        /** End Active Dots Border */
-
-        /** Start Active Dots Border */
         paginationActiveDotsBorderUnits,
         paginationActiveDotsDesktopBorder,
         paginationActiveDotsDesktopBorderCssStyle,
@@ -306,6 +312,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationFractionLetterSpacingUnits,
         paginationFractionWordSpacing,
         paginationFractionWordSpacingUnits,
+
         paginationFractionColorSwitcher,
         paginationFractionColor,
         paginationFractionColorHover,
@@ -318,8 +325,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationProgressbarHeight,
         paginationProgressbarHeightUnits,
         /** End pagination Progressbar Color */
-
-        /** Global Settings */
 
         /** Start Global Margin */
         globalMarginUnits,
@@ -371,14 +376,13 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         globalHoverBackgroundImageAttachment,
         globalHoverBackgroundImageRepeat,
         globalHoverBackgroundImageSize,
-        /** End Global Setting */
+        /** End Global Background */
 
         /** Start Global Border */
         globalBorder,
         globalBorderColorSwitcher,
         globalBorderColor,
         globalBorderHoverColor,
-
         globalBorderUnits,
         globalBorderDesktop,
         globalBorderDesktopCssStyle,
@@ -419,6 +423,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageHeightUnits,
         imageObjectFit,
         imageObjectPosition,
+
         imagePaddingUnits,
         imagePaddingDesktop,
         imagePaddingDesktopCssStyle,
@@ -427,6 +432,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imagePaddingMobile,
         imagePaddingMobileCssStyle,
         imagePaddingLink,
+
         imageMarginUnits,
         imageMarginDesktop,
         imageMarginDesktopCssStyle,
@@ -435,16 +441,19 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageMarginMobile,
         imageMarginMobileCssStyle,
         imageMarginLink,
+
         imageNormalBackgroundType,
         imageNormalClassicColor,
         imageNormalGradientColor,
         imageNormalCustomGradientSwitcher,
         imageNormalCustomGradientInputValue,
+
         imageHoverBackgroundType,
         imageHoverClassicColor,
         imageHoverGradientColor,
         imageHoverCustomGradientSwitcher,
         imageHoverCustomGradientInputValue,
+
         imageBorder,
         imageBorderColorSwitcher,
         imageBorderColor,
@@ -457,6 +466,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageBorderMobile,
         imageBorderMobileCssStyle,
         imageBorderLink,
+
         imageBorderRadiusUnits,
         imageBorderRadiusDesktop,
         imageBorderRadiusDesktopCssStyle,
@@ -465,11 +475,13 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageBorderRadiusMobile,
         imageBorderRadiusMobileCssStyle,
         imageBorderRadiusLink,
+
         imageBoxShadowValuesSwitcher,
         imageBoxShadowValues,
         imageBoxShadowCssValue,
         imageBoxShadowHoverValues,
         imageBoxShadowHoverCssValue,
+
         imageHoverEffect,
         imageHoverOpacity,
         imageHoverScale,
@@ -477,6 +489,88 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageHoverLiftUnits,
         imageTransitionDuration,
         /** End Image Settings */
+
+        /** Start Post Title Typography, Color, Margin & Padding */
+        postTitleAlign,
+        postTitleHtmlTag,
+
+        postTitleFontFamily,
+        postTitleFontSize,
+        postTitleFontSizeUnits,
+        postTitleFontWeight,
+        postTitleFontStyle,
+        postTitleTextTransform,
+        postTitleTextDecoration,
+        postTitleLineHeight,
+        postTitleLineHeightUnits,
+        postTitleLetterSpacing,
+        postTitleLetterSpacingUnits,
+        postTitleWordSpacing,
+        postTitleWordSpacingUnits,
+
+        postTitleColorSwitcher,
+        postTitleColor,
+        postTitleColorHover,
+
+        postTitleMarginUnits,
+        postTitleDesktopMargin,
+        postTitleDesktopMarginCssStyle,
+        postTitleTabletMargin,
+        postTitleTabletMarginCssStyle,
+        postTitleMobileMargin,
+        postTitleMobileMarginCssStyle,
+        postTitleMarginLink,
+
+        postTitlePaddingUnits,
+        postTitleDesktopPadding,
+        postTitleDesktopPaddingCssStyle,
+        postTitleTabletPadding,
+        postTitleTabletPaddingCssStyle,
+        postTitleMobilePadding,
+        postTitleMobilePaddingCssStyle,
+        postTitlePaddingLink,
+        /** End Post Title Typography, Color, Margin & Padding */
+
+        /** Start Post Excerpt Styling */
+        postExcerptAlign,
+        postExcerptHtmlTag,
+
+        postExcerptFontFamily,
+        postExcerptFontSize,
+        postExcerptFontSizeUnits,
+        postExcerptFontWeight,
+        postExcerptFontStyle,
+        postExcerptTextTransform,
+        postExcerptTextDecoration,
+        postExcerptLineHeight,
+        postExcerptLineHeightUnits,
+        postExcerptLetterSpacing,
+        postExcerptLetterSpacingUnits,
+        postExcerptWordSpacing,
+        postExcerptWordSpacingUnits,
+
+        postExcerptColorSwitcher,
+        postExcerptColor,
+        postExcerptColorHover,
+
+        postExcerptMarginUnits,
+        postExcerptDesktopMargin,
+        postExcerptDesktopMarginCssStyle,
+        postExcerptTabletMargin,
+        postExcerptTabletMarginCssStyle,
+        postExcerptMobileMargin,
+        postExcerptMobileMarginCssStyle,
+        postExcerptMarginLink,
+
+        postExcerptPaddingUnits,
+        postExcerptDesktopPadding,
+        postExcerptDesktopPaddingCssStyle,
+        postExcerptTabletPadding,
+        postExcerptTabletPaddingCssStyle,
+        postExcerptMobilePadding,
+        postExcerptMobilePaddingCssStyle,
+        postExcerptPaddingLink,
+        /** End Post Excerpt Styling */
 
     } = attributes;
 
@@ -489,6 +583,14 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
     /** Normalize content order */
     const normalizedContentOrder = normalizeContentOrder(contentOrder);
+
+    /** Load Google Font */
+    if (postTitleFontFamily && postTitleFontFamily !== 'Default') {
+        LoadGoogleFont(postTitleFontFamily);
+    }
+    if (postExcerptFontFamily && postExcerptFontFamily !== 'Default') {
+        LoadGoogleFont(postExcerptFontFamily);
+    }
 
     /** Default Open Panels */
     const defaultOpenPanels = {
@@ -523,6 +625,18 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             paginationNormalDotsDesktopBorderRadiusCssStyle: spacingFormat(paginationNormalDotsDesktopBorderRadius, paginationNormalDotsBorderRadiusUnits.Desktop),
             paginationNormalDotsTabletBorderRadiusCssStyle: spacingFormat(paginationNormalDotsTabletBorderRadius, paginationNormalDotsBorderRadiusUnits.Tablet),
             paginationNormalDotsMobileBorderRadiusCssStyle: spacingFormat(paginationNormalDotsMobileBorderRadius, paginationNormalDotsBorderRadiusUnits.Mobile),
+
+            postTitleDesktopMarginCssStyle: spacingFormat(postTitleDesktopMargin, postTitleMarginUnits.Desktop),
+            postTitleTabletMarginCssStyle: spacingFormat(postTitleTabletMargin, postTitleMarginUnits.Tablet),
+            postTitleMobileMarginCssStyle: spacingFormat(postTitleMobileMargin, postTitleMarginUnits.Mobile),
+
+            postExcerptDesktopMarginCssStyle: spacingFormat(postExcerptDesktopMargin, postExcerptMarginUnits.Desktop),
+            postExcerptTabletMarginCssStyle: spacingFormat(postExcerptTabletMargin, postExcerptMarginUnits.Tablet),
+            postExcerptMobileMarginCssStyle: spacingFormat(postExcerptMobileMargin, postExcerptMarginUnits.Mobile),
+
+            postExcerptDesktopPaddingCssStyle: spacingFormat(postExcerptDesktopPadding, postExcerptPaddingUnits.Desktop),
+            postExcerptTabletPaddingCssStyle: spacingFormat(postExcerptTabletPadding, postExcerptPaddingUnits.Tablet),
+            postExcerptMobilePaddingCssStyle: spacingFormat(postExcerptMobilePadding, postExcerptPaddingUnits.Mobile),
         });
     }, [
         navigationArrowDesktopBorderRadius,
@@ -534,6 +648,21 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationNormalDotsTabletBorderRadius,
         paginationNormalDotsMobileBorderRadius,
         paginationNormalDotsBorderRadiusUnits,
+
+        postTitleDesktopMargin,
+        postTitleTabletMargin,
+        postTitleMobileMargin,
+        postTitleMarginUnits,
+
+        postExcerptDesktopMargin,
+        postExcerptTabletMargin,
+        postExcerptMobileMargin,
+        postExcerptMarginUnits,
+
+        postExcerptDesktopPadding,
+        postExcerptTabletPadding,
+        postExcerptMobilePadding,
+        postExcerptPaddingUnits,
     ]);
     /** end if have default padding then set the css style */
 
@@ -603,6 +732,13 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     deviceType={deviceType}
                     setAttributes={setAttributes}
                     className="gslider-vertical-alignment"
+                />
+
+                <HtmlTagControl
+                    label={__("Title Tag", "gslider-blocks")}
+                    options={HTML_TAGS}
+                    value={postTitleHtmlTag}
+                    onChange={(value) => setAttributes({ postTitleHtmlTag: value })}
                 />
 
             </PanelBody>
@@ -1412,6 +1548,255 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     deviceType={deviceType}
                     resetFallbackValue={"300"}
                     isRangeUnit={false}
+                />
+            </PanelBody>
+
+            <PanelBody
+                title={__("Title", "gslider-blocks")}
+                opened={openPanels.styles === "post-title"}
+                onToggle={() => togglePanel("styles", "post-title")}
+            >
+                <ResponsiveTypographyControl
+                    fontFamily={postTitleFontFamily}
+                    onChangeFontFamily={(value) => setAttributes({ postTitleFontFamily: value })}
+
+                    fontSize={postTitleFontSize}
+                    onChangeFontSize={(value) => setAttributes({ postTitleFontSize: value })}
+
+                    fontSizeUnits={postTitleFontSizeUnits}
+                    onChangeFontSizeUnit={(value) => setAttributes({ postTitleFontSizeUnits: value })}
+
+                    fontWeight={postTitleFontWeight}
+                    onChangeFontWeight={(value) => setAttributes({ postTitleFontWeight: value })}
+
+                    fontStyle={postTitleFontStyle}
+                    onChangeFontStyle={(value) => setAttributes({ postTitleFontStyle: value })}
+
+                    textTransform={postTitleTextTransform}
+                    onChangeTextTransform={(value) => setAttributes({ postTitleTextTransform: value })}
+
+                    textDecoration={postTitleTextDecoration}
+                    onChangeTextDecoration={(value) => setAttributes({ postTitleTextDecoration: value })}
+
+                    lineHeight={postTitleLineHeight}
+                    onChangeLineHeight={(value) => setAttributes({ postTitleLineHeight: value })}
+
+                    lineHeightUnits={postTitleLineHeightUnits}
+                    onChangeLineHeightUnit={(value) => setAttributes({ postTitleLineHeightUnits: value })}
+
+                    letterSpacing={postTitleLetterSpacing}
+                    onChangeLetterSpacing={(value) => setAttributes({ postTitleLetterSpacing: value })}
+
+                    letterSpacingUnits={postTitleLetterSpacingUnits}
+                    onChangeLetterSpacingUnit={(value) => setAttributes({ postTitleLetterSpacingUnits: value })}
+
+                    wordSpacing={postTitleWordSpacing}
+                    onChangeWordSpacing={(value) => setAttributes({ postTitleWordSpacing: value })}
+
+                    wordSpacingUnits={postTitleWordSpacingUnits}
+                    onChangeWordSpacingUnit={(value) => setAttributes({ postTitleWordSpacingUnits: value })}
+
+                    deviceType={deviceType}
+                />
+
+                <ResponsiveAlignmentControl
+                    label={__("Alignment", "gslider-blocks")}
+                    options={TEXT_ALIGN}
+                    alignmentValue={postTitleAlign}
+                    setAlignmentValue={(value) => setAttributes({ postTitleAlign: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+
+                <SwitcherControl
+                    label={__("Color", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={postTitleColorSwitcher}
+                    onChange={(value) => setAttributes({ postTitleColorSwitcher: value })}
+                />
+
+                {postTitleColorSwitcher === 'normal' && (
+                    <ColorControl
+                        label={__("Normal Color", "gslider-blocks")}
+                        color={postTitleColor}
+                        onChangeColor={(value) => setAttributes({ postTitleColor: value })}
+                        defaultColor=''
+                    />
+                )}
+
+                {postTitleColorSwitcher === 'hover' && (
+                    <ColorControl
+                        label={__("Hover Color", "gslider-blocks")}
+                        color={postTitleColorHover}
+                        onChangeColor={(value) => setAttributes({ postTitleColorHover: value })}
+                        defaultColor=''
+                    />
+                )}
+
+                <ResponsiveSpacingControl
+                    label={__("Margin", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postTitleMarginUnits}
+                    onChangeUnits={(value) => setAttributes({ postTitleMarginUnits: value })}
+                    desktopSpacing={postTitleDesktopMargin}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopMargin: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopMarginCssStyle: value })}
+                    tabletSpacing={postTitleTabletMargin}
+                    onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletMargin: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postTitleTabletMarginCssStyle: value })}
+                    mobileSpacing={postTitleMobileMargin}
+                    onChangeMobileSpacing={(value) => setAttributes({ postTitleMobileMargin: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postTitleMobileMarginCssStyle: value })}
+                    isLinked={postTitleMarginLink}
+                    onChangeLink={(value) => setAttributes({ postTitleMarginLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Padding", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postTitlePaddingUnits}
+                    onChangeUnits={(value) => setAttributes({ postTitlePaddingUnits: value })}
+                    desktopSpacing={postTitleDesktopPadding}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopPadding: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopPaddingCssStyle: value })}
+                    tabletSpacing={postTitleTabletPadding}
+                    onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletPadding: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postTitleTabletPaddingCssStyle: value })}
+                    mobileSpacing={postTitleMobilePadding}
+                    onChangeMobileSpacing={(value) => setAttributes({ postTitleMobilePadding: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postTitleMobilePaddingCssStyle: value })}
+                    isLinked={postTitlePaddingLink}
+                    onChangeLink={(value) => setAttributes({ postTitlePaddingLink: value })}
+                />
+            </PanelBody>
+
+            <PanelBody
+                title={__("Excerpt", "gslider-blocks")}
+                opened={openPanels.styles === "post-excerpt"}
+                onToggle={() => togglePanel("styles", "post-excerpt")}
+            >
+                <HtmlTagControl
+                    label={__("Html Tag", "gslider-blocks")}
+                    options={HTML_TAGS}
+                    value={postExcerptHtmlTag}
+                    onChange={(value) => setAttributes({ postExcerptHtmlTag: value })}
+                />
+
+                <ResponsiveTypographyControl
+                    fontFamily={postExcerptFontFamily}
+                    onChangeFontFamily={(value) => setAttributes({ postExcerptFontFamily: value })}
+
+                    fontSize={postExcerptFontSize}
+                    onChangeFontSize={(value) => setAttributes({ postExcerptFontSize: value })}
+
+                    fontSizeUnits={postExcerptFontSizeUnits}
+                    onChangeFontSizeUnit={(value) => setAttributes({ postExcerptFontSizeUnits: value })}
+
+                    fontWeight={postExcerptFontWeight}
+                    onChangeFontWeight={(value) => setAttributes({ postExcerptFontWeight: value })}
+
+                    fontStyle={postExcerptFontStyle}
+                    onChangeFontStyle={(value) => setAttributes({ postExcerptFontStyle: value })}
+
+                    textTransform={postExcerptTextTransform}
+                    onChangeTextTransform={(value) => setAttributes({ postExcerptTextTransform: value })}
+
+                    textDecoration={postExcerptTextDecoration}
+                    onChangeTextDecoration={(value) => setAttributes({ postExcerptTextDecoration: value })}
+
+                    lineHeight={postExcerptLineHeight}
+                    onChangeLineHeight={(value) => setAttributes({ postExcerptLineHeight: value })}
+
+                    lineHeightUnits={postExcerptLineHeightUnits}
+                    onChangeLineHeightUnit={(value) => setAttributes({ postExcerptLineHeightUnits: value })}
+
+                    letterSpacing={postExcerptLetterSpacing}
+                    onChangeLetterSpacing={(value) => setAttributes({ postExcerptLetterSpacing: value })}
+
+                    letterSpacingUnits={postExcerptLetterSpacingUnits}
+                    onChangeLetterSpacingUnit={(value) => setAttributes({ postExcerptLetterSpacingUnits: value })}
+
+                    wordSpacing={postExcerptWordSpacing}
+                    onChangeWordSpacing={(value) => setAttributes({ postExcerptWordSpacing: value })}
+
+                    wordSpacingUnits={postExcerptWordSpacingUnits}
+                    onChangeWordSpacingUnit={(value) => setAttributes({ postExcerptWordSpacingUnits: value })}
+
+                    deviceType={deviceType}
+                />
+
+                <ResponsiveAlignmentControl
+                    label={__("Alignment", "gslider-blocks")}
+                    options={TEXT_ALIGN}
+                    alignmentValue={postExcerptAlign}
+                    setAlignmentValue={(value) => setAttributes({ postExcerptAlign: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+
+                <SwitcherControl
+                    label={__("Color", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={postExcerptColorSwitcher}
+                    onChange={(value) => setAttributes({ postExcerptColorSwitcher: value })}
+                />
+
+                {postExcerptColorSwitcher === 'normal' && (
+                    <ColorControl
+                        label={__("Normal Color", "gslider-blocks")}
+                        color={postExcerptColor}
+                        onChangeColor={(value) => setAttributes({ postExcerptColor: value })}
+                        defaultColor=''
+                    />
+                )}
+
+                {postExcerptColorSwitcher === 'hover' && (
+                    <ColorControl
+                        label={__("Hover Color", "gslider-blocks")}
+                        color={postExcerptColorHover}
+                        onChangeColor={(value) => setAttributes({ postExcerptColorHover: value })}
+                        defaultColor=''
+                    />
+                )}
+
+                <ResponsiveSpacingControl
+                    label={__("Margin", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postExcerptMarginUnits}
+                    onChangeUnits={(value) => setAttributes({ postExcerptMarginUnits: value })}
+                    desktopSpacing={postExcerptDesktopMargin}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopMargin: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopMarginCssStyle: value })}
+                    tabletSpacing={postExcerptTabletMargin}
+                    onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletMargin: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletMarginCssStyle: value })}
+                    mobileSpacing={postExcerptMobileMargin}
+                    onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobileMargin: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postExcerptMobileMarginCssStyle: value })}
+                    isLinked={postExcerptMarginLink}
+                    onChangeLink={(value) => setAttributes({ postExcerptMarginLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Padding", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postExcerptPaddingUnits}
+                    onChangeUnits={(value) => setAttributes({ postExcerptPaddingUnits: value })}
+                    desktopSpacing={postExcerptDesktopPadding}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopPadding: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopPaddingCssStyle: value })}
+                    tabletSpacing={postExcerptTabletPadding}
+                    onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletPadding: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletPaddingCssStyle: value })}
+                    mobileSpacing={postExcerptMobilePadding}
+                    onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobilePadding: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postExcerptMobilePaddingCssStyle: value })}
+                    isLinked={postExcerptPaddingLink}
+                    onChangeLink={(value) => setAttributes({ postExcerptPaddingLink: value })}
                 />
             </PanelBody>
 

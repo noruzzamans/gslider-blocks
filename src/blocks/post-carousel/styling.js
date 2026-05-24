@@ -423,6 +423,70 @@ const generatePostCarouselStyle = (attributes) => {
         imageTransitionDuration,
         /** End Image Settings */
 
+        /** Start Post Title Typography, Color, Margin & Padding */
+        postTitleAlign,
+        postTitleFontFamily,
+        postTitleFontSize,
+        postTitleFontSizeUnits,
+        postTitleFontWeight,
+        postTitleFontStyle,
+        postTitleTextTransform,
+        postTitleTextDecoration,
+        postTitleLineHeight,
+        postTitleLineHeightUnits,
+        postTitleLetterSpacing,
+        postTitleLetterSpacingUnits,
+        postTitleWordSpacing,
+        postTitleWordSpacingUnits,
+
+        postTitleColorSwitcher,
+        postTitleColor,
+        postTitleColorHover,
+
+        postTitleMarginUnits,
+        postTitleDesktopMargin,
+        postTitleDesktopMarginCssStyle,
+        postTitleTabletMargin,
+        postTitleTabletMarginCssStyle,
+        postTitleMobileMargin,
+        postTitleMobileMarginCssStyle,
+        postTitleMarginLink,
+
+        postTitlePaddingUnits,
+        postTitleDesktopPadding,
+        postTitleDesktopPaddingCssStyle,
+        postTitleTabletPadding,
+        postTitleTabletPaddingCssStyle,
+        postTitleMobilePadding,
+        postTitleMobilePaddingCssStyle,
+        postTitlePaddingLink,
+        /** End Post Title Typography, Color, Margin & Padding */
+
+        /** Start Post Excerpt Styling */
+        postExcerptAlign,
+        postExcerptFontFamily,
+        postExcerptFontSize,
+        postExcerptFontSizeUnits,
+        postExcerptFontWeight,
+        postExcerptFontStyle,
+        postExcerptTextTransform,
+        postExcerptTextDecoration,
+        postExcerptLineHeight,
+        postExcerptLineHeightUnits,
+        postExcerptLetterSpacing,
+        postExcerptLetterSpacingUnits,
+        postExcerptWordSpacing,
+        postExcerptWordSpacingUnits,
+        postExcerptColor,
+        postExcerptColorHover,
+        postExcerptDesktopMarginCssStyle,
+        postExcerptTabletMarginCssStyle,
+        postExcerptMobileMarginCssStyle,
+        postExcerptDesktopPaddingCssStyle,
+        postExcerptTabletPaddingCssStyle,
+        postExcerptMobilePaddingCssStyle,
+        /** End Post Excerpt Styling */
+
     } = attributes;
 
     /**
@@ -825,6 +889,53 @@ const generatePostCarouselStyle = (attributes) => {
             margin-bottom: 30px;
         }
 
+        .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
+            ${postTitleAlign?.Desktop ? `text-align: ${postTitleAlign.Desktop};` : ''}
+            ${postTitleFontFamily ? `font-family: ${postTitleFontFamily};` : ''}
+            ${postTitleFontSize.Desktop && postTitleFontSizeUnits.Desktop ? `font-size: ${postTitleFontSize.Desktop}${postTitleFontSizeUnits.Desktop};` : ''}
+            ${postTitleFontWeight ? `font-weight: ${postTitleFontWeight};` : ''}
+            ${postTitleFontStyle ? `font-style: ${postTitleFontStyle};` : ''}
+            ${postTitleTextTransform ? `text-transform: ${postTitleTextTransform};` : ''}
+            ${postTitleTextDecoration ? `text-decoration: ${postTitleTextDecoration};` : ''}
+            ${postTitleLineHeight.Desktop && postTitleLineHeightUnits.Desktop ? `line-height: ${postTitleLineHeight.Desktop}${postTitleLineHeightUnits.Desktop};` : ''}
+            ${postTitleLetterSpacing.Desktop && postTitleLetterSpacingUnits.Desktop ? `letter-spacing: ${postTitleLetterSpacing.Desktop}${postTitleLetterSpacingUnits.Desktop};` : ''}
+            ${postTitleWordSpacing.Desktop && postTitleWordSpacingUnits.Desktop ? `word-spacing: ${postTitleWordSpacing.Desktop}${postTitleWordSpacingUnits.Desktop};` : ''}
+            ${postTitleColor ? `color: ${postTitleColor};` : ''}
+            ${postTitleDesktopMarginCssStyle ? `margin: ${postTitleDesktopMarginCssStyle};` : ''}
+            ${postTitleDesktopPaddingCssStyle ? `padding: ${postTitleDesktopPaddingCssStyle};` : ''}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title a {
+            ${postTitleColor ? `color: ${postTitleColor};` : ''}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title a:hover {
+            ${postTitleColorHover ? `color: ${postTitleColorHover};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
+            ${postExcerptAlign?.Desktop ? `text-align: ${postExcerptAlign.Desktop};` : ''}
+            ${postExcerptFontFamily ? `font-family: ${postExcerptFontFamily};` : ''}
+            ${postExcerptFontSize.Desktop && postExcerptFontSizeUnits.Desktop ? `font-size: ${postExcerptFontSize.Desktop}${postExcerptFontSizeUnits.Desktop};` : ''}
+            ${postExcerptFontWeight ? `font-weight: ${postExcerptFontWeight};` : ''}
+            ${postExcerptFontStyle ? `font-style: ${postExcerptFontStyle};` : ''}
+            ${postExcerptTextTransform ? `text-transform: ${postExcerptTextTransform};` : ''}
+            ${postExcerptTextDecoration ? `text-decoration: ${postExcerptTextDecoration};` : ''}
+            ${postExcerptLineHeight.Desktop && postExcerptLineHeightUnits.Desktop ? `line-height: ${postExcerptLineHeight.Desktop}${postExcerptLineHeightUnits.Desktop};` : ''}
+            ${postExcerptLetterSpacing.Desktop && postExcerptLetterSpacingUnits.Desktop ? `letter-spacing: ${postExcerptLetterSpacing.Desktop}${postExcerptLetterSpacingUnits.Desktop};` : ''}
+            ${postExcerptWordSpacing.Desktop && postExcerptWordSpacingUnits.Desktop ? `word-spacing: ${postExcerptWordSpacing.Desktop}${postExcerptWordSpacingUnits.Desktop};` : ''}
+            ${postExcerptColor ? `color: ${postExcerptColor};` : ''}
+            ${postExcerptDesktopMarginCssStyle ? `margin: ${postExcerptDesktopMarginCssStyle};` : ''}
+            ${postExcerptDesktopPaddingCssStyle ? `padding: ${postExcerptDesktopPaddingCssStyle};` : ''}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt:hover {
+            ${postExcerptColorHover ? `color: ${postExcerptColorHover};` : ''}
+        }
+
         .${blockId} .gslider-post-carousel-image {
             ${imageBackgroundNormalStyles ? `${imageBackgroundNormalStyles}` : ''}
             ${imageHeight.Desktop ? `height: ${imageHeight.Desktop}${imageHeightUnits.Desktop} !important;` : ''}
@@ -1004,6 +1115,26 @@ const generatePostCarouselStyle = (attributes) => {
                 ${paginationProgressbarHeight.Tablet ? `height: ${paginationProgressbarHeight.Tablet}${paginationProgressbarHeightUnits.Tablet};` : ''}
             }
 
+            .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
+                ${postTitleAlign?.Tablet ? `text-align: ${postTitleAlign.Tablet};` : ''}
+                ${postTitleFontSize.Tablet && postTitleFontSizeUnits.Tablet ? `font-size: ${postTitleFontSize.Tablet}${postTitleFontSizeUnits.Tablet};` : ''}
+                ${postTitleLineHeight.Tablet && postTitleLineHeightUnits.Tablet ? `line-height: ${postTitleLineHeight.Tablet}${postTitleLineHeightUnits.Tablet};` : ''}
+                ${postTitleLetterSpacing.Tablet && postTitleLetterSpacingUnits.Tablet ? `letter-spacing: ${postTitleLetterSpacing.Tablet}${postTitleLetterSpacingUnits.Tablet};` : ''}
+                ${postTitleWordSpacing.Tablet && postTitleWordSpacingUnits.Tablet ? `word-spacing: ${postTitleWordSpacing.Tablet}${postTitleWordSpacingUnits.Tablet};` : ''}
+                ${postTitleTabletMarginCssStyle ? `margin: ${postTitleTabletMarginCssStyle};` : ''}
+                ${postTitleTabletPaddingCssStyle ? `padding: ${postTitleTabletPaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
+                ${postExcerptAlign?.Tablet ? `text-align: ${postExcerptAlign.Tablet};` : ''}
+                ${postExcerptFontSize.Tablet && postExcerptFontSizeUnits.Tablet ? `font-size: ${postExcerptFontSize.Tablet}${postExcerptFontSizeUnits.Tablet};` : ''}
+                ${postExcerptLineHeight.Tablet && postExcerptLineHeightUnits.Tablet ? `line-height: ${postExcerptLineHeight.Tablet}${postExcerptLineHeightUnits.Tablet};` : ''}
+                ${postExcerptLetterSpacing.Tablet && postExcerptLetterSpacingUnits.Tablet ? `letter-spacing: ${postExcerptLetterSpacing.Tablet}${postExcerptLetterSpacingUnits.Tablet};` : ''}
+                ${postExcerptWordSpacing.Tablet && postExcerptWordSpacingUnits.Tablet ? `word-spacing: ${postExcerptWordSpacing.Tablet}${postExcerptWordSpacingUnits.Tablet};` : ''}
+                ${postExcerptTabletMarginCssStyle ? `margin: ${postExcerptTabletMarginCssStyle};` : ''}
+                ${postExcerptTabletPaddingCssStyle ? `padding: ${postExcerptTabletPaddingCssStyle};` : ''}
+            }
+
             .${blockId} .gslider-post-carousel-image {
                 ${imageHeight.Tablet ? `height: ${imageHeight.Tablet}${imageHeightUnits.Tablet} !important;` : ''}
                 ${imageMarginTabletCssStyle ? `margin: ${imageMarginTabletCssStyle};` : ''} 
@@ -1154,6 +1285,26 @@ const generatePostCarouselStyle = (attributes) => {
 
             .${blockId} .swiper-pagination-progressbar {
                 ${paginationProgressbarHeight.Mobile ? `height: ${paginationProgressbarHeight.Mobile}${paginationProgressbarHeightUnits.Mobile};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
+                ${postTitleAlign?.Mobile ? `text-align: ${postTitleAlign.Mobile};` : ''}
+                ${postTitleFontSize.Mobile && postTitleFontSizeUnits.Mobile ? `font-size: ${postTitleFontSize.Mobile}${postTitleFontSizeUnits.Mobile};` : ''}
+                ${postTitleLineHeight.Mobile && postTitleLineHeightUnits.Mobile ? `line-height: ${postTitleLineHeight.Mobile}${postTitleLineHeightUnits.Mobile};` : ''}
+                ${postTitleLetterSpacing.Mobile && postTitleLetterSpacingUnits.Mobile ? `letter-spacing: ${postTitleLetterSpacing.Mobile}${postTitleLetterSpacingUnits.Mobile};` : ''}
+                ${postTitleWordSpacing.Mobile && postTitleWordSpacingUnits.Mobile ? `word-spacing: ${postTitleWordSpacing.Mobile}${postTitleWordSpacingUnits.Mobile};` : ''}
+                ${postTitleMobileMarginCssStyle ? `margin: ${postTitleMobileMarginCssStyle};` : ''}
+                ${postTitleMobilePaddingCssStyle ? `padding: ${postTitleMobilePaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
+                ${postExcerptAlign?.Mobile ? `text-align: ${postExcerptAlign.Mobile};` : ''}
+                ${postExcerptFontSize.Mobile && postExcerptFontSizeUnits.Mobile ? `font-size: ${postExcerptFontSize.Mobile}${postExcerptFontSizeUnits.Mobile};` : ''}
+                ${postExcerptLineHeight.Mobile && postExcerptLineHeightUnits.Mobile ? `line-height: ${postExcerptLineHeight.Mobile}${postExcerptLineHeightUnits.Mobile};` : ''}
+                ${postExcerptLetterSpacing.Mobile && postExcerptLetterSpacingUnits.Mobile ? `letter-spacing: ${postExcerptLetterSpacing.Mobile}${postExcerptLetterSpacingUnits.Mobile};` : ''}
+                ${postExcerptWordSpacing.Mobile && postExcerptWordSpacingUnits.Mobile ? `word-spacing: ${postExcerptWordSpacing.Mobile}${postExcerptWordSpacingUnits.Mobile};` : ''}
+                ${postExcerptMobileMarginCssStyle ? `margin: ${postExcerptMobileMarginCssStyle};` : ''}
+                ${postExcerptMobilePaddingCssStyle ? `padding: ${postExcerptMobilePaddingCssStyle};` : ''}
             }
 
             .${blockId} .gslider-post-carousel-image {
