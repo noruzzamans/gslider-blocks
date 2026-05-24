@@ -10,11 +10,11 @@ import Edit from './edit';
 import save from './save';
 import metadata from './block.json';
 import attributes from './attributes.js';
-import Icon from './icon';
+import { PostCarouselIcon } from '@Utils/icons';
 
 registerBlockType(metadata.name, {
 	attributes,
 	edit: Edit,
 	save,
-	icon: Icon,
+	icon: PostCarouselIcon,
 });

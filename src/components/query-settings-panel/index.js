@@ -3,7 +3,6 @@ import { useMemo, useCallback } from '@wordpress/element';
 import {
     PanelBody,
     BaseControl,
-    RangeControl,
     ToggleControl,
     TextControl,
 } from '@wordpress/components';
@@ -73,7 +72,10 @@ const QuerySettingsPanel = ({
         excludeCurrentPost,
     } = attributes;
 
-    // ─── Data Fetching (REST API) ───────────────────────────
+    /**
+     * Fetch registered post types, taxonomies, terms, and authors from 
+     * the WordPress REST API dynamically when the selected post type changes.
+     */
     const { postTypes, taxonomies, termsData, allAuthors } = useSelect(
         (select) => {
             const { getPostTypes, getTaxonomies, getEntityRecords } = select('core');
@@ -104,19 +106,29 @@ const QuerySettingsPanel = ({
         [postType]
     );
 
-    // ─── Post Type Options ──────────────────────────────────
+    /**
+     * Format the fetched post types into select option objects for the dropdown,
+     * filtering out non-viewable types and the 'attachment' (media) type.
+     */
     const postTypeOptions = useMemo(() => {
         if (!postTypes) return [];
         return postTypes
-            .filter((type) => type.viewable)
+            .filter((type) => type.viewable && type.slug !== 'attachment')
             .map((type) => ({ value: type.slug, label: type.name }));
     }, [postTypes]);
 
+    /**
+     * Match and return the selected post type option object to populate the current dropdown value.
+     */
     const selectedPostType = useMemo(
         () => postTypeOptions.find((opt) => opt.value === postType) || null,
         [postTypeOptions, postType]
     );
 
+    /**
+     * Handle post type changes by saving the new type and clearing out terms and 
+     * taxonomies selected for the previous post type.
+     */
     const handlePostTypeChange = useCallback(
         (option) => {
             if (option) {
@@ -132,7 +144,10 @@ const QuerySettingsPanel = ({
         [setAttributes]
     );
 
-    // ─── Taxonomy Helpers ───────────────────────────────────
+    /**
+     * Retrieve terms list, active selected items, and filter mode (include/exclude)
+     * for a specific taxonomy (category, tag, or custom taxonomies).
+     */
     const getTaxonomyData = useCallback(
         (taxSlug) => {
             const terms = termsData[taxSlug] || [];
@@ -161,6 +176,9 @@ const QuerySettingsPanel = ({
         [termsData, categories, categoryFilterType, tags, tagFilterType, taxonomyQuery, taxonomyFilterTypes]
     );
 
+    /**
+     * Save the newly selected term IDs to block attributes for category, tag, or custom taxonomies.
+     */
     const handleTaxonomyChange = useCallback(
         (taxSlug, selectedOptions) => {
             const newIds = selectedOptions
@@ -183,6 +201,9 @@ const QuerySettingsPanel = ({
         [setAttributes, taxonomyQuery]
     );
 
+    /**
+     * Toggle the filter mode (include/exclude) for categories, tags, or custom taxonomies.
+     */
     const handleTaxonomyFilterTypeChange = useCallback(
         (taxSlug, value) => {
             if (taxSlug === 'category') {
@@ -201,12 +222,17 @@ const QuerySettingsPanel = ({
         [setAttributes, taxonomyFilterTypes]
     );
 
-    // ─── Author Helpers ─────────────────────────────────────
+    /**
+     * Transform WordPress users/authors list into dropdown select options.
+     */
     const authorOptions = useMemo(
         () => allAuthors.map((user) => ({ value: user.id, label: user.name })),
         [allAuthors]
     );
 
+    /**
+     * Match and return the selected author option objects to populate the dropdown state.
+     */
     const selectedAuthorOptions = useMemo(() => {
         if (!authors || !authorOptions.length) return [];
         return authors
@@ -214,6 +240,9 @@ const QuerySettingsPanel = ({
             .filter(Boolean);
     }, [authors, authorOptions]);
 
+    /**
+     * Save the chosen author IDs into block attributes.
+     */
     const handleAuthorsChange = useCallback(
         (selectedOptions) => {
             const newIds = selectedOptions
@@ -224,36 +253,53 @@ const QuerySettingsPanel = ({
         [setAttributes]
     );
 
-    // ─── Order By / Sort Order ──────────────────────────────
+    /**
+     * Get the active orderby option object (e.g. date, title, ID) to select it in the dropdown.
+     */
     const selectedOrderBy = useMemo(
         () => ORDER_BY_OPTIONS.find((opt) => opt.value === orderBy) || ORDER_BY_OPTIONS[0],
         [orderBy]
     );
 
+    /**
+     * Get the active sort order option object (ASC/DESC) to select it in the dropdown.
+     */
     const selectedSortOrder = useMemo(
         () => SORT_ORDER_OPTIONS.find((opt) => opt.value === order) || SORT_ORDER_OPTIONS[0],
         [order]
     );
 
-    // ─── Sticky Posts ───────────────────────────────────────
+    /**
+     * Get the active sticky posts behavior option object (include/exclude/ignore) to select it in the dropdown.
+     */
     const selectedStickyPosts = useMemo(
         () => STICKY_POSTS_OPTIONS.find((opt) => opt.value === stickyPosts) || STICKY_POSTS_OPTIONS[0],
         [stickyPosts]
     );
 
-    // ─── Date Range ─────────────────────────────────────────
+    /**
+     * Get the active date range limit option object to select it in the dropdown.
+     */
     const selectedDateRange = useMemo(
         () => DATE_RANGE_OPTIONS.find((opt) => opt.value === dateRange) || DATE_RANGE_OPTIONS[0],
         [dateRange]
     );
 
-    // ─── Meta Compare ───────────────────────────────────────
+    /**
+     * Get the active comparison operator option object for Custom Field filtering to select it in the dropdown.
+     */
     const selectedMetaCompare = useMemo(
         () => META_COMPARE_OPTIONS.find((opt) => opt.value === metaCompare) || META_COMPARE_OPTIONS[0],
         [metaCompare]
     );
 
-    // ─── Get Taxonomy Label ─────────────────────────────────
+    /**
+     * Generate a localized label for the terms dropdown depending on inclusion/exclusion setting.
+     * 
+     * @param {string} filterType   Filter behavior ('include' or 'exclude').
+     * @param {string} taxonomyName The human-readable name of the taxonomy (e.g. Category).
+     * @returns {string} The formatted localized label.
+     */
     const getTaxLabel = (filterType, taxonomyName) => {
         if (filterType === 'exclude') {
             return __('Exclude', 'gslider-blocks') + ' ' + taxonomyName;
@@ -261,7 +307,10 @@ const QuerySettingsPanel = ({
         return __('Include', 'gslider-blocks') + ' ' + taxonomyName;
     };
 
-    // ─── Panel Props ────────────────────────────────────────
+    /**
+     * Setup panel toggle states dynamically, supporting either Gutenberg-controlled
+     * state management or local state management.
+     */
     const panelProps = {};
     if (typeof opened !== 'undefined') {
         panelProps.opened = opened;
@@ -273,7 +322,9 @@ const QuerySettingsPanel = ({
         panelProps.initialOpen = initialOpen;
     }
 
-    // ─── Render ─────────────────────────────────────────────
+    /**
+     * Render the Query Settings panel including all sub-panels and custom controls.
+     */
     return (
         <PanelBody
             title={panelTitle}

@@ -414,18 +414,17 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
     } = attributes;
 
-    const normalizedContentOrder = normalizeContentOrder(contentOrder);
-
-
-
-    /** Get Current Device Type */
+    /** Get Current Device Type and set device Type */
     const currentDeviceType = useDeviceType();
-
-    /** Set Device Type */
+    
     useEffect(() => {
         setAttributes({ deviceType: currentDeviceType });
     }, [currentDeviceType]);
 
+    /** Normalize content order */
+    const normalizedContentOrder = normalizeContentOrder(contentOrder);
+
+    /** Default Open Panels */
     const defaultOpenPanels = {
         general: 'show-hide-elements',
         styles: 'content',
