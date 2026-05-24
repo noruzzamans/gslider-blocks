@@ -12,6 +12,15 @@ import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generatePostCarouselStyle from './styling';
 import { normalizeContentOrder } from './content-order';
 import usePostQuery from '@Utils/hooks/usePostQuery';
+import { 
+	getFeaturedImageUrl, 
+	getPostCategories, 
+	getExcerpt, 
+	getAuthorName, 
+	getFormattedDate, 
+	decodeHtmlEntities 
+} from '@Utils/postHelpers';
+import { getPostQueryArgs } from '@Utils/getPostQueryArgs';
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
@@ -80,18 +89,6 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 	} = attributes;
 
-	const normalizedContentOrder = normalizeContentOrder(contentOrder);
-
-	// Fetch current post ID and CPT taxonomies for query mapping
-	const { currentPostId, taxonomies } = useSelect((select) => {
-		const { getCurrentPostId } = select('core/editor') || {};
-		const { getTaxonomies } = select('core');
-		return {
-			currentPostId: getCurrentPostId ? getCurrentPostId() : null,
-			taxonomies: getTaxonomies ? getTaxonomies({ per_page: -1 }) || [] : [],
-		};
-	}, []);
-
 	/** Handle block ID generation (handles duplication and initial ID) */
 	useBlockIdGenerator({
 		clientId,
@@ -111,127 +108,38 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	}, [attributes, blockId]);
 	/** End Generate Block Style */
 
-	// Construct dynamic query arguments for the REST API
-	const activePostsPerPage = typeof postsPerPage === 'object' ? (parseInt(postsPerPage?.[deviceType]) || 6) : (parseInt(postsPerPage) || 6);
-	const activeOffset = typeof offset === 'object' ? (parseInt(offset?.[deviceType]) || 0) : (parseInt(offset) || 0);
-
-	const queryArgs = {
-		per_page: activePostsPerPage,
-		status: 'publish',
-		orderby: orderBy,
-		order: order,
-	};
-
-	if (activeOffset) {
-		queryArgs.offset = activeOffset;
-	}
-	if (categories && categories.length > 0) {
-		if (categoryFilterType === 'exclude') {
-			queryArgs.categories_exclude = categories.join(',');
-		} else {
-			queryArgs.categories = categories.join(',');
-		}
-	}
-	if (tags && tags.length > 0) {
-		if (tagFilterType === 'exclude') {
-			queryArgs.tags_exclude = tags.join(',');
-		} else {
-			queryArgs.tags = tags.join(',');
-		}
-	}
-	if (authors && authors.length > 0) {
-		if (authorFilterType === 'exclude') {
-			queryArgs.author_exclude = authors.join(',');
-		} else {
-			queryArgs.author = authors.join(',');
-		}
-	}
-
-	// Dynamic taxonomies mapping for REST API
-	if (taxonomyQuery && Object.keys(taxonomyQuery).length > 0 && taxonomies.length > 0) {
-		taxonomies.forEach(tax => {
-			if (tax.types.includes(postType) && taxonomyQuery[tax.slug] && taxonomyQuery[tax.slug].length > 0) {
-				// Backward compatible check: categories and tags are handled separately
-				if (tax.slug !== 'category' && tax.slug !== 'post_tag') {
-					const restBase = tax.rest_base || tax.slug;
-					queryArgs[restBase] = taxonomyQuery[tax.slug].join(',');
-				}
-			}
-		});
-	}
-
-	// Post exclusions calculation
-	const excludedIds = excludePosts
-		? excludePosts.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id))
-		: [];
-
-	if (excludeCurrentPost && currentPostId) {
-		excludedIds.push(currentPostId);
-	}
-
-	if (excludedIds.length > 0) {
-		queryArgs.exclude = excludedIds;
-	}
-
-	// Relative date range calculations
-	if (dateRange && dateRange !== 'any') {
-		const now = new Date();
-		let afterDate;
-		if (dateRange === 'last_24_hours') {
-			afterDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-		} else if (dateRange === 'last_7_days') {
-			afterDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-		} else if (dateRange === 'last_30_days') {
-			afterDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-		} else if (dateRange === 'last_365_days') {
-			afterDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
-		} else if (dateRange === 'current_month') {
-			afterDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-		} else if (dateRange === 'current_year') {
-			afterDate = new Date(now.getFullYear(), 0, 1).toISOString();
-		}
-		if (afterDate) {
-			queryArgs.after = afterDate;
-		}
-	}
-
-	// Meta query parameters (custom fields)
-	if (metaKey) {
-		queryArgs.meta_key = metaKey;
-		if (metaValue) {
-			queryArgs.meta_value = metaValue;
-		}
-		if (metaCompare) {
-			queryArgs.meta_compare = metaCompare;
-		}
-	}
-
-	if (searchQuery) {
-		queryArgs.search = searchQuery;
-	}
-	if (stickyPosts === 'exclude') {
-		queryArgs.sticky = false;
-	} else if (stickyPosts === 'only') {
-		queryArgs.sticky = true;
-	}
-
-	// Fetch posts using global usePostQuery hook
-	const { posts, isLoading } = usePostQuery(queryArgs, postType);
-
-	// Block props for container
+	/** Block props for container */
 	const blockProps = useBlockProps({
 		className: `gslider-post-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination ? 'has-pagination' : ''}`,
 	});
 
-	// Refs for vanilla JS Swiper
+	const normalizedContentOrder = normalizeContentOrder(contentOrder);
+
+	/** Fetch current post ID and CPT taxonomies for query mapping */
+	const { currentPostId, taxonomies } = useSelect((select) => {
+		const { getCurrentPostId } = select('core/editor') || {};
+		const { getTaxonomies } = select('core');
+		return {
+			currentPostId: getCurrentPostId ? getCurrentPostId() : null,
+			taxonomies: getTaxonomies ? getTaxonomies({ per_page: -1 }) || [] : [],
+		};
+	}, []);
+
+	/** Construct dynamic query arguments for the REST API */
+	const queryArgs = getPostQueryArgs(attributes, deviceType, currentPostId, taxonomies);
+
+	/** Fetch posts using global usePostQuery hook */
+	const { posts, isLoading } = usePostQuery(queryArgs, postType);
+
+	/** Refs for vanilla JS Swiper */
 	const swiperContainerRef = useRef(null);
 	const swiperInstanceRef = useRef(null);
 
-	// Ref for panel settings focus management
+	/** Ref for panel settings focus management */
 	const panelRef = useRef(null);
 	SwitchToBlockSettings(panelRef);
 
-	// Refs for navigation buttons
+	/** Refs for navigation buttons */
 	const prevRef = useRef(null);
 	const nextRef = useRef(null);
 	const paginationInsideRef = useRef(null);
@@ -352,79 +260,6 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		navigationArrowsIconLeft,
 		navigationArrowsIconRight,
 	]);
-
-	/**
-	 * Get featured image URL from embedded post data
-	 */
-	const getFeaturedImageUrl = (post) => {
-		if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-			const media = post._embedded['wp:featuredmedia'][0];
-			// Try medium_large first, then full
-			if (media.media_details && media.media_details.sizes) {
-				if (media.media_details.sizes.medium_large) {
-					return media.media_details.sizes.medium_large.source_url;
-				}
-				if (media.media_details.sizes.large) {
-					return media.media_details.sizes.large.source_url;
-				}
-			}
-			return media.source_url;
-		}
-		return null;
-	};
-
-	/**
-	 * Get categories from embedded post data
-	 */
-	const getPostCategories = (post) => {
-		if (post._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][0]) {
-			return post._embedded['wp:term'][0].filter(term => term.taxonomy === 'category');
-		}
-		return [];
-	};
-
-	/**
-	 * Get excerpt text from post (strip HTML, limit words)
-	 */
-	const getExcerpt = (post, wordLimit = 20) => {
-		let text = post?.excerpt?.rendered || post?.content?.rendered || '';
-		const div = document.createElement('div');
-		div.innerHTML = text;
-		text = div.textContent || div.innerText || '';
-		const words = text.trim().split(/\s+/);
-		if (words.length > wordLimit) {
-			return words.slice(0, wordLimit).join(' ') + '...';
-		}
-		return text.trim();
-	};
-
-	/**
-	 * Get author name from embedded post data
-	 */
-	const getAuthorName = (post) => {
-		if (post._embedded && post._embedded.author && post._embedded.author[0]) {
-			return post._embedded.author[0].name || post._embedded.author[0].slug;
-		}
-		return '';
-	};
-
-	/**
-	 * Format post date
-	 */
-	const getFormattedDate = (post) => {
-		if (!post.date) return '';
-		const date = new Date(post.date);
-		return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-	};
-
-	/**
-	 * Decode HTML entities in post title
-	 */
-	const decodeHtmlEntities = (text) => {
-		const textArea = document.createElement('textarea');
-		textArea.innerHTML = text;
-		return textArea.value;
-	};
 
 	return (
 		<>
