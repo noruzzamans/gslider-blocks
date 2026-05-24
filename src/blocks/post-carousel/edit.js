@@ -2,8 +2,8 @@ import { __ } from '@wordpress/i18n';
 import {
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { Spinner, Placeholder } from '@wordpress/components';
-import { useState, useEffect, useRef } from "@wordpress/element";
+import { Placeholder } from '@wordpress/components';
+import { useEffect, useRef } from "@wordpress/element";
 import { useSelect } from '@wordpress/data';
 import renderSVG from "@Components/icon-picker/components/icon-picker/controls/renderIcon";
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
@@ -67,25 +67,6 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		contentOrder,
 
 		postType,
-		postsPerPage,
-		categories,
-		categoryFilterType,
-		tags,
-		tagFilterType,
-		authors,
-		authorFilterType,
-		excludePosts,
-		offset,
-		orderBy,
-		order,
-		searchQuery,
-		stickyPosts,
-		taxonomyQuery,
-		metaKey,
-		metaValue,
-		metaCompare,
-		dateRange,
-		excludeCurrentPost,
 
 	} = attributes;
 
