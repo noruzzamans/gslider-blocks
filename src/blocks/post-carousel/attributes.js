@@ -2368,6 +2368,491 @@ const attributes = {
     /** End Post Excerpt Padding */
     /** End Post Excerpt Styling */
 
+    /** Start Post Category Styling */
+
+    /** Start Post Category Alignment */
+    postCategoryAlign: {
+        type: "object",
+        default: {
+            Desktop: "left",
+            Tablet: "left",
+            Mobile: "left",
+        },
+    },
+
+    /** Start Post Category Typography */
+    postCategoryFontFamily: {
+        type: "string",
+        default: "",
+    },
+    postCategoryFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '13',
+            Tablet: '13',
+            Mobile: '13'
+        }
+    },
+    postCategoryFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postCategoryFontWeight: {
+        type: "string",
+        default: "",
+    },
+    postCategoryFontStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryTextTransform: {
+        type: "string",
+        default: "",
+    },
+    postCategoryTextDecoration: {
+        type: "string",
+        default: "",
+    },
+    postCategoryLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postCategoryLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postCategoryLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postCategoryLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postCategoryWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },  
+    postCategoryWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Post Category Typography */
+
+    /** Start Post Category Color */
+    postCategoryColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    postCategoryColor: {
+        type: "string",
+        default: "",
+    },
+    postCategoryColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Category Color */
+
+    /** Start Post Category Background */
+    postCategoryNormalBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    postCategoryNormalClassicColor: {
+        type: "string",
+        default: "",
+    },
+    postCategoryNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postCategoryNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postCategoryNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+
+    postCategoryHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    postCategoryHoverClassicColor: {
+        type: "string",
+        default: "",
+    },
+    postCategoryHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postCategoryHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postCategoryHoverCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Category Background */
+
+    /** Start Post Category Border */
+    postCategoryBorder: {
+        type: "string",
+        default: "none",
+    },
+    postCategoryBorderColorSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    postCategoryBorderColor: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderHoverColor: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCategoryBorderDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Category Border */
+
+    /** Start Post Category Border Radius */
+    postCategoryBorderRadiusUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCategoryBorderRadiusDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderRadiusDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderRadiusTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderRadiusTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderRadiusMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryBorderRadiusMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBorderRadiusLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Category Border Radius */
+
+    /** Start Post Category Box Shadow */
+    postCategoryBoxShadowValuesSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    postCategoryBoxShadowValues: {
+        type: "array",
+        default: [],
+    },
+    postCategoryBoxShadowCssValue: {
+        type: "string",
+        default: "",
+    },
+    postCategoryBoxShadowHoverValues: {
+        type: "array",
+        default: [],
+    },
+    postCategoryBoxShadowHoverCssValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Category Box Shadow */
+
+    /** Start Post Category Gap */
+    postCategoryGap: {
+        type: "object",
+        default: {
+            Desktop: "5",
+            Tablet: "5",
+            Mobile: "5"
+        }
+    },
+    postCategoryGapUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    /** End Post Category Gap */
+
+    /** Start Post Category Spacing (Margin & Padding) */
+    postCategoryMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postCategoryDesktopMargin: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryTabletMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryMobileMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryMarginLink : {
+        type : "boolean",
+        default: true
+    },
+
+    postCategoryPaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postCategoryDesktopPadding: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryTabletPadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryMobilePadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryPaddingLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Category Spacing */
+
+    /** Start Post Category Item Padding */
+    postCategoryItemPaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postCategoryItemDesktopPadding: {
+        type: "object", 
+        default: {
+            top: "4",
+            bottom: "4",
+            left: "8",
+            right: "8",
+        },
+    },
+    postCategoryItemDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryItemTabletPadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryItemTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryItemMobilePadding: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCategoryItemMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    postCategoryItemPaddingLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Post Category Item Padding */
+    /** End Post Category Styling */
+
     contentOrder: {
         type: "array",
         default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]

@@ -364,6 +364,7 @@ const generatePostCarouselStyle = (attributes) => {
         imageHeightUnits,
         imageObjectFit,
         imageObjectPosition,
+
         imagePaddingUnits,
         imagePaddingDesktop,
         imagePaddingDesktopCssStyle,
@@ -372,6 +373,7 @@ const generatePostCarouselStyle = (attributes) => {
         imagePaddingMobile,
         imagePaddingMobileCssStyle,
         imagePaddingLink,
+
         imageMarginUnits,
         imageMarginDesktop,
         imageMarginDesktopCssStyle,
@@ -380,6 +382,7 @@ const generatePostCarouselStyle = (attributes) => {
         imageMarginMobile,
         imageMarginMobileCssStyle,
         imageMarginLink,
+
         imageNormalBackgroundType,
         imageNormalClassicColor,
         imageNormalGradientColor,
@@ -390,6 +393,7 @@ const generatePostCarouselStyle = (attributes) => {
         imageHoverGradientColor,
         imageHoverCustomGradientSwitcher,
         imageHoverCustomGradientInputValue,
+
         imageBorder,
         imageBorderColorSwitcher,
         imageBorderColor,
@@ -402,6 +406,7 @@ const generatePostCarouselStyle = (attributes) => {
         imageBorderMobile,
         imageBorderMobileCssStyle,
         imageBorderLink,
+
         imageBorderRadiusUnits,
         imageBorderRadiusDesktop,
         imageBorderRadiusDesktopCssStyle,
@@ -410,11 +415,13 @@ const generatePostCarouselStyle = (attributes) => {
         imageBorderRadiusMobile,
         imageBorderRadiusMobileCssStyle,
         imageBorderRadiusLink,
+
         imageBoxShadowValuesSwitcher,
         imageBoxShadowValues,
         imageBoxShadowCssValue,
         imageBoxShadowHoverValues,
         imageBoxShadowHoverCssValue,
+
         imageHoverEffect,
         imageHoverOpacity,
         imageHoverScale,
@@ -486,6 +493,97 @@ const generatePostCarouselStyle = (attributes) => {
         postExcerptTabletPaddingCssStyle,
         postExcerptMobilePaddingCssStyle,
         /** End Post Excerpt Styling */
+
+        /** Start Post Category Styling */
+        postCategoryAlign,
+
+        postCategoryFontFamily,
+        postCategoryFontSize,
+        postCategoryFontSizeUnits,
+        postCategoryFontWeight,
+        postCategoryFontStyle,
+        postCategoryTextTransform,
+        postCategoryTextDecoration,
+        postCategoryLineHeight,
+        postCategoryLineHeightUnits,
+        postCategoryLetterSpacing,
+        postCategoryLetterSpacingUnits,
+        postCategoryWordSpacing,
+        postCategoryWordSpacingUnits,
+
+        postCategoryColorSwitcher,
+        postCategoryColor,
+        postCategoryColorHover,
+
+        postCategoryNormalBackgroundType,
+        postCategoryNormalClassicColor,
+        postCategoryNormalGradientColor,
+        postCategoryNormalCustomGradientSwitcher,
+        postCategoryNormalCustomGradientInputValue,
+        postCategoryHoverBackgroundType,
+        postCategoryHoverClassicColor,
+        postCategoryHoverGradientColor,
+        postCategoryHoverCustomGradientSwitcher,
+        postCategoryHoverCustomGradientInputValue,
+
+        postCategoryBorder,
+        postCategoryBorderColorSwitcher,
+        postCategoryBorderColor,
+        postCategoryBorderHoverColor,
+        postCategoryBorderUnits,
+        postCategoryBorderDesktop,
+        postCategoryBorderDesktopCssStyle,
+        postCategoryBorderTablet,
+        postCategoryBorderTabletCssStyle,
+        postCategoryBorderMobile,
+        postCategoryBorderMobileCssStyle,
+        postCategoryBorderLink,
+
+        postCategoryBorderRadiusUnits,
+        postCategoryBorderRadiusDesktop,
+        postCategoryBorderRadiusDesktopCssStyle,
+        postCategoryBorderRadiusTablet,
+        postCategoryBorderRadiusTabletCssStyle,
+        postCategoryBorderRadiusMobile,
+        postCategoryBorderRadiusMobileCssStyle,
+        postCategoryBorderRadiusLink,
+
+        postCategoryBoxShadowValuesSwitcher,
+        postCategoryBoxShadowValues,
+        postCategoryBoxShadowCssValue,
+        postCategoryBoxShadowHoverValues,
+        postCategoryBoxShadowHoverCssValue,
+
+        postCategoryGap,
+        postCategoryGapUnits,
+
+        postCategoryMarginUnits,
+        postCategoryDesktopMargin,
+        postCategoryDesktopMarginCssStyle,
+        postCategoryTabletMargin,
+        postCategoryTabletMarginCssStyle,
+        postCategoryMobileMargin,
+        postCategoryMobileMarginCssStyle,
+        postCategoryMarginLink,
+
+        postCategoryPaddingUnits,
+        postCategoryDesktopPadding,
+        postCategoryDesktopPaddingCssStyle,
+        postCategoryTabletPadding,
+        postCategoryTabletPaddingCssStyle,
+        postCategoryMobilePadding,
+        postCategoryMobilePaddingCssStyle,
+        postCategoryPaddingLink,
+
+        postCategoryItemPaddingUnits,
+        postCategoryItemDesktopPadding,
+        postCategoryItemDesktopPaddingCssStyle,
+        postCategoryItemTabletPadding,
+        postCategoryItemTabletPaddingCssStyle,
+        postCategoryItemMobilePadding,
+        postCategoryItemMobilePaddingCssStyle,
+        postCategoryItemPaddingLink,
+        /** End Post Category Styling */
 
     } = attributes;
 
@@ -648,6 +746,57 @@ const generatePostCarouselStyle = (attributes) => {
 
     const imageBackgroundNormalStyles = globalBackgroundStyleObjectToString(getImageBackgroundNormalStyles());
     const imageBackgroundHoverStyles = globalBackgroundStyleObjectToString(getImageBackgroundHoverStyles());
+
+    /**
+     * Get postCategory background normal styles
+     */
+    const getPostCategoryBackgroundNormalStyles = () => {
+        const bgType = postCategoryNormalBackgroundType;
+        const bgColor = postCategoryNormalClassicColor;
+        const bgGradient = postCategoryNormalGradientColor;
+        const customGradient = postCategoryNormalCustomGradientInputValue;
+        const customGradientEnabled = postCategoryNormalCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    /**
+     * Get postCategory background hover styles
+     */
+    const getPostCategoryBackgroundHoverStyles = () => {
+        const bgType = postCategoryHoverBackgroundType;
+        const bgColor = postCategoryHoverClassicColor;
+        const bgGradient = postCategoryHoverGradientColor;
+        const customGradient = postCategoryHoverCustomGradientInputValue;
+        const customGradientEnabled = postCategoryHoverCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    const postCategoryBackgroundNormalStyles = globalBackgroundStyleObjectToString(getPostCategoryBackgroundNormalStyles());
+    const postCategoryBackgroundHoverStyles = globalBackgroundStyleObjectToString(getPostCategoryBackgroundHoverStyles());
 
     /** Start All Block Style */
     const postCarouselCSS = `
@@ -957,6 +1106,56 @@ const generatePostCarouselStyle = (attributes) => {
             ${imageBoxShadowHoverCssValue ? `box-shadow: ${imageBoxShadowHoverCssValue} !important;` : ''}
         }
 
+        /* Post Category Styles */
+        .${blockId} .gslider-post-carousel-categories {
+            display: flex;
+            flex-wrap: wrap;
+            ${postCategoryAlign?.Desktop ? `justify-content: ${postCategoryAlign.Desktop === 'left' ? 'flex-start' : postCategoryAlign.Desktop === 'right' ? 'flex-end' : 'center'};` : ''}
+            ${postCategoryGap?.Desktop ? `gap: ${postCategoryGap.Desktop}${postCategoryGapUnits.Desktop};` : ''}
+            ${postCategoryDesktopMarginCssStyle ? `margin: ${postCategoryDesktopMarginCssStyle};` : ''}
+            ${postCategoryDesktopPaddingCssStyle ? `padding: ${postCategoryDesktopPaddingCssStyle};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-categories span {
+            ${postCategoryBackgroundNormalStyles ? `${postCategoryBackgroundNormalStyles}` : ''}
+            ${postCategoryColor ? `color: ${postCategoryColor};` : ''}
+            ${postCategoryFontFamily ? `font-family: ${postCategoryFontFamily};` : ''}
+            ${postCategoryFontSize.Desktop && postCategoryFontSizeUnits.Desktop ? `font-size: ${postCategoryFontSize.Desktop}${postCategoryFontSizeUnits.Desktop};` : ''}
+            ${postCategoryFontWeight ? `font-weight: ${postCategoryFontWeight};` : ''}
+            ${postCategoryFontStyle ? `font-style: ${postCategoryFontStyle};` : ''}
+            ${postCategoryTextTransform ? `text-transform: ${postCategoryTextTransform};` : ''}
+            ${postCategoryTextDecoration ? `text-decoration: ${postCategoryTextDecoration};` : ''}
+            ${postCategoryLineHeight.Desktop && postCategoryLineHeightUnits.Desktop ? `line-height: ${postCategoryLineHeight.Desktop}${postCategoryLineHeightUnits.Desktop};` : ''}
+            ${postCategoryLetterSpacing.Desktop && postCategoryLetterSpacingUnits.Desktop ? `letter-spacing: ${postCategoryLetterSpacing.Desktop}${postCategoryLetterSpacingUnits.Desktop};` : ''}
+            ${postCategoryWordSpacing.Desktop && postCategoryWordSpacingUnits.Desktop ? `word-spacing: ${postCategoryWordSpacing.Desktop}${postCategoryWordSpacingUnits.Desktop};` : ''}
+            ${postCategoryItemDesktopPaddingCssStyle ? `padding: ${postCategoryItemDesktopPaddingCssStyle};` : ''}
+            ${postCategoryBorder ? `border: ${postCategoryBorder};` : ''}
+            ${postCategoryBorderDesktopCssStyle ? `border-width: ${postCategoryBorderDesktopCssStyle};` : ''}
+            ${postCategoryBorderRadiusDesktopCssStyle ? `border-radius: ${postCategoryBorderRadiusDesktopCssStyle} !important;` : ''}
+            ${postCategoryBorderColor ? `border-color: ${postCategoryBorderColor};` : ''}
+            ${postCategoryBoxShadowCssValue ? `box-shadow: ${postCategoryBoxShadowCssValue} !important;` : ''}
+            display: inline-flex;
+            align-items: center;
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-categories span:hover {
+            ${postCategoryBackgroundHoverStyles ? `${postCategoryBackgroundHoverStyles}` : ''}
+            ${postCategoryColorHover ? `color: ${postCategoryColorHover};` : ''}
+            ${postCategoryBorderHoverColor ? `border-color: ${postCategoryBorderHoverColor};` : ''}
+            ${postCategoryBoxShadowHoverCssValue ? `box-shadow: ${postCategoryBoxShadowHoverCssValue} !important;` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-categories span a {
+            ${postCategoryColor ? `color: ${postCategoryColor};` : ''}
+            transition: all .3s ease-in-out;
+            text-decoration: none;
+        }
+
+        .${blockId} .gslider-post-carousel-categories span:hover a {
+            ${postCategoryColorHover ? `color: ${postCategoryColorHover};` : ''}
+        }
+
         .${blockId} .gslider-post-carousel-image img {
             ${imageMaxWidth.Desktop ? `max-width: ${imageMaxWidth.Desktop}${imageMaxWidthUnits.Desktop} !important;` : ''}
             height: 100% !important;
@@ -1143,6 +1342,24 @@ const generatePostCarouselStyle = (attributes) => {
                 ${imageBorderRadiusTabletCssStyle ? `border-radius: ${imageBorderRadiusTabletCssStyle} !important;` : ''}
             }
 
+            /* Post Category Styles */
+            .${blockId} .gslider-post-carousel-categories {
+                ${postCategoryAlign?.Tablet ? `justify-content: ${postCategoryAlign.Tablet === 'left' ? 'flex-start' : postCategoryAlign.Tablet === 'right' ? 'flex-end' : 'center'};` : ''}
+                ${postCategoryGap?.Tablet ? `gap: ${postCategoryGap.Tablet}${postCategoryGapUnits.Tablet};` : ''}
+                ${postCategoryTabletMarginCssStyle ? `margin: ${postCategoryTabletMarginCssStyle};` : ''}
+                ${postCategoryTabletPaddingCssStyle ? `padding: ${postCategoryTabletPaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-categories span {
+                ${postCategoryFontSize.Tablet && postCategoryFontSizeUnits.Tablet ? `font-size: ${postCategoryFontSize.Tablet}${postCategoryFontSizeUnits.Tablet};` : ''}
+                ${postCategoryLineHeight.Tablet && postCategoryLineHeightUnits.Tablet ? `line-height: ${postCategoryLineHeight.Tablet}${postCategoryLineHeightUnits.Tablet};` : ''}
+                ${postCategoryLetterSpacing.Tablet && postCategoryLetterSpacingUnits.Tablet ? `letter-spacing: ${postCategoryLetterSpacing.Tablet}${postCategoryLetterSpacingUnits.Tablet};` : ''}
+                ${postCategoryWordSpacing.Tablet && postCategoryWordSpacingUnits.Tablet ? `word-spacing: ${postCategoryWordSpacing.Tablet}${postCategoryWordSpacingUnits.Tablet};` : ''}
+                ${postCategoryItemTabletPaddingCssStyle ? `padding: ${postCategoryItemTabletPaddingCssStyle};` : ''}
+                ${postCategoryBorderTabletCssStyle ? `border-width: ${postCategoryBorderTabletCssStyle};` : ''}
+                ${postCategoryBorderRadiusTabletCssStyle ? `border-radius: ${postCategoryBorderRadiusTabletCssStyle} !important;` : ''}
+            }
+
             .${blockId} .gslider-post-carousel-image img {
                 ${imageMaxWidth.Tablet ? `max-width: ${imageMaxWidth.Tablet}${imageMaxWidthUnits.Tablet} !important;` : ''}
                 height: 100% !important;
@@ -1313,6 +1530,24 @@ const generatePostCarouselStyle = (attributes) => {
                 ${imagePaddingMobileCssStyle ? `padding: ${imagePaddingMobileCssStyle};` : ''}
                 ${imageBorderMobileCssStyle ? `border-width: ${imageBorderMobileCssStyle};` : ''}  
                 ${imageBorderRadiusMobileCssStyle ? `border-radius: ${imageBorderRadiusMobileCssStyle} !important;` : ''}
+            }
+
+            /* Post Category Styles */
+            .${blockId} .gslider-post-carousel-categories {
+                ${postCategoryAlign?.Mobile ? `justify-content: ${postCategoryAlign.Mobile === 'left' ? 'flex-start' : postCategoryAlign.Mobile === 'right' ? 'flex-end' : 'center'};` : ''}
+                ${postCategoryGap?.Mobile ? `gap: ${postCategoryGap.Mobile}${postCategoryGapUnits.Mobile};` : ''}
+                ${postCategoryMobileMarginCssStyle ? `margin: ${postCategoryMobileMarginCssStyle};` : ''}
+                ${postCategoryMobilePaddingCssStyle ? `padding: ${postCategoryMobilePaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-categories span {
+                ${postCategoryFontSize.Mobile && postCategoryFontSizeUnits.Mobile ? `font-size: ${postCategoryFontSize.Mobile}${postCategoryFontSizeUnits.Mobile};` : ''}
+                ${postCategoryLineHeight.Mobile && postCategoryLineHeightUnits.Mobile ? `line-height: ${postCategoryLineHeight.Mobile}${postCategoryLineHeightUnits.Mobile};` : ''}
+                ${postCategoryLetterSpacing.Mobile && postCategoryLetterSpacingUnits.Mobile ? `letter-spacing: ${postCategoryLetterSpacing.Mobile}${postCategoryLetterSpacingUnits.Mobile};` : ''}
+                ${postCategoryWordSpacing.Mobile && postCategoryWordSpacingUnits.Mobile ? `word-spacing: ${postCategoryWordSpacing.Mobile}${postCategoryWordSpacingUnits.Mobile};` : ''}
+                ${postCategoryItemMobilePaddingCssStyle ? `padding: ${postCategoryItemMobilePaddingCssStyle};` : ''}
+                ${postCategoryBorderMobileCssStyle ? `border-width: ${postCategoryBorderMobileCssStyle};` : ''}
+                ${postCategoryBorderRadiusMobileCssStyle ? `border-radius: ${postCategoryBorderRadiusMobileCssStyle} !important;` : ''}
             }
 
             .${blockId} .gslider-post-carousel-image img {
