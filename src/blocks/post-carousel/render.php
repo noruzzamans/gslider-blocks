@@ -38,6 +38,15 @@ $keyboard_navigation     = ! empty( $attributes['keyboardNavigation'] );
 $pagination_type         = isset( $attributes['paginationType'] ) ? sanitize_text_field( $attributes['paginationType'] ) : 'bullets';
 $dynamic_bullets         = ! empty( $attributes['dynamicBullets'] );
 
+// Read More Button settings
+$read_more_button_text        = ! empty( $attributes['readMoreButtonText'] ) ? sanitize_text_field( $attributes['readMoreButtonText'] ) : 'Read More';
+$read_more_button_link_type   = isset( $attributes['readMoreButtonLinkType'] ) ? sanitize_text_field( $attributes['readMoreButtonLinkType'] ) : 'post';
+$read_more_button_link        = isset( $attributes['readMoreButtonLink'] ) ? $attributes['readMoreButtonLink'] : '#';
+$read_more_button_target_link = isset( $attributes['readMoreButtonTargetLink'] ) ? (bool) $attributes['readMoreButtonTargetLink'] : true;
+$read_more_button_nofollow    = ! empty( $attributes['readMoreButtonNofollow'] );
+$read_more_button_sponsored   = ! empty( $attributes['readMoreButtonSponsored'] );
+$show_read_more_button        = isset( $attributes['showReadMoreButton'] ) ? $attributes['showReadMoreButton'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+
 // Show/Hide Elements
 $show_navigation     = isset( $attributes['showNavigation'] ) ? $attributes['showNavigation'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_pagination     = isset( $attributes['showPagination'] ) ? $attributes['showPagination'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
@@ -48,8 +57,9 @@ $navigation_arrow_position_type = isset( $attributes['navigationArrowPositionTyp
 $navigation_arrow_position      = isset( $attributes['navigationArrowPosition'] ) ? sanitize_text_field( $attributes['navigationArrowPosition'] ) : 'center';
 
 // Check if elements enabled
-$any_navigation_enabled     = ! empty( $show_navigation['Desktop'] ) || ! empty( $show_navigation['Tablet'] ) || ! empty( $show_navigation['Mobile'] );
-$any_pagination_enabled     = ! empty( $show_pagination['Desktop'] ) || ! empty( $show_pagination['Tablet'] ) || ! empty( $show_pagination['Mobile'] );
+$any_navigation_enabled       = ! empty( $show_navigation['Desktop'] ) || ! empty( $show_navigation['Tablet'] ) || ! empty( $show_navigation['Mobile'] );
+$any_pagination_enabled       = ! empty( $show_pagination['Desktop'] ) || ! empty( $show_pagination['Tablet'] ) || ! empty( $show_pagination['Mobile'] );
+$any_read_more_button_enabled = ! empty( $show_read_more_button['Desktop'] ) || ! empty( $show_read_more_button['Tablet'] ) || ! empty( $show_read_more_button['Mobile'] );
 
 // Content Order Normalization
 $default_content_order = array( 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' );
@@ -341,9 +351,26 @@ $wrapper_attributes = get_block_wrapper_attributes(
                                         break;
 
                                     case 'readmore':
+                                        if ( ! $any_read_more_button_enabled ) {
+                                            break;
+                                        }
+                                        $read_more_url = ( 'custom' === $read_more_button_link_type ) ? $read_more_button_link : get_permalink( $post_id );
+                                        $rel_items = array();
+                                        if ( $read_more_button_target_link ) {
+                                            $rel_items[] = 'noopener';
+                                            $rel_items[] = 'noreferrer';
+                                        }
+                                        if ( $read_more_button_nofollow ) {
+                                            $rel_items[] = 'nofollow';
+                                        }
+                                        if ( $read_more_button_sponsored ) {
+                                            $rel_items[] = 'sponsored';
+                                        }
+                                        $rel_attr = ! empty( $rel_items ) ? ' rel="' . esc_attr( implode( ' ', $rel_items ) ) . '"' : '';
+                                        $target_attr = $read_more_button_target_link ? ' target="_blank"' : '';
                                         ?>
                                         <div class="gslider-post-carousel-readmore">
-                                            <a href="<?php the_permalink(); ?>"><?php esc_html_e( 'Read More', 'gslider-blocks' ); ?> →</a>
+                                            <a class="gslider-post-carousel-readmore-btn" href="<?php echo esc_url( $read_more_url ); ?>"<?php echo $target_attr; ?><?php echo $rel_attr; ?>><?php echo esc_html( $read_more_button_text ); ?> →</a>
                                         </div>
                                         <?php
                                         break;

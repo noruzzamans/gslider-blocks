@@ -2863,6 +2863,41 @@ const attributes = {
     },
     /** End Post Category Item Padding */
     /** End Post Category Styling */
+
+    /** Read More Button Styling */
+    showReadMoreButton: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
+    readMoreButtonText: {
+        type: "string",
+        default: "Read More",
+    },
+    readMoreButtonLinkType: {
+        type: "string",
+        default: "post",
+    },
+    readMoreButtonLink: {
+        type: "string",
+        default: "#",
+    },
+    readMoreButtonTargetLink: {
+        type: "boolean",
+        default: true,
+    },
+    readMoreButtonNofollow: {
+        type: "boolean",
+        default: false,
+    },
+    readMoreButtonSponsored: {
+        type: "boolean",
+        default: false,
+    },
+    /** End Read More Button Styling */
 };
 
 export default attributes;

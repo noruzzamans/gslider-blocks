@@ -37,6 +37,7 @@ const generatePostCarouselStyle = (attributes) => {
         paginationPositionType,
         showNavigation,
         showPagination,
+        showReadMoreButton,
         /** End Show/Hide Elements */
 
 
@@ -1177,6 +1178,10 @@ const generatePostCarouselStyle = (attributes) => {
             ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(0);' : ''}
         }
 
+        .${blockId} .gslider-post-carousel-readmore {
+            display: ${showReadMoreButton?.Desktop ? 'block' : 'none'};
+        }
+
 
         @media only screen and (max-width: 1024px) {
 
@@ -1367,6 +1372,10 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-scale: ${imageHoverScale?.Tablet || 1.05};
                 --hover-lift: ${imageHoverLift?.Tablet || 10}${imageHoverLiftUnits?.Tablet || 'px'};
             }
+
+            .${blockId} .gslider-post-carousel-readmore {
+                display: ${showReadMoreButton?.Tablet ? 'block' : 'none'};
+            }
         }
         
         @media only screen and (max-width: 767px) {
@@ -1556,6 +1565,10 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-opacity: ${imageHoverOpacity?.Mobile || 0.8};
                 --hover-scale: ${imageHoverScale?.Mobile || 1.05};
                 --hover-lift: ${imageHoverLift?.Mobile || 10}${imageHoverLiftUnits?.Mobile || 'px'};
+            }
+
+            .${blockId} .gslider-post-carousel-readmore {
+                display: ${showReadMoreButton?.Mobile ? 'block' : 'none'};
             }
         }
     `;

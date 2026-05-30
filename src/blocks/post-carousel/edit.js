@@ -66,6 +66,14 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		enableLazyLoad,
 		contentOrder,
 
+		readMoreButtonText,
+		showReadMoreButton,
+		readMoreButtonLinkType,
+		readMoreButtonLink,
+		readMoreButtonTargetLink,
+		readMoreButtonNofollow,
+		readMoreButtonSponsored,
+
 		postType,
 		postTitleHtmlTag,
 		postExcerptHtmlTag,
@@ -350,11 +358,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														</div>
 													) : null,
 
-													readmore: (
+													readmore: showReadMoreButton?.[deviceType] ? (
 														<div key="readmore" className="gslider-post-carousel-readmore">
-															<a href="#">{__('Read More', 'gslider-blocks')} →</a>
+															<a className="gslider-post-carousel-readmore-btn" href="#" onClick={(e) => e.preventDefault()}>
+																{readMoreButtonText || __('Read More', 'gslider-blocks')} →
+															</a>
 														</div>
-													),
+													) : null,
 												};
 
 												return normalizedContentOrder.map((groupKey) => renderGroupMap[groupKey] || null);

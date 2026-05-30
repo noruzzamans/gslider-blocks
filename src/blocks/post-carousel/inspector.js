@@ -1,7 +1,21 @@
-import { __, sprintf } from '@wordpress/i18n';
-import { useState, useEffect, useMemo, memo, useCallback } from '@wordpress/element';
-import { PanelBody, ToggleControl, BaseControl, Button, RangeControl, SelectControl, TextControl, FormTokenField } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
+import {
+    useState,
+    useEffect,
+    useMemo,
+    memo,
+    useCallback
+} from '@wordpress/element';
+import {
+    PanelBody,
+    ToggleControl,
+    BaseControl,
+    Button,
+    RangeControl,
+    SelectControl,
+    TextControl,
+    FormTokenField
+} from '@wordpress/components';
 
 /**
  * Internal Dependencies
@@ -49,6 +63,7 @@ import ContentOrderControl from '@Components/content-order-control';
 import { normalizeContentOrder } from './content-order';
 import QuerySettingsPanel from '@Components/query-settings-panel';
 import HtmlTagControl from '@Components/html-tag-control';
+import UrlControl from '@Components/url-control';
 
 const Inspector = ({ attributes, setAttributes, clientId }) => {
     const {
@@ -663,6 +678,15 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
+        /** Read More Button Styling */
+        showReadMoreButton,
+        readMoreButtonText,
+        readMoreButtonLinkType,
+        readMoreButtonLink,
+        readMoreButtonTargetLink,
+        readMoreButtonNofollow,
+        readMoreButtonSponsored,
+        /** End Read More Button Styling */
     } = attributes;
 
     /** Get Current Device Type and set device Type */
@@ -839,8 +863,15 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     deviceType={deviceType}
                     setAttributes={setAttributes}
                 />
+                <ResponsiveToggleControl
+                    label={__("Show Read More Button", "gslider-blocks")}
+                    toggleValue={showReadMoreButton}
+                    setToggleValue={(value) => setAttributes({ showReadMoreButton: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
             </PanelBody>
-            
+
             <PanelBody
                 title={__("Layout & Content Setting", "gslider-blocks")}
                 opened={openPanels.general === "layout-content-setting"}
@@ -1029,6 +1060,59 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     onChange={(value) => setAttributes({ carouselEffect: value })}
                 />
             </PanelBody>
+            
+            {showReadMoreButton?.[deviceType] && (
+                <PanelBody
+                    title={__("Read More Button", "gslider-blocks")}
+                    opened={openPanels.general === "read-more-button"}
+                    onToggle={() => togglePanel("general", "read-more-button")}
+                >
+                    <TextControl
+                        label={__("Read More Button Text", "gslider-blocks")}
+                        value={readMoreButtonText}
+                        onChange={(value) => setAttributes({ readMoreButtonText: value })}
+                    />
+                    <SwitcherControl
+                        label={__("Link Type", "gslider-blocks")}
+                        options={[
+                            { label: __("Post Permalink", "gslider-blocks"), value: "post" },
+                            { label: __("Custom Link", "gslider-blocks"), value: "custom" },
+                        ]}
+                        value={readMoreButtonLinkType}
+                        onChange={(value) => setAttributes({ readMoreButtonLinkType: value })}
+                    />
+                    {readMoreButtonLinkType === "custom" ? (
+                        <UrlControl
+                            url={readMoreButtonLink}
+                            onChangeUrl={(value) => setAttributes({ readMoreButtonLink: value })}
+                            openInNewTab={readMoreButtonTargetLink}
+                            onChangeOpenInNewTab={(value) => setAttributes({ readMoreButtonTargetLink: value })}
+                            nofollow={readMoreButtonNofollow}
+                            onChangeNofollow={(value) => setAttributes({ readMoreButtonNofollow: value })}
+                            sponsored={readMoreButtonSponsored}
+                            onChangeSponsored={(value) => setAttributes({ readMoreButtonSponsored: value })}
+                        />
+                    ) : (
+                        <>
+                            <ToggleControl
+                                label={__("Open in New Tab", "gslider-blocks")}
+                                checked={readMoreButtonTargetLink}
+                                onChange={(value) => setAttributes({ readMoreButtonTargetLink: value })}
+                            />
+                            <ToggleControl
+                                label={__("Add Nofollow rel", "gslider-blocks")}
+                                checked={readMoreButtonNofollow}
+                                onChange={(value) => setAttributes({ readMoreButtonNofollow: value })}
+                            />
+                            <ToggleControl
+                                label={__("Add Sponsored rel", "gslider-blocks")}
+                                checked={readMoreButtonSponsored}
+                                onChange={(value) => setAttributes({ readMoreButtonSponsored: value })}
+                            />
+                        </>
+                    )}
+                </PanelBody>
+            )}
 
             {showNavigation?.[deviceType] && (
                 <PanelBody
