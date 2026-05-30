@@ -60,7 +60,6 @@ import generateSvgIcon from '@Utils/generateSvgIcon';
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import { useDeviceType } from "@Utils/displayType";
 import InputControls from '@Components/input-control';
-import SelectControls from '@Components/select-controls';
 import Select2Control from '@Components/select2-control';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
@@ -1287,7 +1286,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                 opened={openPanels.general === "carousel-effect"}
                 onToggle={() => togglePanel("general", "carousel-effect")}
             >
-                <SelectControls
+                <Select2Control
                     label={__('Effect Type', 'gslider-blocks')}
                     options={CAROUSEL_EFFECT_OPTIONS}
                     value={carouselEffect}
@@ -1462,7 +1461,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         onChange={(value) => setAttributes({ navigationArrowPositionType: value })}
                     />
 
-                    <SelectControls
+                    <Select2Control
                         label={__("Position", "gslider-blocks")}
                         options={NAVIGATION_ARROW_POSITION}
                         value={navigationArrowPosition}
@@ -1470,7 +1469,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     />
 
                     {navigationArrowPosition !== 'center' && (
-                        <SelectControls
+                        <Select2Control
                             label={__("Arrow Direction", "gslider-blocks")}
                             options={NAVIGATION_ARROW_DIRECTION}
                             value={navigationArrowDirection}
@@ -1710,7 +1709,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         onChange={(value) => setAttributes({ paginationPositionType: value })}
                     />
 
-                    <SelectControls
+                    <Select2Control
                         label={__("Type", "gslider-blocks")}
                         options={PAGINATION_TYPE}
                         value={paginationType}
@@ -1779,7 +1778,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     }}
                 />
 
-                <SelectControls
+                <Select2Control
                     label={__("Object Fit", "gslider-blocks")}
                     options={[
                         { label: __('Cover', 'gslider-blocks'), value: 'cover' },
@@ -1791,7 +1790,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     onChange={(value) => setAttributes({ imageObjectFit: value })}
                 />
 
-                <SelectControls
+                <Select2Control
                     label={__("Object Position", "gslider-blocks")}
                     options={[
                         { label: __('Center', 'gslider-blocks'), value: 'center' },
@@ -1875,7 +1874,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     isBackgroundImage={false}
                 />
 
-                <SelectControls
+                <Select2Control
                     label={__("Border Style", "gslider-blocks")}
                     options={BORDER_STYLES}
                     value={imageBorder}
@@ -1968,7 +1967,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     />
                 )}
 
-                <SelectControls
+                <Select2Control
                     label={__('Hover Effect', 'gslider-blocks')}
                     options={[
                         { label: __('None', 'gslider-blocks'), value: 'none' },
@@ -2160,7 +2159,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     isBackgroundImage={false}
                 />
 
-                <SelectControls
+                <Select2Control
                     label={__('Border Style', 'gslider-blocks')}
                     options={BORDER_STYLES}
                     value={postCategoryBorder}
@@ -2717,7 +2716,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                             isBackgroundImage={false}
                         />
 
-                        <SelectControls
+                        <Select2Control
                             label={__("Border Style", "gslider-blocks")}
                             options={BORDER_STYLES}
                             value={readMoreButtonBorder}
@@ -3031,7 +3030,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                             isBackgroundImage={false}
                         />
 
-                        <SelectControls
+                        <Select2Control
                             label={__("Border Style", "gslider-blocks")}
                             options={BORDER_STYLES}
                             value={readMoreButtonIconBorder}
@@ -3245,7 +3244,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         isBackgroundImage={false}
                     />
 
-                    <SelectControls
+                    <Select2Control
                         label={__("Border Style", "gslider-blocks")}
                         options={BORDER_STYLES}
                         value={navigationArrowBorder}
@@ -3454,7 +3453,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                                         defaultColor='#333333'
                                     />
 
-                                    <SelectControls
+                                    <Select2Control
                                         label={__("Border Style", "gslider-blocks")}
                                         options={BORDER_STYLES}
                                         value={paginationNormalDotsBorder}
@@ -3572,7 +3571,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                                         onChangeColor={(value) => setAttributes({ paginationActiveDotsBgColor: value })}
                                     />
 
-                                    <SelectControls
+                                    <Select2Control
                                         label={__("Border Style", "gslider-blocks")}
                                         options={BORDER_STYLES}
                                         value={paginationActiveDotsBorder}
@@ -3908,7 +3907,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                 opened={openPanels.advanced === "border-shadow"}
                 onToggle={() => togglePanel("advanced", "border-shadow")}
             >
-                <SelectControls
+                <Select2Control
                     label={__("Border Style", "gslider-blocks")}
                     options={BORDER_STYLES}
                     value={globalBorder}
