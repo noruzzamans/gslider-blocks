@@ -230,6 +230,11 @@ export const LAYOUT_HEIGHT_SWITCHER = [
     { label: __("Adapt", "gslider-blocks"), value: "adapt" },
 ];
 
+export const WIDTH_MODE = [
+    { label: __("Inline", "gslider-blocks"), value: "inline" },
+    { label: __("Full Width", "gslider-blocks"), value: "full" },
+];
+
 export const OBJECT_FIT_OPTIONS = [
   { label: __("Contain", "gslider-blocks"), value: "contain" },
   { label: __("Cover", "gslider-blocks"), value: "cover" },

@@ -3344,6 +3344,25 @@ const attributes = {
     },
     /** End Read More Button Padding */
 
+    /** Start Read More Button Layout & Alignment */
+    readMoreButtonAlign: {
+        type: "object",
+        default: {
+            Desktop: "left",
+            Tablet: "left",
+            Mobile: "left",
+        },
+    },
+    readMoreButtonWidth: {
+        type: "string",
+        default: "inline",
+    },
+    readMoreButtonHoverAnimation: {
+        type: "string",
+        default: "none",
+    },
+    /** End Read More Button Layout & Alignment */
+
     /** Start Read More Button Icon Size */
     readMoreButtonIconSize: {
         type: "object",
@@ -3420,6 +3439,13 @@ const attributes = {
         },
     },
     /** End Read More Button Icon Rotation */
+
+    /** Start Read More Button Icon Hover Animation */
+    readMoreButtonIconHoverAnimation: {
+        type: "string",
+        default: "none",
+    },
+    /** End Read More Button Icon Hover Animation */
 
     /** Start Read More Button Icon Gap */
     readMoreButtonIconGap: {

@@ -39,6 +39,7 @@ import {
     HTML_TAGS,
     ICON_TYPE,
     ICON_POSITION,
+    WIDTH_MODE,
 
 } from "@Constants";
 
@@ -60,6 +61,7 @@ import ResponsiveAlignmentControl from '@Components/responsive-alignment-control
 import { useDeviceType } from "@Utils/displayType";
 import InputControls from '@Components/input-control';
 import SelectControls from '@Components/select-controls';
+import Select2Control from '@Components/select2-control';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
 import ContentOrderControl from '@Components/content-order-control';
@@ -689,6 +691,9 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonTargetLink,
         readMoreButtonNofollow,
         readMoreButtonSponsored,
+        readMoreButtonAlign,
+        readMoreButtonWidth,
+        readMoreButtonHoverAnimation,
         /** End Read More Button Settings */
 
         /** Start Read More Button Icon */
@@ -700,6 +705,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonIconImageUrl,
         readMoreButtonIconImageAlt,
         readMoreButtonIconImageID,
+        readMoreButtonIconHoverAnimation,
         /** End Read More Button Icon */
 
         /** Start Read More Button Typography */
@@ -2623,6 +2629,40 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
                             deviceType={deviceType}
                         />
+
+                        <SwitcherControl
+                            label={__("Button Width", "gslider-blocks")}
+                            options={WIDTH_MODE}
+                            value={readMoreButtonWidth}
+                            onChange={(value) => setAttributes({ readMoreButtonWidth: value })}
+                        />
+
+                        {readMoreButtonWidth !== 'full' && (
+                            <ResponsiveAlignmentControl
+                                label={__("Button Alignment", "gslider-blocks")}
+                                options={TEXT_ALIGN}
+                                alignmentValue={readMoreButtonAlign}
+                                setAlignmentValue={(value) => setAttributes({ readMoreButtonAlign: value })}
+                                deviceType={deviceType}
+                                setAttributes={setAttributes}
+                            />
+                        )}
+
+                        <Select2Control
+                            label={__("Button Hover Animation", "gslider-blocks")}
+                            options={[
+                                { label: __("None", "gslider-blocks"), value: "none" },
+                                { label: __("Grow", "gslider-blocks"), value: "grow" },
+                                { label: __("Shrink", "gslider-blocks"), value: "shrink" },
+                                { label: __("Float Up", "gslider-blocks"), value: "float" },
+                                { label: __("Shift Right", "gslider-blocks"), value: "shift-right" },
+                                { label: __("Shimmer (Shiny Sweep)", "gslider-blocks"), value: "shimmer" },
+                                { label: __("Pulse", "gslider-blocks"), value: "pulse" },
+                            ]}
+                            value={readMoreButtonHoverAnimation}
+                            onChange={(value) => setAttributes({ readMoreButtonHoverAnimation: value })}
+                        />
+
                         <SwitcherControl
                             label={__("Color", "gslider-blocks")}
                             options={NORMAL_HOVER}
@@ -2833,6 +2873,19 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                             unitBounds={{
                                 px: { min: 0, max: 200, step: 1 },
                             }}
+                        />
+
+                        <Select2Control
+                            label={__("Icon Hover Animation", "gslider-blocks")}
+                            options={[
+                                { label: __("None", "gslider-blocks"), value: "none" },
+                                { label: __("Slide Right", "gslider-blocks"), value: "slide-right" },
+                                { label: __("Slide Left", "gslider-blocks"), value: "slide-left" },
+                                { label: __("Zoom In", "gslider-blocks"), value: "zoom-in" },
+                                { label: __("Zoom Out", "gslider-blocks"), value: "zoom-out" },
+                            ]}
+                            value={readMoreButtonIconHoverAnimation}
+                            onChange={(value) => setAttributes({ readMoreButtonIconHoverAnimation: value })}
                         />
 
                         <ResponsiveRangeControl
