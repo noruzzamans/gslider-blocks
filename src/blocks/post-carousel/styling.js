@@ -586,6 +586,167 @@ const generatePostCarouselStyle = (attributes) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
+        /** Start Primary Button Typography */
+        readMoreButtonFontFamily,
+        readMoreButtonFontSize,
+        readMoreButtonFontSizeUnits,
+        readMoreButtonFontWeight,
+        readMoreButtonFontStyle,
+        readMoreButtonTextTransform,
+        readMoreButtonTextDecoration,
+        readMoreButtonLineHeight,
+        readMoreButtonLineHeightUnits,
+        readMoreButtonLetterSpacing,
+        readMoreButtonLetterSpacingUnits,
+        readMoreButtonWordSpacing,
+        readMoreButtonWordSpacingUnits,
+        /** End Primary Button Typography */
+
+        /** Start Primary Button Color */
+        readMoreButtonColorSwitcher,
+        readMoreButtonColor,
+        readMoreButtonColorHover,
+        /** End Primary Button Color */
+
+        /** Start Primary Button Background */
+        readMoreButtonNormalBackgroundType,
+        readMoreButtonNormalClassicColor,
+        readMoreButtonNormalGradientColor,
+        readMoreButtonNormalCustomGradientSwitcher,
+        readMoreButtonNormalCustomGradientInputValue,
+        readMoreButtonHoverBackgroundType,
+        readMoreButtonHoverClassicColor,
+        readMoreButtonHoverGradientColor,
+        readMoreButtonHoverCustomGradientSwitcher,
+        readMoreButtonHoverCustomGradientInputValue,
+        /** End Primary Button Background */
+
+        /** Start Primary Button Border */
+        readMoreButtonBorder,
+        readMoreButtonBorderColorSwitcher,
+        readMoreButtonBorderColor,
+        readMoreButtonBorderHoverColor,
+        readMoreButtonBorderUnits,
+        readMoreButtonDesktopBorder,
+        readMoreButtonDesktopBorderCssStyle,
+        readMoreButtonTabletBorder,
+        readMoreButtonTabletBorderCssStyle,
+        readMoreButtonMobileBorder,
+        readMoreButtonMobileBorderCssStyle,
+        readMoreButtonBorderLink,
+        /** End Primary Button Border */
+
+        /** Start Primary Button Border Radius */
+        readMoreButtonBorderRadiusUnits,
+        readMoreButtonDesktopBorderRadius,
+        readMoreButtonDesktopBorderRadiusCssStyle,
+        readMoreButtonTabletBorderRadius,
+        readMoreButtonTabletBorderRadiusCssStyle,
+        readMoreButtonMobileBorderRadius,
+        readMoreButtonMobileBorderRadiusCssStyle,
+        readMoreButtonBorderRadiusLink,
+        /** End Primary Button Border Radius */
+
+        /** Start Primary Button Box Shadow */
+        readMoreButtonBoxShadowValuesSwitcher,
+        readMoreButtonBoxShadowValues,
+        readMoreButtonBoxShadowCssValue,
+        readMoreButtonBoxShadowHoverValues,
+        readMoreButtonBoxShadowHoverCssValue,
+        /** End Primary Button Box Shadow */
+
+        /** Start Primary Button Margin */
+        readMoreButtonMarginUnits,
+        readMoreButtonDesktopMargin,
+        readMoreButtonDesktopMarginCssStyle,
+        readMoreButtonTabletMargin,
+        readMoreButtonTabletMarginCssStyle,
+        readMoreButtonMobileMargin,
+        readMoreButtonMobileMarginCssStyle,
+        readMoreButtonMarginLink,
+        /** End Primary Button Margin */
+
+        /** Start Primary Button Padding */
+        readMoreButtonPaddingUnits,
+        readMoreButtonDesktopPadding,
+        readMoreButtonDesktopPaddingCssStyle,
+        readMoreButtonTabletPadding,
+        readMoreButtonTabletPaddingCssStyle,
+        readMoreButtonMobilePadding,
+        readMoreButtonMobilePaddingCssStyle,
+        readMoreButtonPaddingLink,
+        /** End Primary Button Padding */
+
+        /** Start Read More Button Icon Style */
+        readMoreButtonIconSize,
+        readMoreButtonIconSizeUnits,
+        /** End Read More Button Icon Style */
+
+        /** Start Read More Button Icon Dimensions */
+        readMoreButtonIconWidth,
+        readMoreButtonIconWidthUnits,
+        readMoreButtonIconHeight,
+        readMoreButtonIconHeightUnits,
+        /** End Read More Button Icon Dimensions */
+
+        /** Start Read More Button Icon Gap */
+        readMoreButtonIconGap,
+        readMoreButtonIconGapUnits,
+        /** End Read More Button Icon Gap */
+
+        /** Start Read More Button Icon Color */
+        readMoreButtonIconColorSwitcher,
+        readMoreButtonIconColor,
+        readMoreButtonIconColorHover,
+        /** End Read More Button Icon Color */
+
+        /** Start Read More Button Icon Background */
+        readMoreButtonIconNormalBackgroundType,
+        readMoreButtonIconNormalClassicColor,
+        readMoreButtonIconNormalGradientColor,
+        readMoreButtonIconNormalCustomGradientSwitcher,
+        readMoreButtonIconNormalCustomGradientInputValue,
+
+        readMoreButtonIconHoverBackgroundType,
+        readMoreButtonIconHoverClassicColor,
+        readMoreButtonIconHoverGradientColor,
+        readMoreButtonIconHoverCustomGradientSwitcher,
+        readMoreButtonIconHoverCustomGradientInputValue,
+        /** End Read More Button Icon Background */
+
+        /** Start Read More Button Icon Border */
+        readMoreButtonIconBorder,
+        readMoreButtonIconBorderColorSwitcher,
+        readMoreButtonIconBorderColor,
+        readMoreButtonIconBorderHoverColor,
+        readMoreButtonIconBorderUnits,
+        readMoreButtonIconDesktopBorder,
+        readMoreButtonIconDesktopBorderCssStyle,
+        readMoreButtonIconTabletBorder,
+        readMoreButtonIconTabletBorderCssStyle,
+        readMoreButtonIconMobileBorder,
+        readMoreButtonIconMobileBorderCssStyle,
+        readMoreButtonIconBorderLink,
+        /** End Read More Button Icon Border */
+
+        /** Start Read More Button Icon Border Radius */
+        readMoreButtonIconBorderRadiusUnits,
+        readMoreButtonIconDesktopBorderRadius,
+        readMoreButtonIconDesktopBorderRadiusCssStyle,
+        readMoreButtonIconTabletBorderRadius,
+        readMoreButtonIconTabletBorderRadiusCssStyle,
+        readMoreButtonIconMobileBorderRadius,
+        readMoreButtonIconMobileBorderRadiusCssStyle,
+        readMoreButtonIconBorderRadiusLink,
+        /** End Read More Button Icon Border Radius */
+
+        /** Start Read More Button Icon Box Shadow */
+        readMoreButtonIconBoxShadowValuesSwitcher,
+        readMoreButtonIconBoxShadowValues,
+        readMoreButtonIconBoxShadowCssValue,
+        readMoreButtonIconBoxShadowHoverValues,
+        readMoreButtonIconBoxShadowHoverCssValue,
+        /** End Read More Button Icon Box Shadow */
     } = attributes;
 
     /**
@@ -1180,6 +1341,101 @@ const generatePostCarouselStyle = (attributes) => {
 
         .${blockId} .gslider-post-carousel-readmore {
             display: ${showReadMoreButton?.Desktop ? 'block' : 'none'};
+            ${readMoreButtonDesktopMarginCssStyle ? `margin: ${readMoreButtonDesktopMarginCssStyle};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn {
+            ${readMoreButtonFontFamily ? `font-family: ${readMoreButtonFontFamily};` : ''}
+            ${readMoreButtonFontSize.Desktop && readMoreButtonFontSizeUnits.Desktop ? `font-size: ${readMoreButtonFontSize.Desktop}${readMoreButtonFontSizeUnits.Desktop};` : ''}
+            ${readMoreButtonFontWeight ? `font-weight: ${readMoreButtonFontWeight};` : ''}
+            ${readMoreButtonFontStyle ? `font-style: ${readMoreButtonFontStyle};` : ''}
+            ${readMoreButtonTextTransform ? `text-transform: ${readMoreButtonTextTransform};` : ''}
+            ${readMoreButtonTextDecoration ? `text-decoration: ${readMoreButtonTextDecoration} !important;` : ''}
+            ${readMoreButtonLineHeight.Desktop && readMoreButtonLineHeightUnits.Desktop ? `line-height: ${readMoreButtonLineHeight.Desktop}${readMoreButtonLineHeightUnits.Desktop};` : ''}
+            ${readMoreButtonLetterSpacing.Desktop && readMoreButtonLetterSpacingUnits.Desktop ? `letter-spacing: ${readMoreButtonLetterSpacing.Desktop}${readMoreButtonLetterSpacingUnits.Desktop};` : ''}
+            ${readMoreButtonWordSpacing.Desktop && readMoreButtonWordSpacingUnits.Desktop ? `word-spacing: ${readMoreButtonWordSpacing.Desktop}${readMoreButtonWordSpacingUnits.Desktop};` : ''}
+            ${readMoreButtonColor ? `color: ${readMoreButtonColor};` : ''}
+            ${readMoreButtonNormalBackgroundType === 'gradient' ? `  
+                background: ${readMoreButtonNormalCustomGradientSwitcher && readMoreButtonNormalCustomGradientInputValue ? readMoreButtonNormalCustomGradientInputValue : readMoreButtonNormalGradientColor ? readMoreButtonNormalGradientColor : readMoreButtonNormalClassicColor};
+            ` : `
+                ${readMoreButtonNormalClassicColor ? `background: ${readMoreButtonNormalClassicColor};` : ''}
+            `}
+            ${readMoreButtonBorder ? `border: ${readMoreButtonBorder};` : ''}
+            ${readMoreButtonBorderColor ? `border-color: ${readMoreButtonBorderColor};` : ''}
+            ${readMoreButtonDesktopBorderCssStyle ? `border-width: ${readMoreButtonDesktopBorderCssStyle};` : ''}  
+            ${readMoreButtonDesktopBorderRadiusCssStyle ? `border-radius: ${readMoreButtonDesktopBorderRadiusCssStyle};` : ''}
+            ${readMoreButtonBoxShadowCssValue ? `box-shadow: ${readMoreButtonBoxShadowCssValue};` : ''}
+            ${readMoreButtonDesktopPaddingCssStyle ? `padding: ${readMoreButtonDesktopPaddingCssStyle};` : ''}
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            ${readMoreButtonIconGap?.Desktop ? `gap: ${readMoreButtonIconGap.Desktop}${readMoreButtonIconGapUnits.Desktop};` : ''}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:hover {
+            ${readMoreButtonColorHover ? `color: ${readMoreButtonColorHover};` : ''}
+            ${readMoreButtonHoverBackgroundType === 'gradient' ? `   
+                background: ${readMoreButtonHoverCustomGradientSwitcher && readMoreButtonHoverCustomGradientInputValue ? readMoreButtonHoverCustomGradientInputValue : readMoreButtonHoverGradientColor ? readMoreButtonHoverGradientColor : readMoreButtonHoverClassicColor};
+            ` : `
+                ${readMoreButtonHoverClassicColor ? `background: ${readMoreButtonHoverClassicColor};` : ''}
+            `}
+            ${readMoreButtonBorderHoverColor ? `border-color: ${readMoreButtonBorderHoverColor};` : ''}
+            ${readMoreButtonBoxShadowHoverCssValue ? `box-shadow: ${readMoreButtonBoxShadowHoverCssValue};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Read More Button Icon Styles */
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            ${readMoreButtonIconWidth.Desktop ? `width: ${readMoreButtonIconWidth.Desktop}${readMoreButtonIconWidthUnits.Desktop};` : ''}
+            ${readMoreButtonIconHeight.Desktop ? `height: ${readMoreButtonIconHeight.Desktop}${readMoreButtonIconHeightUnits.Desktop};` : ''}
+            ${readMoreButtonIconBorder ? `border: ${readMoreButtonIconBorder};` : ''}
+            ${readMoreButtonIconBorderColor ? `border-color: ${readMoreButtonIconBorderColor};` : ''}
+            ${readMoreButtonIconDesktopBorderCssStyle ? `border-width: ${readMoreButtonIconDesktopBorderCssStyle};` : ''}
+            ${readMoreButtonIconDesktopBorderRadiusCssStyle ? `border-radius: ${readMoreButtonIconDesktopBorderRadiusCssStyle};` : ''}
+            ${readMoreButtonIconBoxShadowCssValue ? `box-shadow: ${readMoreButtonIconBoxShadowCssValue};` : ''}
+            ${readMoreButtonIconNormalBackgroundType === 'gradient' ? `  
+                background: ${readMoreButtonIconNormalCustomGradientSwitcher && readMoreButtonIconNormalCustomGradientInputValue ? readMoreButtonIconNormalCustomGradientInputValue : readMoreButtonIconNormalGradientColor ? readMoreButtonIconNormalGradientColor : readMoreButtonIconNormalClassicColor};
+            ` : `
+                ${readMoreButtonIconNormalClassicColor ? `background: ${readMoreButtonIconNormalClassicColor};` : ''}
+            `}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:hover .gslider-readmore-icon-wrap {
+            ${readMoreButtonIconBorderHoverColor ? `border-color: ${readMoreButtonIconBorderHoverColor};` : ''}
+            ${readMoreButtonIconBoxShadowHoverCssValue ? `box-shadow: ${readMoreButtonIconBoxShadowHoverCssValue};` : ''}
+            ${readMoreButtonIconHoverBackgroundType === 'gradient' ? `   
+                background: ${readMoreButtonIconHoverCustomGradientSwitcher && readMoreButtonIconHoverCustomGradientInputValue ? readMoreButtonIconHoverCustomGradientInputValue : readMoreButtonIconHoverGradientColor ? readMoreButtonIconHoverGradientColor : readMoreButtonIconHoverClassicColor};
+            ` : `
+                ${readMoreButtonIconHoverClassicColor ? `background: ${readMoreButtonIconHoverClassicColor};` : ''}
+            `}
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
+            ${readMoreButtonIconColor ? `fill: ${readMoreButtonIconColor};` : ''}
+            ${readMoreButtonIconColor ? `stroke: ${readMoreButtonIconColor};` : ''}
+            ${readMoreButtonIconSize.Desktop ? `width: ${readMoreButtonIconSize.Desktop}${readMoreButtonIconSizeUnits.Desktop};` : ''}
+            ${readMoreButtonIconSize.Desktop ? `height: ${readMoreButtonIconSize.Desktop}${readMoreButtonIconSizeUnits.Desktop};` : ''}
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:hover .gslider-readmore-icon-wrap svg {
+            ${readMoreButtonIconColorHover ? `fill: ${readMoreButtonIconColorHover};` : ''}
+            ${readMoreButtonIconColorHover ? `stroke: ${readMoreButtonIconColorHover};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap img {
+            ${readMoreButtonIconSize.Desktop ? `width: ${readMoreButtonIconSize.Desktop}${readMoreButtonIconSizeUnits.Desktop};` : ''}
+            ${readMoreButtonIconSize.Desktop ? `height: ${readMoreButtonIconSize.Desktop}${readMoreButtonIconSizeUnits.Desktop};` : ''}
+            transition: all .3s ease-in-out;
         }
 
 
@@ -1375,6 +1631,35 @@ const generatePostCarouselStyle = (attributes) => {
 
             .${blockId} .gslider-post-carousel-readmore {
                 display: ${showReadMoreButton?.Tablet ? 'block' : 'none'};
+                ${readMoreButtonTabletMarginCssStyle ? `margin: ${readMoreButtonTabletMarginCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn {
+                ${readMoreButtonFontSize.Tablet && readMoreButtonFontSizeUnits.Tablet ? `font-size: ${readMoreButtonFontSize.Tablet}${readMoreButtonFontSizeUnits.Tablet};` : ''}
+                ${readMoreButtonLineHeight.Tablet && readMoreButtonLineHeightUnits.Tablet ? `line-height: ${readMoreButtonLineHeight.Tablet}${readMoreButtonLineHeightUnits.Tablet};` : ''}
+                ${readMoreButtonLetterSpacing.Tablet && readMoreButtonLetterSpacingUnits.Tablet ? `letter-spacing: ${readMoreButtonLetterSpacing.Tablet}${readMoreButtonLetterSpacingUnits.Tablet};` : ''}
+                ${readMoreButtonWordSpacing.Tablet && readMoreButtonWordSpacingUnits.Tablet ? `word-spacing: ${readMoreButtonWordSpacing.Tablet}${readMoreButtonWordSpacingUnits.Tablet};` : ''}
+                ${readMoreButtonTabletBorderCssStyle ? `border-width: ${readMoreButtonTabletBorderCssStyle};` : ''}  
+                ${readMoreButtonTabletBorderRadiusCssStyle ? `border-radius: ${readMoreButtonTabletBorderRadiusCssStyle};` : ''}
+                ${readMoreButtonTabletPaddingCssStyle ? `padding: ${readMoreButtonTabletPaddingCssStyle};` : ''}
+                ${readMoreButtonIconGap?.Tablet ? `gap: ${readMoreButtonIconGap.Tablet}${readMoreButtonIconGapUnits.Tablet};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap {
+                ${readMoreButtonIconWidth.Tablet ? `width: ${readMoreButtonIconWidth.Tablet}${readMoreButtonIconWidthUnits.Tablet};` : ''}
+                ${readMoreButtonIconHeight.Tablet ? `height: ${readMoreButtonIconHeight.Tablet}${readMoreButtonIconHeightUnits.Tablet};` : ''}
+                ${readMoreButtonIconTabletBorderCssStyle ? `border-width: ${readMoreButtonIconTabletBorderCssStyle};` : ''}
+                ${readMoreButtonIconTabletBorderRadiusCssStyle ? `border-radius: ${readMoreButtonIconTabletBorderRadiusCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
+                ${readMoreButtonIconSize.Tablet ? `width: ${readMoreButtonIconSize.Tablet}${readMoreButtonIconSizeUnits.Tablet};` : ''}
+                ${readMoreButtonIconSize.Tablet ? `height: ${readMoreButtonIconSize.Tablet}${readMoreButtonIconSizeUnits.Tablet};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap img {
+                ${readMoreButtonIconSize.Tablet ? `width: ${readMoreButtonIconSize.Tablet}${readMoreButtonIconSizeUnits.Tablet};` : ''}
+                ${readMoreButtonIconSize.Tablet ? `height: ${readMoreButtonIconSize.Tablet}${readMoreButtonIconSizeUnits.Tablet};` : ''}
             }
         }
         
@@ -1569,6 +1854,35 @@ const generatePostCarouselStyle = (attributes) => {
 
             .${blockId} .gslider-post-carousel-readmore {
                 display: ${showReadMoreButton?.Mobile ? 'block' : 'none'};
+                ${readMoreButtonMobileMarginCssStyle ? `margin: ${readMoreButtonMobileMarginCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn {
+                ${readMoreButtonFontSize.Mobile && readMoreButtonFontSizeUnits.Mobile ? `font-size: ${readMoreButtonFontSize.Mobile}${readMoreButtonFontSizeUnits.Mobile};` : ''}
+                ${readMoreButtonLineHeight.Mobile && readMoreButtonLineHeightUnits.Mobile ? `line-height: ${readMoreButtonLineHeight.Mobile}${readMoreButtonLineHeightUnits.Mobile};` : ''}
+                ${readMoreButtonLetterSpacing.Mobile && readMoreButtonLetterSpacingUnits.Mobile ? `letter-spacing: ${readMoreButtonLetterSpacing.Mobile}${readMoreButtonLetterSpacingUnits.Mobile};` : ''}
+                ${readMoreButtonWordSpacing.Mobile && readMoreButtonWordSpacingUnits.Mobile ? `word-spacing: ${readMoreButtonWordSpacing.Mobile}${readMoreButtonWordSpacingUnits.Mobile};` : ''}
+                ${readMoreButtonMobileBorderCssStyle ? `border-width: ${readMoreButtonMobileBorderCssStyle};` : ''}  
+                ${readMoreButtonMobileBorderRadiusCssStyle ? `border-radius: ${readMoreButtonMobileBorderRadiusCssStyle};` : ''}
+                ${readMoreButtonMobilePaddingCssStyle ? `padding: ${readMoreButtonMobilePaddingCssStyle};` : ''}
+                ${readMoreButtonIconGap?.Mobile ? `gap: ${readMoreButtonIconGap.Mobile}${readMoreButtonIconGapUnits.Mobile};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap {
+                ${readMoreButtonIconWidth.Mobile ? `width: ${readMoreButtonIconWidth.Mobile}${readMoreButtonIconWidthUnits.Mobile};` : ''}
+                ${readMoreButtonIconHeight.Mobile ? `height: ${readMoreButtonIconHeight.Mobile}${readMoreButtonIconHeightUnits.Mobile};` : ''}
+                ${readMoreButtonIconMobileBorderCssStyle ? `border-width: ${readMoreButtonIconMobileBorderCssStyle};` : ''}
+                ${readMoreButtonIconMobileBorderRadiusCssStyle ? `border-radius: ${readMoreButtonIconMobileBorderRadiusCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
+                ${readMoreButtonIconSize.Mobile ? `width: ${readMoreButtonIconSize.Mobile}${readMoreButtonIconSizeUnits.Mobile};` : ''}
+                ${readMoreButtonIconSize.Mobile ? `height: ${readMoreButtonIconSize.Mobile}${readMoreButtonIconSizeUnits.Mobile};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap img {
+                ${readMoreButtonIconSize.Mobile ? `width: ${readMoreButtonIconSize.Mobile}${readMoreButtonIconSizeUnits.Mobile};` : ''}
+                ${readMoreButtonIconSize.Mobile ? `height: ${readMoreButtonIconSize.Mobile}${readMoreButtonIconSizeUnits.Mobile};` : ''}
             }
         }
     `;

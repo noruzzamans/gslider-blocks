@@ -701,6 +701,169 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonIconImageAlt,
         readMoreButtonIconImageID,
         /** End Read More Button Icon */
+
+        /** Start Read More Button Typography */
+        readMoreButtonFontFamily,
+        readMoreButtonFontSize,
+        readMoreButtonFontSizeUnits,
+        readMoreButtonFontWeight,
+        readMoreButtonFontStyle,
+        readMoreButtonTextTransform,
+        readMoreButtonTextDecoration,
+        readMoreButtonLineHeight,
+        readMoreButtonLineHeightUnits,
+        readMoreButtonLetterSpacing,
+        readMoreButtonLetterSpacingUnits,
+        readMoreButtonWordSpacing,
+        readMoreButtonWordSpacingUnits,
+        /** End Read More Button Typography */
+
+        /** Start Read More Button Color */
+        readMoreButtonColorSwitcher,
+        readMoreButtonColor,
+        readMoreButtonColorHover,
+        /** End Read More Button Color */
+
+        /** Start Read More Button Background */
+        readMoreButtonNormalBackgroundType,
+        readMoreButtonNormalClassicColor,
+        readMoreButtonNormalGradientColor,
+        readMoreButtonNormalCustomGradientSwitcher,
+        readMoreButtonNormalCustomGradientInputValue,
+        readMoreButtonHoverBackgroundType,
+        readMoreButtonHoverClassicColor,
+        readMoreButtonHoverGradientColor,
+        readMoreButtonHoverCustomGradientSwitcher,
+        readMoreButtonHoverCustomGradientInputValue,
+        /** End Read More Button Background */
+
+        /** Start Read More Button Border */
+        readMoreButtonBorder,
+        readMoreButtonBorderColorSwitcher,
+        readMoreButtonBorderColor,
+        readMoreButtonBorderHoverColor,
+        readMoreButtonBorderUnits,
+        readMoreButtonDesktopBorder,
+        readMoreButtonDesktopBorderCssStyle,
+        readMoreButtonTabletBorder,
+        readMoreButtonTabletBorderCssStyle,
+        readMoreButtonMobileBorder,
+        readMoreButtonMobileBorderCssStyle,
+        readMoreButtonBorderLink,
+        /** End Read More Button Border */
+
+        /** Start Read More Button Border Radius */
+        readMoreButtonBorderRadiusUnits,
+        readMoreButtonDesktopBorderRadius,
+        readMoreButtonDesktopBorderRadiusCssStyle,
+        readMoreButtonTabletBorderRadius,
+        readMoreButtonTabletBorderRadiusCssStyle,
+        readMoreButtonMobileBorderRadius,
+        readMoreButtonMobileBorderRadiusCssStyle,
+        readMoreButtonBorderRadiusLink,
+        /** End Read More Button Border Radius */
+
+        /** Start Read More Button Box Shadow */
+        readMoreButtonBoxShadowValuesSwitcher,
+        readMoreButtonBoxShadowValues,
+        readMoreButtonBoxShadowCssValue,
+        readMoreButtonBoxShadowHoverValues,
+        readMoreButtonBoxShadowHoverCssValue,
+        /** End Read More Button Box Shadow */
+
+        /** Start Read More Button Margin */
+        readMoreButtonMarginUnits,
+        readMoreButtonDesktopMargin,
+        readMoreButtonDesktopMarginCssStyle,
+        readMoreButtonTabletMargin,
+        readMoreButtonTabletMarginCssStyle,
+        readMoreButtonMobileMargin,
+        readMoreButtonMobileMarginCssStyle,
+        readMoreButtonMarginLink,
+        /** End Read More Button Margin */
+
+        /** Start Read More Button Padding */
+        readMoreButtonPaddingUnits,
+        readMoreButtonDesktopPadding,
+        readMoreButtonDesktopPaddingCssStyle,
+        readMoreButtonTabletPadding,
+        readMoreButtonTabletPaddingCssStyle,
+        readMoreButtonMobilePadding,
+        readMoreButtonMobilePaddingCssStyle,
+        readMoreButtonPaddingLink,
+        /** End Read More Button Padding */
+
+        /** Start Read More Button Icon Style */
+        readMoreButtonIconSize,
+        readMoreButtonIconSizeUnits,
+        /** End Read More Button Icon Style */
+
+        /** Start Read More Button Icon Dimensions */
+        readMoreButtonIconWidth,
+        readMoreButtonIconWidthUnits,
+        readMoreButtonIconHeight,
+        readMoreButtonIconHeightUnits,
+        /** End Read More Button Icon Dimensions */
+
+        /** Start Read More Button Icon Gap */
+        readMoreButtonIconGap,
+        readMoreButtonIconGapUnits,
+        /** End Read More Button Icon Gap */
+
+        /** Start Read More Button Icon Color */
+        readMoreButtonIconColorSwitcher,
+        readMoreButtonIconColor,
+        readMoreButtonIconColorHover,
+        /** End Read More Button Icon Color */
+
+        /** Start Read More Button Icon Background */
+        readMoreButtonIconNormalBackgroundType,
+        readMoreButtonIconNormalClassicColor,
+        readMoreButtonIconNormalGradientColor,
+        readMoreButtonIconNormalCustomGradientSwitcher,
+        readMoreButtonIconNormalCustomGradientInputValue,
+
+        readMoreButtonIconHoverBackgroundType,
+        readMoreButtonIconHoverClassicColor,
+        readMoreButtonIconHoverGradientColor,
+        readMoreButtonIconHoverCustomGradientSwitcher,
+        readMoreButtonIconHoverCustomGradientInputValue,
+        /** End Read More Button Icon Background */
+
+        /** Start Read More Button Icon Border */
+        readMoreButtonIconBorder,
+        readMoreButtonIconBorderColorSwitcher,
+        readMoreButtonIconBorderColor,
+        readMoreButtonIconBorderHoverColor,
+        readMoreButtonIconBorderUnits,
+        readMoreButtonIconDesktopBorder,
+        readMoreButtonIconDesktopBorderCssStyle,
+        readMoreButtonIconTabletBorder,
+        readMoreButtonIconTabletBorderCssStyle,
+        readMoreButtonIconMobileBorder,
+        readMoreButtonIconMobileBorderCssStyle,
+        readMoreButtonIconBorderLink,
+        /** End Read More Button Icon Border */
+
+        /** Start Read More Button Icon Border Radius */
+        readMoreButtonIconBorderRadiusUnits,
+        readMoreButtonIconDesktopBorderRadius,
+        readMoreButtonIconDesktopBorderRadiusCssStyle,
+        readMoreButtonIconTabletBorderRadius,
+        readMoreButtonIconTabletBorderRadiusCssStyle,
+        readMoreButtonIconMobileBorderRadius,
+        readMoreButtonIconMobileBorderRadiusCssStyle,
+        readMoreButtonIconBorderRadiusLink,
+        /** End Read More Button Icon Border Radius */
+
+        /** Start Read More Button Icon Box Shadow */
+        readMoreButtonIconBoxShadowValuesSwitcher,
+        readMoreButtonIconBoxShadowValues,
+        readMoreButtonIconBoxShadowCssValue,
+        readMoreButtonIconBoxShadowHoverValues,
+        readMoreButtonIconBoxShadowHoverCssValue,
+        /** End Read More Button Icon Box Shadow */
+
     } = attributes;
 
     /** Get Current Device Type and set device Type */
@@ -722,6 +885,9 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
     }
     if (postCategoryFontFamily && postCategoryFontFamily !== 'Default') {
         LoadGoogleFont(postCategoryFontFamily);
+    }
+    if (readMoreButtonFontFamily !== 'Default') {
+        LoadGoogleFont(readMoreButtonFontFamily);
     }
 
     /** Default Open Panels */
@@ -789,6 +955,14 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             postCategoryBorderRadiusDesktopCssStyle: spacingFormat(postCategoryBorderRadiusDesktop, postCategoryBorderRadiusUnits.Desktop),
             postCategoryBorderRadiusTabletCssStyle: spacingFormat(postCategoryBorderRadiusTablet, postCategoryBorderRadiusUnits.Tablet),
             postCategoryBorderRadiusMobileCssStyle: spacingFormat(postCategoryBorderRadiusMobile, postCategoryBorderRadiusUnits.Mobile),
+
+            readMoreButtonDesktopBorderRadiusCssStyle: spacingFormat(readMoreButtonDesktopBorderRadius, readMoreButtonBorderRadiusUnits.Desktop),
+            readMoreButtonTabletBorderRadiusCssStyle: spacingFormat(readMoreButtonTabletBorderRadius, readMoreButtonBorderRadiusUnits.Tablet),
+            readMoreButtonMobileBorderRadiusCssStyle: spacingFormat(readMoreButtonMobileBorderRadius, readMoreButtonBorderRadiusUnits.Mobile),
+
+            readMoreButtonDesktopPaddingCssStyle: spacingFormat(readMoreButtonDesktopPadding, readMoreButtonPaddingUnits.Desktop),
+            readMoreButtonTabletPaddingCssStyle: spacingFormat(readMoreButtonTabletPadding, readMoreButtonPaddingUnits.Tablet),
+            readMoreButtonMobilePaddingCssStyle: spacingFormat(readMoreButtonMobilePadding, readMoreButtonPaddingUnits.Mobile),
         });
     }, [
         navigationArrowDesktopBorderRadius,
@@ -840,6 +1014,14 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         postCategoryBorderRadiusTablet,
         postCategoryBorderRadiusMobile,
         postCategoryBorderRadiusUnits,
+
+        readMoreButtonDesktopBorderRadius,
+        readMoreButtonTabletBorderRadius,
+        readMoreButtonMobileBorderRadius,
+
+        readMoreButtonDesktopPadding,
+        readMoreButtonTabletPadding,
+        readMoreButtonMobilePadding,
     ]);
     /** end if have default padding then set the css style */
 
@@ -2385,6 +2567,471 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     onChangeLink={(value) => setAttributes({ postExcerptPaddingLink: value })}
                 />
             </PanelBody>
+
+            {showReadMoreButton && (
+                <>
+                    <PanelBody
+                        title={__("Read More Button", "gslider-blocks")}
+                        opened={openPanels.styles === "read-more-button"}
+                        onToggle={() => togglePanel("styles", "read-more-button")}
+                    >
+                        <ResponsiveTypographyControl
+                            fontFamily={readMoreButtonFontFamily}
+                            onChangeFontFamily={(value) => setAttributes({ readMoreButtonFontFamily: value })}
+
+                            fontSize={readMoreButtonFontSize}
+                            onChangeFontSize={(value) => setAttributes({ readMoreButtonFontSize: value })}
+
+                            fontSizeUnits={readMoreButtonFontSizeUnits}
+                            onChangeFontSizeUnit={(value) => setAttributes({ readMoreButtonFontSizeUnits: value })}
+
+                            fontWeight={readMoreButtonFontWeight}
+                            onChangeFontWeight={(value) => setAttributes({ readMoreButtonFontWeight: value })}
+
+                            fontStyle={readMoreButtonFontStyle}
+                            onChangeFontStyle={(value) => setAttributes({ readMoreButtonFontStyle: value })}
+
+                            textTransform={readMoreButtonTextTransform}
+                            onChangeTextTransform={(value) => setAttributes({ readMoreButtonTextTransform: value })}
+
+                            textDecoration={readMoreButtonTextDecoration}
+                            onChangeTextDecoration={(value) => setAttributes({ readMoreButtonTextDecoration: value })}
+
+                            lineHeight={readMoreButtonLineHeight}
+                            onChangeLineHeight={(value) => setAttributes({ readMoreButtonLineHeight: value })}
+
+                            lineHeightUnits={readMoreButtonLineHeightUnits}
+                            onChangeLineHeightUnit={(value) => setAttributes({ readMoreButtonLineHeightUnits: value })}
+
+                            letterSpacing={readMoreButtonLetterSpacing}
+                            onChangeLetterSpacing={(value) => setAttributes({ readMoreButtonLetterSpacing: value })}
+
+                            letterSpacingUnits={readMoreButtonLetterSpacingUnits}
+                            onChangeLetterSpacingUnit={(value) => setAttributes({ readMoreButtonLetterSpacingUnits: value })}
+
+                            wordSpacing={readMoreButtonWordSpacing}
+                            onChangeWordSpacing={(value) => setAttributes({ readMoreButtonWordSpacing: value })}
+
+                            wordSpacingUnits={readMoreButtonWordSpacingUnits}
+                            onChangeWordSpacingUnit={(value) => setAttributes({ readMoreButtonWordSpacingUnits: value })}
+
+                            deviceType={deviceType}
+                        />
+                        <SwitcherControl
+                            label={__("Color", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonColorSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonColorSwitcher: value })}
+                        />
+
+                        {readMoreButtonColorSwitcher === 'normal' && (
+                            <ColorControl
+                                label={__("Normal Color", "gslider-blocks")}
+                                color={readMoreButtonColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonColor: value })}
+                                defaultColor=''
+                            />
+                        )}
+
+                        {readMoreButtonColorSwitcher === 'hover' && (
+                            <ColorControl
+                                label={__("Hover Color", "gslider-blocks")}
+                                color={readMoreButtonColorHover}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonColorHover: value })}
+                                defaultColor=''
+                            />
+                        )}
+
+                        <BackgroundControl
+                            label={__("Background Color", "gslider-blocks")}
+
+                            normalBackgroundType={readMoreButtonNormalBackgroundType}
+                            setNormalBackgroundType={(value) => setAttributes({ readMoreButtonNormalBackgroundType: value })}
+                            normalClassicColor={readMoreButtonNormalClassicColor}
+                            setNormalClassicColor={(value) => setAttributes({ readMoreButtonNormalClassicColor: value })}
+                            normalGradientColor={readMoreButtonNormalGradientColor}
+                            setNormalGradientColor={(value) => setAttributes({ readMoreButtonNormalGradientColor: value })}
+                            normalCustomGradientSwitcher={readMoreButtonNormalCustomGradientSwitcher}
+                            setNormalCustomGradientSwitcher={(value) => setAttributes({ readMoreButtonNormalCustomGradientSwitcher: value })}
+                            normalCustomGradientInputValue={readMoreButtonNormalCustomGradientInputValue}
+                            setNormalCustomGradientInputValue={(value) => setAttributes({ readMoreButtonNormalCustomGradientInputValue: value })}
+                            normalClassicDefaultColor={'#d2d2d2c7'}
+
+                            hoverBackgroundType={readMoreButtonHoverBackgroundType}
+                            setHoverBackgroundType={(value) => setAttributes({ readMoreButtonHoverBackgroundType: value })}
+                            hoverClassicColor={readMoreButtonHoverClassicColor}
+                            setHoverClassicColor={(value) => setAttributes({ readMoreButtonHoverClassicColor: value })}
+                            hoverGradientColor={readMoreButtonHoverGradientColor}
+                            setHoverGradientColor={(value) => setAttributes({ readMoreButtonHoverGradientColor: value })}
+                            hoverCustomGradientSwitcher={readMoreButtonHoverCustomGradientSwitcher}
+                            setHoverCustomGradientSwitcher={(value) => setAttributes({ readMoreButtonHoverCustomGradientSwitcher: value })}
+                            hoverCustomGradientInputValue={readMoreButtonHoverCustomGradientInputValue}
+                            setHoverCustomGradientInputValue={(value) => setAttributes({ readMoreButtonHoverCustomGradientInputValue: value })}
+                            hoverClassicDefaultColor={'#787878b8'}
+                            isBackgroundImage={false}
+                        />
+
+                        <SelectControls
+                            label={__("Border Style", "gslider-blocks")}
+                            options={BORDER_STYLES}
+                            value={readMoreButtonBorder}
+                            onChange={(value) => setAttributes({ readMoreButtonBorder: value })}
+                        />
+
+                        <SwitcherControl
+                            label={__("Border Color", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonBorderColorSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonBorderColorSwitcher: value })}
+                        />
+
+                        {readMoreButtonBorderColorSwitcher === 'normal' && (
+                            <ColorControl
+                                label={__("Normal Color", "gslider-blocks")}
+                                color={readMoreButtonBorderColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonBorderColor: value })}
+                            />
+                        )}
+
+                        {readMoreButtonBorderColorSwitcher === 'hover' && (
+                            <ColorControl
+                                label={__("Hover Color", "gslider-blocks")}
+                                color={readMoreButtonBorderHoverColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonBorderHoverColor: value })}
+                            />
+                        )}
+
+                        <ResponsiveSpacingControl
+                            label={__("Border Width", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonBorderUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonBorderUnits: value })}
+                            desktopSpacing={readMoreButtonDesktopBorder}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonDesktopBorder: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonDesktopBorderCssStyle: value })}
+                            tabletSpacing={readMoreButtonTabletBorder}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonTabletBorder: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonTabletBorderCssStyle: value })}
+                            mobileSpacing={readMoreButtonMobileBorder}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonMobileBorder: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonMobileBorderCssStyle: value })}
+                            isLinked={readMoreButtonBorderLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonBorderLink: value })}
+                        />
+
+                        <ResponsiveSpacingControl
+                            label={__("Border Radius", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonBorderRadiusUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonBorderRadiusUnits: value })}
+                            desktopSpacing={readMoreButtonDesktopBorderRadius}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonDesktopBorderRadius: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonDesktopBorderRadiusCssStyle: value })}
+                            tabletSpacing={readMoreButtonTabletBorderRadius}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonTabletBorderRadius: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonTabletBorderRadiusCssStyle: value })}
+                            mobileSpacing={readMoreButtonMobileBorderRadius}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonMobileBorderRadius: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonMobileBorderRadiusCssStyle: value })}
+                            isLinked={readMoreButtonBorderRadiusLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonBorderRadiusLink: value })}
+                        />
+
+                        <SwitcherControl
+                            label={__("Box Shadow", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonBoxShadowValuesSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonBoxShadowValuesSwitcher: value })}
+                        />
+
+                        {readMoreButtonBoxShadowValuesSwitcher === 'normal' && (
+                            <BoxShadowSettingsControl
+                                label={__("Normal Shadow", "gslider-blocks")}
+                                onBoxShadowChange={(value) => setAttributes({ readMoreButtonBoxShadowValues: value })}
+                                initialShadowValue={readMoreButtonBoxShadowValues}
+                                onBoxShadowStyleChange={(value) => setAttributes({ readMoreButtonBoxShadowCssValue: value })}
+                            />
+                        )}
+
+                        {readMoreButtonBoxShadowValuesSwitcher === 'hover' && (
+                            <BoxShadowSettingsControl
+                                label={__("Hover Shadow", "gslider-blocks")}
+                                onBoxShadowChange={(value) => setAttributes({ readMoreButtonBoxShadowHoverValues: value })}
+                                initialShadowValue={readMoreButtonBoxShadowHoverValues}
+                                onBoxShadowStyleChange={(value) => setAttributes({ readMoreButtonBoxShadowHoverCssValue: value })}
+                            />
+                        )}
+
+                        <ResponsiveSpacingControl
+                            label={__("Margin", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonMarginUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonMarginUnits: value })}
+                            desktopSpacing={readMoreButtonDesktopMargin}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonDesktopMargin: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonDesktopMarginCssStyle: value })}
+                            tabletSpacing={readMoreButtonTabletMargin}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonTabletMargin: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonTabletMarginCssStyle: value })}
+                            mobileSpacing={readMoreButtonMobileMargin}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonMobileMargin: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonMobileMarginCssStyle: value })}
+                            isLinked={readMoreButtonMarginLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonMarginLink: value })}
+                        />
+
+                        <ResponsiveSpacingControl
+                            label={__("Padding", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonPaddingUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonPaddingUnits: value })}
+                            desktopSpacing={readMoreButtonDesktopPadding}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonDesktopPadding: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonDesktopPaddingCssStyle: value })}
+                            tabletSpacing={readMoreButtonTabletPadding}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonTabletPadding: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonTabletPaddingCssStyle: value })}
+                            mobileSpacing={readMoreButtonMobilePadding}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonMobilePadding: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonMobilePaddingCssStyle: value })}
+                            isLinked={readMoreButtonPaddingLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonPaddingLink: value })}
+                        />
+
+                    </PanelBody>
+
+                    <PanelBody
+                        title={__("Read More Button Icon", "gslider-blocks")}
+                        opened={openPanels.styles === "readMoreButtonIcon"}
+                        onToggle={() => togglePanel("styles", "readMoreButtonIcon")}
+                    >
+                        <ResponsiveRangeControl
+                            label={__("Icon Size", "gslider-blocks")}
+                            rangeValue={readMoreButtonIconSize}
+                            onChangeValue={(value) => setAttributes({ readMoreButtonIconSize: value })}
+                            onUnitChange={(value) => setAttributes({ readMoreButtonIconSizeUnits: value })}
+                            deviceType={deviceType}
+                            units={readMoreButtonIconSizeUnits}
+                            resetFallbackValue={{
+                                px: "16",
+                                "%": "5",
+                                vh: "",
+                                vw: "",
+                                em: "1",
+                                rem: "1",
+                            }}
+                            unitBounds={{
+                                px: { min: 0, max: 200, step: 1 },
+                            }}
+                        />
+
+                        <ResponsiveRangeControl
+                            label={__("Width", "gslider-blocks")}
+                            rangeValue={readMoreButtonIconWidth}
+                            onChangeValue={(value) => setAttributes({ readMoreButtonIconWidth: value })}
+                            onUnitChange={(value) => setAttributes({ readMoreButtonIconWidthUnits: value })}
+                            deviceType={deviceType}
+                            units={readMoreButtonIconWidthUnits}
+                            resetFallbackValue={{
+                                px: "46",
+                                "%": "5",
+                                vh: "",
+                                vw: "",
+                                em: "2.875",
+                                rem: "2.875",
+                            }}
+                            unitBounds={{
+                                px: { min: 0, max: 200, step: 1 },
+                            }}
+                        />
+                        <ResponsiveRangeControl
+                            label={__("Height", "gslider-blocks")}
+                            rangeValue={readMoreButtonIconHeight}
+                            onChangeValue={(value) => setAttributes({ readMoreButtonIconHeight: value })}
+                            onUnitChange={(value) => setAttributes({ readMoreButtonIconHeightUnits: value })}
+                            deviceType={deviceType}
+                            units={readMoreButtonIconHeightUnits}
+                            resetFallbackValue={{
+                                px: "16",
+                                "%": "5",
+                                vh: "",
+                                vw: "",
+                                em: "1",
+                                rem: "1",
+                            }}
+                            unitBounds={{
+                                px: { min: 0, max: 200, step: 1 },
+                            }}
+                        />
+
+                        <ResponsiveRangeControl
+                            min={0}
+                            max={100}
+                            label={__("Gap", "gslider-blocks")}
+                            rangeValue={readMoreButtonIconGap}
+                            onChangeValue={(value) => setAttributes({ readMoreButtonIconGap: value })}
+                            onUnitChange={(value) => setAttributes({ readMoreButtonIconGapUnits: value })}
+                            deviceType={deviceType}
+                            units={readMoreButtonIconGapUnits}
+                            resetFallbackValue={{
+                                px: "8",
+                                em: "0.5",
+                                rem: "0.5"
+                            }}
+                        />
+
+                        <SwitcherControl
+                            label={__("Icon Color", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonIconColorSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonIconColorSwitcher: value })}
+                        />
+
+                        {readMoreButtonIconColorSwitcher === 'normal' && (
+                            <ColorControl
+                                label={__("Normal Color", "gslider-blocks")}
+                                color={readMoreButtonIconColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonIconColor: value })}
+                                defaultColor='#333333'
+                            />
+                        )}
+
+                        {readMoreButtonIconColorSwitcher === 'hover' && (
+                            <ColorControl
+                                label={__("Hover Color", "gslider-blocks")}
+                                color={readMoreButtonIconColorHover}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonIconColorHover: value })}
+                            />
+                        )}
+
+                        <BackgroundControl
+                            label={__("Background Color", "gslider-blocks")}
+
+                            normalBackgroundType={readMoreButtonIconNormalBackgroundType}
+                            setNormalBackgroundType={(value) => setAttributes({ readMoreButtonIconNormalBackgroundType: value })}
+                            normalClassicColor={readMoreButtonIconNormalClassicColor}
+                            setNormalClassicColor={(value) => setAttributes({ readMoreButtonIconNormalClassicColor: value })}
+                            normalGradientColor={readMoreButtonIconNormalGradientColor}
+                            setNormalGradientColor={(value) => setAttributes({ readMoreButtonIconNormalGradientColor: value })}
+                            normalCustomGradientSwitcher={readMoreButtonIconNormalCustomGradientSwitcher}
+                            setNormalCustomGradientSwitcher={(value) => setAttributes({ readMoreButtonIconNormalCustomGradientSwitcher: value })}
+                            normalCustomGradientInputValue={readMoreButtonIconNormalCustomGradientInputValue}
+                            setNormalCustomGradientInputValue={(value) => setAttributes({ readMoreButtonIconNormalCustomGradientInputValue: value })}
+                            normalClassicDefaultColor={'#d2d2d2c7'}
+
+                            hoverBackgroundType={readMoreButtonIconHoverBackgroundType}
+                            setHoverBackgroundType={(value) => setAttributes({ readMoreButtonIconHoverBackgroundType: value })}
+                            hoverClassicColor={readMoreButtonIconHoverClassicColor}
+                            setHoverClassicColor={(value) => setAttributes({ readMoreButtonIconHoverClassicColor: value })}
+                            hoverGradientColor={readMoreButtonIconHoverGradientColor}
+                            setHoverGradientColor={(value) => setAttributes({ readMoreButtonIconHoverGradientColor: value })}
+                            hoverCustomGradientSwitcher={readMoreButtonIconHoverCustomGradientSwitcher}
+                            setHoverCustomGradientSwitcher={(value) => setAttributes({ readMoreButtonIconHoverCustomGradientSwitcher: value })}
+                            hoverCustomGradientInputValue={readMoreButtonIconHoverCustomGradientInputValue}
+                            setHoverCustomGradientInputValue={(value) => setAttributes({ readMoreButtonIconHoverCustomGradientInputValue: value })}
+                            hoverClassicDefaultColor={'#787878b8'}
+                            isBackgroundImage={false}
+                        />
+
+                        <SelectControls
+                            label={__("Border Style", "gslider-blocks")}
+                            options={BORDER_STYLES}
+                            value={readMoreButtonIconBorder}
+                            onChange={(value) => setAttributes({ readMoreButtonIconBorder: value })}
+                        />
+
+                        <SwitcherControl
+                            label={__("Border Color", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonIconBorderColorSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonIconBorderColorSwitcher: value })}
+                        />
+
+                        {readMoreButtonIconBorderColorSwitcher === 'normal' && (
+                            <ColorControl
+                                label={__("Normal Color", "gslider-blocks")}
+                                color={readMoreButtonIconBorderColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonIconBorderColor: value })}
+                            />
+                        )}
+
+                        {readMoreButtonIconBorderColorSwitcher === 'hover' && (
+                            <ColorControl
+                                label={__("Hover Color", "gslider-blocks")}
+                                color={readMoreButtonIconBorderHoverColor}
+                                onChangeColor={(value) => setAttributes({ readMoreButtonIconBorderHoverColor: value })}
+                            />
+                        )}
+
+                        <ResponsiveSpacingControl
+                            label={__("Border Width", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonIconBorderUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonIconBorderUnits: value })}
+                            desktopSpacing={readMoreButtonIconDesktopBorder}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonIconDesktopBorder: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonIconDesktopBorderCssStyle: value })}
+                            tabletSpacing={readMoreButtonIconTabletBorder}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonIconTabletBorder: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonIconTabletBorderCssStyle: value })}
+                            mobileSpacing={readMoreButtonIconMobileBorder}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonIconMobileBorder: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonIconMobileBorderCssStyle: value })}
+                            isLinked={readMoreButtonIconBorderLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonIconBorderLink: value })}
+                        />
+
+                        <ResponsiveSpacingControl
+                            label={__("Border Radius", "gslider-blocks")}
+                            deviceType={deviceType}
+                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                            units={readMoreButtonIconBorderRadiusUnits}
+                            onChangeUnits={(value) => setAttributes({ readMoreButtonIconBorderRadiusUnits: value })}
+                            desktopSpacing={readMoreButtonIconDesktopBorderRadius}
+                            onChangeDesktopSpacing={(value) => setAttributes({ readMoreButtonIconDesktopBorderRadius: value })}
+                            desktopSpacingStyle={(value) => setAttributes({ readMoreButtonIconDesktopBorderRadiusCssStyle: value })}
+                            tabletSpacing={readMoreButtonIconTabletBorderRadius}
+                            onChangeTabletSpacing={(value) => setAttributes({ readMoreButtonIconTabletBorderRadius: value })}
+                            tabletSpacingStyle={(value) => setAttributes({ readMoreButtonIconTabletBorderRadiusCssStyle: value })}
+                            mobileSpacing={readMoreButtonIconMobileBorderRadius}
+                            onChangeMobileSpacing={(value) => setAttributes({ readMoreButtonIconMobileBorderRadius: value })}
+                            mobileSpacingStyle={(value) => setAttributes({ readMoreButtonIconMobileBorderRadiusCssStyle: value })}
+                            isLinked={readMoreButtonIconBorderRadiusLink}
+                            onChangeLink={(value) => setAttributes({ readMoreButtonIconBorderRadiusLink: value })}
+                        />
+
+                        <SwitcherControl
+                            label={__("Box Shadow", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonIconBoxShadowValuesSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonIconBoxShadowValuesSwitcher: value })}
+                        />
+
+                        {readMoreButtonIconBoxShadowValuesSwitcher === 'normal' && (
+                            <BoxShadowSettingsControl
+                                label={__("Normal Shadow", "gslider-blocks")}
+                                onBoxShadowChange={(value) => setAttributes({ readMoreButtonIconBoxShadowValues: value })}
+                                initialShadowValue={readMoreButtonIconBoxShadowValues}
+                                onBoxShadowStyleChange={(value) => setAttributes({ readMoreButtonIconBoxShadowCssValue: value })}
+                            />
+                        )}
+
+                        {readMoreButtonIconBoxShadowValuesSwitcher === 'hover' && (
+                            <BoxShadowSettingsControl
+                                label={__("Hover Shadow", "gslider-blocks")}
+                                onBoxShadowChange={(value) => setAttributes({ readMoreButtonIconBoxShadowHoverValues: value })}
+                                initialShadowValue={readMoreButtonIconBoxShadowHoverValues}
+                                onBoxShadowStyleChange={(value) => setAttributes({ readMoreButtonIconBoxShadowHoverCssValue: value })}
+                            />
+                        )}
+                    </PanelBody>
+                </>
+            )}
 
             {showNavigation?.[deviceType] && (
                 <PanelBody

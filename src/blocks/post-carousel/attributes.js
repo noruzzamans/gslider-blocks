@@ -2944,6 +2944,685 @@ const attributes = {
     },
     /** End Read More Button Icon */
 
+    /** Start Read More Button Typography */
+    readMoreButtonFontFamily: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '16',
+            Tablet: '16',
+            Mobile: '14'
+        }
+    },
+    readMoreButtonFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    readMoreButtonFontWeight: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonFontStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTextTransform: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTextDecoration: {
+        type: "string",
+        default: "none",
+    },
+    readMoreButtonLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    readMoreButtonLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    readMoreButtonLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    readMoreButtonLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    readMoreButtonWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    readMoreButtonWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Read More Button Typography */
+
+    /** Start Read More Button Color */
+    readMoreButtonColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    readMoreButtonColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Color */
+
+    /** Start Read More Button Background */
+    readMoreButtonNormalBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    readMoreButtonNormalClassicColor: {
+        type: "string",
+        default: "#d2d2d2c7",
+    },
+    readMoreButtonNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    readMoreButtonNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    readMoreButtonNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    readMoreButtonHoverClassicColor: {
+        type: "string",
+        default: "#787878b8",
+    },
+    readMoreButtonHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    readMoreButtonHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    readMoreButtonHoverCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Background */
+
+    /** Start Read More Button Border */
+    readMoreButtonBorder: {
+        type: "string",
+        default: "none",
+    },
+    readMoreButtonBorderColorSwitcher : {
+        type: "string",
+        default: "normal"
+    },
+    readMoreButtonBorderColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonBorderHoverColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonBorderUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonDesktopBorder: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonDesktopBorderCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTabletBorder: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonTabletBorderCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonMobileBorder: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonMobileBorderCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonBorderLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Read More Button Border */
+
+    /** Start Read More Button Border Radius */
+    readMoreButtonBorderRadiusUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonDesktopBorderRadius: {
+        type: "object", 
+        default: {
+            top: "4",
+            bottom: "4",
+            left: "4",
+            right: "4",
+        },
+    },
+    readMoreButtonDesktopBorderRadiusCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTabletBorderRadius: {
+        type: "object",  
+        default: {
+            top: "4",
+            bottom: "4",
+            left: "4",
+            right: "4",
+        },
+    },
+    readMoreButtonTabletBorderRadiusCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonMobileBorderRadius: {
+        type: "object",  
+        default: {
+            top: "4",
+            bottom: "4",
+            left: "4",
+            right: "4",
+        },
+    },
+    readMoreButtonMobileBorderRadiusCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonBorderRadiusLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Read More Button Border Radius */
+
+    /** Start Read More Button Box Shadow */
+    readMoreButtonBoxShadowValuesSwitcher : {
+        type: "string",
+        default: "normal"
+    },
+    readMoreButtonBoxShadowValues: {
+        type: "array",
+        default: [],
+    },
+    readMoreButtonBoxShadowCssValue: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonBoxShadowHoverValues: {
+        type: "array",
+        default: [],
+    },
+    readMoreButtonBoxShadowHoverCssValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Box Shadow */
+
+    /** Start Read More Button Margin */
+    readMoreButtonMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonDesktopMargin: {
+        type: "object", 
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTabletMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonMobileMargin: {
+        type: "object",  
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonMarginLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Read More Button Margin */
+
+    /** Start Read More Button Padding */
+    readMoreButtonPaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonDesktopPadding: {
+        type: "object", 
+        default: {
+            top: "12",
+            bottom: "12",
+            left: "24",
+            right: "24",
+        },
+    },
+    readMoreButtonDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonTabletPadding: {
+        type: "object",  
+        default: {
+            top: "12",
+            bottom: "12",
+            left: "24",
+            right: "24",
+        },
+    },
+    readMoreButtonTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonMobilePadding: {
+        type: "object",  
+        default: {
+            top: "8",
+            bottom: "8",
+            left: "16",
+            right: "16",
+        },
+    },
+    readMoreButtonMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    readMoreButtonPaddingLink : {
+        type : "boolean",
+        default: true
+    },
+    /** End Read More Button Padding */
+
+    /** Start Read More Button Icon Size */
+    readMoreButtonIconSize: {
+        type: "object",
+        default: {
+            Desktop: "16",
+            Tablet: "16",
+            Mobile: "14",
+        },
+    },
+    readMoreButtonIconSizeUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    /** End Read More Button Icon Size */
+
+    /** Start Read More Button Icon Width & Height */
+    readMoreButtonIconWidth: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    readMoreButtonIconWidthUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonIconHeight: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    readMoreButtonIconHeightUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    /** End Read More Button Icon Width & Height */
+
+    /** Start Read More Button Icon Gap */
+    readMoreButtonIconGap: {
+        type: "object",
+        default: {
+            Desktop: "8",
+            Tablet: "8",
+            Mobile: "8"
+        }
+    },
+    readMoreButtonIconGapUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    /** End Read More Button Icon Gap */
+
+    /** Start Read More Button Icon Color */
+    readMoreButtonIconColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    readMoreButtonIconColor: {
+        type: "string",
+        default: "#333333",
+    },
+    readMoreButtonIconColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Icon Color */
+
+    /** Start Read More Button Icon Background */
+    readMoreButtonIconNormalBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    readMoreButtonIconNormalClassicColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    readMoreButtonIconNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    readMoreButtonIconNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    readMoreButtonIconHoverClassicColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    readMoreButtonIconHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    readMoreButtonIconHoverCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Icon Background */
+
+    /** Start Read More Button Icon Border */
+    readMoreButtonIconBorder: {
+        type: "string",
+        default: "none",
+    },
+    readMoreButtonIconBorderColorSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    readMoreButtonIconBorderColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconBorderHoverColor: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconBorderUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonIconDesktopBorder: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconDesktopBorderCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconTabletBorder: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconTabletBorderCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconMobileBorder: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconMobileBorderCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconBorderLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Read More Button Icon Border */
+
+    /** Start Read More Button Icon Border Radius */
+    readMoreButtonIconBorderRadiusUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    readMoreButtonIconDesktopBorderRadius: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconDesktopBorderRadiusCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconTabletBorderRadius: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconTabletBorderRadiusCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconMobileBorderRadius: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    readMoreButtonIconMobileBorderRadiusCssStyle: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconBorderRadiusLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Read More Button Icon Border Radius */
+
+    /** Start Read More Button Icon Box Shadow */
+    readMoreButtonIconBoxShadowValuesSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    readMoreButtonIconBoxShadowValues: {
+        type: "array",
+        default: [],
+    },
+    readMoreButtonIconBoxShadowCssValue: {
+        type: "string",
+        default: "",
+    },
+    readMoreButtonIconBoxShadowHoverValues: {
+        type: "array",
+        default: [],
+    },
+    readMoreButtonIconBoxShadowHoverCssValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Read More Button Icon Box Shadow */
+    /** End Read More Button */
+
 };
 
 export default attributes;
