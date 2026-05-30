@@ -865,6 +865,18 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             readMoreButtonIconHtml: generateSvgIcon(readMoreButtonIcon)
         });
     }, [readMoreButtonIcon]);
+
+    useEffect(() => {
+        setAttributes({
+            navigationArrowsIconLeftHtml: generateSvgIcon(navigationArrowsIconLeft)
+        });
+    }, [navigationArrowsIconLeft]);
+
+    useEffect(() => {
+        setAttributes({
+            navigationArrowsIconRightHtml: generateSvgIcon(navigationArrowsIconRight)
+        });
+    }, [navigationArrowsIconRight]);
     /** End Generate svg icon for frontend */
 
     /**

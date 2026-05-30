@@ -62,6 +62,40 @@ $pagination_position_type     = isset( $attributes['paginationPositionType'] ) ?
 $navigation_arrow_position_type = isset( $attributes['navigationArrowPositionType'] ) ? sanitize_text_field( $attributes['navigationArrowPositionType'] ) : 'inside';
 $navigation_arrow_position      = isset( $attributes['navigationArrowPosition'] ) ? sanitize_text_field( $attributes['navigationArrowPosition'] ) : 'center';
 
+// Navigation Custom Icon settings
+$navigation_arrows_icon_switcher      = isset( $attributes['navigationArrowsIconSwitcher'] ) ? (bool) $attributes['navigationArrowsIconSwitcher'] : false;
+
+$navigation_arrows_icon_left_align    = isset( $attributes['navigationArrowsIconLeftAlign'] ) ? sanitize_text_field( $attributes['navigationArrowsIconLeftAlign'] ) : 'icon';
+$navigation_arrows_icon_left_html     = isset( $attributes['navigationArrowsIconLeftHtml'] ) ? $attributes['navigationArrowsIconLeftHtml'] : '';
+$navigation_arrows_icon_left_img_url  = isset( $attributes['navigationArrowsIconLeftImageUrl'] ) ? esc_url_raw( $attributes['navigationArrowsIconLeftImageUrl'] ) : '';
+$navigation_arrows_icon_left_img_alt  = isset( $attributes['navigationArrowsIconLeftImageAlt'] ) ? sanitize_text_field( $attributes['navigationArrowsIconLeftImageAlt'] ) : 'Left Arrow';
+
+$navigation_arrows_icon_right_align   = isset( $attributes['navigationArrowsIconRightAlign'] ) ? sanitize_text_field( $attributes['navigationArrowsIconRightAlign'] ) : 'icon';
+$navigation_arrows_icon_right_html    = isset( $attributes['navigationArrowsIconRightHtml'] ) ? $attributes['navigationArrowsIconRightHtml'] : '';
+$navigation_arrows_icon_right_img_url = isset( $attributes['navigationArrowsIconRightImageUrl'] ) ? esc_url_raw( $attributes['navigationArrowsIconRightImageUrl'] ) : '';
+$navigation_arrows_icon_right_img_alt = isset( $attributes['navigationArrowsIconRightImageAlt'] ) ? sanitize_text_field( $attributes['navigationArrowsIconRightImageAlt'] ) : 'Right Arrow';
+
+// Compile left/right arrow inner markup and container class
+$left_arrow_inner = '';
+$right_arrow_inner = '';
+$nav_container_class = 'gslider-navigation-default-icon-wrapper';
+
+if ( $navigation_arrows_icon_switcher ) {
+    $nav_container_class = 'gslider-navigation-custom-icon-wrapper';
+
+    if ( 'icon' === $navigation_arrows_icon_left_align && ! empty( $navigation_arrows_icon_left_html ) ) {
+        $left_arrow_inner = $navigation_arrows_icon_left_html;
+    } elseif ( 'image' === $navigation_arrows_icon_left_align && ! empty( $navigation_arrows_icon_left_img_url ) ) {
+        $left_arrow_inner = '<img src="' . esc_url( $navigation_arrows_icon_left_img_url ) . '" alt="' . esc_attr( $navigation_arrows_icon_left_img_alt ) . '" />';
+    }
+
+    if ( 'icon' === $navigation_arrows_icon_right_align && ! empty( $navigation_arrows_icon_right_html ) ) {
+        $right_arrow_inner = $navigation_arrows_icon_right_html;
+    } elseif ( 'image' === $navigation_arrows_icon_right_align && ! empty( $navigation_arrows_icon_right_img_url ) ) {
+        $right_arrow_inner = '<img src="' . esc_url( $navigation_arrows_icon_right_img_url ) . '" alt="' . esc_attr( $navigation_arrows_icon_right_img_alt ) . '" />';
+    }
+}
+
 // Check if elements enabled
 $any_navigation_enabled       = ! empty( $show_navigation['Desktop'] ) || ! empty( $show_navigation['Tablet'] ) || ! empty( $show_navigation['Mobile'] );
 $any_pagination_enabled       = ! empty( $show_pagination['Desktop'] ) || ! empty( $show_pagination['Tablet'] ) || ! empty( $show_pagination['Mobile'] );
@@ -410,9 +444,17 @@ $wrapper_attributes = get_block_wrapper_attributes(
         </div>
 
         <?php if ( $any_navigation_enabled && 'inside' === $navigation_arrow_position_type ) : ?>
-            <div class="gslider-navigation-default-icon-wrapper <?php echo esc_attr( $navigation_arrow_position_type . ' ' . $navigation_arrow_position ); ?>">
-                <div class="swiper-button-prev" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Previous slide', 'gslider-blocks' ); ?>"></div>
-                <div class="swiper-button-next" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Next slide', 'gslider-blocks' ); ?>"></div>
+            <div class="<?php echo esc_attr( $nav_container_class . ' ' . $navigation_arrow_position_type . ' ' . $navigation_arrow_position ); ?>">
+                <div class="swiper-button-prev" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Previous slide', 'gslider-blocks' ); ?>">
+                    <?php if ( $navigation_arrows_icon_switcher ) {
+                        echo $left_arrow_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    } ?>
+                </div>
+                <div class="swiper-button-next" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Next slide', 'gslider-blocks' ); ?>">
+                    <?php if ( $navigation_arrows_icon_switcher ) {
+                        echo $right_arrow_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    } ?>
+                </div>
             </div>
         <?php endif; ?>
 
@@ -422,9 +464,17 @@ $wrapper_attributes = get_block_wrapper_attributes(
     </div>
 
     <?php if ( $any_navigation_enabled && 'outside' === $navigation_arrow_position_type ) : ?>
-        <div class="gslider-navigation-default-icon-wrapper <?php echo esc_attr( $navigation_arrow_position_type . ' ' . $navigation_arrow_position ); ?>">
-            <div class="swiper-button-prev" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Previous slide', 'gslider-blocks' ); ?>"></div>
-            <div class="swiper-button-next" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Next slide', 'gslider-blocks' ); ?>"></div>
+        <div class="<?php echo esc_attr( $nav_container_class . ' ' . $navigation_arrow_position_type . ' ' . $navigation_arrow_position ); ?>">
+            <div class="swiper-button-prev" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Previous slide', 'gslider-blocks' ); ?>">
+                <?php if ( $navigation_arrows_icon_switcher ) {
+                    echo $left_arrow_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                } ?>
+            </div>
+            <div class="swiper-button-next" role="button" tabindex="0" aria-label="<?php esc_attr_e( 'Next slide', 'gslider-blocks' ); ?>">
+                <?php if ( $navigation_arrows_icon_switcher ) {
+                    echo $right_arrow_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                } ?>
+            </div>
         </div>
     <?php endif; ?>
 

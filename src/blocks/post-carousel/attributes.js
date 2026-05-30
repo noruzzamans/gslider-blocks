@@ -174,6 +174,11 @@ const attributes = {
         default: 'arrow-left',
     },
 
+    navigationArrowsIconLeftHtml: {
+        type: 'string',
+        default: '',
+    },
+
     navigationArrowsIconLeftImageUrl: {
         type: 'string',
         default: '',
@@ -195,6 +200,11 @@ const attributes = {
     navigationArrowsIconRight: {
         type: 'string',
         default: 'arrow-right',
+    },
+
+    navigationArrowsIconRightHtml: {
+        type: 'string',
+        default: '',
     },
 
     navigationArrowsIconRightImageUrl: {
