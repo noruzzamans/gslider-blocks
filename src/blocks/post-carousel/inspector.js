@@ -68,6 +68,7 @@ import { normalizeContentOrder } from './content-order';
 import QuerySettingsPanel from '@Components/query-settings-panel';
 import HtmlTagControl from '@Components/html-tag-control';
 import UrlControl from '@Components/url-control';
+import AnimationControl from '@Components/animation-control';
 
 const Inspector = ({ attributes, setAttributes, clientId }) => {
     const {
@@ -1146,6 +1147,13 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
             </PanelBody>
 
+            <AnimationControl
+                attributes={attributes}
+                setAttributes={setAttributes}
+                opened={openPanels.general === 'animation-settings'}
+                onToggle={() => togglePanel('general', 'animation-settings')}
+            />
+
             <QuerySettingsPanel
                 attributes={attributes}
                 setAttributes={setAttributes}
@@ -1976,6 +1984,11 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
                         { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
                         { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
+                        { label: __('Shine Sweep', 'gslider-blocks'), value: 'shine-sweep' },
+                        { label: __('Overlay Fade', 'gslider-blocks'), value: 'overlay-fade' },
+                        { label: __('Overlay Slide Up', 'gslider-blocks'), value: 'overlay-slide' },
+                        { label: __('Pan Left', 'gslider-blocks'), value: 'pan-left' },
+                        { label: __('Pan Right', 'gslider-blocks'), value: 'pan-right' },
                     ]}
                     value={imageHoverEffect}
                     onChange={(value) => setAttributes({ imageHoverEffect: value })}

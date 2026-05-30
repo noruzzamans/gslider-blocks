@@ -21,6 +21,21 @@ $enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
 $post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
 $post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
 
+// Animation settings
+$card_entrance_animation  = isset( $attributes['cardEntranceAnimation'] ) ? sanitize_html_class( $attributes['cardEntranceAnimation'] ) : 'none';
+$animation_duration       = isset( $attributes['cardEntranceAnimationDuration'] ) ? intval( $attributes['cardEntranceAnimationDuration'] ) : 600;
+$animation_delay          = isset( $attributes['cardEntranceAnimationDelay'] ) ? intval( $attributes['cardEntranceAnimationDelay'] ) : 0;
+$animation_offset         = isset( $attributes['cardEntranceAnimationOffset'] ) ? intval( $attributes['cardEntranceAnimationOffset'] ) : 15;
+$animation_easing         = isset( $attributes['cardEntranceAnimationEasing'] ) ? sanitize_text_field( $attributes['cardEntranceAnimationEasing'] ) : 'ease-out';
+$enable_stagger           = ! empty( $attributes['enableStaggerAnimation'] );
+$stagger_delay            = isset( $attributes['cardStaggerDelay'] ) ? intval( $attributes['cardStaggerDelay'] ) : 100;
+$card_hover_animation     = isset( $attributes['cardHoverAnimation'] ) ? sanitize_html_class( $attributes['cardHoverAnimation'] ) : 'none';
+$enable_tilt              = ! empty( $attributes['enableCardTilt'] );
+$tilt_max_angle           = isset( $attributes['cardTiltMaxAngle'] ) ? intval( $attributes['cardTiltMaxAngle'] ) : 12;
+
+$has_entrance_animation = 'none' !== $card_entrance_animation;
+
+
 // Carousel settings
 $carousel_per_column     = isset( $attributes['carouselPerColumn'] ) ? $attributes['carouselPerColumn'] : array( 'Desktop' => 3, 'Tablet' => 2, 'Mobile' => 1 );
 $carousel_per_column_gap = isset( $attributes['carouselPerColumnGap'] ) ? $attributes['carouselPerColumnGap'] : array( 'Desktop' => 10, 'Tablet' => 10, 'Mobile' => 10 );
@@ -259,7 +274,7 @@ $swiper_settings = array(
 
     'loop'           => $infinite_loop,
     'autoplay'       => $autoplay ? array(
-        'pauseOnMouseEnter'    => $pause_on_hover,
+        'pauseOnMouseEnter'    => $pause_on_hover || $enable_tilt || 'none' !== $card_hover_animation,
         'disableOnInteraction' => false,
         'stopOnLastSlide'      => $stop_on_last_slide,
         'reverseDirection'     => $reverse_direction,
@@ -289,6 +304,14 @@ $swiper_settings = array(
 
 $swiper_settings_json = wp_json_encode( $swiper_settings );
 
+// Animation data attributes for wrapper
+$animation_settings_json = wp_json_encode( array(
+    'duration' => $animation_duration,
+    'delay'    => $animation_delay,
+    'offset'   => $animation_offset,
+    'easing'   => $animation_easing,
+) );
+
 // Wrapper classes
 $wrapper_classes = array(
     'gslider-post-carousel-wrapper',
@@ -297,16 +320,31 @@ $wrapper_classes = array(
     $navigation_arrow_position,
 );
 
+if ( 'none' !== $card_hover_animation ) {
+    $wrapper_classes[] = 'gslider-card-hover-' . $card_hover_animation;
+}
+
 if ( $any_pagination_enabled ) {
     $wrapper_classes[] = 'has-pagination';
 }
 
-$wrapper_attributes = get_block_wrapper_attributes(
-    array(
-        'class'                => implode( ' ', array_filter( $wrapper_classes ) ),
-        'data-swiper-settings' => $swiper_settings_json,
-    )
+$wrapper_data = array(
+    'class'                => implode( ' ', array_filter( $wrapper_classes ) ),
+    'data-swiper-settings' => $swiper_settings_json,
 );
+
+if ( $has_entrance_animation ) {
+    $wrapper_data['data-animation-settings'] = $animation_settings_json;
+}
+if ( $enable_stagger && $has_entrance_animation ) {
+    $wrapper_data['data-stagger-enabled'] = '1';
+    $wrapper_data['data-stagger-delay']   = (string) $stagger_delay;
+}
+if ( $enable_tilt ) {
+    $wrapper_data['data-tilt-max'] = (string) $tilt_max_angle;
+}
+
+$wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
 
 ?>
 <div <?php echo $wrapper_attributes; ?>>
@@ -321,7 +359,14 @@ $wrapper_attributes = get_block_wrapper_attributes(
                 ?>
                 <div class="swiper-slide">
                     <div class="gslider-post-carousel-content-wrapper <?php echo esc_attr( $global_class ); ?>"<?php echo $global_id ? ' id="' . esc_attr( $global_id ) . '"' : ''; ?>>
-                        <article class="gslider-post-carousel-card">
+                <article class="gslider-post-carousel-card<?php
+                    if ( $has_entrance_animation ) {
+                        echo ' animated ' . esc_attr( $card_entrance_animation ) . ' gslider-has-entrance-anim';
+                    }
+                    if ( $enable_tilt ) {
+                        echo ' gslider-has-tilt';
+                    }
+                ?>">
                             <?php
                             foreach ( $content_order as $element ) {
                                 switch ( $element ) {

@@ -755,6 +755,13 @@ const generatePostCarouselStyle = (attributes) => {
         readMoreButtonIconBoxShadowHoverValues,
         readMoreButtonIconBoxShadowHoverCssValue,
         /** End Read More Button Icon Box Shadow */
+
+        /** Start Animation Settings */
+        cardHoverAnimation,
+        cardHoverAnimationDuration,
+        enableCardTilt,
+        cardTiltMaxAngle,
+        /** End Animation Settings */
     } = attributes;
 
     // Desktop hover transform
@@ -1040,6 +1047,57 @@ const generatePostCarouselStyle = (attributes) => {
             align-items: center;
             justify-content: center;
         }
+
+        .${blockId} .gslider-post-carousel-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            transition: transform ${cardHoverAnimationDuration || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration || 300}ms ease-out, border-color ${cardHoverAnimationDuration || 300}ms ease-out;
+            will-change: transform, box-shadow;
+        }
+
+        ${cardHoverAnimation === 'lift' ? `
+            .${blockId} .gslider-post-carousel-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08) !important;
+            }
+        ` : ''}
+
+        ${cardHoverAnimation === 'zoom' ? `
+            .${blockId} .gslider-post-carousel-card:hover {
+                transform: scale(1.03);
+            }
+        ` : ''}
+
+        ${cardHoverAnimation === 'lift-zoom' ? `
+            .${blockId} .gslider-post-carousel-card:hover {
+                transform: translateY(-6px) scale(1.02);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08) !important;
+            }
+        ` : ''}
+
+        ${cardHoverAnimation === 'pop' ? `
+            @keyframes gsliderPop {
+                50% { transform: scale(1.06); }
+            }
+            .${blockId} .gslider-post-carousel-card:hover {
+                animation: gsliderPop ${cardHoverAnimationDuration || 300}ms ease-in-out;
+            }
+        ` : ''}
+
+        ${cardHoverAnimation === 'shadow-depth' ? `
+            .${blockId} .gslider-post-carousel-card:hover {
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            }
+        ` : ''}
+
+        ${cardHoverAnimation === 'border-glow' ? `
+            .${blockId} .gslider-post-carousel-card:hover {
+                box-shadow: 0 0 15px rgba(0, 122, 255, 0.5) !important;
+                border-color: rgba(0, 122, 255, 0.8) !important;
+            }
+        ` : ''}
         
         .${blockId}.gslider-post-carousel-wrapper .gslider-post-carousel-content-wrapper {
             ${layoutHeight.Desktop ? `height: ${layoutHeight.Desktop}${layoutHeightUnits.Desktop};` : 'auto'}
@@ -1383,6 +1441,8 @@ const generatePostCarouselStyle = (attributes) => {
             --hover-scale: ${imageHoverScale?.Desktop || 1.05};
             --hover-lift: ${imageHoverLift?.Desktop || 10}${imageHoverLiftUnits?.Desktop || 'px'};
             ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(1);' : ''}
+            ${imageHoverEffect === 'pan-left' ? 'transform-origin: right center;' : ''}
+            ${imageHoverEffect === 'pan-right' ? 'transform-origin: left center;' : ''}
         }
 
         .${blockId} .gslider-post-carousel-image:hover img {
@@ -1390,7 +1450,56 @@ const generatePostCarouselStyle = (attributes) => {
             ${(imageHoverEffect === 'scale' || imageHoverEffect === 'both') ? 'transform: scale(var(--hover-scale));' : ''}
             ${imageHoverEffect === 'move-up' ? 'transform: translateY(calc(-1 * var(--hover-lift)));' : ''}
             ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(0);' : ''}
+            ${imageHoverEffect === 'pan-left' ? 'transform: scale(var(--hover-scale)) translateX(-5%);' : ''}
+            ${imageHoverEffect === 'pan-right' ? 'transform: scale(var(--hover-scale)) translateX(5%);' : ''}
         }
+
+        ${imageHoverEffect === 'shine-sweep' ? `
+            .${blockId} .gslider-post-carousel-image { position: relative; overflow: hidden; }
+            .${blockId} .gslider-post-carousel-image::after {
+                content: '';
+                position: absolute;
+                top: 0; left: -100%;
+                width: 60%; height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transform: skewX(-20deg);
+                transition: left ${(imageTransitionDuration?.Desktop || 600)}ms ease;
+            }
+            .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-image::after {
+                left: 150%;
+            }
+        ` : ''}
+
+        ${imageHoverEffect === 'overlay-fade' ? `
+            .${blockId} .gslider-post-carousel-image { position: relative; }
+            .${blockId} .gslider-post-carousel-image::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                opacity: 0;
+                transition: opacity ${(imageTransitionDuration?.Desktop || 300)}ms ease;
+                z-index: 1;
+            }
+            .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-image::before {
+                opacity: 1;
+            }
+        ` : ''}
+
+        ${imageHoverEffect === 'overlay-slide' ? `
+            .${blockId} .gslider-post-carousel-image { position: relative; overflow: hidden; }
+            .${blockId} .gslider-post-carousel-image::before {
+                content: '';
+                position: absolute;
+                bottom: -100%; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                transition: bottom ${(imageTransitionDuration?.Desktop || 300)}ms ease;
+                z-index: 1;
+            }
+            .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-image::before {
+                bottom: 0;
+            }
+        ` : ''}
 
         .${blockId} .gslider-post-carousel-readmore {
             display: ${showReadMoreButton?.Desktop ? 'block' : 'none'};

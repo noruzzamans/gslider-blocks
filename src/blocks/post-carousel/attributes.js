@@ -1,4 +1,5 @@
 import { queryAttributes } from '@Components/query-settings-panel/query-attributes';
+import { animationAttributes } from '@Components/animation-control/animation-attributes';
 
 const attributes = {
     blockId: {
@@ -3671,6 +3672,10 @@ const attributes = {
     },
     /** End Read More Button Icon Box Shadow */
     /** End Read More Button */
+
+    /** Start Animation Settings */
+    ...animationAttributes,
+    /** End Animation Settings */
 
 };
 

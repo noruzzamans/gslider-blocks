@@ -21,6 +21,7 @@ import {
 	decodeHtmlEntities 
 } from '@Utils/postHelpers';
 import { getPostQueryArgs } from '@Utils/getPostQueryArgs';
+import { initCardTilt } from '@Utils/animation-utils';
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
@@ -84,6 +85,12 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		postType,
 		postTitleHtmlTag,
 		postExcerptHtmlTag,
+
+		// Animations
+		cardHoverAnimation,
+		cardHoverAnimationDuration,
+		enableCardTilt,
+		cardTiltMaxAngle,
 	} = attributes;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
@@ -107,7 +114,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 	/** Block props for container */
 	const blockProps = useBlockProps({
-		className: `gslider-post-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination ? 'has-pagination' : ''}`,
+		className: `gslider-post-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination ? 'has-pagination' : ''} ${cardHoverAnimation !== 'none' ? `gslider-card-hover-${cardHoverAnimation}` : ''}`,
 	});
 
 	const normalizedContentOrder = normalizeContentOrder(contentOrder);
@@ -187,7 +194,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 			autoplay: autoplay
 				? {
 					delay: autoplayDelay?.[deviceType] || 1000,
-					pauseOnMouseEnter: pauseOnHover,
+					pauseOnMouseEnter: pauseOnHover || enableCardTilt || cardHoverAnimation !== 'none',
 					disableOnInteraction: false,
 					stopOnLastSlide: stopOnLastSlide,
 					reverseDirection: reverseDirection,
@@ -221,6 +228,15 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 		// Initialize new Swiper instance
 		swiperInstanceRef.current = new window.Swiper(swiperContainerRef.current, swiperSettings);
+
+		// Initialize Card Tilt in editor
+		if (enableCardTilt && swiperContainerRef.current) {
+			const wrapper = swiperContainerRef.current.closest('.gslider-post-carousel-wrapper');
+			if (wrapper) {
+				wrapper.dataset.tiltMax = String(cardTiltMaxAngle);
+				initCardTilt(wrapper);
+			}
+		}
 
 		// Cleanup on unmount or before re-initialization
 		return () => {
@@ -256,6 +272,8 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		navigationArrowsIconSwitcher,
 		navigationArrowsIconLeft,
 		navigationArrowsIconRight,
+		enableCardTilt,
+		cardTiltMaxAngle,
 	]);
 
 	return (
@@ -315,7 +333,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							return (
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
-										<article className="gslider-post-carousel-card">
+										<article className={`gslider-post-carousel-card ${enableCardTilt ? 'gslider-has-tilt' : ''}`}>
 											{(() => {
 												const renderGroupMap = {
 													thumbnail: featuredImageUrl ? (
