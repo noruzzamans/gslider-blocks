@@ -810,6 +810,12 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonIconGapUnits,
         /** End Read More Button Icon Gap */
 
+        /** Start Read More Button Icon Rotation */
+        readMoreButtonIconRotationSwitcher,
+        readMoreButtonIconRotation,
+        readMoreButtonIconHoverRotation,
+        /** End Read More Button Icon Rotation */
+
         /** Start Read More Button Icon Color */
         readMoreButtonIconColorSwitcher,
         readMoreButtonIconColor,
@@ -2883,6 +2889,41 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                                 rem: "0.5"
                             }}
                         />
+
+                        <SwitcherControl
+                            label={__("Icon Rotation", "gslider-blocks")}
+                            options={NORMAL_HOVER}
+                            value={readMoreButtonIconRotationSwitcher}
+                            onChange={(value) => setAttributes({ readMoreButtonIconRotationSwitcher: value })}
+                        />
+
+                        {readMoreButtonIconRotationSwitcher === 'normal' && (
+                            <ResponsiveRangeControl
+                                min={-360}
+                                max={360}
+                                label={__("Icon Rotation (deg)", "gslider-blocks")}
+                                rangeValue={readMoreButtonIconRotation}
+                                onChangeValue={(value) => setAttributes({ readMoreButtonIconRotation: value })}
+                                deviceType={deviceType}
+                                step={1}
+                                resetFallbackValue={"0"}
+                                isRangeUnit={false}
+                            />
+                        )}
+
+                        {readMoreButtonIconRotationSwitcher === 'hover' && (
+                            <ResponsiveRangeControl
+                                min={-360}
+                                max={360}
+                                label={__("Icon Hover Rotation (deg)", "gslider-blocks")}
+                                rangeValue={readMoreButtonIconHoverRotation}
+                                onChangeValue={(value) => setAttributes({ readMoreButtonIconHoverRotation: value })}
+                                deviceType={deviceType}
+                                step={1}
+                                resetFallbackValue={"0"}
+                                isRangeUnit={false}
+                            />
+                        )}
 
                         <SwitcherControl
                             label={__("Icon Color", "gslider-blocks")}

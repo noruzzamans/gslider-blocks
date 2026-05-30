@@ -3398,6 +3398,29 @@ const attributes = {
     },
     /** End Read More Button Icon Width & Height */
 
+    /** Start Read More Button Icon Rotation */
+    readMoreButtonIconRotationSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    readMoreButtonIconRotation: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    readMoreButtonIconHoverRotation: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+    /** End Read More Button Icon Rotation */
+
     /** Start Read More Button Icon Gap */
     readMoreButtonIconGap: {
         type: "object",

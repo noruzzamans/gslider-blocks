@@ -694,6 +694,9 @@ const generatePostCarouselStyle = (attributes) => {
         readMoreButtonIconGapUnits,
         /** End Read More Button Icon Gap */
 
+        readMoreButtonIconRotation,
+        readMoreButtonIconHoverRotation,
+
         /** Start Read More Button Icon Color */
         readMoreButtonIconColorSwitcher,
         readMoreButtonIconColor,
@@ -1389,7 +1392,6 @@ const generatePostCarouselStyle = (attributes) => {
             box-shadow: none;
         }
 
-        /* Read More Button Icon Styles */
         .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap {
             display: inline-flex;
             align-items: center;
@@ -1406,6 +1408,7 @@ const generatePostCarouselStyle = (attributes) => {
             ` : `
                 ${readMoreButtonIconNormalClassicColor ? `background: ${readMoreButtonIconNormalClassicColor};` : ''}
             `}
+            ${readMoreButtonIconRotation?.Desktop ? `transform: rotate(${readMoreButtonIconRotation.Desktop}deg);` : ''}
             transition: all .3s ease-in-out;
         }
 
@@ -1417,6 +1420,7 @@ const generatePostCarouselStyle = (attributes) => {
             ` : `
                 ${readMoreButtonIconHoverClassicColor ? `background: ${readMoreButtonIconHoverClassicColor};` : ''}
             `}
+            ${readMoreButtonIconHoverRotation?.Desktop ? `transform: rotate(${readMoreButtonIconHoverRotation.Desktop}deg);` : ''}
         }
 
         .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
@@ -1650,6 +1654,11 @@ const generatePostCarouselStyle = (attributes) => {
                 ${readMoreButtonIconHeight.Tablet ? `height: ${readMoreButtonIconHeight.Tablet}${readMoreButtonIconHeightUnits.Tablet};` : ''}
                 ${readMoreButtonIconTabletBorderCssStyle ? `border-width: ${readMoreButtonIconTabletBorderCssStyle};` : ''}
                 ${readMoreButtonIconTabletBorderRadiusCssStyle ? `border-radius: ${readMoreButtonIconTabletBorderRadiusCssStyle};` : ''}
+                ${readMoreButtonIconRotation?.Tablet ? `transform: rotate(${readMoreButtonIconRotation.Tablet}deg);` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:hover .gslider-readmore-icon-wrap {
+                ${readMoreButtonIconHoverRotation?.Tablet ? `transform: rotate(${readMoreButtonIconHoverRotation.Tablet}deg);` : ''}
             }
 
             .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
@@ -1873,6 +1882,11 @@ const generatePostCarouselStyle = (attributes) => {
                 ${readMoreButtonIconHeight.Mobile ? `height: ${readMoreButtonIconHeight.Mobile}${readMoreButtonIconHeightUnits.Mobile};` : ''}
                 ${readMoreButtonIconMobileBorderCssStyle ? `border-width: ${readMoreButtonIconMobileBorderCssStyle};` : ''}
                 ${readMoreButtonIconMobileBorderRadiusCssStyle ? `border-radius: ${readMoreButtonIconMobileBorderRadiusCssStyle};` : ''}
+                ${readMoreButtonIconRotation?.Mobile ? `transform: rotate(${readMoreButtonIconRotation.Mobile}deg);` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn:hover .gslider-readmore-icon-wrap {
+                ${readMoreButtonIconHoverRotation?.Mobile ? `transform: rotate(${readMoreButtonIconHoverRotation.Mobile}deg);` : ''}
             }
 
             .${blockId} .gslider-post-carousel-readmore a.gslider-post-carousel-readmore-btn .gslider-readmore-icon-wrap svg {
