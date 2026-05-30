@@ -74,6 +74,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		readMoreButtonNofollow,
 		readMoreButtonSponsored,
 
+		readMoreButtonIconSwitcher,
+		readMoreButtonIconType,
+		readMoreButtonIconPosition,
+		readMoreButtonIcon,
+		readMoreButtonIconImageUrl,
+		readMoreButtonIconImageAlt,
+
 		postType,
 		postTitleHtmlTag,
 		postExcerptHtmlTag,
@@ -358,13 +365,33 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														</div>
 													) : null,
 
-													readmore: showReadMoreButton?.[deviceType] ? (
-														<div key="readmore" className="gslider-post-carousel-readmore">
-															<a className="gslider-post-carousel-readmore-btn" href="#" onClick={(e) => e.preventDefault()}>
-																{readMoreButtonText || __('Read More', 'gslider-blocks')} →
-															</a>
-														</div>
-													) : null,
+													readmore: showReadMoreButton?.[deviceType] ? (() => {
+														const readMoreText = readMoreButtonText || __('Read More', 'gslider-blocks');
+														const hasIcon = readMoreButtonIconSwitcher;
+														
+														let iconMarkup = null;
+														if (hasIcon) {
+															if (readMoreButtonIconType === 'icon' && readMoreButtonIcon) {
+																iconMarkup = <span className="gslider-readmore-icon-wrap">{renderSVG(readMoreButtonIcon)}</span>;
+															} else if (readMoreButtonIconType === 'image' && readMoreButtonIconImageUrl) {
+																iconMarkup = (
+																	<span className="gslider-readmore-icon-wrap">
+																		<img src={readMoreButtonIconImageUrl} alt={readMoreButtonIconImageAlt} />
+																	</span>
+																);
+															}
+														}
+
+														return (
+															<div key="readmore" className="gslider-post-carousel-readmore">
+																<a className="gslider-post-carousel-readmore-btn" href="#" onClick={(e) => e.preventDefault()}>
+																	{hasIcon && readMoreButtonIconPosition === 'left' && iconMarkup}
+																	<span className="gslider-readmore-text">{readMoreText}</span>
+																	{hasIcon && readMoreButtonIconPosition === 'right' && iconMarkup}
+																</a>
+															</div>
+														);
+													})() : null,
 												};
 
 												return normalizedContentOrder.map((groupKey) => renderGroupMap[groupKey] || null);

@@ -2916,6 +2916,10 @@ const attributes = {
         type: 'string',
         default: 'arrow-right',
     },
+    readMoreButtonIconHtml: {
+        type: 'string',
+        default: '',
+    },
     readMoreButtonIconImageUrl: {
         type: 'string',
         default: '',

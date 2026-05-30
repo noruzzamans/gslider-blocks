@@ -55,6 +55,7 @@ import InspectorControl from '@Components/inspector-controls';
 import CustomCSSEditor from '@Components/custom-css-editor';
 import LoadGoogleFont from '@Utils/loadGoogleFont';
 import getCustomCss from '@Utils/getCustomCss';
+import generateSvgIcon from '@Utils/generateSvgIcon';
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import { useDeviceType } from "@Utils/displayType";
 import InputControls from '@Components/input-control';
@@ -695,6 +696,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonIconType,
         readMoreButtonIconPosition,
         readMoreButtonIcon,
+        readMoreButtonIconHtml, 
         readMoreButtonIconImageUrl,
         readMoreButtonIconImageAlt,
         readMoreButtonIconImageID,
@@ -851,11 +853,19 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
     }
     /** End Navigation Custom Arrows */
 
-    /** Read more button icon */
+    /** Start Read more button icon */
     const readMoreButtonIconHandler = (IconName) => {
         setAttributes({ readMoreButtonIcon: IconName })
     }
     /** End Read more button icon */
+
+    /** Generate svg icon for frontend */
+    useEffect(() => {
+        setAttributes({
+            readMoreButtonIconHtml: generateSvgIcon(readMoreButtonIcon)
+        });
+    }, [readMoreButtonIcon]);
+    /** End Generate svg icon for frontend */
 
     /**
      * Inspector General Controls

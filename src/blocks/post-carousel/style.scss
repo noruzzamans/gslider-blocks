@@ -71,9 +71,30 @@
 	.gslider-post-carousel-readmore {
 		margin-top: auto;
 
-		a {
-			display: inline-block;
+		a.gslider-post-carousel-readmore-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
 			text-decoration: none;
+
+			.gslider-readmore-icon-wrap {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				line-height: 1;
+
+				svg {
+					width: 1em;
+					height: 1em;
+					fill: currentColor;
+				}
+
+				img {
+					width: 1em;
+					height: 1em;
+					object-fit: contain;
+				}
+			}
 		}
 	}
 }

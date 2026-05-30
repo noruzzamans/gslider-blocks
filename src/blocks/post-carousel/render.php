@@ -46,6 +46,12 @@ $read_more_button_target_link = isset( $attributes['readMoreButtonTargetLink'] )
 $read_more_button_nofollow    = ! empty( $attributes['readMoreButtonNofollow'] );
 $read_more_button_sponsored   = ! empty( $attributes['readMoreButtonSponsored'] );
 $show_read_more_button        = isset( $attributes['showReadMoreButton'] ) ? $attributes['showReadMoreButton'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$read_more_button_icon_switcher = isset( $attributes['readMoreButtonIconSwitcher'] ) ? (bool) $attributes['readMoreButtonIconSwitcher'] : true;
+$read_more_button_icon_type     = isset( $attributes['readMoreButtonIconType'] ) ? sanitize_text_field( $attributes['readMoreButtonIconType'] ) : 'icon';
+$read_more_button_icon_position = isset( $attributes['readMoreButtonIconPosition'] ) ? sanitize_text_field( $attributes['readMoreButtonIconPosition'] ) : 'right';
+$read_more_button_icon_html     = isset( $attributes['readMoreButtonIconHtml'] ) ? $attributes['readMoreButtonIconHtml'] : '';
+$read_more_button_icon_img_url  = isset( $attributes['readMoreButtonIconImageUrl'] ) ? esc_url_raw( $attributes['readMoreButtonIconImageUrl'] ) : '';
+$read_more_button_icon_img_alt  = isset( $attributes['readMoreButtonIconImageAlt'] ) ? sanitize_text_field( $attributes['readMoreButtonIconImageAlt'] ) : 'Right Arrow';
 
 // Show/Hide Elements
 $show_navigation     = isset( $attributes['showNavigation'] ) ? $attributes['showNavigation'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
@@ -368,9 +374,29 @@ $wrapper_attributes = get_block_wrapper_attributes(
                                         }
                                         $rel_attr = ! empty( $rel_items ) ? ' rel="' . esc_attr( implode( ' ', $rel_items ) ) . '"' : '';
                                         $target_attr = $read_more_button_target_link ? ' target="_blank"' : '';
+
+                                        // Build icon HTML markup
+                                        $icon_markup = '';
+                                        if ( $read_more_button_icon_switcher ) {
+                                            if ( 'icon' === $read_more_button_icon_type && ! empty( $read_more_button_icon_html ) ) {
+                                                // SVG icon saved as HTML
+                                                $icon_markup = '<span class="gslider-readmore-icon-wrap">' . $read_more_button_icon_html . '</span>';
+                                            } elseif ( 'image' === $read_more_button_icon_type && ! empty( $read_more_button_icon_img_url ) ) {
+                                                // Custom Image icon
+                                                $icon_markup = '<span class="gslider-readmore-icon-wrap"><img src="' . esc_url( $read_more_button_icon_img_url ) . '" alt="' . esc_attr( $read_more_button_icon_img_alt ) . '" /></span>';
+                                            }
+                                        }
                                         ?>
                                         <div class="gslider-post-carousel-readmore">
-                                            <a class="gslider-post-carousel-readmore-btn" href="<?php echo esc_url( $read_more_url ); ?>"<?php echo $target_attr; ?><?php echo $rel_attr; ?>><?php echo esc_html( $read_more_button_text ); ?> →</a>
+                                            <a class="gslider-post-carousel-readmore-btn" href="<?php echo esc_url( $read_more_url ); ?>"<?php echo $target_attr; ?><?php echo $rel_attr; ?>>
+                                                <?php if ( $read_more_button_icon_switcher && 'left' === $read_more_button_icon_position ) {
+                                                    echo $icon_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                                } ?>
+                                                <span class="gslider-readmore-text"><?php echo esc_html( $read_more_button_text ); ?></span>
+                                                <?php if ( $read_more_button_icon_switcher && 'right' === $read_more_button_icon_position ) {
+                                                    echo $icon_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                                } ?>
+                                            </a>
                                         </div>
                                         <?php
                                         break;
