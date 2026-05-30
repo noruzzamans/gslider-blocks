@@ -147,6 +147,17 @@ const attributes = {
     },
     /** End Layout & Content Setting */
 
+    /** Content Order */
+    contentOrder: {
+        type: "array",
+        default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
+    },
+    /** End Content Order */
+
+    /** Query Attributes */
+    ...queryAttributes,
+    /** End Query Attributes */
+
     /** Start Navigation Custom Arrows */
     navigationArrowsIconSwitcher: {
         type: "boolean",
@@ -2852,14 +2863,6 @@ const attributes = {
     },
     /** End Post Category Item Padding */
     /** End Post Category Styling */
-
-    contentOrder: {
-        type: "array",
-        default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
-    },
-
-    /** Query Attributes (shared reusable) */
-    ...queryAttributes,
 };
 
 export default attributes;
