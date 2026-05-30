@@ -31,6 +31,16 @@ export const ARROW_ICON_ALIGN = [
 	{ label: __(<Dashicon icon={"format-image"} />), value: "image" },
 ];
 
+export const ICON_TYPE = [
+	{ label: __("Icon", "gslider-blocks"), value: "icon" },
+	{ label: __("Image", "gslider-blocks"), value: "image" },
+];
+
+export const ICON_POSITION = [
+	{ label: __("Left", "gslider-blocks"), value: "left" },
+	{ label: __("Right", "gslider-blocks"), value: "right" },
+];
+
 export const ICON_ALIGN = [
 	{ label: __(<Dashicon icon={"remove"} />), value: "none" },
 	{ label: __(<Dashicon icon={"admin-generic"} />), value: "icon" },

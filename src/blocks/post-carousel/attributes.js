@@ -2864,7 +2864,7 @@ const attributes = {
     /** End Post Category Item Padding */
     /** End Post Category Styling */
 
-    /** Read More Button Styling */
+    /** Start Read More Button Settings */
     showReadMoreButton: {
         type: "object",
         default: {
@@ -2897,7 +2897,39 @@ const attributes = {
         type: "boolean",
         default: false,
     },
-    /** End Read More Button Styling */
+    /** End Read More Button Settings */
+
+    /** Start Read More Button Icon */
+    readMoreButtonIconSwitcher: {
+        type: "boolean",
+        default: true,
+    },
+    readMoreButtonIconType: {
+        type: "string",
+        default: "icon",
+    },
+    readMoreButtonIconPosition: {
+        type: "string",
+        default: "right",
+    },
+    readMoreButtonIcon: {
+        type: 'string',
+        default: 'arrow-right',
+    },
+    readMoreButtonIconImageUrl: {
+        type: 'string',
+        default: '',
+    },
+    readMoreButtonIconImageAlt: {
+        type: 'string',
+        default: 'Right Arrow',
+    },
+    readMoreButtonIconImageID: {
+        type: 'string',
+        default: '',
+    },
+    /** End Read More Button Icon */
+
 };
 
 export default attributes;

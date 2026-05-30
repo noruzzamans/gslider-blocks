@@ -37,6 +37,8 @@ import {
     NAVIGATION_ARROW_DIRECTION,
     LAYOUT_HEIGHT_SWITCHER,
     HTML_TAGS,
+    ICON_TYPE,
+    ICON_POSITION,
 
 } from "@Constants";
 
@@ -678,7 +680,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
-        /** Read More Button Styling */
+        /** Start Read More Button Settings */
         showReadMoreButton,
         readMoreButtonText,
         readMoreButtonLinkType,
@@ -686,7 +688,17 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonTargetLink,
         readMoreButtonNofollow,
         readMoreButtonSponsored,
-        /** End Read More Button Styling */
+        /** End Read More Button Settings */
+
+        /** Start Read More Button Icon */
+        readMoreButtonIconSwitcher,
+        readMoreButtonIconType,
+        readMoreButtonIconPosition,
+        readMoreButtonIcon,
+        readMoreButtonIconImageUrl,
+        readMoreButtonIconImageAlt,
+        readMoreButtonIconImageID,
+        /** End Read More Button Icon */
     } = attributes;
 
     /** Get Current Device Type and set device Type */
@@ -838,6 +850,12 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         setAttributes({ navigationArrowsIconRight: IconName })
     }
     /** End Navigation Custom Arrows */
+
+    /** Read more button icon */
+    const readMoreButtonIconHandler = (IconName) => {
+        setAttributes({ readMoreButtonIcon: IconName })
+    }
+    /** End Read more button icon */
 
     /**
      * Inspector General Controls
@@ -1108,6 +1126,47 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                                 label={__("Add Sponsored rel", "gslider-blocks")}
                                 checked={readMoreButtonSponsored}
                                 onChange={(value) => setAttributes({ readMoreButtonSponsored: value })}
+                            />
+                        </>
+                    )}
+
+                    <ToggleControl
+                        label={__("Show Read More Icon", "gslider-blocks")}
+                        checked={readMoreButtonIconSwitcher}
+                        onChange={(value) => setAttributes({ readMoreButtonIconSwitcher: value })}
+                    />
+
+                    {readMoreButtonIconSwitcher && (
+                        <>
+                            <BaseControl>
+                                <SwitcherControl
+                                    label={__("Icon Type", "gslider-blocks")}
+                                    options={ICON_TYPE}
+                                    value={readMoreButtonIconType}
+                                    onChange={(value) => setAttributes({ readMoreButtonIconType: value })}
+                                />
+
+                                {readMoreButtonIconType === 'icon' && (
+                                    <IconPicker value={readMoreButtonIcon} setIconHandler={readMoreButtonIconHandler} />
+                                )}
+
+                                {readMoreButtonIconType === 'image' && (
+                                    <ImageControl
+                                        imageUrl={readMoreButtonIconImageUrl}
+                                        setImageUrl={(value) => setAttributes({ readMoreButtonIconImageUrl: value })}
+                                        imageAlt={readMoreButtonIconImageAlt}
+                                        setImageAlt={(value) => setAttributes({ readMoreButtonIconImageAlt: value })}
+                                        imageID={readMoreButtonIconImageID}
+                                        setImageID={(value) => setAttributes({ readMoreButtonIconImageID: value })}
+                                        isImageSize={false}
+                                    />
+                                )}
+                            </BaseControl>
+                            <SwitcherControl
+                                label={__("Icon Position", "gslider-blocks")}
+                                options={ICON_POSITION}
+                                value={readMoreButtonIconPosition}
+                                onChange={(value) => setAttributes({ readMoreButtonIconPosition: value })}
                             />
                         </>
                     )}
