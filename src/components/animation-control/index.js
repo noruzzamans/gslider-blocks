@@ -114,6 +114,9 @@ export default function AnimationControl( {
         cardHoverAnimationDuration,
         enableCardTilt,
         cardTiltMaxAngle,
+        cardTiltPerspective,
+        cardTiltHoverScale,
+        cardTiltTransitionSpeed,
     } = attributes;
 
     const hasEntranceAnimation = cardEntranceAnimation && cardEntranceAnimation !== 'none';
@@ -142,12 +145,12 @@ export default function AnimationControl( {
 
                     { hasEntranceAnimation && (
                         <>
-                            <RangeControl
+                             <RangeControl
                                 label={ __( 'Duration (ms)', 'gslider-blocks' ) }
                                 value={ cardEntranceAnimationDuration }
                                 onChange={ ( value ) => setAttributes( { cardEntranceAnimationDuration: value } ) }
                                 min={ 100 }
-                                max={ 2000 }
+                                max={ 5000 }
                                 step={ 50 }
                             />
 
@@ -156,7 +159,7 @@ export default function AnimationControl( {
                                 value={ cardEntranceAnimationDelay }
                                 onChange={ ( value ) => setAttributes( { cardEntranceAnimationDelay: value } ) }
                                 min={ 0 }
-                                max={ 2000 }
+                                max={ 5000 }
                                 step={ 50 }
                             />
 
@@ -166,7 +169,7 @@ export default function AnimationControl( {
                                 value={ cardEntranceAnimationOffset }
                                 onChange={ ( value ) => setAttributes( { cardEntranceAnimationOffset: value } ) }
                                 min={ 0 }
-                                max={ 50 }
+                                max={ 100 }
                                 step={ 5 }
                             />
 
@@ -258,15 +261,44 @@ export default function AnimationControl( {
                         onChange={ ( value ) => setAttributes( { enableCardTilt: value } ) }
                     />
 
-                    { enableCardTilt && (
-                        <RangeControl
-                            label={ __( 'Max Tilt Angle (°)', 'gslider-blocks' ) }
-                            value={ cardTiltMaxAngle }
-                            onChange={ ( value ) => setAttributes( { cardTiltMaxAngle: value } ) }
-                            min={ 5 }
-                            max={ 25 }
-                            step={ 1 }
-                        />
+                     { enableCardTilt && (
+                        <>
+                            <RangeControl
+                                label={ __( 'Max Tilt Angle (°)', 'gslider-blocks' ) }
+                                value={ cardTiltMaxAngle }
+                                onChange={ ( value ) => setAttributes( { cardTiltMaxAngle: value } ) }
+                                min={ 5 }
+                                max={ 25 }
+                                step={ 1 }
+                            />
+                            
+                            <RangeControl
+                                label={ __( 'Tilt Perspective (px)', 'gslider-blocks' ) }
+                                value={ cardTiltPerspective }
+                                onChange={ ( value ) => setAttributes( { cardTiltPerspective: value } ) }
+                                min={ 200 }
+                                max={ 2000 }
+                                step={ 50 }
+                            />
+
+                            <RangeControl
+                                label={ __( 'Hover Zoom Scale', 'gslider-blocks' ) }
+                                value={ cardTiltHoverScale }
+                                onChange={ ( value ) => setAttributes( { cardTiltHoverScale: value } ) }
+                                min={ 1.00 }
+                                max={ 1.20 }
+                                step={ 0.01 }
+                            />
+
+                            <RangeControl
+                                label={ __( 'Tilt Transition Speed (ms)', 'gslider-blocks' ) }
+                                value={ cardTiltTransitionSpeed }
+                                onChange={ ( value ) => setAttributes( { cardTiltTransitionSpeed: value } ) }
+                                min={ 100 }
+                                max={ 2000 }
+                                step={ 50 }
+                            />
+                        </>
                     ) }
                 </>
             ) }

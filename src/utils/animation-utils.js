@@ -98,11 +98,13 @@ export function initCardTilt( wrapper ) {
     const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
     if ( ! cards.length ) return;
 
-    const maxAngle   = parseFloat( wrapper.dataset.tiltMax ) || 12;
-    const perspective = 800;
+    const maxAngle    = parseFloat( wrapper.dataset.tiltMax ) || 12;
+    const perspective = parseFloat( wrapper.dataset.tiltPerspective ) || 800;
+    const scale       = parseFloat( wrapper.dataset.tiltScale ) || 1.02;
+    const speed       = parseInt( wrapper.dataset.tiltSpeed ) || 400;
 
     cards.forEach( ( card ) => {
-        card.style.transition     = 'transform 400ms ease';
+        card.style.transition     = `transform ${ speed }ms ease`;
         card.style.transformStyle = 'preserve-3d';
         card.style.willChange     = 'transform';
 
@@ -116,7 +118,7 @@ export function initCardTilt( wrapper ) {
             const rotateX = ( ( y - centerY ) / centerY ) * -maxAngle;
             const rotateY = ( ( x - centerX ) / centerX ) *  maxAngle;
 
-            card.style.transform = `perspective(${ perspective }px) rotateX(${ rotateX }deg) rotateY(${ rotateY }deg) scale3d(1.02,1.02,1.02)`;
+            card.style.transform = `perspective(${ perspective }px) rotateX(${ rotateX }deg) rotateY(${ rotateY }deg) scale3d(${ scale },${ scale },${ scale })`;
         } );
 
         card.addEventListener( 'mouseleave', () => {

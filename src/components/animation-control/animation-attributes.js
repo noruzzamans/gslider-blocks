@@ -64,4 +64,16 @@ export const animationAttributes = {
         type: 'number',
         default: 12,
     },
+    cardTiltPerspective: {
+        type: 'number',
+        default: 800,
+    },
+    cardTiltHoverScale: {
+        type: 'number',
+        default: 1.02,
+    },
+    cardTiltTransitionSpeed: {
+        type: 'number',
+        default: 400,
+    },
 };

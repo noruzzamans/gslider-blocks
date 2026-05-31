@@ -32,6 +32,9 @@ $stagger_delay            = isset( $attributes['cardStaggerDelay'] ) ? intval( $
 $card_hover_animation     = isset( $attributes['cardHoverAnimation'] ) ? sanitize_html_class( $attributes['cardHoverAnimation'] ) : 'none';
 $enable_tilt              = ! empty( $attributes['enableCardTilt'] );
 $tilt_max_angle           = isset( $attributes['cardTiltMaxAngle'] ) ? intval( $attributes['cardTiltMaxAngle'] ) : 12;
+$tilt_perspective         = isset( $attributes['cardTiltPerspective'] ) ? intval( $attributes['cardTiltPerspective'] ) : 800;
+$tilt_scale               = isset( $attributes['cardTiltHoverScale'] ) ? floatval( $attributes['cardTiltHoverScale'] ) : 1.02;
+$tilt_speed               = isset( $attributes['cardTiltTransitionSpeed'] ) ? intval( $attributes['cardTiltTransitionSpeed'] ) : 400;
 
 $has_entrance_animation = 'none' !== $card_entrance_animation;
 
@@ -342,6 +345,9 @@ if ( $enable_stagger && $has_entrance_animation ) {
 }
 if ( $enable_tilt ) {
     $wrapper_data['data-tilt-max'] = (string) $tilt_max_angle;
+    $wrapper_data['data-tilt-perspective'] = (string) $tilt_perspective;
+    $wrapper_data['data-tilt-scale'] = (string) $tilt_scale;
+    $wrapper_data['data-tilt-speed'] = (string) $tilt_speed;
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );

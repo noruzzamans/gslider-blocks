@@ -21,7 +21,7 @@ import {
 	decodeHtmlEntities 
 } from '@Utils/postHelpers';
 import { getPostQueryArgs } from '@Utils/getPostQueryArgs';
-import { initCardTilt } from '@Utils/animation-utils';
+import { initCardTilt, initEntranceAnimations, applyStaggerDelays } from '@Utils/animation-utils';
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
 	const {
@@ -87,10 +87,20 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		postExcerptHtmlTag,
 
 		// Animations
+		cardEntranceAnimation,
+		cardEntranceAnimationDuration,
+		cardEntranceAnimationDelay,
+		cardEntranceAnimationOffset,
+		cardEntranceAnimationEasing,
+		enableStaggerAnimation,
+		cardStaggerDelay,
 		cardHoverAnimation,
 		cardHoverAnimationDuration,
 		enableCardTilt,
 		cardTiltMaxAngle,
+		cardTiltPerspective,
+		cardTiltHoverScale,
+		cardTiltTransitionSpeed,
 	} = attributes;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
@@ -112,9 +122,22 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	}, [attributes, blockId]);
 	/** End Generate Block Style */
 
+	const hasEntranceAnimation = cardEntranceAnimation && cardEntranceAnimation !== 'none';
+
 	/** Block props for container */
 	const blockProps = useBlockProps({
 		className: `gslider-post-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination ? 'has-pagination' : ''} ${cardHoverAnimation !== 'none' ? `gslider-card-hover-${cardHoverAnimation}` : ''}`,
+		'data-animation-settings': hasEntranceAnimation ? JSON.stringify({
+			duration: cardEntranceAnimationDuration,
+			delay: cardEntranceAnimationDelay,
+			offset: cardEntranceAnimationOffset,
+			easing: cardEntranceAnimationEasing,
+		}) : undefined,
+		'data-stagger-enabled': (enableStaggerAnimation && hasEntranceAnimation) ? '1' : undefined,
+		'data-stagger-delay': (enableStaggerAnimation && hasEntranceAnimation) ? String(cardStaggerDelay) : undefined,
+		'data-tilt-perspective': enableCardTilt ? String(cardTiltPerspective) : undefined,
+		'data-tilt-scale': enableCardTilt ? String(cardTiltHoverScale) : undefined,
+		'data-tilt-speed': enableCardTilt ? String(cardTiltTransitionSpeed) : undefined,
 	});
 
 	const normalizedContentOrder = normalizeContentOrder(contentOrder);
@@ -229,12 +252,30 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		// Initialize new Swiper instance
 		swiperInstanceRef.current = new window.Swiper(swiperContainerRef.current, swiperSettings);
 
-		// Initialize Card Tilt in editor
-		if (enableCardTilt && swiperContainerRef.current) {
+		// Initialize Card Tilt & Entrance Animations in editor
+		if (swiperContainerRef.current) {
 			const wrapper = swiperContainerRef.current.closest('.gslider-post-carousel-wrapper');
 			if (wrapper) {
-				wrapper.dataset.tiltMax = String(cardTiltMaxAngle);
-				initCardTilt(wrapper);
+				if (enableCardTilt) {
+					wrapper.dataset.tiltMax = String(cardTiltMaxAngle);
+					wrapper.dataset.tiltPerspective = String(cardTiltPerspective);
+					wrapper.dataset.tiltScale = String(cardTiltHoverScale);
+					wrapper.dataset.tiltSpeed = String(cardTiltTransitionSpeed);
+					initCardTilt(wrapper);
+				}
+
+				if (hasEntranceAnimation) {
+					// Reset inline styles on cards before initializing to trigger replay
+					const cards = wrapper.querySelectorAll('.gslider-has-entrance-anim');
+					cards.forEach(card => {
+						card.style.visibility = '';
+						card.style.animationDelay = '';
+						card.style.animationTimingFunction = '';
+						card.style.removeProperty('--animate-duration');
+					});
+					applyStaggerDelays(wrapper);
+					initEntranceAnimations(wrapper);
+				}
 			}
 		}
 
@@ -274,6 +315,16 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		navigationArrowsIconRight,
 		enableCardTilt,
 		cardTiltMaxAngle,
+		cardTiltPerspective,
+		cardTiltHoverScale,
+		cardTiltTransitionSpeed,
+		cardEntranceAnimation,
+		cardEntranceAnimationDuration,
+		cardEntranceAnimationDelay,
+		cardEntranceAnimationOffset,
+		cardEntranceAnimationEasing,
+		enableStaggerAnimation,
+		cardStaggerDelay,
 	]);
 
 	return (
@@ -333,7 +384,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							return (
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
-										<article className={`gslider-post-carousel-card ${enableCardTilt ? 'gslider-has-tilt' : ''}`}>
+										<article className={`gslider-post-carousel-card${
+											hasEntranceAnimation 
+												? ` animated ${cardEntranceAnimation} gslider-has-entrance-anim` 
+												: ''
+										}${
+											enableCardTilt ? ' gslider-has-tilt' : ''
+										}`}>
 											{(() => {
 												const renderGroupMap = {
 													thumbnail: featuredImageUrl ? (
