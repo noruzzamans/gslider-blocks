@@ -451,9 +451,16 @@ const generatePostCarouselStyle = (attributes) => {
         postTitleWordSpacing,
         postTitleWordSpacingUnits,
 
-        postTitleColorSwitcher,
-        postTitleColor,
-        postTitleColorHover,
+        postTitleNormalBackgroundType,
+        postTitleNormalClassicColor,
+        postTitleNormalGradientColor,
+        postTitleNormalCustomGradientSwitcher,
+        postTitleNormalCustomGradientInputValue,
+        postTitleHoverBackgroundType,
+        postTitleHoverClassicColor,
+        postTitleHoverGradientColor,
+        postTitleHoverCustomGradientSwitcher,
+        postTitleHoverCustomGradientInputValue,
 
         postTitleMarginUnits,
         postTitleDesktopMargin,
@@ -472,6 +479,34 @@ const generatePostCarouselStyle = (attributes) => {
         postTitleMobilePadding,
         postTitleMobilePaddingCssStyle,
         postTitlePaddingLink,
+
+        // Post Title Settings
+        enablePostTitleLimit,
+        postTitleLimitType,
+        postTitleLimit,
+        postTitleLimitSuffix,
+
+        enablePostTitleLink,
+        postTitleLinkTarget,
+        postTitleLinkNofollow,
+        postTitleLinkSponsored,
+
+        enablePostTitleHoverUnderlineAnim,
+        postTitleHoverUnderlineColor,
+        postTitleHoverUnderlineHeight,
+        postTitleHoverUnderlineBottomOffset,
+        postTitleHoverUnderlineTransitionSpeed,
+
+        showPostTitleDivider,
+        postTitleDividerStyle,
+        postTitleDividerColorSwitcher,
+        postTitleDividerColor,
+        postTitleDividerHoverColor,
+        postTitleDividerWidth,
+        postTitleDividerWidthUnits,
+        postTitleDividerHeight,
+        postTitleDividerHeightUnits,
+        enablePostTitleDividerHoverExpand,
         /** End Post Title Typography, Color, Margin & Padding */
 
         /** Start Post Excerpt Styling */
@@ -773,6 +808,42 @@ const generatePostCarouselStyle = (attributes) => {
         cardHoverGlowSize,
         /** End Animation Settings */
     } = attributes;
+
+    const getPostTitleNormalColorStyles = () => {
+        if (postTitleNormalBackgroundType === 'gradient') {
+            const grad = postTitleNormalCustomGradientSwitcher ? postTitleNormalCustomGradientInputValue : postTitleNormalGradientColor;
+            return grad ? `
+                background: ${grad} !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+                display: inline-block;
+            ` : '';
+        }
+        return postTitleNormalClassicColor ? `
+            color: ${postTitleNormalClassicColor} !important;
+            background: none !important;
+            -webkit-text-fill-color: initial !important;
+        ` : '';
+    };
+
+    const getPostTitleHoverColorStyles = () => {
+        if (postTitleHoverBackgroundType === 'gradient') {
+            const grad = postTitleHoverCustomGradientSwitcher ? postTitleHoverCustomGradientInputValue : postTitleHoverGradientColor;
+            return grad ? `
+                background: ${grad} !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+                display: inline-block;
+            ` : '';
+        }
+        return postTitleHoverClassicColor ? `
+            color: ${postTitleHoverClassicColor} !important;
+            background: none !important;
+            -webkit-text-fill-color: initial !important;
+        ` : '';
+    };
 
     // Desktop hover transform
     let desktopHoverTransform = '';
@@ -1351,20 +1422,64 @@ const generatePostCarouselStyle = (attributes) => {
             ${postTitleLineHeight.Desktop && postTitleLineHeightUnits.Desktop ? `line-height: ${postTitleLineHeight.Desktop}${postTitleLineHeightUnits.Desktop};` : ''}
             ${postTitleLetterSpacing.Desktop && postTitleLetterSpacingUnits.Desktop ? `letter-spacing: ${postTitleLetterSpacing.Desktop}${postTitleLetterSpacingUnits.Desktop};` : ''}
             ${postTitleWordSpacing.Desktop && postTitleWordSpacingUnits.Desktop ? `word-spacing: ${postTitleWordSpacing.Desktop}${postTitleWordSpacingUnits.Desktop};` : ''}
-            ${postTitleColor ? `color: ${postTitleColor};` : ''}
+            ${getPostTitleNormalColorStyles()}
             ${postTitleDesktopMarginCssStyle ? `margin: ${postTitleDesktopMarginCssStyle};` : ''}
             ${postTitleDesktopPaddingCssStyle ? `padding: ${postTitleDesktopPaddingCssStyle};` : ''}
             transition: all .3s ease-in-out;
         }
 
         .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title a {
-            ${postTitleColor ? `color: ${postTitleColor};` : ''}
+            ${getPostTitleNormalColorStyles()}
             transition: all .3s ease-in-out;
         }
 
         .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title a:hover {
-            ${postTitleColorHover ? `color: ${postTitleColorHover};` : ''}
+            ${getPostTitleHoverColorStyles()}
         }
+
+        ${enablePostTitleHoverUnderlineAnim ? `
+        .${blockId} .gslider-post-carousel-title a {
+            position: relative !important;
+            text-decoration: none !important;
+        }
+        .${blockId} .gslider-post-carousel-title a::after {
+            content: '' !important;
+            position: absolute !important;
+            left: 0 !important;
+            bottom: ${postTitleHoverUnderlineBottomOffset?.Desktop || '-2'}px !important;
+            width: 0 !important;
+            height: ${postTitleHoverUnderlineHeight?.Desktop || '2'}px !important;
+            background-color: ${postTitleHoverUnderlineColor || postTitleNormalClassicColor || '#333'} !important;
+            transition: width ${postTitleHoverUnderlineTransitionSpeed?.Desktop || '0.3'}s ease-in-out !important;
+        }
+        .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-title a::after {
+            width: 100% !important;
+        }
+        ` : ''}
+
+        ${showPostTitleDivider ? `
+        .${blockId} .gslider-post-carousel-title-wrapper.has-divider::after {
+            content: '' !important;
+            display: block !important;
+            margin-top: 10px !important;
+            margin-left: ${postTitleAlign.Desktop === 'center' ? 'auto' : '0'} !important;
+            margin-right: ${postTitleAlign.Desktop === 'center' ? 'auto' : (postTitleAlign.Desktop === 'right' ? '0' : 'auto')} !important;
+            width: ${postTitleDividerWidth.Desktop}${postTitleDividerWidthUnits.Desktop} !important;
+            height: 0 !important;
+            ${postTitleDividerStyle === 'gradient' ? `
+                height: ${postTitleDividerHeight.Desktop}${postTitleDividerHeightUnits.Desktop} !important;
+                background: ${postTitleNormalCustomGradientSwitcher ? postTitleNormalCustomGradientInputValue : (postTitleNormalGradientColor || 'linear-gradient(90deg, #333, #666)')} !important;
+                border: none !important;
+            ` : `
+                border-bottom: ${postTitleDividerHeight.Desktop}${postTitleDividerHeightUnits.Desktop} ${postTitleDividerStyle} ${postTitleDividerColor} !important;
+            `}
+            transition: all 0.3s ease-in-out !important;
+        }
+        .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-title-wrapper.has-divider::after {
+            ${postTitleDividerHoverColor && postTitleDividerStyle !== 'gradient' ? `border-color: ${postTitleDividerHoverColor} !important;` : ''}
+            ${enablePostTitleDividerHoverExpand ? `width: 100% !important;` : ''}
+        }
+        ` : ''}
 
         .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
             ${postExcerptAlign?.Desktop ? `text-align: ${postExcerptAlign.Desktop};` : ''}
@@ -1825,6 +1940,27 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postTitleTabletPaddingCssStyle ? `padding: ${postTitleTabletPaddingCssStyle};` : ''}
             }
 
+            ${enablePostTitleHoverUnderlineAnim ? `
+            .${blockId} .gslider-post-carousel-title a::after {
+                bottom: ${postTitleHoverUnderlineBottomOffset?.Tablet || '-2'}px !important;
+                height: ${postTitleHoverUnderlineHeight?.Tablet || '2'}px !important;
+                transition: width ${postTitleHoverUnderlineTransitionSpeed?.Tablet || '0.3'}s ease-in-out !important;
+            }
+            ` : ''}
+
+            ${showPostTitleDivider ? `
+            .${blockId} .gslider-post-carousel-title-wrapper.has-divider::after {
+                margin-left: ${postTitleAlign.Tablet === 'center' ? 'auto' : '0'} !important;
+                margin-right: ${postTitleAlign.Tablet === 'center' ? 'auto' : (postTitleAlign.Tablet === 'right' ? '0' : 'auto')} !important;
+                width: ${postTitleDividerWidth.Tablet}${postTitleDividerWidthUnits.Tablet} !important;
+                ${postTitleDividerStyle === 'gradient' ? `
+                    height: ${postTitleDividerHeight.Tablet}${postTitleDividerHeightUnits.Tablet} !important;
+                ` : `
+                    border-bottom-width: ${postTitleDividerHeight.Tablet}${postTitleDividerHeightUnits.Tablet} !important;
+                `}
+            }
+            ` : ''}
+
             .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
                 ${postExcerptAlign?.Tablet ? `text-align: ${postExcerptAlign.Tablet};` : ''}
                 ${postExcerptFontSize.Tablet && postExcerptFontSizeUnits.Tablet ? `font-size: ${postExcerptFontSize.Tablet}${postExcerptFontSizeUnits.Tablet};` : ''}
@@ -2065,6 +2201,27 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postTitleMobileMarginCssStyle ? `margin: ${postTitleMobileMarginCssStyle};` : ''}
                 ${postTitleMobilePaddingCssStyle ? `padding: ${postTitleMobilePaddingCssStyle};` : ''}
             }
+
+            ${enablePostTitleHoverUnderlineAnim ? `
+            .${blockId} .gslider-post-carousel-title a::after {
+                bottom: ${postTitleHoverUnderlineBottomOffset?.Mobile || '-2'}px !important;
+                height: ${postTitleHoverUnderlineHeight?.Mobile || '2'}px !important;
+                transition: width ${postTitleHoverUnderlineTransitionSpeed?.Mobile || '0.3'}s ease-in-out !important;
+            }
+            ` : ''}
+
+            ${showPostTitleDivider ? `
+            .${blockId} .gslider-post-carousel-title-wrapper.has-divider::after {
+                margin-left: ${postTitleAlign.Mobile === 'center' ? 'auto' : '0'} !important;
+                margin-right: ${postTitleAlign.Mobile === 'center' ? 'auto' : (postTitleAlign.Mobile === 'right' ? '0' : 'auto')} !important;
+                width: ${postTitleDividerWidth.Mobile}${postTitleDividerWidthUnits.Mobile} !important;
+                ${postTitleDividerStyle === 'gradient' ? `
+                    height: ${postTitleDividerHeight.Mobile}${postTitleDividerHeightUnits.Mobile} !important;
+                ` : `
+                    border-bottom-width: ${postTitleDividerHeight.Mobile}${postTitleDividerHeightUnits.Mobile} !important;
+                `}
+            }
+            ` : ''}
 
             .${blockId} .gslider-post-carousel-excerpt-wrapper .gslider-post-carousel-excerpt {
                 ${postExcerptAlign?.Mobile ? `text-align: ${postExcerptAlign.Mobile};` : ''}

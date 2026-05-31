@@ -84,6 +84,32 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 		postType,
 		postTitleHtmlTag,
+		enablePostTitleLimit,
+		postTitleLimitType,
+		postTitleLimit,
+		postTitleLimitSuffix,
+
+		enablePostTitleLink,
+		postTitleLinkTarget,
+		postTitleLinkNofollow,
+		postTitleLinkSponsored,
+
+		enablePostTitleHoverUnderlineAnim,
+		postTitleHoverUnderlineColor,
+		postTitleHoverUnderlineHeight,
+		postTitleHoverUnderlineBottomOffset,
+		postTitleHoverUnderlineTransitionSpeed,
+
+		showPostTitleDivider,
+		postTitleDividerStyle,
+		postTitleDividerColorSwitcher,
+		postTitleDividerColor,
+		postTitleDividerHoverColor,
+		postTitleDividerWidth,
+		postTitleDividerWidthUnits,
+		postTitleDividerHeight,
+		postTitleDividerHeightUnits,
+		enablePostTitleDividerHoverExpand,
 		postExcerptHtmlTag,
 
 		// Animations
@@ -439,11 +465,40 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														</div>
 													) : null,
 
-													title: (
-														<div key="title" className="gslider-post-carousel-title-wrapper">
-															<TagName className="gslider-post-carousel-title">{decodeHtmlEntities(post.title.rendered)}</TagName>
-														</div>
-													),
+													title: (() => {
+														const rawTitleText = decodeHtmlEntities(post.title.rendered);
+														let trimmedTitle = rawTitleText;
+														if (enablePostTitleLimit) {
+															const limitVal = parseInt(postTitleLimit?.[deviceType] || (postTitleLimitType === 'words' ? "10" : "50"), 10);
+															if (postTitleLimitType === 'words') {
+																const words = rawTitleText.split(/\s+/);
+																if (words.length > limitVal) {
+																	trimmedTitle = words.slice(0, limitVal).join(' ') + (postTitleLimitSuffix || '...');
+																}
+															} else {
+																if (rawTitleText.length > limitVal) {
+																	trimmedTitle = rawTitleText.substring(0, limitVal) + (postTitleLimitSuffix || '...');
+																}
+															}
+														}
+
+														const wrapperClass = `gslider-post-carousel-title-wrapper${showPostTitleDivider ? ' has-divider' : ''}`;
+														const titleClass = `gslider-post-carousel-title${enablePostTitleHoverUnderlineAnim ? ' hover-underline-anim' : ''}`;
+
+														return (
+															<div key="title" className={wrapperClass}>
+																<TagName className={titleClass}>
+																	{enablePostTitleLink ? (
+																		<a href="#" onClick={(e) => e.preventDefault()}>
+																			{trimmedTitle}
+																		</a>
+																	) : (
+																		trimmedTitle
+																	)}
+																</TagName>
+															</div>
+														);
+													})(),
 
 													excerpt: excerpt ? (
 														<div key="excerpt" className="gslider-post-carousel-excerpt-wrapper">

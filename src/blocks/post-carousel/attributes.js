@@ -2075,15 +2075,43 @@ const attributes = {
     /** End Post Title Typography */
 
     /** Start Post Title Color */
-    postTitleColorSwitcher: {
+    postTitleNormalBackgroundType: {
         type: "string",
-        default: "normal",
+        default: "classic",
     },
-    postTitleColor: {
+    postTitleNormalClassicColor: {
         type: "string",
         default: "",
     },
-    postTitleColorHover: {
+    postTitleNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postTitleNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    postTitleHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    postTitleHoverClassicColor: {
+        type: "string",
+        default: "",
+    },
+    postTitleHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postTitleHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleHoverCustomGradientInputValue: {
         type: "string",
         default: "",
     },
@@ -2196,6 +2224,133 @@ const attributes = {
         default: true
     },
     /** End Post Title Padding */
+
+    /** Start Post Title Settings */
+    enablePostTitleLimit: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleLimitType: {
+        type: "string",
+        default: "words",
+    },
+    postTitleLimit: {
+        type: "object",
+        default: {
+            Desktop: "10",
+            Tablet: "10",
+            Mobile: "10",
+        },
+    },
+    postTitleLimitSuffix: {
+        type: "string",
+        default: "...",
+    },
+    enablePostTitleLink: {
+        type: "boolean",
+        default: true,
+    },
+    postTitleLinkTarget: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleLinkNofollow: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleLinkSponsored: {
+        type: "boolean",
+        default: false,
+    },
+    enablePostTitleHoverUnderlineAnim: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleHoverUnderlineColor: {
+        type: "string",
+        default: "",
+    },
+    postTitleHoverUnderlineHeight: {
+        type: "object",
+        default: {
+            Desktop: "2",
+            Tablet: "2",
+            Mobile: "2",
+        },
+    },
+    postTitleHoverUnderlineBottomOffset: {
+        type: "object",
+        default: {
+            Desktop: "-2",
+            Tablet: "-2",
+            Mobile: "-2",
+        },
+    },
+    postTitleHoverUnderlineTransitionSpeed: {
+        type: "object",
+        default: {
+            Desktop: "0.3",
+            Tablet: "0.3",
+            Mobile: "0.3",
+        },
+    },
+    showPostTitleDivider: {
+        type: "boolean",
+        default: false,
+    },
+    postTitleDividerStyle: {
+        type: "string",
+        default: "solid",
+    },
+    postTitleDividerColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    postTitleDividerColor: {
+        type: "string",
+        default: "#333333",
+    },
+    postTitleDividerHoverColor: {
+        type: "string",
+        default: "",
+    },
+    postTitleDividerWidth: {
+        type: "object",
+        default: {
+            Desktop: "50",
+            Tablet: "50",
+            Mobile: "50",
+        },
+    },
+    postTitleDividerWidthUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postTitleDividerHeight: {
+        type: "object",
+        default: {
+            Desktop: "2",
+            Tablet: "2",
+            Mobile: "2",
+        },
+    },
+    postTitleDividerHeightUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    enablePostTitleDividerHoverExpand: {
+        type: "boolean",
+        default: false,
+    },
+    /** End Post Title Settings */
 
     /** Start Post Excerpt Styling */
     postExcerptAlign: {

@@ -13,14 +13,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Extract attributes with defaults
-$block_id            = isset( $attributes['blockId'] ) ? sanitize_html_class( $attributes['blockId'] ) : '';
-$global_id           = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
-$global_class        = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
-$enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
-$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
-$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
-
 // Helper: extract responsive int value for all breakpoints
 if ( ! function_exists( 'gslider_get_responsive_int' ) ) {
     function gslider_get_responsive_int( $attr, $defaults ) {
@@ -54,6 +46,37 @@ if ( ! function_exists( 'gslider_get_responsive_float' ) ) {
         return array( 'Desktop' => $val, 'Tablet' => $val, 'Mobile' => $val );
     }
 }
+
+// Extract attributes with defaults
+$block_id            = isset( $attributes['blockId'] ) ? sanitize_html_class( $attributes['blockId'] ) : '';
+$global_id           = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
+$global_class        = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
+$enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
+$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
+$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
+
+// Custom Pro Title Settings
+$enable_post_title_limit          = ! empty( $attributes['enablePostTitleLimit'] );
+$post_title_limit_type           = isset( $attributes['postTitleLimitType'] ) ? sanitize_text_field( $attributes['postTitleLimitType'] ) : 'words';
+$post_title_limit_raw            = isset( $attributes['postTitleLimit'] ) ? $attributes['postTitleLimit'] : null;
+$post_title_limit                = gslider_get_responsive_int( $post_title_limit_raw, array( 'Desktop' => 10, 'Tablet' => 10, 'Mobile' => 10 ) );
+$post_title_limit_suffix         = isset( $attributes['postTitleLimitSuffix'] ) ? sanitize_text_field( $attributes['postTitleLimitSuffix'] ) : '...';
+
+$enable_post_title_link           = isset( $attributes['enablePostTitleLink'] ) ? (bool) $attributes['enablePostTitleLink'] : true;
+$post_title_link_target           = ! empty( $attributes['postTitleLinkTarget'] );
+$post_title_link_nofollow         = ! empty( $attributes['postTitleLinkNofollow'] );
+$post_title_link_sponsored        = ! empty( $attributes['postTitleLinkSponsored'] );
+$enable_post_title_hover_underline_anim = ! empty( $attributes['enablePostTitleHoverUnderlineAnim'] );
+
+$show_post_title_divider         = ! empty( $attributes['showPostTitleDivider'] );
+$post_title_divider_style        = isset( $attributes['postTitleDividerStyle'] ) ? sanitize_text_field( $attributes['postTitleDividerStyle'] ) : 'solid';
+$post_title_divider_color        = isset( $attributes['postTitleDividerColor'] ) ? sanitize_text_field( $attributes['postTitleDividerColor'] ) : '#333333';
+$post_title_divider_hover_color  = isset( $attributes['postTitleDividerHoverColor'] ) ? sanitize_text_field( $attributes['postTitleDividerHoverColor'] ) : '';
+$post_title_divider_width_raw    = isset( $attributes['postTitleDividerWidth'] ) ? $attributes['postTitleDividerWidth'] : null;
+$post_title_divider_width        = gslider_get_responsive_int( $post_title_divider_width_raw, array( 'Desktop' => 50, 'Tablet' => 50, 'Mobile' => 50 ) );
+$post_title_divider_height_raw   = isset( $attributes['postTitleDividerHeight'] ) ? $attributes['postTitleDividerHeight'] : null;
+$post_title_divider_height       = gslider_get_responsive_int( $post_title_divider_height_raw, array( 'Desktop' => 2, 'Tablet' => 2, 'Mobile' => 2 ) );
+$enable_post_title_divider_hover_expand = ! empty( $attributes['enablePostTitleDividerHoverExpand'] );
 
 // Animation settings
 $card_entrance_animation  = isset( $attributes['cardEntranceAnimation'] ) ? sanitize_html_class( $attributes['cardEntranceAnimation'] ) : 'none';
@@ -451,9 +474,47 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                         break;
 
                                     case 'title':
+                                        $raw_title = get_the_title();
+                                        $rendered_title = $raw_title;
+                                        if ( $enable_post_title_limit ) {
+                                            $limit_val = isset( $post_title_limit['Desktop'] ) ? intval( $post_title_limit['Desktop'] ) : ( 'words' === $post_title_limit_type ? 10 : 50 );
+                                            if ( 'words' === $post_title_limit_type ) {
+                                                $rendered_title = wp_trim_words( $raw_title, $limit_val, $post_title_limit_suffix );
+                                            } else {
+                                                if ( mb_strlen( $raw_title ) > $limit_val ) {
+                                                    $rendered_title = mb_substr( $raw_title, 0, $limit_val ) . $post_title_limit_suffix;
+                                                }
+                                            }
+                                        }
+
+                                        $title_wrapper_class = 'gslider-post-carousel-title-wrapper' . ( $show_post_title_divider ? ' has-divider' : '' );
+                                        $title_class = 'gslider-post-carousel-title' . ( $enable_post_title_hover_underline_anim ? ' hover-underline-anim' : '' );
+
+                                        $title_link_html = '';
+                                        if ( $enable_post_title_link ) {
+                                            $target_attr = $post_title_link_target ? ' target="_blank"' : '';
+                                            $rel_items = array();
+                                            if ( $post_title_link_target ) {
+                                                $rel_items[] = 'noopener';
+                                                $rel_items[] = 'noreferrer';
+                                            }
+                                            if ( $post_title_link_nofollow ) {
+                                                $rel_items[] = 'nofollow';
+                                            }
+                                            if ( $post_title_link_sponsored ) {
+                                                $rel_items[] = 'sponsored';
+                                            }
+                                            $rel_attr = ! empty( $rel_items ) ? ' rel="' . esc_attr( implode( ' ', $rel_items ) ) . '"' : '';
+                                            
+                                            $title_inner = '<a href="' . esc_url( get_permalink() ) . '"' . $target_attr . $rel_attr . '>' . esc_html( $rendered_title ) . '</a>';
+                                        } else {
+                                            $title_inner = esc_html( $rendered_title );
+                                        }
                                         ?>
-                                        <div class="gslider-post-carousel-title-wrapper">
-                                            <<?php echo esc_attr( $post_title_html_tag ); ?> class="gslider-post-carousel-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></<?php echo esc_attr( $post_title_html_tag ); ?>>
+                                        <div class="<?php echo esc_attr( $title_wrapper_class ); ?>">
+                                            <<?php echo esc_attr( $post_title_html_tag ); ?> class="<?php echo esc_attr( $title_class ); ?>">
+                                                <?php echo $title_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                            </<?php echo esc_attr( $post_title_html_tag ); ?>>
                                         </div>
                                         <?php
                                         break;

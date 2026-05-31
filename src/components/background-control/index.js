@@ -71,6 +71,10 @@ const BackgroundControl = ({
     isBackgroundImage = true,
     isHover = true,
 
+    backgroundTypeLabel = __("Background Type", "gslider-blocks"),
+    normalClassicColorLabel = __("Color", "gslider-blocks"),
+    hoverClassicColorLabel = __("Background Color", "gslider-blocks"),
+
 }) => {
 
     const BACKGROUND_TYPES = [
@@ -81,7 +85,7 @@ const BackgroundControl = ({
     const renderNormalControls = () => (
         <>
             <BaseControl
-                label={__("Background Type", "gslider-blocks")}
+                label={backgroundTypeLabel}
             >
                 <ButtonGroup className="gslider-setting-switcher-panel-btn">
                     {BACKGROUND_TYPES.map((item) => (
@@ -100,7 +104,7 @@ const BackgroundControl = ({
 
                 <>
                     <ColorControl
-                        label={__("Color", "gslider-blocks")}
+                        label={normalClassicColorLabel}
                         color={normalClassicColor}
                         onChangeColor={(value) => setNormalClassicColor(value)}
                         defaultColor={normalClassicDefaultColor}
@@ -147,7 +151,7 @@ const BackgroundControl = ({
     const renderHoverControls = () => (
         <>
             <BaseControl
-                label={__("Background Type", "gslider-blocks")}
+                label={backgroundTypeLabel}
             >
                 <ButtonGroup className="gslider-setting-switcher-panel-btn"> 
                     {BACKGROUND_TYPES.map((item) => (
@@ -166,7 +170,7 @@ const BackgroundControl = ({
 
                 <>
                     <ColorControl
-                        label={__("Background Color", "gslider-blocks")}
+                        label={hoverClassicColorLabel}
                         color={hoverClassicColor}
                         onChangeColor={(value) => setHoverClassicColor(value)}
                         defaultColor={hoverClassicDefaultColor}
