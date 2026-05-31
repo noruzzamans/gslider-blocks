@@ -26,7 +26,7 @@
 }
 .gslider-alignment-control .gslider-alignment-group-btn .gslider-alignment-single-btn.active {
   background-color: #f0f0f0 !important;
-  color: #007cba !important;
+  color: #3858e9 !important;
   box-shadow: inset 0 0 0 1px #f0f0f0 !important;
 }
 .gslider-alignment-control .gslider-alignment-group-btn .gslider-alignment-single-btn:focus {
@@ -35,7 +35,7 @@
 }
 .gslider-alignment-control .gslider-alignment-group-btn .gslider-alignment-single-btn:hover {
   background-color: #f0f0f0;
-  color: #007cba;
+  color: #3858e9;
 }
 
 /** End Admin Panel scss **/
@@ -54,8 +54,8 @@
 }
 .gslider-inspector-control .gslider-tab-panel.active-tab {
   background: #fff;
-  border-top: 2px solid #007cba !important;
-  color: #007cba;
+  border-top: 2px solid #3858e9 !important;
+  color: #3858e9;
 }
 .gslider-inspector-control .components-base-control {
   margin-bottom: 24px;
@@ -261,10 +261,10 @@
   background-color: transparent;
   border: 1px solid #f0f0f0;
   border-bottom-color: #fff;
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-bg-tab-panel .components-tab-panel__tabs .gslider-bg-tab:hover {
-  color: #007cba;
+  color: #3858e9;
 }
 
 .gslider-box-shadow-controlPane.controls .paneChild.color {
@@ -464,7 +464,7 @@
   padding-left: 10px !important;
 }
 .gslider-inspector-control .gslider-repeat-item-wrapper button.gslider-add-item-btn {
-  background: #007cba !important;
+  background: #3858e9 !important;
   color: #fff !important;
   border-radius: 4px !important;
 }
@@ -517,7 +517,7 @@
   border-color: #949494 !important;
 }
 .sortable-item-content-dropdown.gslider-setting-icon-dropdown-content .components-popover__content .gslider-setting-contant-popup-wrapper .components-base-control .components-base-control__field .gslider-url-control-inner-wrapper .gslider-url-control-dropdown-wrapper .components-button.gslider-setting-icon-btn:focus {
-  border-color: #007cba !important;
+  border-color: #3858e9 !important;
   outline: none;
   box-shadow: none;
 }
@@ -743,7 +743,7 @@
 }
 .gslider_icon_picker_wrapper_body .gslider_icon_picker_wrapper_categories .gslider_icon_picker_wrapper_category.selected {
   background-color: #f0f0f0;
-  color: #007cba;
+  color: #3858e9;
 }
 
 .gslider_icon_picker_icons_list {
@@ -774,12 +774,12 @@
   height: 20px;
 }
 .gslider_icon_picker_icons_list .gslider_icon.default {
-  border-color: #007cba;
-  box-shadow: 0 0 0 2px #007cba;
+  border-color: #3858e9;
+  box-shadow: 0 0 0 2px #3858e9;
   pointer-events: none;
 }
 .gslider_icon_picker_icons_list .gslider_icon.selected {
-  border-color: #007cba;
+  border-color: #3858e9;
   box-shadow: 0 0 0 2px #f0f0f0;
   pointer-events: none;
 }
@@ -1047,11 +1047,11 @@
   transform: scale(1);
 }
 .gslider-responsive-device-wrapper .gslider-device-switcher.active path {
-  fill: #007cba;
-  stroke: #007cba;
+  fill: #3858e9;
+  stroke: #3858e9;
 }
 .gslider-responsive-device-wrapper .gslider-device-switcher.active rect {
-  stroke: #007cba;
+  stroke: #3858e9;
 }
 .gslider-responsive-device-wrapper .gslider-device-switcher svg {
   width: 10px;
@@ -1073,7 +1073,7 @@
 .gslider-setting-spacing-container .components-range-control .components-range-control__root .components-range-control__wrapper span[aria-hidden=true],
 .paneChild .components-range-control .components-range-control__root .components-range-control__wrapper span[aria-hidden=true] {
   height: 2px !important;
-  background-color: #007cba !important;
+  background-color: #3858e9 !important;
 }
 .gslider-setting-spacing-container .components-range-control .components-range-control__root .components-range-control__thumb-wrapper,
 .paneChild .components-range-control .components-range-control__root .components-range-control__thumb-wrapper {
@@ -1168,7 +1168,7 @@
 }
 .gslider-setting-spacing-container .gslider-setting-spacing-inner-container .gslider-setting-spacing-input-container .gslider-setting-spacing-input-wrapper .dashicons-admin-links::before,
 .gslider-setting-spacing-container .gslider-setting-spacing-inner-container .gslider-setting-spacing-input-container .gslider-setting-spacing-input-wrapper .dashicons-editor-unlink::before {
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-setting-spacing-container .gslider-setting-spacing-inner-container .gslider-setting-spacing-label-container {
   display: flex;
@@ -1232,7 +1232,7 @@
   padding-right: 5px;
 }
 .gslider-setting-fontsize-wrapper .gslider-setting-fontsize-header .gslider-setting-fontsize-units .gslider-setting-fontsize-units-wrap .gslider-setting-fontsize-units-switcher.active {
-  color: #007cba;
+  color: #3858e9;
 }
 
 .gslider-setting-letterspacing-wrapper .gslider-setting-letterspacing-header {
@@ -1263,7 +1263,7 @@
   padding-right: 5px;
 }
 .gslider-setting-letterspacing-wrapper .gslider-setting-letterspacing-header .gslider-setting-letterspacing-units .gslider-setting-letterspacing-units-wrap .gslider-setting-letterspacing-units-switcher.active {
-  color: #007cba;
+  color: #3858e9;
 }
 
 .gslider-setting-lineheight-wrapper .gslider-setting-lineheight-header {
@@ -1294,7 +1294,7 @@
   padding-right: 5px;
 }
 .gslider-setting-lineheight-wrapper .gslider-setting-lineheight-header .gslider-setting-lineheight-units .gslider-setting-lineheight-units-wrap .gslider-setting-lineheight-units-switcher.active {
-  color: #007cba;
+  color: #3858e9;
 }
 
 .gslider-select2-control .react-select__menu-list {
@@ -1358,11 +1358,11 @@
   transition: all 0.3s ease;
 }
 .gslider-setting-switcher-panel-btn button.components-button.gslider-setting-switcher-panel-btn-switcher.active {
-  color: #007cba;
+  color: #3858e9;
   background-color: #f0f0f0;
 }
 .gslider-setting-switcher-panel-btn button.components-button.gslider-setting-switcher-panel-btn-switcher:hover {
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-setting-switcher-panel-btn button.components-button:first-child {
   border-radius: 4px 0 0 4px;
@@ -1412,7 +1412,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-setting-units-type .gslider-setting-units-dropdown {
   position: absolute;
@@ -1435,7 +1435,7 @@
 }
 .gslider-setting-units-type .gslider-setting-units-dropdown .gslider-setting-units-option.active {
   font-weight: 400;
-  color: #007cba;
+  color: #3858e9;
 }
 
 /** Start General scss for URL Control **/
@@ -1482,7 +1482,7 @@
   box-shadow: inset 0 0 0 1px #f0f0f0;
 }
 .gslider-html-tag-control .gslider-html-tag-control-btn-group .gslider-html-tag-control-single-btn.active {
-  color: #007cba;
+  color: #3858e9;
   background-color: #f0f0f0;
   border-color: #f0f0f0;
   box-shadow: inset 0 0 0 1px #f0f0f0;
@@ -1629,7 +1629,7 @@
 }
 .components-popover.gslider-setting-icon-dropdown-content .components-popover__content .gslider-setting-background-color-popup-wrapper .components-base-control.components-range-control .components-base-control__field .components-range-control__root .components-range-control__wrapper span[aria-hidden=true] {
   height: 2px !important;
-  background-color: #007cba !important;
+  background-color: #3858e9 !important;
 }
 .components-popover.gslider-setting-icon-dropdown-content .components-popover__content .gslider-setting-background-color-popup-wrapper .components-base-control.components-range-control .components-base-control__field .components-range-control__root .components-range-control__thumb-wrapper {
   top: 0 !important;
@@ -1735,24 +1735,24 @@
   text-overflow: ellipsis;
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper:hover:not(.is-pro-locked) {
-  border-color: #007cba;
-  background: rgba(0, 124, 186, 0.02);
+  border-color: #3858e9;
+  background: rgba(56, 88, 233, 0.02);
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper:hover:not(.is-pro-locked) .dashicon,
 .gslider-preset-selector-control .gslider-preset-card-wrapper:hover:not(.is-pro-locked) .dashicons {
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper.is-active {
-  border-color: #007cba;
-  background: rgba(0, 124, 186, 0.06);
+  border-color: #3858e9;
+  background: rgba(56, 88, 233, 0.06);
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper.is-active .dashicon,
 .gslider-preset-selector-control .gslider-preset-card-wrapper.is-active .dashicons {
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper.is-active .gslider-preset-selector-label {
   font-weight: 600;
-  color: #007cba;
+  color: #3858e9;
 }
 .gslider-preset-selector-control .gslider-preset-card-wrapper.is-pro-locked {
   opacity: 0.55;
@@ -1858,4 +1858,26 @@
  */
 .gslider-select2-control-wrapper {
   margin-bottom: 16px;
+}
+
+.components-autocomplete__result.is-selected svg.gslider-editor-icons rect,
+.components-autocomplete__result.is-selected svg.gslider-editor-icons path {
+  stroke: #fff !important;
+}
+.components-autocomplete__result.is-selected svg.gslider-editor-icons circle {
+  fill: #fff !important;
+}
+
+.block-editor-list-view-leaf.is-selected svg.gslider-editor-icons rect,
+.block-editor-list-view-leaf.is-selected svg.gslider-editor-icons path,
+.block-editor-list-view-block__contents-cell[aria-selected=true] svg.gslider-editor-icons rect,
+.block-editor-list-view-block__contents-cell[aria-selected=true] svg.gslider-editor-icons path,
+.block-editor-list-view-block__contents.is-selected svg.gslider-editor-icons rect,
+.block-editor-list-view-block__contents.is-selected svg.gslider-editor-icons path {
+  stroke: #fff !important;
+}
+.block-editor-list-view-leaf.is-selected svg.gslider-editor-icons circle,
+.block-editor-list-view-block__contents-cell[aria-selected=true] svg.gslider-editor-icons circle,
+.block-editor-list-view-block__contents.is-selected svg.gslider-editor-icons circle {
+  fill: #fff !important;
 }

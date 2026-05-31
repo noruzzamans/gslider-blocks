@@ -160,7 +160,7 @@ const ResponsiveTypographyControl = ({
             color: '#1e1e1e',
             transition: 'all 0.2s ease',
             '&:hover': {
-                color: '#007cba',
+                color: '#3858e9',
             },
             
             svg: {
@@ -220,7 +220,7 @@ const ResponsiveTypographyControl = ({
             : state.isFocused
             ? '#f0f0f0'
             : '#fff',
-          color: state.isFocused ? '#007cba' : '#1e1e1e',
+          color: state.isFocused ? '#3858e9' : '#1e1e1e',
           fontSize: '12px',
           fontWeight: 400,
           textTransform: 'capitalize',
