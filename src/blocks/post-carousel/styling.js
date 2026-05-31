@@ -429,6 +429,10 @@ const generatePostCarouselStyle = (attributes) => {
         imageHoverLift,
         imageHoverLiftUnits,
         imageTransitionDuration,
+        imageHoverBlur,
+        imageHoverRotate,
+        imageHoverGrayscale,
+        imageHoverPan,
         /** End Image Settings */
 
         /** Start Post Title Typography, Color, Margin & Padding */
@@ -761,6 +765,12 @@ const generatePostCarouselStyle = (attributes) => {
         cardHoverAnimationDuration,
         enableCardTilt,
         cardTiltMaxAngle,
+        cardHoverLift,
+        cardHoverScale,
+        cardHoverPopScale,
+        cardHoverShadowColor,
+        cardHoverGlowColor,
+        cardHoverGlowSize,
         /** End Animation Settings */
     } = attributes;
 
@@ -1053,49 +1063,68 @@ const generatePostCarouselStyle = (attributes) => {
             flex-direction: column;
             height: 100%;
             width: 100%;
-            transition: transform ${cardHoverAnimationDuration || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration || 300}ms ease-out, border-color ${cardHoverAnimationDuration || 300}ms ease-out;
+            transition: transform ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, border-color ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out;
             will-change: transform, box-shadow;
+            --card-hover-lift: -${cardHoverLift?.Desktop ?? 8}px;
+            --card-hover-scale: ${cardHoverScale?.Desktop ?? 1.03};
+            --card-hover-pop-scale: ${cardHoverPopScale?.Desktop ?? 1.06};
+            --card-hover-shadow-color: ${cardHoverShadowColor || 'rgba(0, 0, 0, 0.25)'};
+            --card-hover-glow-color: ${cardHoverGlowColor || 'rgba(0, 122, 255, 0.5)'};
+            --card-hover-glow-size: ${cardHoverGlowSize?.Desktop ?? 15}px;
         }
 
         ${cardHoverAnimation === 'lift' ? `
             .${blockId} .gslider-post-carousel-card:hover {
-                transform: translateY(-8px);
+                transform: translateY(var(--card-hover-lift));
                 box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08) !important;
             }
         ` : ''}
 
         ${cardHoverAnimation === 'zoom' ? `
             .${blockId} .gslider-post-carousel-card:hover {
-                transform: scale(1.03);
+                transform: scale(var(--card-hover-scale));
             }
         ` : ''}
 
         ${cardHoverAnimation === 'lift-zoom' ? `
             .${blockId} .gslider-post-carousel-card:hover {
-                transform: translateY(-6px) scale(1.02);
+                transform: translateY(var(--card-hover-lift)) scale(var(--card-hover-scale));
                 box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08) !important;
             }
         ` : ''}
 
         ${cardHoverAnimation === 'pop' ? `
             @keyframes gsliderPop {
-                50% { transform: scale(1.06); }
+                50% { transform: scale(var(--card-hover-pop-scale)); }
             }
             .${blockId} .gslider-post-carousel-card:hover {
-                animation: gsliderPop ${cardHoverAnimationDuration || 300}ms ease-in-out;
+                animation: gsliderPop ${cardHoverAnimationDuration?.Desktop || 300}ms ease-in-out;
             }
         ` : ''}
 
         ${cardHoverAnimation === 'shadow-depth' ? `
+            .${blockId} .gslider-post-carousel-card {
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                background-color: var(--wp--preset--color--background, #ffffff);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
             .${blockId} .gslider-post-carousel-card:hover {
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+                transform: translateY(var(--card-hover-lift));
+                box-shadow: 0 20px 25px -5px var(--card-hover-shadow-color), 0 10px 10px -5px var(--card-hover-shadow-color) !important;
             }
         ` : ''}
 
         ${cardHoverAnimation === 'border-glow' ? `
+            .${blockId} .gslider-post-carousel-card {
+                padding: 15px;
+                border-radius: 8px;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                background-color: var(--wp--preset--color--background, #ffffff);
+                box-shadow: none;
+            }
             .${blockId} .gslider-post-carousel-card:hover {
-                box-shadow: 0 0 15px rgba(0, 122, 255, 0.5) !important;
-                border-color: rgba(0, 122, 255, 0.8) !important;
+                border-color: var(--card-hover-glow-color) !important;
+                box-shadow: 0 0 var(--card-hover-glow-size) var(--card-hover-glow-color) !important;
             }
         ` : ''}
         
@@ -1440,7 +1469,13 @@ const generatePostCarouselStyle = (attributes) => {
             --hover-opacity: ${imageHoverOpacity?.Desktop || 0.8};
             --hover-scale: ${imageHoverScale?.Desktop || 1.05};
             --hover-lift: ${imageHoverLift?.Desktop || 10}${imageHoverLiftUnits?.Desktop || 'px'};
-            ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(1);' : ''}
+            --hover-blur: ${imageHoverBlur?.Desktop ?? 4}px;
+            --hover-rotate: ${imageHoverRotate?.Desktop ?? 3}deg;
+            --hover-grayscale: ${imageHoverGrayscale?.Desktop ?? 100}%;
+            --hover-pan: ${imageHoverPan?.Desktop ?? 5}%;
+            ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(var(--hover-grayscale));' : ''}
+            ${imageHoverEffect === 'blur-to-clear' ? 'filter: blur(var(--hover-blur));' : ''}
+            ${imageHoverEffect === 'zoom-out' ? 'transform: scale(var(--hover-scale));' : ''}
             ${imageHoverEffect === 'pan-left' ? 'transform-origin: right center;' : ''}
             ${imageHoverEffect === 'pan-right' ? 'transform-origin: left center;' : ''}
         }
@@ -1448,10 +1483,13 @@ const generatePostCarouselStyle = (attributes) => {
         .${blockId} .gslider-post-carousel-image:hover img {
             ${(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') ? 'opacity: var(--hover-opacity);' : ''}
             ${(imageHoverEffect === 'scale' || imageHoverEffect === 'both') ? 'transform: scale(var(--hover-scale));' : ''}
+            ${imageHoverEffect === 'zoom-rotate' ? 'transform: scale(var(--hover-scale)) rotate(var(--hover-rotate));' : ''}
+            ${imageHoverEffect === 'zoom-out' ? 'transform: scale(1);' : ''}
             ${imageHoverEffect === 'move-up' ? 'transform: translateY(calc(-1 * var(--hover-lift)));' : ''}
             ${imageHoverEffect === 'grayscale' ? 'filter: grayscale(0);' : ''}
-            ${imageHoverEffect === 'pan-left' ? 'transform: scale(var(--hover-scale)) translateX(-5%);' : ''}
-            ${imageHoverEffect === 'pan-right' ? 'transform: scale(var(--hover-scale)) translateX(5%);' : ''}
+            ${imageHoverEffect === 'blur-to-clear' ? 'filter: blur(0);' : ''}
+            ${imageHoverEffect === 'pan-left' ? 'transform: scale(var(--hover-scale)) translateX(calc(-1 * var(--hover-pan)));' : ''}
+            ${imageHoverEffect === 'pan-right' ? 'transform: scale(var(--hover-scale)) translateX(var(--hover-pan));' : ''}
         }
 
         ${imageHoverEffect === 'shine-sweep' ? `
@@ -1647,6 +1685,14 @@ const generatePostCarouselStyle = (attributes) => {
                 ${globalTabletBackgroundHoverStyles}
             }
 
+            .${blockId} .gslider-post-carousel-card {
+                --card-hover-lift: -${cardHoverLift?.Tablet ?? 8}px;
+                --card-hover-scale: ${cardHoverScale?.Tablet ?? 1.03};
+                --card-hover-pop-scale: ${cardHoverPopScale?.Tablet ?? 1.06};
+                --card-hover-glow-size: ${cardHoverGlowSize?.Tablet ?? 15}px;
+                transition: transform ${cardHoverAnimationDuration?.Tablet || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration?.Tablet || 300}ms ease-out, border-color ${cardHoverAnimationDuration?.Tablet || 300}ms ease-out;
+            }
+
             .${blockId}.gslider-post-carousel-wrapper .gslider-post-carousel-content-wrapper {
                 ${layoutHeight.Tablet ? `height: ${layoutHeight.Tablet}${layoutHeightUnits.Tablet};` : 'auto'}
                 display: flex;
@@ -1821,6 +1867,10 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-opacity: ${imageHoverOpacity?.Tablet || 0.8};
                 --hover-scale: ${imageHoverScale?.Tablet || 1.05};
                 --hover-lift: ${imageHoverLift?.Tablet || 10}${imageHoverLiftUnits?.Tablet || 'px'};
+                --hover-blur: ${imageHoverBlur?.Tablet ?? 4}px;
+                --hover-rotate: ${imageHoverRotate?.Tablet ?? 3}deg;
+                --hover-grayscale: ${imageHoverGrayscale?.Tablet ?? 100}%;
+                --hover-pan: ${imageHoverPan?.Tablet ?? 5}%;
             }
 
             .${blockId} .gslider-post-carousel-readmore {
@@ -1875,6 +1925,14 @@ const generatePostCarouselStyle = (attributes) => {
             }
             .${blockId}.gslider-post-carousel-wrapper:hover { 
                 ${globalMobileBackgroundHoverStyles}
+            }
+
+            .${blockId} .gslider-post-carousel-card {
+                --card-hover-lift: -${cardHoverLift?.Mobile ?? 8}px;
+                --card-hover-scale: ${cardHoverScale?.Mobile ?? 1.03};
+                --card-hover-pop-scale: ${cardHoverPopScale?.Mobile ?? 1.06};
+                --card-hover-glow-size: ${cardHoverGlowSize?.Mobile ?? 15}px;
+                transition: transform ${cardHoverAnimationDuration?.Mobile || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration?.Mobile || 300}ms ease-out, border-color ${cardHoverAnimationDuration?.Mobile || 300}ms ease-out;
             }
 
             .${blockId}.gslider-post-carousel-wrapper .gslider-post-carousel-content-wrapper {
@@ -2050,6 +2108,10 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-opacity: ${imageHoverOpacity?.Mobile || 0.8};
                 --hover-scale: ${imageHoverScale?.Mobile || 1.05};
                 --hover-lift: ${imageHoverLift?.Mobile || 10}${imageHoverLiftUnits?.Mobile || 'px'};
+                --hover-blur: ${imageHoverBlur?.Mobile ?? 4}px;
+                --hover-rotate: ${imageHoverRotate?.Mobile ?? 3}deg;
+                --hover-grayscale: ${imageHoverGrayscale?.Mobile ?? 100}%;
+                --hover-pan: ${imageHoverPan?.Mobile ?? 5}%;
             }
 
             .${blockId} .gslider-post-carousel-readmore {

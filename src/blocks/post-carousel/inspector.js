@@ -508,6 +508,10 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         imageHoverLift,
         imageHoverLiftUnits,
         imageTransitionDuration,
+        imageHoverBlur,
+        imageHoverRotate,
+        imageHoverGrayscale,
+        imageHoverPan,
         /** End Image Settings */
 
         /** Start Post Title Typography, Color, Margin & Padding */
@@ -1150,6 +1154,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             <AnimationControl
                 attributes={attributes}
                 setAttributes={setAttributes}
+                deviceType={deviceType}
                 opened={openPanels.general === 'animation-settings'}
                 onToggle={() => togglePanel('general', 'animation-settings')}
             />
@@ -1815,6 +1820,150 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     onChange={(value) => setAttributes({ imageObjectPosition: value })}
                 />
 
+                <Select2Control
+                    label={__('Hover Effect', 'gslider-blocks')}
+                    options={[
+                        { label: __('None', 'gslider-blocks'), value: 'none' },
+                        { label: __('Opacity', 'gslider-blocks'), value: 'opacity' },
+                        { label: __('Scale', 'gslider-blocks'), value: 'scale' },
+                        { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
+                        { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
+                        { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
+                        { label: __('Shine Sweep', 'gslider-blocks'), value: 'shine-sweep' },
+                        { label: __('Overlay Fade', 'gslider-blocks'), value: 'overlay-fade' },
+                        { label: __('Overlay Slide Up', 'gslider-blocks'), value: 'overlay-slide' },
+                        { label: __('Pan Left', 'gslider-blocks'), value: 'pan-left' },
+                        { label: __('Pan Right', 'gslider-blocks'), value: 'pan-right' },
+                        { label: __('Blur to Clear', 'gslider-blocks'), value: 'blur-to-clear' },
+                        { label: __('Zoom Out', 'gslider-blocks'), value: 'zoom-out' },
+                        { label: __('Zoom & Rotate', 'gslider-blocks'), value: 'zoom-rotate' },
+                    ]}
+                    value={imageHoverEffect}
+                    onChange={(value) => setAttributes({ imageHoverEffect: value })}
+                />
+
+                {(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') && (
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        label={__("Hover Opacity", "gslider-blocks")}
+                        rangeValue={imageHoverOpacity}
+                        onChangeValue={(value) => setAttributes({ imageHoverOpacity: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"0.8"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {(imageHoverEffect === 'scale' || imageHoverEffect === 'both' || imageHoverEffect === 'zoom-out' || imageHoverEffect === 'zoom-rotate') && (
+                    <ResponsiveRangeControl
+                        min={0.8}
+                        max={1.5}
+                        step={0.05}
+                        label={__("Hover Scale", "gslider-blocks")}
+                        rangeValue={imageHoverScale}
+                        onChangeValue={(value) => setAttributes({ imageHoverScale: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"1.05"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {(imageHoverEffect === 'move-up') && (
+                    <ResponsiveRangeControl
+                        label={__("Lift Amount", "gslider-blocks")}
+                        rangeValue={imageHoverLift}
+                        onChangeValue={(value) => setAttributes({ imageHoverLift: value })}
+                        onUnitChange={(value) => setAttributes({ imageHoverLiftUnits: value })}
+                        deviceType={deviceType}
+                        units={imageHoverLiftUnits}
+                        resetFallbackValue={{
+                            px: "10",
+                            "%": "5",
+                            em: "1",
+                            rem: "1",
+                            vw: "1",
+                            vh: "1"
+                        }}
+                        isRangeUnit={true}
+                        unitBounds={{
+                            px: { min: 0, max: 200, step: 1 },
+                            em: { min: 0, max: 10, step: 0.1 },
+                            rem: { min: 0, max: 10, step: 0.1 },
+                            '%': { min: 0, max: 100, step: 1 },
+                        }}
+                    />
+                )}
+
+                {imageHoverEffect === 'blur-to-clear' && (
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={20}
+                        step={1}
+                        label={__("Hover Blur (px)", "gslider-blocks")}
+                        rangeValue={imageHoverBlur}
+                        onChangeValue={(value) => setAttributes({ imageHoverBlur: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"4"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {imageHoverEffect === 'zoom-rotate' && (
+                    <ResponsiveRangeControl
+                        min={-45}
+                        max={45}
+                        step={1}
+                        label={__("Hover Rotate (°)", "gslider-blocks")}
+                        rangeValue={imageHoverRotate}
+                        onChangeValue={(value) => setAttributes({ imageHoverRotate: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"3"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {imageHoverEffect === 'grayscale' && (
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={100}
+                        step={5}
+                        label={__("Hover Grayscale (%)", "gslider-blocks")}
+                        rangeValue={imageHoverGrayscale}
+                        onChangeValue={(value) => setAttributes({ imageHoverGrayscale: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"100"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                {(imageHoverEffect === 'pan-left' || imageHoverEffect === 'pan-right') && (
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={30}
+                        step={1}
+                        label={__("Pan Distance (%)", "gslider-blocks")}
+                        rangeValue={imageHoverPan}
+                        onChangeValue={(value) => setAttributes({ imageHoverPan: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"5"}
+                        isRangeUnit={false}
+                    />
+                )}
+
+                <ResponsiveRangeControl
+                    min={100}
+                    max={1000}
+                    step={50}
+                    label={__("Transition Duration (ms)", "gslider-blocks")}
+                    rangeValue={imageTransitionDuration}
+                    onChangeValue={(value) => setAttributes({ imageTransitionDuration: value })}
+                    deviceType={deviceType}
+                    resetFallbackValue={"300"}
+                    isRangeUnit={false}
+                />
+
                 <ResponsiveSpacingControl
                     label={__("Padding", "gslider-blocks")}
                     deviceType={deviceType}
@@ -1974,91 +2123,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowHoverCssValue: value })}
                     />
                 )}
-
-                <Select2Control
-                    label={__('Hover Effect', 'gslider-blocks')}
-                    options={[
-                        { label: __('None', 'gslider-blocks'), value: 'none' },
-                        { label: __('Opacity', 'gslider-blocks'), value: 'opacity' },
-                        { label: __('Scale', 'gslider-blocks'), value: 'scale' },
-                        { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
-                        { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
-                        { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
-                        { label: __('Shine Sweep', 'gslider-blocks'), value: 'shine-sweep' },
-                        { label: __('Overlay Fade', 'gslider-blocks'), value: 'overlay-fade' },
-                        { label: __('Overlay Slide Up', 'gslider-blocks'), value: 'overlay-slide' },
-                        { label: __('Pan Left', 'gslider-blocks'), value: 'pan-left' },
-                        { label: __('Pan Right', 'gslider-blocks'), value: 'pan-right' },
-                    ]}
-                    value={imageHoverEffect}
-                    onChange={(value) => setAttributes({ imageHoverEffect: value })}
-                />
-
-                {(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') && (
-                    <ResponsiveRangeControl
-                        min={0}
-                        max={1}
-                        step={0.05}
-                        label={__("Hover Opacity", "gslider-blocks")}
-                        rangeValue={imageHoverOpacity}
-                        onChangeValue={(value) => setAttributes({ imageHoverOpacity: value })}
-                        deviceType={deviceType}
-                        resetFallbackValue={"0.8"}
-                        isRangeUnit={false}
-                    />
-                )}
-
-                {(imageHoverEffect === 'scale' || imageHoverEffect === 'both') && (
-                    <ResponsiveRangeControl
-                        min={0.8}
-                        max={1.5}
-                        step={0.05}
-                        label={__("Hover Scale", "gslider-blocks")}
-                        rangeValue={imageHoverScale}
-                        onChangeValue={(value) => setAttributes({ imageHoverScale: value })}
-                        deviceType={deviceType}
-                        resetFallbackValue={"1.05"}
-                        isRangeUnit={false}
-                    />
-                )}
-
-                {(imageHoverEffect === 'move-up') && (
-                    <ResponsiveRangeControl
-                        label={__("Lift Amount", "gslider-blocks")}
-                        rangeValue={imageHoverLift}
-                        onChangeValue={(value) => setAttributes({ imageHoverLift: value })}
-                        onUnitChange={(value) => setAttributes({ imageHoverLiftUnits: value })}
-                        deviceType={deviceType}
-                        units={imageHoverLiftUnits}
-                        resetFallbackValue={{
-                            px: "10",
-                            "%": "5",
-                            em: "1",
-                            rem: "1",
-                            vw: "1",
-                            vh: "1"
-                        }}
-                        isRangeUnit={true}
-                        unitBounds={{
-                            px: { min: 0, max: 200, step: 1 },
-                            em: { min: 0, max: 10, step: 0.1 },
-                            rem: { min: 0, max: 10, step: 0.1 },
-                            '%': { min: 0, max: 100, step: 1 },
-                        }}
-                    />
-                )}
-
-                <ResponsiveRangeControl
-                    min={100}
-                    max={1000}
-                    step={50}
-                    label={__("Transition Duration (ms)", "gslider-blocks")}
-                    rangeValue={imageTransitionDuration}
-                    onChangeValue={(value) => setAttributes({ imageTransitionDuration: value })}
-                    deviceType={deviceType}
-                    resetFallbackValue={"300"}
-                    isRangeUnit={false}
-                />
             </PanelBody>
 
             <PanelBody

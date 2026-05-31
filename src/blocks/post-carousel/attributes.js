@@ -1939,6 +1939,38 @@ const attributes = {
             Mobile: 300,
         },
     },
+    imageHoverBlur: {
+        type: "object",
+        default: {
+            Desktop: 4,
+            Tablet: 4,
+            Mobile: 4,
+        },
+    },
+    imageHoverRotate: {
+        type: "object",
+        default: {
+            Desktop: 3,
+            Tablet: 3,
+            Mobile: 3,
+        },
+    },
+    imageHoverGrayscale: {
+        type: "object",
+        default: {
+            Desktop: 100,
+            Tablet: 100,
+            Mobile: 100,
+        },
+    },
+    imageHoverPan: {
+        type: "object",
+        default: {
+            Desktop: 5,
+            Tablet: 5,
+            Mobile: 5,
+        },
+    },
     /** End Image Hover Settings */
 
     /** Start Post Title Alignment & Heading Tag */

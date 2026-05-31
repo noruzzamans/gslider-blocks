@@ -128,16 +128,44 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 	const blockProps = useBlockProps({
 		className: `gslider-post-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination ? 'has-pagination' : ''} ${cardHoverAnimation !== 'none' ? `gslider-card-hover-${cardHoverAnimation}` : ''}`,
 		'data-animation-settings': hasEntranceAnimation ? JSON.stringify({
-			duration: cardEntranceAnimationDuration,
-			delay: cardEntranceAnimationDelay,
-			offset: cardEntranceAnimationOffset,
+			duration: {
+				Desktop: cardEntranceAnimationDuration?.Desktop ?? 600,
+				Tablet: cardEntranceAnimationDuration?.Tablet ?? 600,
+				Mobile: cardEntranceAnimationDuration?.Mobile ?? 600,
+			},
+			delay: {
+				Desktop: cardEntranceAnimationDelay?.Desktop ?? 0,
+				Tablet: cardEntranceAnimationDelay?.Tablet ?? 0,
+				Mobile: cardEntranceAnimationDelay?.Mobile ?? 0,
+			},
+			offset: {
+				Desktop: cardEntranceAnimationOffset?.Desktop ?? 15,
+				Tablet: cardEntranceAnimationOffset?.Tablet ?? 15,
+				Mobile: cardEntranceAnimationOffset?.Mobile ?? 15,
+			},
 			easing: cardEntranceAnimationEasing,
 		}) : undefined,
 		'data-stagger-enabled': (enableStaggerAnimation && hasEntranceAnimation) ? '1' : undefined,
-		'data-stagger-delay': (enableStaggerAnimation && hasEntranceAnimation) ? String(cardStaggerDelay) : undefined,
-		'data-tilt-perspective': enableCardTilt ? String(cardTiltPerspective) : undefined,
-		'data-tilt-scale': enableCardTilt ? String(cardTiltHoverScale) : undefined,
-		'data-tilt-speed': enableCardTilt ? String(cardTiltTransitionSpeed) : undefined,
+		'data-stagger-delay': (enableStaggerAnimation && hasEntranceAnimation) ? JSON.stringify({
+			Desktop: cardStaggerDelay?.Desktop ?? 100,
+			Tablet: cardStaggerDelay?.Tablet ?? 100,
+			Mobile: cardStaggerDelay?.Mobile ?? 100,
+		}) : undefined,
+		'data-tilt-perspective': enableCardTilt ? JSON.stringify({
+			Desktop: cardTiltPerspective?.Desktop ?? 800,
+			Tablet: cardTiltPerspective?.Tablet ?? 800,
+			Mobile: cardTiltPerspective?.Mobile ?? 800,
+		}) : undefined,
+		'data-tilt-scale': enableCardTilt ? JSON.stringify({
+			Desktop: cardTiltHoverScale?.Desktop ?? 1.02,
+			Tablet: cardTiltHoverScale?.Tablet ?? 1.02,
+			Mobile: cardTiltHoverScale?.Mobile ?? 1.02,
+		}) : undefined,
+		'data-tilt-speed': enableCardTilt ? JSON.stringify({
+			Desktop: cardTiltTransitionSpeed?.Desktop ?? 400,
+			Tablet: cardTiltTransitionSpeed?.Tablet ?? 400,
+			Mobile: cardTiltTransitionSpeed?.Mobile ?? 400,
+		}) : undefined,
 	});
 
 	const normalizedContentOrder = normalizeContentOrder(contentOrder);

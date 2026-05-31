@@ -2,9 +2,10 @@ import { __ } from '@wordpress/i18n';
 import {
     PanelBody,
     ToggleControl,
-    RangeControl,
 } from '@wordpress/components';
 import Select2Control from '@Components/select2-control';
+import ResponsiveRangeControl from '@Components/responsive-range-control';
+import ColorControl from '@Components/color-control';
 
 /**
  * Animation entrance options grouped by category.
@@ -97,6 +98,7 @@ export default function AnimationControl( {
     setAttributes, 
     opened, 
     onToggle,
+    deviceType = 'Desktop',
     showEntrance = true,
     showStagger = true,
     showHover = true,
@@ -117,6 +119,14 @@ export default function AnimationControl( {
         cardTiltPerspective,
         cardTiltHoverScale,
         cardTiltTransitionSpeed,
+
+        // Custom Card Hover settings
+        cardHoverLift,
+        cardHoverScale,
+        cardHoverPopScale,
+        cardHoverShadowColor,
+        cardHoverGlowColor,
+        cardHoverGlowSize,
     } = attributes;
 
     const hasEntranceAnimation = cardEntranceAnimation && cardEntranceAnimation !== 'none';
@@ -145,32 +155,40 @@ export default function AnimationControl( {
 
                     { hasEntranceAnimation && (
                         <>
-                             <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Duration (ms)', 'gslider-blocks' ) }
-                                value={ cardEntranceAnimationDuration }
-                                onChange={ ( value ) => setAttributes( { cardEntranceAnimationDuration: value } ) }
+                                rangeValue={ cardEntranceAnimationDuration }
+                                onChangeValue={ ( value ) => setAttributes( { cardEntranceAnimationDuration: value } ) }
+                                deviceType={ deviceType }
                                 min={ 100 }
                                 max={ 5000 }
                                 step={ 50 }
+                                resetFallbackValue={ "600" }
+                                isRangeUnit={ false }
                             />
 
-                            <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Delay (ms)', 'gslider-blocks' ) }
-                                value={ cardEntranceAnimationDelay }
-                                onChange={ ( value ) => setAttributes( { cardEntranceAnimationDelay: value } ) }
+                                rangeValue={ cardEntranceAnimationDelay }
+                                onChangeValue={ ( value ) => setAttributes( { cardEntranceAnimationDelay: value } ) }
+                                deviceType={ deviceType }
                                 min={ 0 }
                                 max={ 5000 }
                                 step={ 50 }
+                                resetFallbackValue={ "0" }
+                                isRangeUnit={ false }
                             />
 
-                            <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Viewport Offset (%)', 'gslider-blocks' ) }
-                                help={ __( 'How far into the viewport before animation triggers', 'gslider-blocks' ) }
-                                value={ cardEntranceAnimationOffset }
-                                onChange={ ( value ) => setAttributes( { cardEntranceAnimationOffset: value } ) }
+                                rangeValue={ cardEntranceAnimationOffset }
+                                onChangeValue={ ( value ) => setAttributes( { cardEntranceAnimationOffset: value } ) }
+                                deviceType={ deviceType }
                                 min={ 0 }
-                                max={ 100 }
+                                max={ 50 }
                                 step={ 5 }
+                                resetFallbackValue={ "15" }
+                                isRangeUnit={ false }
                             />
 
                             <Select2Control
@@ -200,13 +218,16 @@ export default function AnimationControl( {
                     />
 
                     { enableStaggerAnimation && hasEntranceAnimation && (
-                        <RangeControl
+                        <ResponsiveRangeControl
                             label={ __( 'Stagger Delay (ms)', 'gslider-blocks' ) }
-                            value={ cardStaggerDelay }
-                            onChange={ ( value ) => setAttributes( { cardStaggerDelay: value } ) }
+                            rangeValue={ cardStaggerDelay }
+                            onChangeValue={ ( value ) => setAttributes( { cardStaggerDelay: value } ) }
+                            deviceType={ deviceType }
                             min={ 50 }
-                            max={ 300 }
+                            max={ 500 }
                             step={ 10 }
+                            resetFallbackValue={ "100" }
+                            isRangeUnit={ false }
                         />
                     ) }
 
@@ -234,14 +255,88 @@ export default function AnimationControl( {
                     />
 
                     { cardHoverAnimation !== 'none' && (
-                        <RangeControl
+                        <ResponsiveRangeControl
                             label={ __( 'Hover Duration (ms)', 'gslider-blocks' ) }
-                            value={ cardHoverAnimationDuration }
-                            onChange={ ( value ) => setAttributes( { cardHoverAnimationDuration: value } ) }
+                            rangeValue={ cardHoverAnimationDuration }
+                            onChangeValue={ ( value ) => setAttributes( { cardHoverAnimationDuration: value } ) }
+                            deviceType={ deviceType }
                             min={ 100 }
                             max={ 1000 }
                             step={ 50 }
+                            resetFallbackValue={ "300" }
+                            isRangeUnit={ false }
                         />
+                    ) }
+
+                    { ( cardHoverAnimation === 'lift' || cardHoverAnimation === 'lift-zoom' ) && (
+                        <ResponsiveRangeControl
+                            label={ __( 'Hover Lift (px)', 'gslider-blocks' ) }
+                            rangeValue={ cardHoverLift }
+                            onChangeValue={ ( value ) => setAttributes( { cardHoverLift: value } ) }
+                            deviceType={ deviceType }
+                            min={ 0 }
+                            max={ 50 }
+                            step={ 1 }
+                            resetFallbackValue={ "8" }
+                            isRangeUnit={ false }
+                        />
+                    ) }
+
+                    { ( cardHoverAnimation === 'zoom' || cardHoverAnimation === 'lift-zoom' ) && (
+                        <ResponsiveRangeControl
+                            label={ __( 'Hover Scale', 'gslider-blocks' ) }
+                            rangeValue={ cardHoverScale }
+                            onChangeValue={ ( value ) => setAttributes( { cardHoverScale: value } ) }
+                            deviceType={ deviceType }
+                            min={ 1.00 }
+                            max={ 1.20 }
+                            step={ 0.01 }
+                            resetFallbackValue={ "1.03" }
+                            isRangeUnit={ false }
+                        />
+                    ) }
+
+                    { cardHoverAnimation === 'pop' && (
+                        <ResponsiveRangeControl
+                            label={ __( 'Pop Scale', 'gslider-blocks' ) }
+                            rangeValue={ cardHoverPopScale }
+                            onChangeValue={ ( value ) => setAttributes( { cardHoverPopScale: value } ) }
+                            deviceType={ deviceType }
+                            min={ 1.00 }
+                            max={ 1.20 }
+                            step={ 0.01 }
+                            resetFallbackValue={ "1.06" }
+                            isRangeUnit={ false }
+                        />
+                    ) }
+
+                    { cardHoverAnimation === 'shadow-depth' && (
+                        <ColorControl
+                            label={ __( 'Shadow Color', 'gslider-blocks' ) }
+                            color={ cardHoverShadowColor }
+                            onChangeColor={ ( value ) => setAttributes( { cardHoverShadowColor: value } ) }
+                        />
+                    ) }
+
+                    { cardHoverAnimation === 'border-glow' && (
+                        <>
+                            <ColorControl
+                                label={ __( 'Glow Color', 'gslider-blocks' ) }
+                                color={ cardHoverGlowColor }
+                                onChangeColor={ ( value ) => setAttributes( { cardHoverGlowColor: value } ) }
+                            />
+                            <ResponsiveRangeControl
+                                label={ __( 'Glow Size (px)', 'gslider-blocks' ) }
+                                rangeValue={ cardHoverGlowSize }
+                                onChangeValue={ ( value ) => setAttributes( { cardHoverGlowSize: value } ) }
+                                deviceType={ deviceType }
+                                min={ 5 }
+                                max={ 50 }
+                                step={ 1 }
+                                resetFallbackValue={ "15" }
+                                isRangeUnit={ false }
+                            />
+                        </>
                     ) }
                 </>
             ) }
@@ -263,40 +358,52 @@ export default function AnimationControl( {
 
                      { enableCardTilt && (
                         <>
-                            <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Max Tilt Angle (°)', 'gslider-blocks' ) }
-                                value={ cardTiltMaxAngle }
-                                onChange={ ( value ) => setAttributes( { cardTiltMaxAngle: value } ) }
+                                rangeValue={ cardTiltMaxAngle }
+                                onChangeValue={ ( value ) => setAttributes( { cardTiltMaxAngle: value } ) }
+                                deviceType={ deviceType }
                                 min={ 5 }
                                 max={ 25 }
                                 step={ 1 }
+                                resetFallbackValue={ "12" }
+                                isRangeUnit={ false }
                             />
-                            
-                            <RangeControl
+
+                            <ResponsiveRangeControl
                                 label={ __( 'Tilt Perspective (px)', 'gslider-blocks' ) }
-                                value={ cardTiltPerspective }
-                                onChange={ ( value ) => setAttributes( { cardTiltPerspective: value } ) }
+                                rangeValue={ cardTiltPerspective }
+                                onChangeValue={ ( value ) => setAttributes( { cardTiltPerspective: value } ) }
+                                deviceType={ deviceType }
                                 min={ 200 }
                                 max={ 2000 }
                                 step={ 50 }
+                                resetFallbackValue={ "800" }
+                                isRangeUnit={ false }
                             />
 
-                            <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Hover Zoom Scale', 'gslider-blocks' ) }
-                                value={ cardTiltHoverScale }
-                                onChange={ ( value ) => setAttributes( { cardTiltHoverScale: value } ) }
+                                rangeValue={ cardTiltHoverScale }
+                                onChangeValue={ ( value ) => setAttributes( { cardTiltHoverScale: value } ) }
+                                deviceType={ deviceType }
                                 min={ 1.00 }
                                 max={ 1.20 }
                                 step={ 0.01 }
+                                resetFallbackValue={ "1.02" }
+                                isRangeUnit={ false }
                             />
 
-                            <RangeControl
+                            <ResponsiveRangeControl
                                 label={ __( 'Tilt Transition Speed (ms)', 'gslider-blocks' ) }
-                                value={ cardTiltTransitionSpeed }
-                                onChange={ ( value ) => setAttributes( { cardTiltTransitionSpeed: value } ) }
+                                rangeValue={ cardTiltTransitionSpeed }
+                                onChangeValue={ ( value ) => setAttributes( { cardTiltTransitionSpeed: value } ) }
+                                deviceType={ deviceType }
                                 min={ 100 }
                                 max={ 2000 }
                                 step={ 50 }
+                                resetFallbackValue={ "400" }
+                                isRangeUnit={ false }
                             />
                         </>
                     ) }

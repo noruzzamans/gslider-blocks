@@ -8,6 +8,9 @@
  * import { animationAttributes } from '@Components/animation-control/animation-attributes';
  * const attributes = { ...blockSpecificAttributes, ...animationAttributes };
  *
+ * NOTE: All responsive range values use string defaults because
+ * ResponsiveRangeControl stores and compares values as strings.
+ *
  * @package GSlider\Blocks
  */
 
@@ -19,16 +22,28 @@ export const animationAttributes = {
         default: 'none',
     },
     cardEntranceAnimationDuration: {
-        type: 'number',
-        default: 600,
+        type: 'object',
+        default: {
+            Desktop: '600',
+            Tablet: '600',
+            Mobile: '600',
+        },
     },
     cardEntranceAnimationDelay: {
-        type: 'number',
-        default: 0,
+        type: 'object',
+        default: {
+            Desktop: '0',
+            Tablet: '0',
+            Mobile: '0',
+        },
     },
     cardEntranceAnimationOffset: {
-        type: 'number',
-        default: 15,
+        type: 'object',
+        default: {
+            Desktop: '15',
+            Tablet: '15',
+            Mobile: '15',
+        },
     },
     cardEntranceAnimationEasing: {
         type: 'string',
@@ -41,8 +56,12 @@ export const animationAttributes = {
         default: false,
     },
     cardStaggerDelay: {
-        type: 'number',
-        default: 100,
+        type: 'object',
+        default: {
+            Desktop: '100',
+            Tablet: '100',
+            Mobile: '100',
+        },
     },
 
     /** Card Hover Animation */
@@ -51,8 +70,52 @@ export const animationAttributes = {
         default: 'none',
     },
     cardHoverAnimationDuration: {
-        type: 'number',
-        default: 300,
+        type: 'object',
+        default: {
+            Desktop: '300',
+            Tablet: '300',
+            Mobile: '300',
+        },
+    },
+    cardHoverLift: {
+        type: 'object',
+        default: {
+            Desktop: '8',
+            Tablet: '8',
+            Mobile: '8',
+        },
+    },
+    cardHoverScale: {
+        type: 'object',
+        default: {
+            Desktop: '1.03',
+            Tablet: '1.03',
+            Mobile: '1.03',
+        },
+    },
+    cardHoverPopScale: {
+        type: 'object',
+        default: {
+            Desktop: '1.06',
+            Tablet: '1.06',
+            Mobile: '1.06',
+        },
+    },
+    cardHoverShadowColor: {
+        type: 'string',
+        default: 'rgba(0, 0, 0, 0.25)',
+    },
+    cardHoverGlowColor: {
+        type: 'string',
+        default: 'rgba(0, 122, 255, 0.5)',
+    },
+    cardHoverGlowSize: {
+        type: 'object',
+        default: {
+            Desktop: '15',
+            Tablet: '15',
+            Mobile: '15',
+        },
     },
 
     /** 3D Tilt Effect */
@@ -61,19 +124,35 @@ export const animationAttributes = {
         default: false,
     },
     cardTiltMaxAngle: {
-        type: 'number',
-        default: 12,
+        type: 'object',
+        default: {
+            Desktop: '12',
+            Tablet: '12',
+            Mobile: '12',
+        },
     },
     cardTiltPerspective: {
-        type: 'number',
-        default: 800,
+        type: 'object',
+        default: {
+            Desktop: '800',
+            Tablet: '800',
+            Mobile: '800',
+        },
     },
     cardTiltHoverScale: {
-        type: 'number',
-        default: 1.02,
+        type: 'object',
+        default: {
+            Desktop: '1.02',
+            Tablet: '1.02',
+            Mobile: '1.02',
+        },
     },
     cardTiltTransitionSpeed: {
-        type: 'number',
-        default: 400,
+        type: 'object',
+        default: {
+            Desktop: '400',
+            Tablet: '400',
+            Mobile: '400',
+        },
     },
 };

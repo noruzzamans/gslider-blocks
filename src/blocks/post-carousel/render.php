@@ -21,20 +21,62 @@ $enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
 $post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
 $post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
 
+// Helper: extract responsive int value for all breakpoints
+if ( ! function_exists( 'gslider_get_responsive_int' ) ) {
+    function gslider_get_responsive_int( $attr, $defaults ) {
+        if ( ! isset( $attr ) ) {
+            return $defaults;
+        }
+        if ( is_array( $attr ) ) {
+            return array(
+                'Desktop' => intval( $attr['Desktop'] ?? $defaults['Desktop'] ),
+                'Tablet'  => intval( $attr['Tablet']  ?? $defaults['Tablet'] ),
+                'Mobile'  => intval( $attr['Mobile']  ?? $defaults['Mobile'] ),
+            );
+        }
+        $val = intval( $attr );
+        return array( 'Desktop' => $val, 'Tablet' => $val, 'Mobile' => $val );
+    }
+}
+if ( ! function_exists( 'gslider_get_responsive_float' ) ) {
+    function gslider_get_responsive_float( $attr, $defaults ) {
+        if ( ! isset( $attr ) ) {
+            return $defaults;
+        }
+        if ( is_array( $attr ) ) {
+            return array(
+                'Desktop' => floatval( $attr['Desktop'] ?? $defaults['Desktop'] ),
+                'Tablet'  => floatval( $attr['Tablet']  ?? $defaults['Tablet'] ),
+                'Mobile'  => floatval( $attr['Mobile']  ?? $defaults['Mobile'] ),
+            );
+        }
+        $val = floatval( $attr );
+        return array( 'Desktop' => $val, 'Tablet' => $val, 'Mobile' => $val );
+    }
+}
+
 // Animation settings
 $card_entrance_animation  = isset( $attributes['cardEntranceAnimation'] ) ? sanitize_html_class( $attributes['cardEntranceAnimation'] ) : 'none';
-$animation_duration       = isset( $attributes['cardEntranceAnimationDuration'] ) ? intval( $attributes['cardEntranceAnimationDuration'] ) : 600;
-$animation_delay          = isset( $attributes['cardEntranceAnimationDelay'] ) ? intval( $attributes['cardEntranceAnimationDelay'] ) : 0;
-$animation_offset         = isset( $attributes['cardEntranceAnimationOffset'] ) ? intval( $attributes['cardEntranceAnimationOffset'] ) : 15;
+$animation_duration_raw   = isset( $attributes['cardEntranceAnimationDuration'] ) ? $attributes['cardEntranceAnimationDuration'] : null;
+$animation_delay_raw      = isset( $attributes['cardEntranceAnimationDelay'] )    ? $attributes['cardEntranceAnimationDelay']    : null;
+$animation_offset_raw     = isset( $attributes['cardEntranceAnimationOffset'] )   ? $attributes['cardEntranceAnimationOffset']   : null;
+$animation_duration       = gslider_get_responsive_int( $animation_duration_raw, array( 'Desktop' => 600, 'Tablet' => 600, 'Mobile' => 600 ) );
+$animation_delay          = gslider_get_responsive_int( $animation_delay_raw,    array( 'Desktop' => 0,   'Tablet' => 0,   'Mobile' => 0   ) );
+$animation_offset         = gslider_get_responsive_int( $animation_offset_raw,   array( 'Desktop' => 15,  'Tablet' => 15,  'Mobile' => 15  ) );
 $animation_easing         = isset( $attributes['cardEntranceAnimationEasing'] ) ? sanitize_text_field( $attributes['cardEntranceAnimationEasing'] ) : 'ease-out';
 $enable_stagger           = ! empty( $attributes['enableStaggerAnimation'] );
-$stagger_delay            = isset( $attributes['cardStaggerDelay'] ) ? intval( $attributes['cardStaggerDelay'] ) : 100;
+$stagger_delay_raw        = isset( $attributes['cardStaggerDelay'] ) ? $attributes['cardStaggerDelay'] : null;
+$stagger_delay            = gslider_get_responsive_int( $stagger_delay_raw, array( 'Desktop' => 100, 'Tablet' => 100, 'Mobile' => 100 ) );
 $card_hover_animation     = isset( $attributes['cardHoverAnimation'] ) ? sanitize_html_class( $attributes['cardHoverAnimation'] ) : 'none';
 $enable_tilt              = ! empty( $attributes['enableCardTilt'] );
-$tilt_max_angle           = isset( $attributes['cardTiltMaxAngle'] ) ? intval( $attributes['cardTiltMaxAngle'] ) : 12;
-$tilt_perspective         = isset( $attributes['cardTiltPerspective'] ) ? intval( $attributes['cardTiltPerspective'] ) : 800;
-$tilt_scale               = isset( $attributes['cardTiltHoverScale'] ) ? floatval( $attributes['cardTiltHoverScale'] ) : 1.02;
-$tilt_speed               = isset( $attributes['cardTiltTransitionSpeed'] ) ? intval( $attributes['cardTiltTransitionSpeed'] ) : 400;
+$tilt_max_angle_raw       = isset( $attributes['cardTiltMaxAngle'] )       ? $attributes['cardTiltMaxAngle']       : null;
+$tilt_perspective_raw     = isset( $attributes['cardTiltPerspective'] )    ? $attributes['cardTiltPerspective']    : null;
+$tilt_scale_raw           = isset( $attributes['cardTiltHoverScale'] )     ? $attributes['cardTiltHoverScale']     : null;
+$tilt_speed_raw           = isset( $attributes['cardTiltTransitionSpeed'] )? $attributes['cardTiltTransitionSpeed']: null;
+$tilt_max_angle           = gslider_get_responsive_int(   $tilt_max_angle_raw,   array( 'Desktop' => 12,   'Tablet' => 12,   'Mobile' => 12   ) );
+$tilt_perspective         = gslider_get_responsive_int(   $tilt_perspective_raw, array( 'Desktop' => 800,  'Tablet' => 800,  'Mobile' => 800  ) );
+$tilt_scale               = gslider_get_responsive_float( $tilt_scale_raw,       array( 'Desktop' => 1.02, 'Tablet' => 1.02, 'Mobile' => 1.02 ) );
+$tilt_speed               = gslider_get_responsive_int(   $tilt_speed_raw,       array( 'Desktop' => 400,  'Tablet' => 400,  'Mobile' => 400  ) );
 
 $has_entrance_animation = 'none' !== $card_entrance_animation;
 
@@ -341,13 +383,13 @@ if ( $has_entrance_animation ) {
 }
 if ( $enable_stagger && $has_entrance_animation ) {
     $wrapper_data['data-stagger-enabled'] = '1';
-    $wrapper_data['data-stagger-delay']   = (string) $stagger_delay;
+    $wrapper_data['data-stagger-delay']   = wp_json_encode( $stagger_delay );
 }
 if ( $enable_tilt ) {
-    $wrapper_data['data-tilt-max'] = (string) $tilt_max_angle;
-    $wrapper_data['data-tilt-perspective'] = (string) $tilt_perspective;
-    $wrapper_data['data-tilt-scale'] = (string) $tilt_scale;
-    $wrapper_data['data-tilt-speed'] = (string) $tilt_speed;
+    $wrapper_data['data-tilt-max']         = wp_json_encode( $tilt_max_angle );
+    $wrapper_data['data-tilt-perspective'] = wp_json_encode( $tilt_perspective );
+    $wrapper_data['data-tilt-scale']       = wp_json_encode( $tilt_scale );
+    $wrapper_data['data-tilt-speed']       = wp_json_encode( $tilt_speed );
 }
 
 $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );

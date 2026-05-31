@@ -16,13 +16,50 @@
  */
 
 /**
+ * Get the current breakpoint key based on window width.
+ * Matches WordPress editor breakpoints: Tablet ≤ 1024, Mobile ≤ 768.
+ *
+ * @return {'Desktop'|'Tablet'|'Mobile'}
+ */
+function getCurrentBreakpoint() {
+    const width = window.innerWidth;
+    if ( width <= 767 ) return 'Mobile';
+    if ( width <= 1024 ) return 'Tablet';
+    return 'Desktop';
+}
+
+/**
+ * Resolve a responsive value that may be a plain number OR a
+ * { Desktop, Tablet, Mobile } object.  Falls back to `fallback`.
+ *
+ * @param {number|object} value     Raw parsed JSON value.
+ * @param {number}        fallback  Default if unresolvable.
+ * @return {number}
+ */
+function resolveResponsive( value, fallback ) {
+    if ( value === null || value === undefined ) return fallback;
+    if ( typeof value === 'object' ) {
+        const bp = getCurrentBreakpoint();
+        // Walk up breakpoints if current is not set
+        if ( bp === 'Mobile' ) {
+            return parseFloat( value.Mobile ?? value.Tablet ?? value.Desktop ?? fallback );
+        }
+        if ( bp === 'Tablet' ) {
+            return parseFloat( value.Tablet ?? value.Desktop ?? fallback );
+        }
+        return parseFloat( value.Desktop ?? fallback );
+    }
+    return parseFloat( value ) || fallback;
+}
+
+/**
  * Initialize scroll-triggered entrance animations using IntersectionObserver.
  *
  * Reads config from wrapper's data-animation-settings JSON attribute:
- *  - duration  {number} ms — animation duration
- *  - delay     {number} ms — base delay before animation
- *  - offset    {number} %  — how far into viewport to trigger (0–50)
- *  - easing    {string}    — CSS timing function
+ *  - duration  {number|object} ms — animation duration (responsive)
+ *  - delay     {number|object} ms — base delay before animation (responsive)
+ *  - offset    {number|object} %  — how far into viewport to trigger (responsive)
+ *  - easing    {string}            — CSS timing function
  *
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
@@ -36,10 +73,10 @@ export function initEntranceAnimations( wrapper ) {
         if ( raw ) settings = JSON.parse( raw );
     } catch ( e ) {}
 
-    const duration = settings.duration || 600;
-    const delay    = settings.delay    || 0;
-    const offset   = Math.min( Math.max( settings.offset || 15, 0 ), 50 ) / 100;
-    const easing   = settings.easing   || 'ease-out';
+    const duration = resolveResponsive( settings.duration, 600 );
+    const delay    = resolveResponsive( settings.delay, 0 );
+    const offset   = Math.min( Math.max( resolveResponsive( settings.offset, 15 ), 0 ), 50 ) / 100;
+    const easing   = settings.easing || 'ease-out';
 
     cards.forEach( ( card ) => {
         // Set custom duration & easing via CSS variable
@@ -72,15 +109,23 @@ export function initEntranceAnimations( wrapper ) {
  * Apply staggered animation delays to cards.
  * Call this BEFORE initEntranceAnimations so delays stack correctly.
  *
- * Reads from wrapper's data-stagger-delay attribute (number in ms).
+ * Reads from wrapper's data-stagger-delay attribute (number or JSON object in ms).
  *
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
 export function applyStaggerDelays( wrapper ) {
     if ( wrapper.dataset.staggerEnabled !== '1' ) return;
 
-    const staggerMs = parseInt( wrapper.dataset.staggerDelay ) || 100;
-    const cards     = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
+    let rawDelay = wrapper.dataset.staggerDelay;
+    let staggerMs;
+    try {
+        const parsed = JSON.parse( rawDelay );
+        staggerMs = resolveResponsive( parsed, 100 );
+    } catch ( e ) {
+        staggerMs = parseInt( rawDelay ) || 100;
+    }
+
+    const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
 
     cards.forEach( ( card, index ) => {
         const current = parseFloat( card.style.animationDelay ) || 0;
@@ -90,7 +135,8 @@ export function applyStaggerDelays( wrapper ) {
 
 /**
  * Initialize 3D tilt effect on hover.
- * Reads max angle from wrapper's data-tilt-max attribute.
+ * Reads responsive values from wrapper's data-tilt-* attributes.
+ * Automatically re-evaluates on window resize to match breakpoint.
  *
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
@@ -98,17 +144,30 @@ export function initCardTilt( wrapper ) {
     const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
     if ( ! cards.length ) return;
 
-    const maxAngle    = parseFloat( wrapper.dataset.tiltMax ) || 12;
-    const perspective = parseFloat( wrapper.dataset.tiltPerspective ) || 800;
-    const scale       = parseFloat( wrapper.dataset.tiltScale ) || 1.02;
-    const speed       = parseInt( wrapper.dataset.tiltSpeed ) || 400;
+    function getTiltSettings() {
+        let maxAngle, perspective, scale, speed;
+        try {
+            maxAngle    = resolveResponsive( JSON.parse( wrapper.dataset.tiltMax ),         12 );
+            perspective = resolveResponsive( JSON.parse( wrapper.dataset.tiltPerspective ), 800 );
+            scale       = resolveResponsive( JSON.parse( wrapper.dataset.tiltScale ),       1.02 );
+            speed       = resolveResponsive( JSON.parse( wrapper.dataset.tiltSpeed ),       400 );
+        } catch ( e ) {
+            maxAngle    = parseFloat( wrapper.dataset.tiltMax )         || 12;
+            perspective = parseFloat( wrapper.dataset.tiltPerspective ) || 800;
+            scale       = parseFloat( wrapper.dataset.tiltScale )       || 1.02;
+            speed       = parseInt(   wrapper.dataset.tiltSpeed )       || 400;
+        }
+        return { maxAngle, perspective, scale, speed };
+    }
 
     cards.forEach( ( card ) => {
-        card.style.transition     = `transform ${ speed }ms ease`;
         card.style.transformStyle = 'preserve-3d';
         card.style.willChange     = 'transform';
 
         card.addEventListener( 'mousemove', ( e ) => {
+            const { maxAngle, perspective, scale, speed } = getTiltSettings();
+            card.style.transition = `transform ${ speed }ms ease`;
+
             const rect    = card.getBoundingClientRect();
             const x       = e.clientX - rect.left;
             const y       = e.clientY - rect.top;
@@ -122,7 +181,9 @@ export function initCardTilt( wrapper ) {
         } );
 
         card.addEventListener( 'mouseleave', () => {
-            card.style.transform = `perspective(${ perspective }px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
+            const { perspective, speed } = getTiltSettings();
+            card.style.transition = `transform ${ speed }ms ease`;
+            card.style.transform  = `perspective(${ perspective }px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
         } );
     } );
 }
