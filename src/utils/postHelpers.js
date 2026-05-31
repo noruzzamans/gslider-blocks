@@ -91,6 +91,31 @@ export const getAuthorName = (post) => {
 };
 
 /**
+ * Get author avatar URL from embedded post REST API data.
+ * WordPress REST API provides avatar_urls with sizes: 24, 48, 96.
+ * 
+ * @param {Object} post         Embedded post record from WP REST API.
+ * @param {number} preferredSize Preferred avatar size (24, 48, or 96). Default 96.
+ * @returns {string}            Avatar image URL or empty string if not available.
+ */
+export const getAuthorAvatarUrl = (post, preferredSize = 96) => {
+    if (post?._embedded && post._embedded.author && post._embedded.author[0]) {
+        const author = post._embedded.author[0];
+        if (author.avatar_urls) {
+            // Try preferred size, then fallback to largest available
+            return (
+                author.avatar_urls[preferredSize] ||
+                author.avatar_urls[96] ||
+                author.avatar_urls[48] ||
+                author.avatar_urls[24] ||
+                ''
+            );
+        }
+    }
+    return '';
+};
+
+/**
  * Get formatted post date using localized date string.
  * 
  * @param {Object} post    Post record.

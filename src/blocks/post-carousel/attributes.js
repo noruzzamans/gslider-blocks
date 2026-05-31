@@ -488,7 +488,7 @@ const attributes = {
     /** Start Navigation Arrow Position */
     navigationArrowPositionType: {
         type: "string",
-        default: "inside",
+        default: "outside",
     },
 
     navigationArrowPosition: {
@@ -582,9 +582,9 @@ const attributes = {
     navigationArrowPositionOutsidePadding: {
         type: "object",
         default: {
-            Desktop: "60",
-            Tablet: "60",
-            Mobile: "45",
+            Desktop: "30",
+            Tablet: "30",
+            Mobile: "30",
         },
     },
     navigationArrowPositionOutsidePaddingUnits: {
@@ -3108,7 +3108,687 @@ const attributes = {
         },
     },
 
+    /** Start Author Image Style */
+
+    /** Start Author Image Size */
+    authorImageSize: {
+        type: "object",
+        default: {
+            Desktop: "28",
+            Tablet: "28",
+            Mobile: "28",
+        },
+    },
+    authorImageSizeUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    /** End Author Image Size */
+
+    /** Start Author Image Border */
+    authorImageBorder: {
+        type: "string",
+        default: "none",
+    },
+    authorImageBorderColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    authorImageBorderColor: {
+        type: "string",
+        default: "",
+    },
+    authorImageBorderHoverColor: {
+        type: "string",
+        default: "",
+    },
+    authorImageBorderWidthUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    authorImageDesktopBorderWidth: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageDesktopBorderWidthCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageTabletBorderWidth: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageTabletBorderWidthCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageMobileBorderWidth: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageMobileBorderWidthCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageBorderWidthLink: {
+        type: "boolean",
+        default: true,
+    },
+    /** End Author Image Border */
+
+    /** Start Author Image Border Radius */
+    authorImageBorderRadiusUnits: {
+        type: 'object',
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    authorImageDesktopBorderRadius: {
+        type: "object",
+        default: {
+            top: "50",
+            bottom: "50",
+            left: "50",
+            right: "50",
+        },
+    },
+    authorImageDesktopBorderRadiusCssStyle: { 
+        type: 'string',
+        default: '',
+    },
+    authorImageTabletBorderRadius: {
+        type: "object",
+        default: {
+            top: "50",
+            bottom: "50",
+            left: "50",
+            right: "50",
+        },
+    },
+    authorImageTabletBorderRadiusCssStyle: { 
+        type: 'string',
+        default: '',
+    },
+    authorImageMobileBorderRadius: {
+        type: "object",
+        default: {
+            top: "50",
+            bottom: "50",
+            left: "50",
+            right: "50",
+        },
+    },
+    authorImageMobileBorderRadiusCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageBorderRadiusLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Author Image Border Radius */
+
+    /** Start Author Image Margin */
+    authorImageMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    authorImageDesktopMargin: {
+        type: "object",
+        default: {
+            top: "12",
+            bottom: "0",
+            left: "0",
+            right: "0",
+        },
+    },
+    authorImageDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageTabletMargin: {
+        type: "object",
+        default: {
+            top: "10",
+            bottom: "6",
+            left: "0",
+            right: "0",
+        },
+    },
+    authorImageTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageMobileMargin: {
+        type: "object",
+        default: {
+            top: "8",
+            bottom: "4",
+            left: "0",
+            right: "0",
+        },
+    },
+    authorImageMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageMarginLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Author Image Margin */
+
+    /** Start Author Image Padding */
+    authorImagePaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    authorImageDesktopPadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageTabletPadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImageMobilePadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    authorImageMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+    authorImagePaddingLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Author Image Padding */
+
+    /** End Author Image Style */
+
+    /** Start Author Name Typography */
+    authorNameFontFamily: {
+        type: "string",
+        default: "",
+    },
+    authorNameFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '14',
+            Tablet: '14',
+            Mobile: '14'
+        }
+    },
+    authorNameFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    authorNameFontWeight: {
+        type: "string",
+        default: "",
+    },
+    authorNameFontStyle: {
+        type: "string",
+        default: "",
+    },
+    authorNameTextTransform: {
+        type: "string",
+        default: "",
+    },
+    authorNameTextDecoration: {
+        type: "string",
+        default: "",
+    },
+    authorNameLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    authorNameLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    authorNameLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    authorNameLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    authorNameWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },  
+    authorNameWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Author Name Typography */
+
+    /** Start Author Name Color */
+    authorNameColorSwitcher: {
+		type: "string",
+		default: "normal",
+	},
+	authorNameColor: {
+		type: "string",
+		default: "",
+	},
+	authorNameColorHover: {
+		type: "string",
+		default: "",
+	},
+    /** End Author Name Color */
+
+    /** Start Author Name Margin */
+	authorNameMarginUnits: {
+		type: "object",
+		default: {
+			Desktop: "px",
+			Tablet: "px",
+			Mobile: "px",
+		},
+	},
+	authorNameDesktopMargin: {
+		type: "object", 
+		default: {
+			top: "8",
+			bottom: "4",
+			left: "0",
+			right: "0",
+		},
+	},
+    authorNameDesktopMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNameTabletMargin: {
+		type: "object",  
+		default: {
+			top: "0",
+			bottom: "4",
+			left: "0",
+			right: "0",
+		},
+	},
+    authorNameTabletMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNameMobileMargin: {
+		type: "object",  
+		default: {
+			top: "0",
+			bottom: "4",
+			left: "0",
+			right: "0",
+		},
+	},
+    authorNameMobileMarginCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNameMarginLink : {
+		type : "boolean",
+		default: true
+	},
+    /** End Author Name Margin */
+
+    /** Start Author Name Padding */
+	authorNamePaddingUnits: {
+		type: "object",
+		default: {
+			Desktop: "px",
+			Tablet: "px",
+			Mobile: "px",
+		},
+	},
+	authorNameDesktopPadding: {
+		type: "object", 
+		default: {
+			top: "",
+			bottom: "",
+			left: "",
+			right: "",
+		},
+	},
+    authorNameDesktopPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNameTabletPadding: {
+		type: "object",  
+		default: {
+			top: "",
+			bottom: "",
+			left: "",
+			right: "",
+		},
+	},
+    authorNameTabletPaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNameMobilePadding: {
+		type: "object",  
+		default: {
+			top: "",
+			bottom: "",
+			left: "",
+			right: "",
+		},
+	},
+    authorNameMobilePaddingCssStyle: { 
+        type: "string",
+        default: "",
+    },
+	authorNamePaddingLink : {
+		type : "boolean",
+		default: true
+	},
+    /** End Author Name Padding */
+    
+    /** End Author Name */
+
+    /** Start Post Date Typography */
+    postDateFontFamily: {
+        type: "string",
+        default: "",
+    },
+    postDateFontSize: {
+        type: 'object',
+        default: {
+            Desktop: '14',
+            Tablet: '14',
+            Mobile: '14'
+        }
+    },
+    postDateFontSizeUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postDateFontWeight: {
+        type: "string",
+        default: "",
+    },
+    postDateFontStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateTextTransform: {
+        type: "string",
+        default: "",
+    },
+    postDateTextDecoration: {
+        type: "string",
+        default: "",
+    },
+    postDateLineHeight: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postDateLineHeightUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postDateLetterSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postDateLetterSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    postDateWordSpacing: {
+        type: 'object',
+        default: {
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
+        }
+    },
+    postDateWordSpacingUnits: {
+        type: 'object',
+        default: {
+            Desktop: 'px',
+            Tablet: 'px',
+            Mobile: 'px',
+        }
+    },
+    /** End Post Date Typography */
+
+    /** Start Post Date Color */
+    postDateColorSwitcher: {
+        type: "string",
+        default: "normal",
+    },
+    postDateColor: {
+        type: "string",
+        default: "",
+    },
+    postDateColorHover: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Date Color */
+
+    /** Start Post Date Margin */
+    postDateMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postDateDesktopMargin: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateDesktopMarginCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateTabletMargin: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateTabletMarginCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateMobileMargin: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateMobileMarginCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateMarginLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Date Margin */
+
+    /** Start Post Date Padding */
+    postDatePaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    postDateDesktopPadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateDesktopPaddingCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateTabletPadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateTabletPaddingCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDateMobilePadding: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postDateMobilePaddingCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postDatePaddingLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Date Padding */
+
+    /** End Post Date */
+
     /** Start Read More Button Settings */
+
     showReadMoreButton: {
         type: "object",
         default: {

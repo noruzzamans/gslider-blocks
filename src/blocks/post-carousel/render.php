@@ -567,15 +567,25 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                         if ( $any_meta_enabled ) :
                                             ?>
                                             <div class="gslider-post-carousel-meta">
-                                                <span class="gslider-post-author">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                                    <?php the_author(); ?>
-                                                </span>
-                                                <span class="gslider-post-date">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                                    <?php echo get_the_date(); ?>
-                                                </span>
+                                                <div class="gslider-post-author-wrapper">
+                                                    <div class="gslider-post-author-avatar-wrapper">
+                                                        <?php
+                                                        $author_id  = get_the_author_meta( 'ID' );
+                                                        $avatar_url = get_avatar_url( $author_id, array( 'size' => 96 ) );
+                                                        if ( $avatar_url ) :
+                                                        ?>
+                                                            <img class="gslider-post-author-avatar" src="<?php echo esc_url( $avatar_url ); ?>" alt="<?php echo esc_attr( get_the_author() ); ?>" width="28" height="28" />
+                                                        <?php else : ?>
+                                                            <svg class="gslider-post-author-avatar-placeholder" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <div class="gslider-post-author"><?php the_author(); ?></div>
+                                                </div>
+                                                <div class="gslider-post-date-wrapper">
+                                                    <div class="gslider-post-date"><?php echo get_the_date(); ?></div>
+                                                </div>
                                             </div>
+
                                             <?php
                                         endif;
                                         break;

@@ -630,7 +630,125 @@ const generatePostCarouselStyle = (attributes) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
-        /** Start Primary Button Typography */
+                /** Start Author Image Style */
+        authorImageSize,
+        authorImageSizeUnits,
+
+        authorImageBorder,
+        authorImageBorderColorSwitcher,
+        authorImageBorderColor,
+        authorImageBorderHoverColor,
+        authorImageBorderWidthUnits,
+        authorImageDesktopBorderWidth,
+        authorImageDesktopBorderWidthCssStyle,
+        authorImageTabletBorderWidth,
+        authorImageTabletBorderWidthCssStyle,
+        authorImageMobileBorderWidth,
+        authorImageMobileBorderWidthCssStyle,
+        authorImageBorderWidthLink,
+
+        authorImageBorderRadiusUnits,
+        authorImageDesktopBorderRadius,
+        authorImageDesktopBorderRadiusCssStyle,
+        authorImageTabletBorderRadius,
+        authorImageTabletBorderRadiusCssStyle,
+        authorImageMobileBorderRadius,
+        authorImageMobileBorderRadiusCssStyle,
+        authorImageBorderRadiusLink,
+
+        authorImageMarginUnits,
+        authorImageDesktopMargin,
+        authorImageDesktopMarginCssStyle,
+        authorImageTabletMargin,
+        authorImageTabletMarginCssStyle,
+        authorImageMobileMargin,
+        authorImageMobileMarginCssStyle,
+        authorImageMarginLink,
+
+        authorImagePaddingUnits,
+        authorImageDesktopPadding,
+        authorImageDesktopPaddingCssStyle,
+        authorImageTabletPadding,
+        authorImageTabletPaddingCssStyle,
+        authorImageMobilePadding,
+        authorImageMobilePaddingCssStyle,
+        authorImagePaddingLink,
+        /** End Author Image Style */
+
+        /** Start Author Name Typography, Color, Margin & Padding */
+        authorNameFontFamily,
+        authorNameFontSize,
+        authorNameFontSizeUnits,
+        authorNameFontWeight,
+        authorNameFontStyle,
+        authorNameTextTransform,
+        authorNameTextDecoration,
+        authorNameLineHeight,
+        authorNameLineHeightUnits,
+        authorNameLetterSpacing,
+        authorNameLetterSpacingUnits,
+        authorNameWordSpacing,
+        authorNameWordSpacingUnits,
+
+        authorNameColorSwitcher,
+        authorNameColor,
+        authorNameColorHover,
+
+        authorNameMarginUnits,
+        authorNameDesktopMargin,
+        authorNameDesktopMarginCssStyle,
+        authorNameTabletMargin,
+        authorNameTabletMarginCssStyle,
+        authorNameMobileMargin,
+        authorNameMobileMarginCssStyle,
+        authorNameMarginLink,
+
+        authorNamePaddingUnits,
+        authorNameDesktopPadding,
+        authorNameDesktopPaddingCssStyle,
+        authorNameTabletPadding,
+        authorNameTabletPaddingCssStyle,
+        authorNameMobilePadding,
+        authorNameMobilePaddingCssStyle,
+        authorNamePaddingLink,
+        /** End Author Name Typography, Color, Margin & Padding */
+
+        /** Start Post Date Typography, Color, Margin & Padding */
+        postDateFontFamily,
+        postDateFontSize,
+        postDateFontSizeUnits,
+        postDateFontWeight,
+        postDateFontStyle,
+        postDateTextTransform,
+        postDateTextDecoration,
+        postDateLineHeight,
+        postDateLineHeightUnits,
+        postDateLetterSpacing,
+        postDateLetterSpacingUnits,
+        postDateWordSpacing,
+        postDateWordSpacingUnits,
+        postDateColorSwitcher,
+        postDateColor,
+        postDateColorHover,
+        postDateMarginUnits,
+        postDateDesktopMargin,
+        postDateDesktopMarginCssStyle,
+        postDateTabletMargin,
+        postDateTabletMarginCssStyle,
+        postDateMobileMargin,
+        postDateMobileMarginCssStyle,
+        postDateMarginLink,
+        postDatePaddingUnits,
+        postDateDesktopPadding,
+        postDateDesktopPaddingCssStyle,
+        postDateTabletPadding,
+        postDateTabletPaddingCssStyle,
+        postDateMobilePadding,
+        postDateMobilePaddingCssStyle,
+        postDatePaddingLink,
+        /** End Post Date Typography, Color, Margin & Padding */
+
+        /** Start Read More Button Typography */
         readMoreButtonFontFamily,
         readMoreButtonFontSize,
         readMoreButtonFontSizeUnits,
@@ -1671,7 +1789,77 @@ const generatePostCarouselStyle = (attributes) => {
             }
         ` : ''}
 
+        /** Start Author Image Style - Desktop */
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+            ${authorImageSize?.Desktop ? `width: ${authorImageSize.Desktop}${authorImageSizeUnits?.Desktop || 'px'};` : ''}
+            ${authorImageSize?.Desktop ? `height: ${authorImageSize.Desktop}${authorImageSizeUnits?.Desktop || 'px'};` : ''}
+            ${authorImageBorder !== 'none' ? `border-style: ${authorImageBorder};` : ''}
+            ${authorImageDesktopBorderWidthCssStyle ? `border-width: ${authorImageDesktopBorderWidthCssStyle};` : ''}
+            ${authorImageBorderColor ? `border-color: ${authorImageBorderColor};` : ''}
+            ${authorImageDesktopBorderRadiusCssStyle ? `border-radius: ${authorImageDesktopBorderRadiusCssStyle};` : ''}
+            ${authorImageDesktopMarginCssStyle ? `margin: ${authorImageDesktopMarginCssStyle};` : ''}
+            ${authorImageDesktopPaddingCssStyle ? `padding: ${authorImageDesktopPaddingCssStyle};` : ''}
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper:hover .gslider-post-author-avatar-wrapper {
+            ${authorImageBorderHoverColor ? `border-color: ${authorImageBorderHoverColor};` : ''}
+        }
+        /** End Author Image Style - Desktop */
+
+        /** Start Author Name Style - Desktop */
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author {
+            ${authorNameFontFamily ? `font-family: ${authorNameFontFamily};` : ''}
+            ${authorNameFontSize?.Desktop && authorNameFontSizeUnits?.Desktop ? `font-size: ${authorNameFontSize.Desktop}${authorNameFontSizeUnits.Desktop};` : ''}
+            ${authorNameFontWeight ? `font-weight: ${authorNameFontWeight};` : ''}
+            ${authorNameFontStyle ? `font-style: ${authorNameFontStyle};` : ''}
+            ${authorNameTextTransform ? `text-transform: ${authorNameTextTransform};` : ''}
+            ${authorNameTextDecoration ? `text-decoration: ${authorNameTextDecoration};` : ''}
+            ${authorNameLineHeight?.Desktop && authorNameLineHeightUnits?.Desktop ? `line-height: ${authorNameLineHeight.Desktop}${authorNameLineHeightUnits.Desktop};` : ''}
+            ${authorNameLetterSpacing?.Desktop && authorNameLetterSpacingUnits?.Desktop ? `letter-spacing: ${authorNameLetterSpacing.Desktop}${authorNameLetterSpacingUnits.Desktop};` : ''}
+            ${authorNameWordSpacing?.Desktop && authorNameWordSpacingUnits?.Desktop ? `word-spacing: ${authorNameWordSpacing.Desktop}${authorNameWordSpacingUnits.Desktop};` : ''}
+            ${authorNameColor ? `color: ${authorNameColor};` : ''}
+            ${authorNameDesktopMarginCssStyle ? `margin: ${authorNameDesktopMarginCssStyle};` : ''}
+            ${authorNameDesktopPaddingCssStyle ? `padding: ${authorNameDesktopPaddingCssStyle};` : ''}
+            transition: all 0.3s ease-in-out;
+        }
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper:hover .gslider-post-author {
+            ${authorNameColorHover ? `color: ${authorNameColorHover};` : ''}
+        }
+        /** End Author Name Style - Desktop */
+
+        /** Start Post Date Style - Desktop */
+        .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+            ${postDateColor ? `color: ${postDateColor};` : ''}
+            ${postDateDesktopMarginCssStyle ? `margin: ${postDateDesktopMarginCssStyle};` : ''}
+            ${postDateDesktopPaddingCssStyle ? `padding: ${postDateDesktopPaddingCssStyle};` : ''}
+            transition: all 0.3s ease-in-out;
+        }
+        .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper:hover {
+            ${postDateColorHover ? `color: ${postDateColorHover};` : ''}
+        }
+        .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper .gslider-post-date {
+            ${postDateFontFamily ? `font-family: ${postDateFontFamily};` : ''}
+            ${postDateFontSize?.Desktop && postDateFontSizeUnits?.Desktop ? `font-size: ${postDateFontSize.Desktop}${postDateFontSizeUnits.Desktop};` : ''}
+            ${postDateFontWeight ? `font-weight: ${postDateFontWeight};` : ''}
+            ${postDateFontStyle ? `font-style: ${postDateFontStyle};` : ''}
+            ${postDateTextTransform ? `text-transform: ${postDateTextTransform};` : ''}
+            ${postDateTextDecoration ? `text-decoration: ${postDateTextDecoration};` : ''}
+            ${postDateLineHeight?.Desktop && postDateLineHeightUnits?.Desktop ? `line-height: ${postDateLineHeight.Desktop}${postDateLineHeightUnits.Desktop};` : ''}
+            ${postDateLetterSpacing?.Desktop && postDateLetterSpacingUnits?.Desktop ? `letter-spacing: ${postDateLetterSpacing.Desktop}${postDateLetterSpacingUnits.Desktop};` : ''}
+            ${postDateWordSpacing?.Desktop && postDateWordSpacingUnits?.Desktop ? `word-spacing: ${postDateWordSpacing.Desktop}${postDateWordSpacingUnits.Desktop};` : ''}
+            transition: all 0.3s ease-in-out;
+        }
+        /** End Post Date Style - Desktop */
+
         .${blockId} .gslider-post-carousel-readmore {
+
             display: ${showReadMoreButton?.Desktop ? 'block' : 'none'};
             ${readMoreButtonDesktopMarginCssStyle ? `margin: ${readMoreButtonDesktopMarginCssStyle};` : ''}
             ${readMoreButtonAlign?.Desktop ? `text-align: ${readMoreButtonAlign.Desktop};` : ''}
@@ -2040,6 +2228,41 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-pan: ${imageHoverPan?.Tablet ?? 5}%;
             }
 
+            /** Start Author Image Style - Tablet */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+                ${authorImageSize?.Tablet ? `width: ${authorImageSize.Tablet}${authorImageSizeUnits?.Tablet || 'px'};` : ''}
+                ${authorImageSize?.Tablet ? `height: ${authorImageSize.Tablet}${authorImageSizeUnits?.Tablet || 'px'};` : ''}
+                ${authorImageTabletBorderWidthCssStyle ? `border-width: ${authorImageTabletBorderWidthCssStyle};` : ''}
+                ${authorImageTabletBorderRadiusCssStyle ? `border-radius: ${authorImageTabletBorderRadiusCssStyle};` : ''}
+                ${authorImageTabletMarginCssStyle ? `margin: ${authorImageTabletMarginCssStyle};` : ''}
+                ${authorImageTabletPaddingCssStyle ? `padding: ${authorImageTabletPaddingCssStyle};` : ''}
+            }
+            /** End Author Image Style - Tablet */
+
+            /** Start Author Name Style - Tablet */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author {
+                ${authorNameFontSize?.Tablet && authorNameFontSizeUnits?.Tablet ? `font-size: ${authorNameFontSize.Tablet}${authorNameFontSizeUnits.Tablet};` : ''}
+                ${authorNameLineHeight?.Tablet && authorNameLineHeightUnits?.Tablet ? `line-height: ${authorNameLineHeight.Tablet}${authorNameLineHeightUnits.Tablet};` : ''}
+                ${authorNameLetterSpacing?.Tablet && authorNameLetterSpacingUnits?.Tablet ? `letter-spacing: ${authorNameLetterSpacing.Tablet}${authorNameLetterSpacingUnits.Tablet};` : ''}
+                ${authorNameWordSpacing?.Tablet && authorNameWordSpacingUnits?.Tablet ? `word-spacing: ${authorNameWordSpacing.Tablet}${authorNameWordSpacingUnits.Tablet};` : ''}
+                ${authorNameTabletMarginCssStyle ? `margin: ${authorNameTabletMarginCssStyle};` : ''}
+                ${authorNameTabletPaddingCssStyle ? `padding: ${authorNameTabletPaddingCssStyle};` : ''}
+            }
+            /** End Author Name Style - Tablet */
+
+            /** Start Post Date Style - Tablet */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+                ${postDateTabletMarginCssStyle ? `margin: ${postDateTabletMarginCssStyle};` : ''}
+                ${postDateTabletPaddingCssStyle ? `padding: ${postDateTabletPaddingCssStyle};` : ''}
+            }
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper .gslider-post-date {
+                ${postDateFontSize?.Tablet && postDateFontSizeUnits?.Tablet ? `font-size: ${postDateFontSize.Tablet}${postDateFontSizeUnits.Tablet};` : ''}
+                ${postDateLineHeight?.Tablet && postDateLineHeightUnits?.Tablet ? `line-height: ${postDateLineHeight.Tablet}${postDateLineHeightUnits.Tablet};` : ''}
+                ${postDateLetterSpacing?.Tablet && postDateLetterSpacingUnits?.Tablet ? `letter-spacing: ${postDateLetterSpacing.Tablet}${postDateLetterSpacingUnits.Tablet};` : ''}
+                ${postDateWordSpacing?.Tablet && postDateWordSpacingUnits?.Tablet ? `word-spacing: ${postDateWordSpacing.Tablet}${postDateWordSpacingUnits.Tablet};` : ''}
+            }
+            /** End Post Date Style - Tablet */
+
             .${blockId} .gslider-post-carousel-readmore {
                 display: ${showReadMoreButton?.Tablet ? 'block' : 'none'};
                 ${readMoreButtonTabletMarginCssStyle ? `margin: ${readMoreButtonTabletMarginCssStyle};` : ''}
@@ -2316,7 +2539,43 @@ const generatePostCarouselStyle = (attributes) => {
                 --hover-pan: ${imageHoverPan?.Mobile ?? 5}%;
             }
 
+            /** Start Author Image Style - Mobile */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+                ${authorImageSize?.Mobile ? `width: ${authorImageSize.Mobile}${authorImageSizeUnits?.Mobile || 'px'};` : ''}
+                ${authorImageSize?.Mobile ? `height: ${authorImageSize.Mobile}${authorImageSizeUnits?.Mobile || 'px'};` : ''}
+                ${authorImageMobileBorderWidthCssStyle ? `border-width: ${authorImageMobileBorderWidthCssStyle};` : ''}
+                ${authorImageMobileBorderRadiusCssStyle ? `border-radius: ${authorImageMobileBorderRadiusCssStyle};` : ''}
+                ${authorImageMobileMarginCssStyle ? `margin: ${authorImageMobileMarginCssStyle};` : ''}
+                ${authorImageMobilePaddingCssStyle ? `padding: ${authorImageMobilePaddingCssStyle};` : ''}
+            }
+            /** End Author Image Style - Mobile */
+
+            /** Start Author Name Style - Mobile */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author {
+                ${authorNameFontSize?.Mobile && authorNameFontSizeUnits?.Mobile ? `font-size: ${authorNameFontSize.Mobile}${authorNameFontSizeUnits.Mobile};` : ''}
+                ${authorNameLineHeight?.Mobile && authorNameLineHeightUnits?.Mobile ? `line-height: ${authorNameLineHeight.Mobile}${authorNameLineHeightUnits.Mobile};` : ''}
+                ${authorNameLetterSpacing?.Mobile && authorNameLetterSpacingUnits?.Mobile ? `letter-spacing: ${authorNameLetterSpacing.Mobile}${authorNameLetterSpacingUnits.Mobile};` : ''}
+                ${authorNameWordSpacing?.Mobile && authorNameWordSpacingUnits?.Mobile ? `word-spacing: ${authorNameWordSpacing.Mobile}${authorNameWordSpacingUnits.Mobile};` : ''}
+                ${authorNameMobileMarginCssStyle ? `margin: ${authorNameMobileMarginCssStyle};` : ''}
+                ${authorNameMobilePaddingCssStyle ? `padding: ${authorNameMobilePaddingCssStyle};` : ''}
+            }
+            /** End Author Name Style - Mobile */
+
+            /** Start Post Date Style - Mobile */
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+                ${postDateMobileMarginCssStyle ? `margin: ${postDateMobileMarginCssStyle};` : ''}
+                ${postDateMobilePaddingCssStyle ? `padding: ${postDateMobilePaddingCssStyle};` : ''}
+            }
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper .gslider-post-date {
+                ${postDateFontSize?.Mobile && postDateFontSizeUnits?.Mobile ? `font-size: ${postDateFontSize.Mobile}${postDateFontSizeUnits.Mobile};` : ''}
+                ${postDateLineHeight?.Mobile && postDateLineHeightUnits?.Mobile ? `line-height: ${postDateLineHeight.Mobile}${postDateLineHeightUnits.Mobile};` : ''}
+                ${postDateLetterSpacing?.Mobile && postDateLetterSpacingUnits?.Mobile ? `letter-spacing: ${postDateLetterSpacing.Mobile}${postDateLetterSpacingUnits.Mobile};` : ''}
+                ${postDateWordSpacing?.Mobile && postDateWordSpacingUnits?.Mobile ? `word-spacing: ${postDateWordSpacing.Mobile}${postDateWordSpacingUnits.Mobile};` : ''}
+            }
+            /** End Post Date Style - Mobile */
+
             .${blockId} .gslider-post-carousel-readmore {
+
                 display: ${showReadMoreButton?.Mobile ? 'block' : 'none'};
                 ${readMoreButtonMobileMarginCssStyle ? `margin: ${readMoreButtonMobileMarginCssStyle};` : ''}
                 ${readMoreButtonAlign?.Mobile ? `text-align: ${readMoreButtonAlign.Mobile};` : ''}

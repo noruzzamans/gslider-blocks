@@ -32,6 +32,7 @@
 	.gslider-post-carousel-categories {
 		display: flex;
 		flex-wrap: wrap;
+		margin: 15px 20px 8px 20px;
 
 		span {
 			display: inline-block;
@@ -44,6 +45,8 @@
 	}
 
 	.gslider-post-carousel-title-wrapper {
+		margin: 0px 20px 12px 20px;
+
 		.gslider-post-carousel-title {
 			a {
 				color: inherit;
@@ -56,9 +59,16 @@
 		}
 	}
 
+	.gslider-post-carousel-excerpt-wrapper {
+		margin: 0px 20px 18px 20px;
+	}
+
 	.gslider-post-carousel-meta {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		margin: 0px 20px 20px 20px;
 
 		span {
 			display: inline-flex;
@@ -68,10 +78,69 @@
 		svg {
 			flex-shrink: 0;
 		}
+
+		.gslider-post-author-wrapper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.gslider-post-author-avatar-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+			width: 28px;  // default fallback, overridden by styling.js
+			height: 28px; // default fallback, overridden by styling.js
+			overflow: hidden;
+			border-radius: 50%; // default fallback
+		}
+
+		.gslider-post-author-avatar {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			flex-shrink: 0;
+		}
+
+		.gslider-post-author-avatar-placeholder {
+			display: block;
+			flex-shrink: 0;
+		}
+
+		.gslider-post-author {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.gslider-post-date-wrapper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.gslider-post-date-icon-wrapper {
+			display: flex;
+			align-items: center;
+			flex-shrink: 0;
+
+			svg {
+				display: block;
+			}
+		}
+
+		.gslider-post-date {
+			flex: 1;
+			min-width: 0;
+		}
 	}
 
+
 	.gslider-post-carousel-readmore {
-		margin-top: auto;
+		margin: auto 20px 20px 20px;
 	}
 }
 

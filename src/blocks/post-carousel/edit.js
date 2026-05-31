@@ -18,6 +18,7 @@ import {
 	getPostTags, 
 	getExcerpt, 
 	getAuthorName, 
+	getAuthorAvatarUrl,
 	getFormattedDate, 
 	decodeHtmlEntities 
 } from '@Utils/postHelpers';
@@ -439,6 +440,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							const tags = getPostTags(post);
 							const excerpt = getExcerpt(post);
 							const authorName = getAuthorName(post);
+							const authorAvatarUrl = getAuthorAvatarUrl(post);
 							const formattedDate = getFormattedDate(post);
 							const TagName = postTitleHtmlTag || 'h3';
 							const ExcerptTagName = postExcerptHtmlTag || 'p';
@@ -537,16 +539,27 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 													meta: (showMeta?.[deviceType] && (authorName || formattedDate)) ? (
 														<div key="meta" className="gslider-post-carousel-meta">
 															{authorName && (
-																<span className="gslider-post-author">
-																	<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-																	{authorName}
-																</span>
+																<div className="gslider-post-author-wrapper">
+																	<div className="gslider-post-author-avatar-wrapper">
+																		{authorAvatarUrl ? (
+																			<img
+																				className="gslider-post-author-avatar"
+																				src={authorAvatarUrl}
+																				alt={authorName}
+																				width="28"
+																				height="28"
+																			/>
+																		) : (
+																			<svg className="gslider-post-author-avatar-placeholder" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+																		)}
+																	</div>
+																	<div className="gslider-post-author">{authorName}</div>
+																</div>
 															)}
 															{formattedDate && (
-																<span className="gslider-post-date">
-																	<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-																	{formattedDate}
-																</span>
+																<div className="gslider-post-date-wrapper">
+																	<div className="gslider-post-date">{formattedDate}</div>
+																</div>
 															)}
 														</div>
 													) : null,
