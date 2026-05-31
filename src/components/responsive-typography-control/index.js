@@ -177,7 +177,7 @@ const ResponsiveTypographyControl = ({
           padding: 0,
           margin: 0,
           height: '32px',
-          lineHeight: 1,
+          lineHeight: 'normal',
           outline: 'none',
           boxShadow: 'none',
           '&:focus': {
@@ -189,7 +189,7 @@ const ResponsiveTypographyControl = ({
         singleValue: (base) => ({
           ...base,
           color: '#1e1e1e',
-          lineHeight: 1,
+          lineHeight: 'normal',
         }),
       
         menu: (base) => ({

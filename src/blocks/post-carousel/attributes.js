@@ -153,6 +153,10 @@ const attributes = {
         type: "array",
         default: [ 'thumbnail', 'categories', 'title', 'excerpt', 'meta', 'readmore' ]
     },
+    postTaxonomyDisplay: {
+        type: "string",
+        default: "category",
+    },
     /** End Content Order */
 
     /** Query Attributes */
@@ -1554,6 +1558,14 @@ const attributes = {
     /** End Global Custom CSS */
 
     /** Start Image Settings */
+    showFeaturedImage: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
     imageMaxWidth: {
         type: "object",
         default: {
@@ -1974,6 +1986,14 @@ const attributes = {
     /** End Image Hover Settings */
 
     /** Start Post Title Alignment & Heading Tag */
+    showPostTitle: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
     postTitleAlign: {
         type: "object",
         default: {
@@ -2353,6 +2373,14 @@ const attributes = {
     /** End Post Title Settings */
 
     /** Start Post Excerpt Styling */
+    showExcerpt: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
     postExcerptAlign: {
         type: "object",
         default: {
@@ -2578,6 +2606,14 @@ const attributes = {
     /** End Post Excerpt Styling */
 
     /** Start Post Category Styling */
+    showTaxonomy: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
 
     /** Start Post Category Alignment */
     postCategoryAlign: {
@@ -3061,6 +3097,16 @@ const attributes = {
     },
     /** End Post Category Item Padding */
     /** End Post Category Styling */
+
+    /** Start Post Meta Settings */
+    showMeta: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
 
     /** Start Read More Button Settings */
     showReadMoreButton: {

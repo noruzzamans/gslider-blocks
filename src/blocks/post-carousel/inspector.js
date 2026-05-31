@@ -100,12 +100,18 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationPositionType,
         showNavigation,
         showPagination,
+        showFeaturedImage,
+        showPostTitle,
+        showExcerpt,
+        showMeta,
+        showTaxonomy,
         /** End Show/Hide Elements */
 
         /** Start Layout & Content Setting */
         layoutHeight,
         layoutHeightUnits,
         contentOrder,
+        postTaxonomyDisplay,
         /** End Layout & Content Setting */
 
         /** Start Query Settings */
@@ -1137,6 +1143,41 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     setAttributes={setAttributes}
                 />
                 <ResponsiveToggleControl
+                    label={__("Show Featured Image", "gslider-blocks")}
+                    toggleValue={showFeaturedImage}
+                    setToggleValue={(value) => setAttributes({ showFeaturedImage: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+                <ResponsiveToggleControl
+                    label={__("Show Post Title", "gslider-blocks")}
+                    toggleValue={showPostTitle}
+                    setToggleValue={(value) => setAttributes({ showPostTitle: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+                <ResponsiveToggleControl
+                    label={__("Show Excerpt", "gslider-blocks")}
+                    toggleValue={showExcerpt}
+                    setToggleValue={(value) => setAttributes({ showExcerpt: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+                <ResponsiveToggleControl
+                    label={__("Show Post Meta", "gslider-blocks")}
+                    toggleValue={showMeta}
+                    setToggleValue={(value) => setAttributes({ showMeta: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+                <ResponsiveToggleControl
+                    label={__("Show Taxonomy", "gslider-blocks")}
+                    toggleValue={showTaxonomy}
+                    setToggleValue={(value) => setAttributes({ showTaxonomy: value })}
+                    deviceType={deviceType}
+                    setAttributes={setAttributes}
+                />
+                <ResponsiveToggleControl
                     label={__("Show Read More Button", "gslider-blocks")}
                     toggleValue={showReadMoreButton}
                     setToggleValue={(value) => setAttributes({ showReadMoreButton: value })}
@@ -1221,6 +1262,18 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     order={normalizedContentOrder}
                     onChange={(newOrder) => setAttributes({ contentOrder: newOrder })}
                     help={__("Drag items to reorder inside the post card", "gslider-blocks")}
+                />
+
+                <Select2Control
+                    label={__("Taxonomy to Display", "gslider-blocks")}
+                    value={postTaxonomyDisplay}
+                    options={[
+                        { label: __('Category', 'gslider-blocks'), value: 'category' },
+                        { label: __('Tag', 'gslider-blocks'), value: 'tag' },
+                        { label: __('Both (Category & Tag)', 'gslider-blocks'), value: 'both' },
+                        { label: __('None', 'gslider-blocks'), value: 'none' },
+                    ]}
+                    onChange={(value) => setAttributes({ postTaxonomyDisplay: value })}
                 />
             </PanelBody>
 
@@ -1795,1097 +1848,1105 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
      */
     const styleControls = (
         <>
-            <PanelBody
-                title={__("Image", "gslider-blocks")}
-                opened={openPanels.styles === "image"}
-                onToggle={() => togglePanel("styles", "image")}
-            >
-                <ResponsiveRangeControl
-                    label={__("Max Width", "gslider-blocks")}
-                    rangeValue={imageMaxWidth}
-                    onChangeValue={(value) => setAttributes({ imageMaxWidth: value })}
-                    onUnitChange={(value) => setAttributes({ imageMaxWidthUnits: value })}
-                    deviceType={deviceType}
-                    units={imageMaxWidthUnits}
-                    resetFallbackValue={""}
-                    unitBounds={{
-                        px: { min: 0, max: 1000, step: 1 },
-                    }}
-                />
-
-                <ResponsiveRangeControl
-                    label={__("Height", "gslider-blocks")}
-                    rangeValue={imageHeight}
-                    onChangeValue={(value) => setAttributes({ imageHeight: value })}
-                    onUnitChange={(value) => setAttributes({ imageHeightUnits: value })}
-                    deviceType={deviceType}
-                    units={imageHeightUnits}
-                    resetFallbackValue={""}
-                    unitBounds={{
-                        px: { min: 0, max: 1000, step: 1 },
-                    }}
-                />
-
-                <Select2Control
-                    label={__("Object Fit", "gslider-blocks")}
-                    options={[
-                        { label: __('Cover', 'gslider-blocks'), value: 'cover' },
-                        { label: __('Contain', 'gslider-blocks'), value: 'contain' },
-                        { label: __('Fill', 'gslider-blocks'), value: 'fill' },
-                        { label: __('None', 'gslider-blocks'), value: 'none' },
-                    ]}
-                    value={imageObjectFit}
-                    onChange={(value) => setAttributes({ imageObjectFit: value })}
-                />
-
-                <Select2Control
-                    label={__("Object Position", "gslider-blocks")}
-                    options={[
-                        { label: __('Center', 'gslider-blocks'), value: 'center' },
-                        { label: __('Top', 'gslider-blocks'), value: 'top' },
-                        { label: __('Bottom', 'gslider-blocks'), value: 'bottom' },
-                        { label: __('Left', 'gslider-blocks'), value: 'left' },
-                        { label: __('Right', 'gslider-blocks'), value: 'right' },
-                        { label: __('Left Top', 'gslider-blocks'), value: 'left top' },
-                        { label: __('Right Top', 'gslider-blocks'), value: 'right top' },
-                        { label: __('Left Bottom', 'gslider-blocks'), value: 'left bottom' },
-                        { label: __('Right Bottom', 'gslider-blocks'), value: 'right bottom' },
-                    ]}
-                    value={imageObjectPosition}
-                    onChange={(value) => setAttributes({ imageObjectPosition: value })}
-                />
-
-                <Select2Control
-                    label={__('Hover Effect', 'gslider-blocks')}
-                    options={[
-                        { label: __('None', 'gslider-blocks'), value: 'none' },
-                        { label: __('Opacity', 'gslider-blocks'), value: 'opacity' },
-                        { label: __('Scale', 'gslider-blocks'), value: 'scale' },
-                        { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
-                        { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
-                        { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
-                        { label: __('Shine Sweep', 'gslider-blocks'), value: 'shine-sweep' },
-                        { label: __('Overlay Fade', 'gslider-blocks'), value: 'overlay-fade' },
-                        { label: __('Overlay Slide Up', 'gslider-blocks'), value: 'overlay-slide' },
-                        { label: __('Pan Left', 'gslider-blocks'), value: 'pan-left' },
-                        { label: __('Pan Right', 'gslider-blocks'), value: 'pan-right' },
-                        { label: __('Blur to Clear', 'gslider-blocks'), value: 'blur-to-clear' },
-                        { label: __('Zoom Out', 'gslider-blocks'), value: 'zoom-out' },
-                        { label: __('Zoom & Rotate', 'gslider-blocks'), value: 'zoom-rotate' },
-                    ]}
-                    value={imageHoverEffect}
-                    onChange={(value) => setAttributes({ imageHoverEffect: value })}
-                />
-
-                {(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') && (
+            {showFeaturedImage?.[deviceType] && (
+                <PanelBody
+                    title={__("Image", "gslider-blocks")}
+                    opened={openPanels.styles === "image"}
+                    onToggle={() => togglePanel("styles", "image")}
+                >
                     <ResponsiveRangeControl
-                        min={0}
-                        max={1}
-                        step={0.05}
-                        label={__("Hover Opacity", "gslider-blocks")}
-                        rangeValue={imageHoverOpacity}
-                        onChangeValue={(value) => setAttributes({ imageHoverOpacity: value })}
+                        label={__("Max Width", "gslider-blocks")}
+                        rangeValue={imageMaxWidth}
+                        onChangeValue={(value) => setAttributes({ imageMaxWidth: value })}
+                        onUnitChange={(value) => setAttributes({ imageMaxWidthUnits: value })}
                         deviceType={deviceType}
-                        resetFallbackValue={"0.8"}
-                        isRangeUnit={false}
-                    />
-                )}
-
-                {(imageHoverEffect === 'scale' || imageHoverEffect === 'both' || imageHoverEffect === 'zoom-out' || imageHoverEffect === 'zoom-rotate') && (
-                    <ResponsiveRangeControl
-                        min={0.8}
-                        max={1.5}
-                        step={0.05}
-                        label={__("Hover Scale", "gslider-blocks")}
-                        rangeValue={imageHoverScale}
-                        onChangeValue={(value) => setAttributes({ imageHoverScale: value })}
-                        deviceType={deviceType}
-                        resetFallbackValue={"1.05"}
-                        isRangeUnit={false}
-                    />
-                )}
-
-                {(imageHoverEffect === 'move-up') && (
-                    <ResponsiveRangeControl
-                        label={__("Lift Amount", "gslider-blocks")}
-                        rangeValue={imageHoverLift}
-                        onChangeValue={(value) => setAttributes({ imageHoverLift: value })}
-                        onUnitChange={(value) => setAttributes({ imageHoverLiftUnits: value })}
-                        deviceType={deviceType}
-                        units={imageHoverLiftUnits}
-                        resetFallbackValue={{
-                            px: "10",
-                            "%": "5",
-                            em: "1",
-                            rem: "1",
-                            vw: "1",
-                            vh: "1"
-                        }}
-                        isRangeUnit={true}
+                        units={imageMaxWidthUnits}
+                        resetFallbackValue={""}
                         unitBounds={{
-                            px: { min: 0, max: 200, step: 1 },
-                            em: { min: 0, max: 10, step: 0.1 },
-                            rem: { min: 0, max: 10, step: 0.1 },
-                            '%': { min: 0, max: 100, step: 1 },
+                            px: { min: 0, max: 1000, step: 1 },
                         }}
                     />
-                )}
 
-                {imageHoverEffect === 'blur-to-clear' && (
                     <ResponsiveRangeControl
-                        min={0}
-                        max={20}
-                        step={1}
-                        label={__("Hover Blur (px)", "gslider-blocks")}
-                        rangeValue={imageHoverBlur}
-                        onChangeValue={(value) => setAttributes({ imageHoverBlur: value })}
+                        label={__("Height", "gslider-blocks")}
+                        rangeValue={imageHeight}
+                        onChangeValue={(value) => setAttributes({ imageHeight: value })}
+                        onUnitChange={(value) => setAttributes({ imageHeightUnits: value })}
                         deviceType={deviceType}
-                        resetFallbackValue={"4"}
+                        units={imageHeightUnits}
+                        resetFallbackValue={""}
+                        unitBounds={{
+                            px: { min: 0, max: 1000, step: 1 },
+                        }}
+                    />
+
+                    <Select2Control
+                        label={__("Object Fit", "gslider-blocks")}
+                        options={[
+                            { label: __('Cover', 'gslider-blocks'), value: 'cover' },
+                            { label: __('Contain', 'gslider-blocks'), value: 'contain' },
+                            { label: __('Fill', 'gslider-blocks'), value: 'fill' },
+                            { label: __('None', 'gslider-blocks'), value: 'none' },
+                        ]}
+                        value={imageObjectFit}
+                        onChange={(value) => setAttributes({ imageObjectFit: value })}
+                    />
+
+                    <Select2Control
+                        label={__("Object Position", "gslider-blocks")}
+                        options={[
+                            { label: __('Center', 'gslider-blocks'), value: 'center' },
+                            { label: __('Top', 'gslider-blocks'), value: 'top' },
+                            { label: __('Bottom', 'gslider-blocks'), value: 'bottom' },
+                            { label: __('Left', 'gslider-blocks'), value: 'left' },
+                            { label: __('Right', 'gslider-blocks'), value: 'right' },
+                            { label: __('Left Top', 'gslider-blocks'), value: 'left top' },
+                            { label: __('Right Top', 'gslider-blocks'), value: 'right top' },
+                            { label: __('Left Bottom', 'gslider-blocks'), value: 'left bottom' },
+                            { label: __('Right Bottom', 'gslider-blocks'), value: 'right bottom' },
+                        ]}
+                        value={imageObjectPosition}
+                        onChange={(value) => setAttributes({ imageObjectPosition: value })}
+                    />
+
+                    <Select2Control
+                        label={__('Hover Effect', 'gslider-blocks')}
+                        options={[
+                            { label: __('None', 'gslider-blocks'), value: 'none' },
+                            { label: __('Opacity', 'gslider-blocks'), value: 'opacity' },
+                            { label: __('Scale', 'gslider-blocks'), value: 'scale' },
+                            { label: __('Move Up', 'gslider-blocks'), value: 'move-up' },
+                            { label: __('Grayscale to Color', 'gslider-blocks'), value: 'grayscale' },
+                            { label: __('Opacity & Scale', 'gslider-blocks'), value: 'both' },
+                            { label: __('Shine Sweep', 'gslider-blocks'), value: 'shine-sweep' },
+                            { label: __('Overlay Fade', 'gslider-blocks'), value: 'overlay-fade' },
+                            { label: __('Overlay Slide Up', 'gslider-blocks'), value: 'overlay-slide' },
+                            { label: __('Pan Left', 'gslider-blocks'), value: 'pan-left' },
+                            { label: __('Pan Right', 'gslider-blocks'), value: 'pan-right' },
+                            { label: __('Blur to Clear', 'gslider-blocks'), value: 'blur-to-clear' },
+                            { label: __('Zoom Out', 'gslider-blocks'), value: 'zoom-out' },
+                            { label: __('Zoom & Rotate', 'gslider-blocks'), value: 'zoom-rotate' },
+                        ]}
+                        value={imageHoverEffect}
+                        onChange={(value) => setAttributes({ imageHoverEffect: value })}
+                    />
+
+                    {(imageHoverEffect === 'opacity' || imageHoverEffect === 'both') && (
+                        <ResponsiveRangeControl
+                            min={0}
+                            max={1}
+                            step={0.05}
+                            label={__("Hover Opacity", "gslider-blocks")}
+                            rangeValue={imageHoverOpacity}
+                            onChangeValue={(value) => setAttributes({ imageHoverOpacity: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"0.8"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    {(imageHoverEffect === 'scale' || imageHoverEffect === 'both' || imageHoverEffect === 'zoom-out' || imageHoverEffect === 'zoom-rotate') && (
+                        <ResponsiveRangeControl
+                            min={0.8}
+                            max={1.5}
+                            step={0.05}
+                            label={__("Hover Scale", "gslider-blocks")}
+                            rangeValue={imageHoverScale}
+                            onChangeValue={(value) => setAttributes({ imageHoverScale: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"1.05"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    {(imageHoverEffect === 'move-up') && (
+                        <ResponsiveRangeControl
+                            label={__("Lift Amount", "gslider-blocks")}
+                            rangeValue={imageHoverLift}
+                            onChangeValue={(value) => setAttributes({ imageHoverLift: value })}
+                            onUnitChange={(value) => setAttributes({ imageHoverLiftUnits: value })}
+                            deviceType={deviceType}
+                            units={imageHoverLiftUnits}
+                            resetFallbackValue={{
+                                px: "10",
+                                "%": "5",
+                                em: "1",
+                                rem: "1",
+                                vw: "1",
+                                vh: "1"
+                            }}
+                            isRangeUnit={true}
+                            unitBounds={{
+                                px: { min: 0, max: 200, step: 1 },
+                                em: { min: 0, max: 10, step: 0.1 },
+                                rem: { min: 0, max: 10, step: 0.1 },
+                                '%': { min: 0, max: 100, step: 1 },
+                            }}
+                        />
+                    )}
+
+                    {imageHoverEffect === 'blur-to-clear' && (
+                        <ResponsiveRangeControl
+                            min={0}
+                            max={20}
+                            step={1}
+                            label={__("Hover Blur (px)", "gslider-blocks")}
+                            rangeValue={imageHoverBlur}
+                            onChangeValue={(value) => setAttributes({ imageHoverBlur: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"4"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    {imageHoverEffect === 'zoom-rotate' && (
+                        <ResponsiveRangeControl
+                            min={-45}
+                            max={45}
+                            step={1}
+                            label={__("Hover Rotate (°)", "gslider-blocks")}
+                            rangeValue={imageHoverRotate}
+                            onChangeValue={(value) => setAttributes({ imageHoverRotate: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"3"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    {imageHoverEffect === 'grayscale' && (
+                        <ResponsiveRangeControl
+                            min={0}
+                            max={100}
+                            step={5}
+                            label={__("Hover Grayscale (%)", "gslider-blocks")}
+                            rangeValue={imageHoverGrayscale}
+                            onChangeValue={(value) => setAttributes({ imageHoverGrayscale: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"100"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    {(imageHoverEffect === 'pan-left' || imageHoverEffect === 'pan-right') && (
+                        <ResponsiveRangeControl
+                            min={0}
+                            max={30}
+                            step={1}
+                            label={__("Pan Distance (%)", "gslider-blocks")}
+                            rangeValue={imageHoverPan}
+                            onChangeValue={(value) => setAttributes({ imageHoverPan: value })}
+                            deviceType={deviceType}
+                            resetFallbackValue={"5"}
+                            isRangeUnit={false}
+                        />
+                    )}
+
+                    <ResponsiveRangeControl
+                        min={100}
+                        max={1000}
+                        step={50}
+                        label={__("Transition Duration (ms)", "gslider-blocks")}
+                        rangeValue={imageTransitionDuration}
+                        onChangeValue={(value) => setAttributes({ imageTransitionDuration: value })}
+                        deviceType={deviceType}
+                        resetFallbackValue={"300"}
                         isRangeUnit={false}
                     />
-                )}
 
-                {imageHoverEffect === 'zoom-rotate' && (
-                    <ResponsiveRangeControl
-                        min={-45}
-                        max={45}
-                        step={1}
-                        label={__("Hover Rotate (°)", "gslider-blocks")}
-                        rangeValue={imageHoverRotate}
-                        onChangeValue={(value) => setAttributes({ imageHoverRotate: value })}
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
                         deviceType={deviceType}
-                        resetFallbackValue={"3"}
-                        isRangeUnit={false}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={imagePaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ imagePaddingUnits: value })}
+                        desktopSpacing={imagePaddingDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ imagePaddingDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ imagePaddingDesktopCssStyle: value })}
+                        tabletSpacing={imagePaddingTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ imagePaddingTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ imagePaddingTabletCssStyle: value })}
+                        mobileSpacing={imagePaddingMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ imagePaddingMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ imagePaddingMobileCssStyle: value })}
+                        isLinked={imagePaddingLink}
+                        onChangeLink={(value) => setAttributes({ imagePaddingLink: value })}
                     />
-                )}
 
-                {imageHoverEffect === 'grayscale' && (
+                    <ResponsiveSpacingControl
+                        label={__("Margin", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={imageMarginUnits}
+                        onChangeUnits={(value) => setAttributes({ imageMarginUnits: value })}
+                        desktopSpacing={imageMarginDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ imageMarginDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ imageMarginDesktopCssStyle: value })}
+                        tabletSpacing={imageMarginTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ imageMarginTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ imageMarginTabletCssStyle: value })}
+                        mobileSpacing={imageMarginMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ imageMarginMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ imageMarginMobileCssStyle: value })}
+                        isLinked={imageMarginLink}
+                        onChangeLink={(value) => setAttributes({ imageMarginLink: value })}
+                    />
+
+                    <BackgroundControl
+                        label={__("Background Color", "gslider-blocks")}
+                        deviceType={deviceType}
+
+                        normalBackgroundType={imageNormalBackgroundType}
+                        setNormalBackgroundType={(value) => setAttributes({ imageNormalBackgroundType: value })}
+                        normalClassicColor={imageNormalClassicColor}
+                        setNormalClassicColor={(value) => setAttributes({ imageNormalClassicColor: value })}
+                        normalGradientColor={imageNormalGradientColor}
+                        setNormalGradientColor={(value) => setAttributes({ imageNormalGradientColor: value })}
+                        normalCustomGradientSwitcher={imageNormalCustomGradientSwitcher}
+                        setNormalCustomGradientSwitcher={(value) => setAttributes({ imageNormalCustomGradientSwitcher: value })}
+                        normalCustomGradientInputValue={imageNormalCustomGradientInputValue}
+                        setNormalCustomGradientInputValue={(value) => setAttributes({ imageNormalCustomGradientInputValue: value })}
+
+                        hoverBackgroundType={imageHoverBackgroundType}
+                        setHoverBackgroundType={(value) => setAttributes({ imageHoverBackgroundType: value })}
+                        hoverClassicColor={imageHoverClassicColor}
+                        setHoverClassicColor={(value) => setAttributes({ imageHoverClassicColor: value })}
+                        hoverGradientColor={imageHoverGradientColor}
+                        setHoverGradientColor={(value) => setAttributes({ imageHoverGradientColor: value })}
+                        hoverCustomGradientSwitcher={imageHoverCustomGradientSwitcher}
+                        setHoverCustomGradientSwitcher={(value) => setAttributes({ imageHoverCustomGradientSwitcher: value })}
+                        hoverCustomGradientInputValue={imageHoverCustomGradientInputValue}
+                        setHoverCustomGradientInputValue={(value) => setAttributes({ imageHoverCustomGradientInputValue: value })}
+                        setAttributes={setAttributes}
+                        isBackgroundImage={false}
+                    />
+
+                    <Select2Control
+                        label={__("Border Style", "gslider-blocks")}
+                        options={BORDER_STYLES}
+                        value={imageBorder}
+                        onChange={(value) => setAttributes({ imageBorder: value })}
+                    />
+
+                    <SwitcherControl
+                        label={__("Border Color", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={imageBorderColorSwitcher}
+                        onChange={(value) => setAttributes({ imageBorderColorSwitcher: value })}
+                    />
+
+                    {imageBorderColorSwitcher === 'normal' && (
+                        <ColorControl
+                            label={__("Normal Color", "gslider-blocks")}
+                            color={imageBorderColor}
+                            onChangeColor={(value) => setAttributes({ imageBorderColor: value })}
+                        />
+                    )}
+
+                    {imageBorderColorSwitcher === 'hover' && (
+                        <ColorControl
+                            label={__("Hover Color", "gslider-blocks")}
+                            color={imageBorderHoverColor}
+                            onChangeColor={(value) => setAttributes({ imageBorderHoverColor: value })}
+                        />
+                    )}
+
+                    <ResponsiveSpacingControl
+                        label={__("Border Width", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={imageBorderUnits}
+                        onChangeUnits={(value) => setAttributes({ imageBorderUnits: value })}
+                        desktopSpacing={imageBorderDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ imageBorderDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ imageBorderDesktopCssStyle: value })}
+                        tabletSpacing={imageBorderTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ imageBorderTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ imageBorderTabletCssStyle: value })}
+                        mobileSpacing={imageBorderMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ imageBorderMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ imageBorderMobileCssStyle: value })}
+                        isLinked={imageBorderLink}
+                        onChangeLink={(value) => setAttributes({ imageBorderLink: value })}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Border Radius", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={imageBorderRadiusUnits}
+                        onChangeUnits={(value) => setAttributes({ imageBorderRadiusUnits: value })}
+                        desktopSpacing={imageBorderRadiusDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ imageBorderRadiusDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ imageBorderRadiusDesktopCssStyle: value })}
+                        tabletSpacing={imageBorderRadiusTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ imageBorderRadiusTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ imageBorderRadiusTabletCssStyle: value })}
+                        mobileSpacing={imageBorderRadiusMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ imageBorderRadiusMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ imageBorderRadiusMobileCssStyle: value })}
+                        isLinked={imageBorderRadiusLink}
+                        onChangeLink={(value) => setAttributes({ imageBorderRadiusLink: value })}
+                    />
+
+                    <SwitcherControl
+                        label={__("Box Shadow", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={imageBoxShadowValuesSwitcher}
+                        onChange={(value) => setAttributes({ imageBoxShadowValuesSwitcher: value })}
+                    />
+
+                    {imageBoxShadowValuesSwitcher === 'normal' && (
+                        <BoxShadowSettingsControl
+                            label={__("Normal Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ imageBoxShadowValues: value })}
+                            initialShadowValue={imageBoxShadowValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowCssValue: value })}
+                        />
+                    )}
+
+                    {imageBoxShadowValuesSwitcher === 'hover' && (
+                        <BoxShadowSettingsControl
+                            label={__("Hover Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ imageBoxShadowHoverValues: value })}
+                            initialShadowValue={imageBoxShadowHoverValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowHoverCssValue: value })}
+                        />
+                    )}
+                </PanelBody>
+            )}
+
+            {showTaxonomy?.[deviceType] && (
+                <PanelBody
+                    title={__("Categories", "gslider-blocks")}
+                    opened={openPanels.styles === "post-categories"}
+                    onToggle={() => togglePanel("styles", "post-categories")}
+                >
+                    <ResponsiveTypographyControl
+                        fontFamily={postCategoryFontFamily}
+                        onChangeFontFamily={(value) => setAttributes({ postCategoryFontFamily: value })}
+
+                        fontSize={postCategoryFontSize}
+                        onChangeFontSize={(value) => setAttributes({ postCategoryFontSize: value })}
+
+                        fontSizeUnits={postCategoryFontSizeUnits}
+                        onChangeFontSizeUnit={(value) => setAttributes({ postCategoryFontSizeUnits: value })}
+
+                        fontWeight={postCategoryFontWeight}
+                        onChangeFontWeight={(value) => setAttributes({ postCategoryFontWeight: value })}
+
+                        fontStyle={postCategoryFontStyle}
+                        onChangeFontStyle={(value) => setAttributes({ postCategoryFontStyle: value })}
+
+                        textTransform={postCategoryTextTransform}
+                        onChangeTextTransform={(value) => setAttributes({ postCategoryTextTransform: value })}
+
+                        textDecoration={postCategoryTextDecoration}
+                        onChangeTextDecoration={(value) => setAttributes({ postCategoryTextDecoration: value })}
+
+                        lineHeight={postCategoryLineHeight}
+                        onChangeLineHeight={(value) => setAttributes({ postCategoryLineHeight: value })}
+
+                        lineHeightUnits={postCategoryLineHeightUnits}
+                        onChangeLineHeightUnit={(value) => setAttributes({ postCategoryLineHeightUnits: value })}
+
+                        letterSpacing={postCategoryLetterSpacing}
+                        onChangeLetterSpacing={(value) => setAttributes({ postCategoryLetterSpacing: value })}
+
+                        letterSpacingUnits={postCategoryLetterSpacingUnits}
+                        onChangeLetterSpacingUnit={(value) => setAttributes({ postCategoryLetterSpacingUnits: value })}
+
+                        wordSpacing={postCategoryWordSpacing}
+                        onChangeWordSpacing={(value) => setAttributes({ postCategoryWordSpacing: value })}
+
+                        wordSpacingUnits={postCategoryWordSpacingUnits}
+                        onChangeWordSpacingUnit={(value) => setAttributes({ postCategoryWordSpacingUnits: value })}
+
+                        deviceType={deviceType}
+                    />
+
+                    <ResponsiveAlignmentControl
+                        label={__("Alignment", "gslider-blocks")}
+                        options={TEXT_ALIGN}
+                        alignmentValue={postCategoryAlign}
+                        setAlignmentValue={(value) => setAttributes({ postCategoryAlign: value })}
+                        deviceType={deviceType}
+                        setAttributes={setAttributes}
+                    />
+
+                    <SwitcherControl
+                        label={__("Text Color", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={postCategoryColorSwitcher}
+                        onChange={(value) => setAttributes({ postCategoryColorSwitcher: value })}
+                    />
+
+                    {postCategoryColorSwitcher === 'normal' && (
+                        <ColorControl
+                            label={__("Normal Color", "gslider-blocks")}
+                            color={postCategoryColor}
+                            onChangeColor={(value) => setAttributes({ postCategoryColor: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    {postCategoryColorSwitcher === 'hover' && (
+                        <ColorControl
+                            label={__("Hover Color", "gslider-blocks")}
+                            color={postCategoryColorHover}
+                            onChangeColor={(value) => setAttributes({ postCategoryColorHover: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    <BackgroundControl
+                        label={__("Background Color", "gslider-blocks")}
+                        deviceType={deviceType}
+
+                        normalBackgroundType={postCategoryNormalBackgroundType}
+                        setNormalBackgroundType={(value) => setAttributes({ postCategoryNormalBackgroundType: value })}
+                        normalClassicColor={postCategoryNormalClassicColor}
+                        setNormalClassicColor={(value) => setAttributes({ postCategoryNormalClassicColor: value })}
+                        normalGradientColor={postCategoryNormalGradientColor}
+                        setNormalGradientColor={(value) => setAttributes({ postCategoryNormalGradientColor: value })}
+                        normalCustomGradientSwitcher={postCategoryNormalCustomGradientSwitcher}
+                        setNormalCustomGradientSwitcher={(value) => setAttributes({ postCategoryNormalCustomGradientSwitcher: value })}
+                        normalCustomGradientInputValue={postCategoryNormalCustomGradientInputValue}
+                        setNormalCustomGradientInputValue={(value) => setAttributes({ postCategoryNormalCustomGradientInputValue: value })}
+
+                        hoverBackgroundType={postCategoryHoverBackgroundType}
+                        setHoverBackgroundType={(value) => setAttributes({ postCategoryHoverBackgroundType: value })}
+                        hoverClassicColor={postCategoryHoverClassicColor}
+                        setHoverClassicColor={(value) => setAttributes({ postCategoryHoverClassicColor: value })}
+                        hoverGradientColor={postCategoryHoverGradientColor}
+                        setHoverGradientColor={(value) => setAttributes({ postCategoryHoverGradientColor: value })}
+                        hoverCustomGradientSwitcher={postCategoryHoverCustomGradientSwitcher}
+                        setHoverCustomGradientSwitcher={(value) => setAttributes({ postCategoryHoverCustomGradientSwitcher: value })}
+                        hoverCustomGradientInputValue={postCategoryHoverCustomGradientInputValue}
+                        setHoverCustomGradientInputValue={(value) => setAttributes({ postCategoryHoverCustomGradientInputValue: value })}
+                        setAttributes={setAttributes}
+                        isBackgroundImage={false}
+                    />
+
+                    <Select2Control
+                        label={__('Border Style', 'gslider-blocks')}
+                        options={BORDER_STYLES}
+                        value={postCategoryBorder}
+                        onChange={(value) => setAttributes({ postCategoryBorder: value })}
+                    />
+
+                    {postCategoryBorder !== 'none' && (
+                        <>
+                            <SwitcherControl
+                                label={__("Border Color", "gslider-blocks")}
+                                options={NORMAL_HOVER}
+                                value={postCategoryBorderColorSwitcher}
+                                onChange={(value) => setAttributes({ postCategoryBorderColorSwitcher: value })}
+                            />
+
+                            {postCategoryBorderColorSwitcher === 'normal' && (
+                                <ColorControl
+                                    label={__("Border Color", "gslider-blocks")}
+                                    color={postCategoryBorderColor}
+                                    onChangeColor={(value) => setAttributes({ postCategoryBorderColor: value })}
+                                />
+                            )}
+
+                            {postCategoryBorderColorSwitcher === 'hover' && (
+                                <ColorControl
+                                    label={__("Hover Color", "gslider-blocks")}
+                                    color={postCategoryBorderHoverColor}
+                                    onChangeColor={(value) => setAttributes({ postCategoryBorderHoverColor: value })}
+                                />
+                            )}
+
+                            <ResponsiveSpacingControl
+                                label={__("Border Width", "gslider-blocks")}
+                                deviceType={deviceType}
+                                onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                                units={postCategoryBorderUnits}
+                                onChangeUnits={(value) => setAttributes({ postCategoryBorderUnits: value })}
+                                desktopSpacing={postCategoryBorderDesktop}
+                                onChangeDesktopSpacing={(value) => setAttributes({ postCategoryBorderDesktop: value })}
+                                desktopSpacingStyle={(value) => setAttributes({ postCategoryBorderDesktopCssStyle: value })}
+                                tabletSpacing={postCategoryBorderTablet}
+                                onChangeTabletSpacing={(value) => setAttributes({ postCategoryBorderTablet: value })}
+                                tabletSpacingStyle={(value) => setAttributes({ postCategoryBorderTabletCssStyle: value })}
+                                mobileSpacing={postCategoryBorderMobile}
+                                onChangeMobileSpacing={(value) => setAttributes({ postCategoryBorderMobile: value })}
+                                mobileSpacingStyle={(value) => setAttributes({ postCategoryBorderMobileCssStyle: value })}
+                                isLinked={postCategoryBorderLink}
+                                onChangeLink={(value) => setAttributes({ postCategoryBorderLink: value })}
+                            />
+                        </>
+                    )}
+
+                    <ResponsiveSpacingControl
+                        label={__("Border Radius", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postCategoryBorderRadiusUnits}
+                        onChangeUnits={(value) => setAttributes({ postCategoryBorderRadiusUnits: value })}
+                        desktopSpacing={postCategoryBorderRadiusDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postCategoryBorderRadiusDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusDesktopCssStyle: value })}
+                        tabletSpacing={postCategoryBorderRadiusTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ postCategoryBorderRadiusTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusTabletCssStyle: value })}
+                        mobileSpacing={postCategoryBorderRadiusMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ postCategoryBorderRadiusMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusMobileCssStyle: value })}
+                        isLinked={postCategoryBorderRadiusLink}
+                        onChangeLink={(value) => setAttributes({ postCategoryBorderRadiusLink: value })}
+                    />
+
+                    <SwitcherControl
+                        label={__("Box Shadow", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={postCategoryBoxShadowValuesSwitcher}
+                        onChange={(value) => setAttributes({ postCategoryBoxShadowValuesSwitcher: value })}
+                    />
+
+                    {postCategoryBoxShadowValuesSwitcher === 'normal' && (
+                        <BoxShadowSettingsControl
+                            label={__("Normal Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ postCategoryBoxShadowValues: value })}
+                            initialShadowValue={postCategoryBoxShadowValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ postCategoryBoxShadowCssValue: value })}
+                        />
+                    )}
+
+                    {postCategoryBoxShadowValuesSwitcher === 'hover' && (
+                        <BoxShadowSettingsControl
+                            label={__("Hover Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ postCategoryBoxShadowHoverValues: value })}
+                            initialShadowValue={postCategoryBoxShadowHoverValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ postCategoryBoxShadowHoverCssValue: value })}
+                        />
+                    )}
+
                     <ResponsiveRangeControl
                         min={0}
                         max={100}
-                        step={5}
-                        label={__("Hover Grayscale (%)", "gslider-blocks")}
-                        rangeValue={imageHoverGrayscale}
-                        onChangeValue={(value) => setAttributes({ imageHoverGrayscale: value })}
+                        label={__("Gap", "gslider-blocks")}
+                        rangeValue={postCategoryGap}
+                        onChangeValue={(value) => setAttributes({ postCategoryGap: value })}
+                        onUnitChange={(value) => setAttributes({ postCategoryGapUnits: value })}
                         deviceType={deviceType}
-                        resetFallbackValue={"100"}
-                        isRangeUnit={false}
+                        units={postCategoryGapUnits}
+                        resetFallbackValue={{
+                            px: "5",
+                            em: "0.5",
+                            rem: "0.5"
+                        }}
                     />
-                )}
 
-                {(imageHoverEffect === 'pan-left' || imageHoverEffect === 'pan-right') && (
-                    <ResponsiveRangeControl
-                        min={0}
-                        max={30}
-                        step={1}
-                        label={__("Pan Distance (%)", "gslider-blocks")}
-                        rangeValue={imageHoverPan}
-                        onChangeValue={(value) => setAttributes({ imageHoverPan: value })}
+                    <ResponsiveSpacingControl
+                        label={__("Margin", "gslider-blocks")}
                         deviceType={deviceType}
-                        resetFallbackValue={"5"}
-                        isRangeUnit={false}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postCategoryMarginUnits}
+                        onChangeUnits={(value) => setAttributes({ postCategoryMarginUnits: value })}
+                        desktopSpacing={postCategoryDesktopMargin}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postCategoryDesktopMargin: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postCategoryDesktopMarginCssStyle: value })}
+                        tabletSpacing={postCategoryTabletMargin}
+                        onChangeTabletSpacing={(value) => setAttributes({ postCategoryTabletMargin: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postCategoryTabletMarginCssStyle: value })}
+                        mobileSpacing={postCategoryMobileMargin}
+                        onChangeMobileSpacing={(value) => setAttributes({ postCategoryMobileMargin: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postCategoryMobileMarginCssStyle: value })}
+                        isLinked={postCategoryMarginLink}
+                        onChangeLink={(value) => setAttributes({ postCategoryMarginLink: value })}
                     />
-                )}
 
-                <ResponsiveRangeControl
-                    min={100}
-                    max={1000}
-                    step={50}
-                    label={__("Transition Duration (ms)", "gslider-blocks")}
-                    rangeValue={imageTransitionDuration}
-                    onChangeValue={(value) => setAttributes({ imageTransitionDuration: value })}
-                    deviceType={deviceType}
-                    resetFallbackValue={"300"}
-                    isRangeUnit={false}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Padding", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={imagePaddingUnits}
-                    onChangeUnits={(value) => setAttributes({ imagePaddingUnits: value })}
-                    desktopSpacing={imagePaddingDesktop}
-                    onChangeDesktopSpacing={(value) => setAttributes({ imagePaddingDesktop: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ imagePaddingDesktopCssStyle: value })}
-                    tabletSpacing={imagePaddingTablet}
-                    onChangeTabletSpacing={(value) => setAttributes({ imagePaddingTablet: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ imagePaddingTabletCssStyle: value })}
-                    mobileSpacing={imagePaddingMobile}
-                    onChangeMobileSpacing={(value) => setAttributes({ imagePaddingMobile: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ imagePaddingMobileCssStyle: value })}
-                    isLinked={imagePaddingLink}
-                    onChangeLink={(value) => setAttributes({ imagePaddingLink: value })}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Margin", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={imageMarginUnits}
-                    onChangeUnits={(value) => setAttributes({ imageMarginUnits: value })}
-                    desktopSpacing={imageMarginDesktop}
-                    onChangeDesktopSpacing={(value) => setAttributes({ imageMarginDesktop: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ imageMarginDesktopCssStyle: value })}
-                    tabletSpacing={imageMarginTablet}
-                    onChangeTabletSpacing={(value) => setAttributes({ imageMarginTablet: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ imageMarginTabletCssStyle: value })}
-                    mobileSpacing={imageMarginMobile}
-                    onChangeMobileSpacing={(value) => setAttributes({ imageMarginMobile: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ imageMarginMobileCssStyle: value })}
-                    isLinked={imageMarginLink}
-                    onChangeLink={(value) => setAttributes({ imageMarginLink: value })}
-                />
-
-                <BackgroundControl
-                    label={__("Background Color", "gslider-blocks")}
-                    deviceType={deviceType}
-
-                    normalBackgroundType={imageNormalBackgroundType}
-                    setNormalBackgroundType={(value) => setAttributes({ imageNormalBackgroundType: value })}
-                    normalClassicColor={imageNormalClassicColor}
-                    setNormalClassicColor={(value) => setAttributes({ imageNormalClassicColor: value })}
-                    normalGradientColor={imageNormalGradientColor}
-                    setNormalGradientColor={(value) => setAttributes({ imageNormalGradientColor: value })}
-                    normalCustomGradientSwitcher={imageNormalCustomGradientSwitcher}
-                    setNormalCustomGradientSwitcher={(value) => setAttributes({ imageNormalCustomGradientSwitcher: value })}
-                    normalCustomGradientInputValue={imageNormalCustomGradientInputValue}
-                    setNormalCustomGradientInputValue={(value) => setAttributes({ imageNormalCustomGradientInputValue: value })}
-
-                    hoverBackgroundType={imageHoverBackgroundType}
-                    setHoverBackgroundType={(value) => setAttributes({ imageHoverBackgroundType: value })}
-                    hoverClassicColor={imageHoverClassicColor}
-                    setHoverClassicColor={(value) => setAttributes({ imageHoverClassicColor: value })}
-                    hoverGradientColor={imageHoverGradientColor}
-                    setHoverGradientColor={(value) => setAttributes({ imageHoverGradientColor: value })}
-                    hoverCustomGradientSwitcher={imageHoverCustomGradientSwitcher}
-                    setHoverCustomGradientSwitcher={(value) => setAttributes({ imageHoverCustomGradientSwitcher: value })}
-                    hoverCustomGradientInputValue={imageHoverCustomGradientInputValue}
-                    setHoverCustomGradientInputValue={(value) => setAttributes({ imageHoverCustomGradientInputValue: value })}
-                    setAttributes={setAttributes}
-                    isBackgroundImage={false}
-                />
-
-                <Select2Control
-                    label={__("Border Style", "gslider-blocks")}
-                    options={BORDER_STYLES}
-                    value={imageBorder}
-                    onChange={(value) => setAttributes({ imageBorder: value })}
-                />
-
-                <SwitcherControl
-                    label={__("Border Color", "gslider-blocks")}
-                    options={NORMAL_HOVER}
-                    value={imageBorderColorSwitcher}
-                    onChange={(value) => setAttributes({ imageBorderColorSwitcher: value })}
-                />
-
-                {imageBorderColorSwitcher === 'normal' && (
-                    <ColorControl
-                        label={__("Normal Color", "gslider-blocks")}
-                        color={imageBorderColor}
-                        onChangeColor={(value) => setAttributes({ imageBorderColor: value })}
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postCategoryPaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postCategoryPaddingUnits: value })}
+                        desktopSpacing={postCategoryDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postCategoryDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postCategoryDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postCategoryTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postCategoryTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postCategoryTabletPaddingCssStyle: value })}
+                        mobileSpacing={postCategoryMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postCategoryMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postCategoryMobilePaddingCssStyle: value })}
+                        isLinked={postCategoryPaddingLink}
+                        onChangeLink={(value) => setAttributes({ postCategoryPaddingLink: value })}
                     />
-                )}
 
-                {imageBorderColorSwitcher === 'hover' && (
-                    <ColorControl
-                        label={__("Hover Color", "gslider-blocks")}
-                        color={imageBorderHoverColor}
-                        onChangeColor={(value) => setAttributes({ imageBorderHoverColor: value })}
+                    <ResponsiveSpacingControl
+                        label={__("Item Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postCategoryItemPaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postCategoryItemPaddingUnits: value })}
+                        desktopSpacing={postCategoryItemDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postCategoryItemDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postCategoryItemDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postCategoryItemTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postCategoryItemTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postCategoryItemTabletPaddingCssStyle: value })}
+                        mobileSpacing={postCategoryItemMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postCategoryItemMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postCategoryItemMobilePaddingCssStyle: value })}
+                        isLinked={postCategoryItemPaddingLink}
+                        onChangeLink={(value) => setAttributes({ postCategoryItemPaddingLink: value })}
                     />
-                )}
+                </PanelBody>
+            )}
 
-                <ResponsiveSpacingControl
-                    label={__("Border Width", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={imageBorderUnits}
-                    onChangeUnits={(value) => setAttributes({ imageBorderUnits: value })}
-                    desktopSpacing={imageBorderDesktop}
-                    onChangeDesktopSpacing={(value) => setAttributes({ imageBorderDesktop: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ imageBorderDesktopCssStyle: value })}
-                    tabletSpacing={imageBorderTablet}
-                    onChangeTabletSpacing={(value) => setAttributes({ imageBorderTablet: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ imageBorderTabletCssStyle: value })}
-                    mobileSpacing={imageBorderMobile}
-                    onChangeMobileSpacing={(value) => setAttributes({ imageBorderMobile: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ imageBorderMobileCssStyle: value })}
-                    isLinked={imageBorderLink}
-                    onChangeLink={(value) => setAttributes({ imageBorderLink: value })}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Border Radius", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={imageBorderRadiusUnits}
-                    onChangeUnits={(value) => setAttributes({ imageBorderRadiusUnits: value })}
-                    desktopSpacing={imageBorderRadiusDesktop}
-                    onChangeDesktopSpacing={(value) => setAttributes({ imageBorderRadiusDesktop: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ imageBorderRadiusDesktopCssStyle: value })}
-                    tabletSpacing={imageBorderRadiusTablet}
-                    onChangeTabletSpacing={(value) => setAttributes({ imageBorderRadiusTablet: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ imageBorderRadiusTabletCssStyle: value })}
-                    mobileSpacing={imageBorderRadiusMobile}
-                    onChangeMobileSpacing={(value) => setAttributes({ imageBorderRadiusMobile: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ imageBorderRadiusMobileCssStyle: value })}
-                    isLinked={imageBorderRadiusLink}
-                    onChangeLink={(value) => setAttributes({ imageBorderRadiusLink: value })}
-                />
-
-                <SwitcherControl
-                    label={__("Box Shadow", "gslider-blocks")}
-                    options={NORMAL_HOVER}
-                    value={imageBoxShadowValuesSwitcher}
-                    onChange={(value) => setAttributes({ imageBoxShadowValuesSwitcher: value })}
-                />
-
-                {imageBoxShadowValuesSwitcher === 'normal' && (
-                    <BoxShadowSettingsControl
-                        label={__("Normal Shadow", "gslider-blocks")}
-                        onBoxShadowChange={(value) => setAttributes({ imageBoxShadowValues: value })}
-                        initialShadowValue={imageBoxShadowValues}
-                        onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowCssValue: value })}
+            {showPostTitle?.[deviceType] && (
+                <PanelBody
+                    title={__("Title", "gslider-blocks")}
+                    opened={openPanels.styles === "post-title"}
+                    onToggle={() => togglePanel("styles", "post-title")}
+                >
+                    <ToggleControl
+                        label={__("Limit Title Length", "gslider-blocks")}
+                        checked={enablePostTitleLimit}
+                        onChange={(value) => setAttributes({ enablePostTitleLimit: value })}
                     />
-                )}
 
-                {imageBoxShadowValuesSwitcher === 'hover' && (
-                    <BoxShadowSettingsControl
-                        label={__("Hover Shadow", "gslider-blocks")}
-                        onBoxShadowChange={(value) => setAttributes({ imageBoxShadowHoverValues: value })}
-                        initialShadowValue={imageBoxShadowHoverValues}
-                        onBoxShadowStyleChange={(value) => setAttributes({ imageBoxShadowHoverCssValue: value })}
-                    />
-                )}
-            </PanelBody>
-
-            <PanelBody
-                title={__("Categories", "gslider-blocks")}
-                opened={openPanels.styles === "post-categories"}
-                onToggle={() => togglePanel("styles", "post-categories")}
-            >
-                <ResponsiveTypographyControl
-                    fontFamily={postCategoryFontFamily}
-                    onChangeFontFamily={(value) => setAttributes({ postCategoryFontFamily: value })}
-
-                    fontSize={postCategoryFontSize}
-                    onChangeFontSize={(value) => setAttributes({ postCategoryFontSize: value })}
-
-                    fontSizeUnits={postCategoryFontSizeUnits}
-                    onChangeFontSizeUnit={(value) => setAttributes({ postCategoryFontSizeUnits: value })}
-
-                    fontWeight={postCategoryFontWeight}
-                    onChangeFontWeight={(value) => setAttributes({ postCategoryFontWeight: value })}
-
-                    fontStyle={postCategoryFontStyle}
-                    onChangeFontStyle={(value) => setAttributes({ postCategoryFontStyle: value })}
-
-                    textTransform={postCategoryTextTransform}
-                    onChangeTextTransform={(value) => setAttributes({ postCategoryTextTransform: value })}
-
-                    textDecoration={postCategoryTextDecoration}
-                    onChangeTextDecoration={(value) => setAttributes({ postCategoryTextDecoration: value })}
-
-                    lineHeight={postCategoryLineHeight}
-                    onChangeLineHeight={(value) => setAttributes({ postCategoryLineHeight: value })}
-
-                    lineHeightUnits={postCategoryLineHeightUnits}
-                    onChangeLineHeightUnit={(value) => setAttributes({ postCategoryLineHeightUnits: value })}
-
-                    letterSpacing={postCategoryLetterSpacing}
-                    onChangeLetterSpacing={(value) => setAttributes({ postCategoryLetterSpacing: value })}
-
-                    letterSpacingUnits={postCategoryLetterSpacingUnits}
-                    onChangeLetterSpacingUnit={(value) => setAttributes({ postCategoryLetterSpacingUnits: value })}
-
-                    wordSpacing={postCategoryWordSpacing}
-                    onChangeWordSpacing={(value) => setAttributes({ postCategoryWordSpacing: value })}
-
-                    wordSpacingUnits={postCategoryWordSpacingUnits}
-                    onChangeWordSpacingUnit={(value) => setAttributes({ postCategoryWordSpacingUnits: value })}
-
-                    deviceType={deviceType}
-                />
-
-                <ResponsiveAlignmentControl
-                    label={__("Alignment", "gslider-blocks")}
-                    options={TEXT_ALIGN}
-                    alignmentValue={postCategoryAlign}
-                    setAlignmentValue={(value) => setAttributes({ postCategoryAlign: value })}
-                    deviceType={deviceType}
-                    setAttributes={setAttributes}
-                />
-
-                <SwitcherControl
-                    label={__("Text Color", "gslider-blocks")}
-                    options={NORMAL_HOVER}
-                    value={postCategoryColorSwitcher}
-                    onChange={(value) => setAttributes({ postCategoryColorSwitcher: value })}
-                />
-
-                {postCategoryColorSwitcher === 'normal' && (
-                    <ColorControl
-                        label={__("Normal Color", "gslider-blocks")}
-                        color={postCategoryColor}
-                        onChangeColor={(value) => setAttributes({ postCategoryColor: value })}
-                        defaultColor=''
-                    />
-                )}
-
-                {postCategoryColorSwitcher === 'hover' && (
-                    <ColorControl
-                        label={__("Hover Color", "gslider-blocks")}
-                        color={postCategoryColorHover}
-                        onChangeColor={(value) => setAttributes({ postCategoryColorHover: value })}
-                        defaultColor=''
-                    />
-                )}
-
-                <BackgroundControl
-                    label={__("Background Color", "gslider-blocks")}
-                    deviceType={deviceType}
-
-                    normalBackgroundType={postCategoryNormalBackgroundType}
-                    setNormalBackgroundType={(value) => setAttributes({ postCategoryNormalBackgroundType: value })}
-                    normalClassicColor={postCategoryNormalClassicColor}
-                    setNormalClassicColor={(value) => setAttributes({ postCategoryNormalClassicColor: value })}
-                    normalGradientColor={postCategoryNormalGradientColor}
-                    setNormalGradientColor={(value) => setAttributes({ postCategoryNormalGradientColor: value })}
-                    normalCustomGradientSwitcher={postCategoryNormalCustomGradientSwitcher}
-                    setNormalCustomGradientSwitcher={(value) => setAttributes({ postCategoryNormalCustomGradientSwitcher: value })}
-                    normalCustomGradientInputValue={postCategoryNormalCustomGradientInputValue}
-                    setNormalCustomGradientInputValue={(value) => setAttributes({ postCategoryNormalCustomGradientInputValue: value })}
-
-                    hoverBackgroundType={postCategoryHoverBackgroundType}
-                    setHoverBackgroundType={(value) => setAttributes({ postCategoryHoverBackgroundType: value })}
-                    hoverClassicColor={postCategoryHoverClassicColor}
-                    setHoverClassicColor={(value) => setAttributes({ postCategoryHoverClassicColor: value })}
-                    hoverGradientColor={postCategoryHoverGradientColor}
-                    setHoverGradientColor={(value) => setAttributes({ postCategoryHoverGradientColor: value })}
-                    hoverCustomGradientSwitcher={postCategoryHoverCustomGradientSwitcher}
-                    setHoverCustomGradientSwitcher={(value) => setAttributes({ postCategoryHoverCustomGradientSwitcher: value })}
-                    hoverCustomGradientInputValue={postCategoryHoverCustomGradientInputValue}
-                    setHoverCustomGradientInputValue={(value) => setAttributes({ postCategoryHoverCustomGradientInputValue: value })}
-                    setAttributes={setAttributes}
-                    isBackgroundImage={false}
-                />
-
-                <Select2Control
-                    label={__('Border Style', 'gslider-blocks')}
-                    options={BORDER_STYLES}
-                    value={postCategoryBorder}
-                    onChange={(value) => setAttributes({ postCategoryBorder: value })}
-                />
-
-                {postCategoryBorder !== 'none' && (
-                    <>
-                        <SwitcherControl
-                            label={__("Border Color", "gslider-blocks")}
-                            options={NORMAL_HOVER}
-                            value={postCategoryBorderColorSwitcher}
-                            onChange={(value) => setAttributes({ postCategoryBorderColorSwitcher: value })}
-                        />
-
-                        {postCategoryBorderColorSwitcher === 'normal' && (
-                            <ColorControl
-                                label={__("Border Color", "gslider-blocks")}
-                                color={postCategoryBorderColor}
-                                onChangeColor={(value) => setAttributes({ postCategoryBorderColor: value })}
+                    {enablePostTitleLimit && (
+                        <>
+                            <SwitcherControl
+                                label={__("Limit Type", "gslider-blocks")}
+                                options={[
+                                    { label: __("Words", "gslider-blocks"), value: "words" },
+                                    { label: __("Characters", "gslider-blocks"), value: "characters" },
+                                ]}
+                                value={postTitleLimitType}
+                                onChange={(value) => setAttributes({ postTitleLimitType: value })}
                             />
-                        )}
-
-                        {postCategoryBorderColorSwitcher === 'hover' && (
-                            <ColorControl
-                                label={__("Hover Color", "gslider-blocks")}
-                                color={postCategoryBorderHoverColor}
-                                onChangeColor={(value) => setAttributes({ postCategoryBorderHoverColor: value })}
+                            <ResponsiveRangeControl
+                                min={1}
+                                max={postTitleLimitType === "words" ? 100 : 500}
+                                label={postTitleLimitType === "words" ? __("Word Limit", "gslider-blocks") : __("Character Limit", "gslider-blocks")}
+                                rangeValue={postTitleLimit}
+                                onChangeValue={(value) => setAttributes({ postTitleLimit: value })}
+                                deviceType={deviceType}
+                                step={1}
+                                resetFallbackValue={postTitleLimitType === "words" ? "10" : "50"}
+                                isRangeUnit={false}
                             />
-                        )}
+                            <TextControl
+                                label={__("Trim Suffix", "gslider-blocks")}
+                                value={postTitleLimitSuffix}
+                                onChange={(value) => setAttributes({ postTitleLimitSuffix: value })}
+                            />
+                        </>
+                    )}
 
-                        <ResponsiveSpacingControl
-                            label={__("Border Width", "gslider-blocks")}
-                            deviceType={deviceType}
-                            onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                            units={postCategoryBorderUnits}
-                            onChangeUnits={(value) => setAttributes({ postCategoryBorderUnits: value })}
-                            desktopSpacing={postCategoryBorderDesktop}
-                            onChangeDesktopSpacing={(value) => setAttributes({ postCategoryBorderDesktop: value })}
-                            desktopSpacingStyle={(value) => setAttributes({ postCategoryBorderDesktopCssStyle: value })}
-                            tabletSpacing={postCategoryBorderTablet}
-                            onChangeTabletSpacing={(value) => setAttributes({ postCategoryBorderTablet: value })}
-                            tabletSpacingStyle={(value) => setAttributes({ postCategoryBorderTabletCssStyle: value })}
-                            mobileSpacing={postCategoryBorderMobile}
-                            onChangeMobileSpacing={(value) => setAttributes({ postCategoryBorderMobile: value })}
-                            mobileSpacingStyle={(value) => setAttributes({ postCategoryBorderMobileCssStyle: value })}
-                            isLinked={postCategoryBorderLink}
-                            onChangeLink={(value) => setAttributes({ postCategoryBorderLink: value })}
-                        />
-                    </>
-                )}
-
-                <ResponsiveSpacingControl
-                    label={__("Border Radius", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postCategoryBorderRadiusUnits}
-                    onChangeUnits={(value) => setAttributes({ postCategoryBorderRadiusUnits: value })}
-                    desktopSpacing={postCategoryBorderRadiusDesktop}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postCategoryBorderRadiusDesktop: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusDesktopCssStyle: value })}
-                    tabletSpacing={postCategoryBorderRadiusTablet}
-                    onChangeTabletSpacing={(value) => setAttributes({ postCategoryBorderRadiusTablet: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusTabletCssStyle: value })}
-                    mobileSpacing={postCategoryBorderRadiusMobile}
-                    onChangeMobileSpacing={(value) => setAttributes({ postCategoryBorderRadiusMobile: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postCategoryBorderRadiusMobileCssStyle: value })}
-                    isLinked={postCategoryBorderRadiusLink}
-                    onChangeLink={(value) => setAttributes({ postCategoryBorderRadiusLink: value })}
-                />
-
-                <SwitcherControl
-                    label={__("Box Shadow", "gslider-blocks")}
-                    options={NORMAL_HOVER}
-                    value={postCategoryBoxShadowValuesSwitcher}
-                    onChange={(value) => setAttributes({ postCategoryBoxShadowValuesSwitcher: value })}
-                />
-
-                {postCategoryBoxShadowValuesSwitcher === 'normal' && (
-                    <BoxShadowSettingsControl
-                        label={__("Normal Shadow", "gslider-blocks")}
-                        onBoxShadowChange={(value) => setAttributes({ postCategoryBoxShadowValues: value })}
-                        initialShadowValue={postCategoryBoxShadowValues}
-                        onBoxShadowStyleChange={(value) => setAttributes({ postCategoryBoxShadowCssValue: value })}
+                    <ToggleControl
+                        label={__("Link Title", "gslider-blocks")}
+                        checked={enablePostTitleLink}
+                        onChange={(value) => setAttributes({ enablePostTitleLink: value })}
                     />
-                )}
 
-                {postCategoryBoxShadowValuesSwitcher === 'hover' && (
-                    <BoxShadowSettingsControl
-                        label={__("Hover Shadow", "gslider-blocks")}
-                        onBoxShadowChange={(value) => setAttributes({ postCategoryBoxShadowHoverValues: value })}
-                        initialShadowValue={postCategoryBoxShadowHoverValues}
-                        onBoxShadowStyleChange={(value) => setAttributes({ postCategoryBoxShadowHoverCssValue: value })}
-                    />
-                )}
-
-                <ResponsiveRangeControl
-                    min={0}
-                    max={100}
-                    label={__("Gap", "gslider-blocks")}
-                    rangeValue={postCategoryGap}
-                    onChangeValue={(value) => setAttributes({ postCategoryGap: value })}
-                    onUnitChange={(value) => setAttributes({ postCategoryGapUnits: value })}
-                    deviceType={deviceType}
-                    units={postCategoryGapUnits}
-                    resetFallbackValue={{
-                        px: "5",
-                        em: "0.5",
-                        rem: "0.5"
-                    }}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Margin", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postCategoryMarginUnits}
-                    onChangeUnits={(value) => setAttributes({ postCategoryMarginUnits: value })}
-                    desktopSpacing={postCategoryDesktopMargin}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postCategoryDesktopMargin: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postCategoryDesktopMarginCssStyle: value })}
-                    tabletSpacing={postCategoryTabletMargin}
-                    onChangeTabletSpacing={(value) => setAttributes({ postCategoryTabletMargin: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postCategoryTabletMarginCssStyle: value })}
-                    mobileSpacing={postCategoryMobileMargin}
-                    onChangeMobileSpacing={(value) => setAttributes({ postCategoryMobileMargin: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postCategoryMobileMarginCssStyle: value })}
-                    isLinked={postCategoryMarginLink}
-                    onChangeLink={(value) => setAttributes({ postCategoryMarginLink: value })}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Padding", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postCategoryPaddingUnits}
-                    onChangeUnits={(value) => setAttributes({ postCategoryPaddingUnits: value })}
-                    desktopSpacing={postCategoryDesktopPadding}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postCategoryDesktopPadding: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postCategoryDesktopPaddingCssStyle: value })}
-                    tabletSpacing={postCategoryTabletPadding}
-                    onChangeTabletSpacing={(value) => setAttributes({ postCategoryTabletPadding: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postCategoryTabletPaddingCssStyle: value })}
-                    mobileSpacing={postCategoryMobilePadding}
-                    onChangeMobileSpacing={(value) => setAttributes({ postCategoryMobilePadding: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postCategoryMobilePaddingCssStyle: value })}
-                    isLinked={postCategoryPaddingLink}
-                    onChangeLink={(value) => setAttributes({ postCategoryPaddingLink: value })}
-                />
-
-                <ResponsiveSpacingControl
-                    label={__("Item Padding", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postCategoryItemPaddingUnits}
-                    onChangeUnits={(value) => setAttributes({ postCategoryItemPaddingUnits: value })}
-                    desktopSpacing={postCategoryItemDesktopPadding}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postCategoryItemDesktopPadding: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postCategoryItemDesktopPaddingCssStyle: value })}
-                    tabletSpacing={postCategoryItemTabletPadding}
-                    onChangeTabletSpacing={(value) => setAttributes({ postCategoryItemTabletPadding: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postCategoryItemTabletPaddingCssStyle: value })}
-                    mobileSpacing={postCategoryItemMobilePadding}
-                    onChangeMobileSpacing={(value) => setAttributes({ postCategoryItemMobilePadding: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postCategoryItemMobilePaddingCssStyle: value })}
-                    isLinked={postCategoryItemPaddingLink}
-                    onChangeLink={(value) => setAttributes({ postCategoryItemPaddingLink: value })}
-                />
-            </PanelBody>
-
-            <PanelBody
-                title={__("Title", "gslider-blocks")}
-                opened={openPanels.styles === "post-title"}
-                onToggle={() => togglePanel("styles", "post-title")}
-            >
-                <ToggleControl
-                    label={__("Limit Title Length", "gslider-blocks")}
-                    checked={enablePostTitleLimit}
-                    onChange={(value) => setAttributes({ enablePostTitleLimit: value })}
-                />
-
-                {enablePostTitleLimit && (
-                    <>
-                        <SwitcherControl
-                            label={__("Limit Type", "gslider-blocks")}
-                            options={[
-                                { label: __("Words", "gslider-blocks"), value: "words" },
-                                { label: __("Characters", "gslider-blocks"), value: "characters" },
-                            ]}
-                            value={postTitleLimitType}
-                            onChange={(value) => setAttributes({ postTitleLimitType: value })}
-                        />
-                        <ResponsiveRangeControl
-                            min={1}
-                            max={postTitleLimitType === "words" ? 100 : 500}
-                            label={postTitleLimitType === "words" ? __("Word Limit", "gslider-blocks") : __("Character Limit", "gslider-blocks")}
-                            rangeValue={postTitleLimit}
-                            onChangeValue={(value) => setAttributes({ postTitleLimit: value })}
-                            deviceType={deviceType}
-                            step={1}
-                            resetFallbackValue={postTitleLimitType === "words" ? "10" : "50"}
-                            isRangeUnit={false}
-                        />
-                        <TextControl
-                            label={__("Trim Suffix", "gslider-blocks")}
-                            value={postTitleLimitSuffix}
-                            onChange={(value) => setAttributes({ postTitleLimitSuffix: value })}
-                        />
-                    </>
-                )}
-
-                <ToggleControl
-                    label={__("Link Title", "gslider-blocks")}
-                    checked={enablePostTitleLink}
-                    onChange={(value) => setAttributes({ enablePostTitleLink: value })}
-                />
-
-                {enablePostTitleLink && (
-                    <>
-                        <ToggleControl
-                            label={__("Open in New Tab", "gslider-blocks")}
-                            checked={postTitleLinkTarget}
-                            onChange={(value) => setAttributes({ postTitleLinkTarget: value })}
-                        />
-                        <ToggleControl
-                            label={__("Add nofollow rel", "gslider-blocks")}
-                            checked={postTitleLinkNofollow}
-                            onChange={(value) => setAttributes({ postTitleLinkNofollow: value })}
-                        />
-                        <ToggleControl
-                            label={__("Add sponsored rel", "gslider-blocks")}
-                            checked={postTitleLinkSponsored}
-                            onChange={(value) => setAttributes({ postTitleLinkSponsored: value })}
-                        />
-                        <ToggleControl
-                            label={__("Underline Hover Animation", "gslider-blocks")}
-                            checked={enablePostTitleHoverUnderlineAnim}
-                            onChange={(value) => setAttributes({ enablePostTitleHoverUnderlineAnim: value })}
-                        />
-                        {enablePostTitleHoverUnderlineAnim && (
-                            <>
-                                <ColorControl
-                                    label={__("Underline Hover Color", "gslider-blocks")}
-                                    color={postTitleHoverUnderlineColor}
-                                    onChangeColor={(value) => setAttributes({ postTitleHoverUnderlineColor: value })}
-                                    defaultColor=""
-                                />
-                                <ResponsiveRangeControl
-                                    label={__("Underline Thickness (Height)", "gslider-blocks")}
-                                    rangeValue={postTitleHoverUnderlineHeight}
-                                    onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineHeight: value })}
-                                    deviceType={deviceType}
-                                    isRangeUnit={false}
-                                    min={1}
-                                    max={10}
-                                    step={1}
-                                    resetFallbackValue="2"
-                                />
-                                <ResponsiveRangeControl
-                                    label={__("Underline Bottom Offset", "gslider-blocks")}
-                                    rangeValue={postTitleHoverUnderlineBottomOffset}
-                                    onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineBottomOffset: value })}
-                                    deviceType={deviceType}
-                                    isRangeUnit={false}
-                                    min={-20}
-                                    max={20}
-                                    step={1}
-                                    resetFallbackValue="-2"
-                                />
-                                <ResponsiveRangeControl
-                                    label={__("Underline Transition Speed (Seconds)", "gslider-blocks")}
-                                    rangeValue={postTitleHoverUnderlineTransitionSpeed}
-                                    onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineTransitionSpeed: value })}
-                                    deviceType={deviceType}
-                                    isRangeUnit={false}
-                                    min={0.1}
-                                    max={2}
-                                    step={0.1}
-                                    resetFallbackValue="0.3"
-                                />
-                            </>
-                        )}
-                    </>
-                )}
-
-                <ResponsiveTypographyControl
-                    fontFamily={postTitleFontFamily}
-                    onChangeFontFamily={(value) => setAttributes({ postTitleFontFamily: value })}
- 
-                    fontSize={postTitleFontSize}
-                    onChangeFontSize={(value) => setAttributes({ postTitleFontSize: value })}
- 
-                    fontSizeUnits={postTitleFontSizeUnits}
-                    onChangeFontSizeUnit={(value) => setAttributes({ postTitleFontSizeUnits: value })}
- 
-                    fontWeight={postTitleFontWeight}
-                    onChangeFontWeight={(value) => setAttributes({ postTitleFontWeight: value })}
- 
-                    fontStyle={postTitleFontStyle}
-                    onChangeFontStyle={(value) => setAttributes({ postTitleFontStyle: value })}
- 
-                    textTransform={postTitleTextTransform}
-                    onChangeTextTransform={(value) => setAttributes({ postTitleTextTransform: value })}
- 
-                    textDecoration={postTitleTextDecoration}
-                    onChangeTextDecoration={(value) => setAttributes({ postTitleTextDecoration: value })}
- 
-                    lineHeight={postTitleLineHeight}
-                    onChangeLineHeight={(value) => setAttributes({ postTitleLineHeight: value })}
- 
-                    lineHeightUnits={postTitleLineHeightUnits}
-                    onChangeLineHeightUnit={(value) => setAttributes({ postTitleLineHeightUnits: value })}
- 
-                    letterSpacing={postTitleLetterSpacing}
-                    onChangeLetterSpacing={(value) => setAttributes({ postTitleLetterSpacing: value })}
- 
-                    letterSpacingUnits={postTitleLetterSpacingUnits}
-                    onChangeLetterSpacingUnit={(value) => setAttributes({ postTitleLetterSpacingUnits: value })}
- 
-                    wordSpacing={postTitleWordSpacing}
-                    onChangeWordSpacing={(value) => setAttributes({ postTitleWordSpacing: value })}
- 
-                    wordSpacingUnits={postTitleWordSpacingUnits}
-                    onChangeWordSpacingUnit={(value) => setAttributes({ postTitleWordSpacingUnits: value })}
- 
-                    deviceType={deviceType}
-                />
- 
-                <ResponsiveAlignmentControl
-                    label={__("Alignment", "gslider-blocks")}
-                    options={TEXT_ALIGN}
-                    alignmentValue={postTitleAlign}
-                    setAlignmentValue={(value) => setAttributes({ postTitleAlign: value })}
-                    deviceType={deviceType}
-                    setAttributes={setAttributes}
-                />
- 
-                 <BackgroundControl
-                    label={__("Title Color", "gslider-blocks")}
-                    deviceType={deviceType}
-                    backgroundTypeLabel={__("Color Type", "gslider-blocks")}
-                    normalClassicColorLabel={__("Color", "gslider-blocks")}
-                    hoverClassicColorLabel={__("Hover Color", "gslider-blocks")}
-
-                    normalBackgroundType={postTitleNormalBackgroundType}
-                    setNormalBackgroundType={(value) => setAttributes({ postTitleNormalBackgroundType: value })}
-                    normalClassicColor={postTitleNormalClassicColor}
-                    setNormalClassicColor={(value) => setAttributes({ postTitleNormalClassicColor: value })}
-                    normalGradientColor={postTitleNormalGradientColor}
-                    setNormalGradientColor={(value) => setAttributes({ postTitleNormalGradientColor: value })}
-                    normalCustomGradientSwitcher={postTitleNormalCustomGradientSwitcher}
-                    setNormalCustomGradientSwitcher={(value) => setAttributes({ postTitleNormalCustomGradientSwitcher: value })}
-                    normalCustomGradientInputValue={postTitleNormalCustomGradientInputValue}
-                    setNormalCustomGradientInputValue={(value) => setAttributes({ postTitleNormalCustomGradientInputValue: value })}
-
-                    hoverBackgroundType={postTitleHoverBackgroundType}
-                    setHoverBackgroundType={(value) => setAttributes({ postTitleHoverBackgroundType: value })}
-                    hoverClassicColor={postTitleHoverClassicColor}
-                    setHoverClassicColor={(value) => setAttributes({ postTitleHoverClassicColor: value })}
-                    hoverGradientColor={postTitleHoverGradientColor}
-                    setHoverGradientColor={(value) => setAttributes({ postTitleHoverGradientColor: value })}
-                    hoverCustomGradientSwitcher={postTitleHoverCustomGradientSwitcher}
-                    setHoverCustomGradientSwitcher={(value) => setAttributes({ postTitleHoverCustomGradientSwitcher: value })}
-                    hoverCustomGradientInputValue={postTitleHoverCustomGradientInputValue}
-                    setHoverCustomGradientInputValue={(value) => setAttributes({ postTitleHoverCustomGradientInputValue: value })}
-                    setAttributes={setAttributes}
-                    isBackgroundImage={false}
-                />
- 
-                <ResponsiveSpacingControl
-                    label={__("Margin", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postTitleMarginUnits}
-                    onChangeUnits={(value) => setAttributes({ postTitleMarginUnits: value })}
-                    desktopSpacing={postTitleDesktopMargin}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopMargin: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopMarginCssStyle: value })}
-                    tabletSpacing={postTitleTabletMargin}
-                    onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletMargin: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postTitleTabletMarginCssStyle: value })}
-                    mobileSpacing={postTitleMobileMargin}
-                    onChangeMobileSpacing={(value) => setAttributes({ postTitleMobileMargin: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postTitleMobileMarginCssStyle: value })}
-                    isLinked={postTitleMarginLink}
-                    onChangeLink={(value) => setAttributes({ postTitleMarginLink: value })}
-                />
- 
-                <ResponsiveSpacingControl
-                    label={__("Padding", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postTitlePaddingUnits}
-                    onChangeUnits={(value) => setAttributes({ postTitlePaddingUnits: value })}
-                    desktopSpacing={postTitleDesktopPadding}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopPadding: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopPaddingCssStyle: value })}
-                    tabletSpacing={postTitleTabletPadding}
-                    onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletPadding: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postTitleTabletPaddingCssStyle: value })}
-                    mobileSpacing={postTitleMobilePadding}
-                    onChangeMobileSpacing={(value) => setAttributes({ postTitleMobilePadding: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postTitleMobilePaddingCssStyle: value })}
-                    isLinked={postTitlePaddingLink}
-                    onChangeLink={(value) => setAttributes({ postTitlePaddingLink: value })}
-                />
-
-                <ToggleControl
-                    label={__("Show Bottom Divider", "gslider-blocks")}
-                    checked={showPostTitleDivider}
-                    onChange={(value) => setAttributes({ showPostTitleDivider: value })}
-                />
-
-                {showPostTitleDivider && (
-                    <>
-                        <Select2Control
-                            label={__("Divider Style", "gslider-blocks")}
-                            options={[
-                                { label: __("Solid", "gslider-blocks"), value: "solid" },
-                                { label: __("Dashed", "gslider-blocks"), value: "dashed" },
-                                { label: __("Dotted", "gslider-blocks"), value: "dotted" },
-                                { label: __("Double", "gslider-blocks"), value: "double" },
-                                { label: __("Gradient", "gslider-blocks"), value: "gradient" },
-                            ]}
-                            value={postTitleDividerStyle}
-                            onChange={(value) => setAttributes({ postTitleDividerStyle: value })}
-                        />
-                        {postTitleDividerStyle !== "gradient" && (
-                            <>
-                                <SwitcherControl
-                                    label={__("Divider Color", "gslider-blocks")}
-                                    options={NORMAL_HOVER}
-                                    value={postTitleDividerColorSwitcher}
-                                    onChange={(value) => setAttributes({ postTitleDividerColorSwitcher: value })}
-                                />
-                                {postTitleDividerColorSwitcher === 'normal' && (
+                    {enablePostTitleLink && (
+                        <>
+                            <ToggleControl
+                                label={__("Open in New Tab", "gslider-blocks")}
+                                checked={postTitleLinkTarget}
+                                onChange={(value) => setAttributes({ postTitleLinkTarget: value })}
+                            />
+                            <ToggleControl
+                                label={__("Add nofollow rel", "gslider-blocks")}
+                                checked={postTitleLinkNofollow}
+                                onChange={(value) => setAttributes({ postTitleLinkNofollow: value })}
+                            />
+                            <ToggleControl
+                                label={__("Add sponsored rel", "gslider-blocks")}
+                                checked={postTitleLinkSponsored}
+                                onChange={(value) => setAttributes({ postTitleLinkSponsored: value })}
+                            />
+                            <ToggleControl
+                                label={__("Underline Hover Animation", "gslider-blocks")}
+                                checked={enablePostTitleHoverUnderlineAnim}
+                                onChange={(value) => setAttributes({ enablePostTitleHoverUnderlineAnim: value })}
+                            />
+                            {enablePostTitleHoverUnderlineAnim && (
+                                <>
                                     <ColorControl
-                                        label={__("Normal Color", "gslider-blocks")}
-                                        color={postTitleDividerColor}
-                                        onChangeColor={(value) => setAttributes({ postTitleDividerColor: value })}
-                                        defaultColor="#333333"
-                                    />
-                                )}
-                                {postTitleDividerColorSwitcher === 'hover' && (
-                                    <ColorControl
-                                        label={__("Hover Color", "gslider-blocks")}
-                                        color={postTitleDividerHoverColor}
-                                        onChangeColor={(value) => setAttributes({ postTitleDividerHoverColor: value })}
+                                        label={__("Underline Hover Color", "gslider-blocks")}
+                                        color={postTitleHoverUnderlineColor}
+                                        onChangeColor={(value) => setAttributes({ postTitleHoverUnderlineColor: value })}
                                         defaultColor=""
                                     />
-                                )}
-                            </>
-                        )}
-                        <ResponsiveRangeControl
-                            label={__("Divider Width", "gslider-blocks")}
-                            rangeValue={postTitleDividerWidth}
-                            onChangeValue={(value) => setAttributes({ postTitleDividerWidth: value })}
-                            onUnitChange={(value) => setAttributes({ postTitleDividerWidthUnits: value })}
-                            deviceType={deviceType}
-                            units={postTitleDividerWidthUnits}
-                            resetFallbackValue={{
-                                px: "50",
-                                "%": "30",
-                            }}
-                        />
-                        <ResponsiveRangeControl
-                            label={__("Divider Height (Thickness)", "gslider-blocks")}
-                            rangeValue={postTitleDividerHeight}
-                            onChangeValue={(value) => setAttributes({ postTitleDividerHeight: value })}
-                            onUnitChange={(value) => setAttributes({ postTitleDividerHeightUnits: value })}
-                            deviceType={deviceType}
-                            units={postTitleDividerHeightUnits}
-                            resetFallbackValue={{
-                                px: "2",
-                            }}
-                        />
-                        <ToggleControl
-                            label={__("Expand Divider on Hover", "gslider-blocks")}
-                            checked={enablePostTitleDividerHoverExpand}
-                            onChange={(value) => setAttributes({ enablePostTitleDividerHoverExpand: value })}
-                        />
-                    </>
-                )}
-            </PanelBody>
+                                    <ResponsiveRangeControl
+                                        label={__("Underline Thickness (Height)", "gslider-blocks")}
+                                        rangeValue={postTitleHoverUnderlineHeight}
+                                        onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineHeight: value })}
+                                        deviceType={deviceType}
+                                        isRangeUnit={false}
+                                        min={1}
+                                        max={10}
+                                        step={1}
+                                        resetFallbackValue="2"
+                                    />
+                                    <ResponsiveRangeControl
+                                        label={__("Underline Bottom Offset", "gslider-blocks")}
+                                        rangeValue={postTitleHoverUnderlineBottomOffset}
+                                        onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineBottomOffset: value })}
+                                        deviceType={deviceType}
+                                        isRangeUnit={false}
+                                        min={-20}
+                                        max={20}
+                                        step={1}
+                                        resetFallbackValue="-2"
+                                    />
+                                    <ResponsiveRangeControl
+                                        label={__("Underline Transition Speed (Seconds)", "gslider-blocks")}
+                                        rangeValue={postTitleHoverUnderlineTransitionSpeed}
+                                        onChangeValue={(value) => setAttributes({ postTitleHoverUnderlineTransitionSpeed: value })}
+                                        deviceType={deviceType}
+                                        isRangeUnit={false}
+                                        min={0.1}
+                                        max={2}
+                                        step={0.1}
+                                        resetFallbackValue="0.3"
+                                    />
+                                </>
+                            )}
+                        </>
+                    )}
 
-            <PanelBody
-                title={__("Excerpt", "gslider-blocks")}
-                opened={openPanels.styles === "post-excerpt"}
-                onToggle={() => togglePanel("styles", "post-excerpt")}
-            >
-                <HtmlTagControl
-                    label={__("Html Tag", "gslider-blocks")}
-                    options={HTML_TAGS}
-                    value={postExcerptHtmlTag}
-                    onChange={(value) => setAttributes({ postExcerptHtmlTag: value })}
-                />
-
-                <ResponsiveTypographyControl
-                    fontFamily={postExcerptFontFamily}
-                    onChangeFontFamily={(value) => setAttributes({ postExcerptFontFamily: value })}
-
-                    fontSize={postExcerptFontSize}
-                    onChangeFontSize={(value) => setAttributes({ postExcerptFontSize: value })}
-
-                    fontSizeUnits={postExcerptFontSizeUnits}
-                    onChangeFontSizeUnit={(value) => setAttributes({ postExcerptFontSizeUnits: value })}
-
-                    fontWeight={postExcerptFontWeight}
-                    onChangeFontWeight={(value) => setAttributes({ postExcerptFontWeight: value })}
-
-                    fontStyle={postExcerptFontStyle}
-                    onChangeFontStyle={(value) => setAttributes({ postExcerptFontStyle: value })}
-
-                    textTransform={postExcerptTextTransform}
-                    onChangeTextTransform={(value) => setAttributes({ postExcerptTextTransform: value })}
-
-                    textDecoration={postExcerptTextDecoration}
-                    onChangeTextDecoration={(value) => setAttributes({ postExcerptTextDecoration: value })}
-
-                    lineHeight={postExcerptLineHeight}
-                    onChangeLineHeight={(value) => setAttributes({ postExcerptLineHeight: value })}
-
-                    lineHeightUnits={postExcerptLineHeightUnits}
-                    onChangeLineHeightUnit={(value) => setAttributes({ postExcerptLineHeightUnits: value })}
-
-                    letterSpacing={postExcerptLetterSpacing}
-                    onChangeLetterSpacing={(value) => setAttributes({ postExcerptLetterSpacing: value })}
-
-                    letterSpacingUnits={postExcerptLetterSpacingUnits}
-                    onChangeLetterSpacingUnit={(value) => setAttributes({ postExcerptLetterSpacingUnits: value })}
-
-                    wordSpacing={postExcerptWordSpacing}
-                    onChangeWordSpacing={(value) => setAttributes({ postExcerptWordSpacing: value })}
-
-                    wordSpacingUnits={postExcerptWordSpacingUnits}
-                    onChangeWordSpacingUnit={(value) => setAttributes({ postExcerptWordSpacingUnits: value })}
-
-                    deviceType={deviceType}
-                />
-
-                <ResponsiveAlignmentControl
-                    label={__("Alignment", "gslider-blocks")}
-                    options={TEXT_ALIGN}
-                    alignmentValue={postExcerptAlign}
-                    setAlignmentValue={(value) => setAttributes({ postExcerptAlign: value })}
-                    deviceType={deviceType}
-                    setAttributes={setAttributes}
-                />
-
-                <SwitcherControl
-                    label={__("Color", "gslider-blocks")}
-                    options={NORMAL_HOVER}
-                    value={postExcerptColorSwitcher}
-                    onChange={(value) => setAttributes({ postExcerptColorSwitcher: value })}
-                />
-
-                {postExcerptColorSwitcher === 'normal' && (
-                    <ColorControl
-                        label={__("Normal Color", "gslider-blocks")}
-                        color={postExcerptColor}
-                        onChangeColor={(value) => setAttributes({ postExcerptColor: value })}
-                        defaultColor=''
+                    <ResponsiveTypographyControl
+                        fontFamily={postTitleFontFamily}
+                        onChangeFontFamily={(value) => setAttributes({ postTitleFontFamily: value })}
+    
+                        fontSize={postTitleFontSize}
+                        onChangeFontSize={(value) => setAttributes({ postTitleFontSize: value })}
+    
+                        fontSizeUnits={postTitleFontSizeUnits}
+                        onChangeFontSizeUnit={(value) => setAttributes({ postTitleFontSizeUnits: value })}
+    
+                        fontWeight={postTitleFontWeight}
+                        onChangeFontWeight={(value) => setAttributes({ postTitleFontWeight: value })}
+    
+                        fontStyle={postTitleFontStyle}
+                        onChangeFontStyle={(value) => setAttributes({ postTitleFontStyle: value })}
+    
+                        textTransform={postTitleTextTransform}
+                        onChangeTextTransform={(value) => setAttributes({ postTitleTextTransform: value })}
+    
+                        textDecoration={postTitleTextDecoration}
+                        onChangeTextDecoration={(value) => setAttributes({ postTitleTextDecoration: value })}
+    
+                        lineHeight={postTitleLineHeight}
+                        onChangeLineHeight={(value) => setAttributes({ postTitleLineHeight: value })}
+    
+                        lineHeightUnits={postTitleLineHeightUnits}
+                        onChangeLineHeightUnit={(value) => setAttributes({ postTitleLineHeightUnits: value })}
+    
+                        letterSpacing={postTitleLetterSpacing}
+                        onChangeLetterSpacing={(value) => setAttributes({ postTitleLetterSpacing: value })}
+    
+                        letterSpacingUnits={postTitleLetterSpacingUnits}
+                        onChangeLetterSpacingUnit={(value) => setAttributes({ postTitleLetterSpacingUnits: value })}
+    
+                        wordSpacing={postTitleWordSpacing}
+                        onChangeWordSpacing={(value) => setAttributes({ postTitleWordSpacing: value })}
+    
+                        wordSpacingUnits={postTitleWordSpacingUnits}
+                        onChangeWordSpacingUnit={(value) => setAttributes({ postTitleWordSpacingUnits: value })}
+    
+                        deviceType={deviceType}
                     />
-                )}
-
-                {postExcerptColorSwitcher === 'hover' && (
-                    <ColorControl
-                        label={__("Hover Color", "gslider-blocks")}
-                        color={postExcerptColorHover}
-                        onChangeColor={(value) => setAttributes({ postExcerptColorHover: value })}
-                        defaultColor=''
+    
+                    <ResponsiveAlignmentControl
+                        label={__("Alignment", "gslider-blocks")}
+                        options={TEXT_ALIGN}
+                        alignmentValue={postTitleAlign}
+                        setAlignmentValue={(value) => setAttributes({ postTitleAlign: value })}
+                        deviceType={deviceType}
+                        setAttributes={setAttributes}
                     />
-                )}
+    
+                    <BackgroundControl
+                        label={__("Title Color", "gslider-blocks")}
+                        deviceType={deviceType}
+                        backgroundTypeLabel={__("Color Type", "gslider-blocks")}
+                        normalClassicColorLabel={__("Color", "gslider-blocks")}
+                        hoverClassicColorLabel={__("Hover Color", "gslider-blocks")}
 
-                <ResponsiveSpacingControl
-                    label={__("Margin", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postExcerptMarginUnits}
-                    onChangeUnits={(value) => setAttributes({ postExcerptMarginUnits: value })}
-                    desktopSpacing={postExcerptDesktopMargin}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopMargin: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopMarginCssStyle: value })}
-                    tabletSpacing={postExcerptTabletMargin}
-                    onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletMargin: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletMarginCssStyle: value })}
-                    mobileSpacing={postExcerptMobileMargin}
-                    onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobileMargin: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postExcerptMobileMarginCssStyle: value })}
-                    isLinked={postExcerptMarginLink}
-                    onChangeLink={(value) => setAttributes({ postExcerptMarginLink: value })}
-                />
+                        normalBackgroundType={postTitleNormalBackgroundType}
+                        setNormalBackgroundType={(value) => setAttributes({ postTitleNormalBackgroundType: value })}
+                        normalClassicColor={postTitleNormalClassicColor}
+                        setNormalClassicColor={(value) => setAttributes({ postTitleNormalClassicColor: value })}
+                        normalGradientColor={postTitleNormalGradientColor}
+                        setNormalGradientColor={(value) => setAttributes({ postTitleNormalGradientColor: value })}
+                        normalCustomGradientSwitcher={postTitleNormalCustomGradientSwitcher}
+                        setNormalCustomGradientSwitcher={(value) => setAttributes({ postTitleNormalCustomGradientSwitcher: value })}
+                        normalCustomGradientInputValue={postTitleNormalCustomGradientInputValue}
+                        setNormalCustomGradientInputValue={(value) => setAttributes({ postTitleNormalCustomGradientInputValue: value })}
 
-                <ResponsiveSpacingControl
-                    label={__("Padding", "gslider-blocks")}
-                    deviceType={deviceType}
-                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                    units={postExcerptPaddingUnits}
-                    onChangeUnits={(value) => setAttributes({ postExcerptPaddingUnits: value })}
-                    desktopSpacing={postExcerptDesktopPadding}
-                    onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopPadding: value })}
-                    desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopPaddingCssStyle: value })}
-                    tabletSpacing={postExcerptTabletPadding}
-                    onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletPadding: value })}
-                    tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletPaddingCssStyle: value })}
-                    mobileSpacing={postExcerptMobilePadding}
-                    onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobilePadding: value })}
-                    mobileSpacingStyle={(value) => setAttributes({ postExcerptMobilePaddingCssStyle: value })}
-                    isLinked={postExcerptPaddingLink}
-                    onChangeLink={(value) => setAttributes({ postExcerptPaddingLink: value })}
-                />
-            </PanelBody>
+                        hoverBackgroundType={postTitleHoverBackgroundType}
+                        setHoverBackgroundType={(value) => setAttributes({ postTitleHoverBackgroundType: value })}
+                        hoverClassicColor={postTitleHoverClassicColor}
+                        setHoverClassicColor={(value) => setAttributes({ postTitleHoverClassicColor: value })}
+                        hoverGradientColor={postTitleHoverGradientColor}
+                        setHoverGradientColor={(value) => setAttributes({ postTitleHoverGradientColor: value })}
+                        hoverCustomGradientSwitcher={postTitleHoverCustomGradientSwitcher}
+                        setHoverCustomGradientSwitcher={(value) => setAttributes({ postTitleHoverCustomGradientSwitcher: value })}
+                        hoverCustomGradientInputValue={postTitleHoverCustomGradientInputValue}
+                        setHoverCustomGradientInputValue={(value) => setAttributes({ postTitleHoverCustomGradientInputValue: value })}
+                        setAttributes={setAttributes}
+                        isBackgroundImage={false}
+                    />
+    
+                    <ResponsiveSpacingControl
+                        label={__("Margin", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTitleMarginUnits}
+                        onChangeUnits={(value) => setAttributes({ postTitleMarginUnits: value })}
+                        desktopSpacing={postTitleDesktopMargin}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopMargin: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopMarginCssStyle: value })}
+                        tabletSpacing={postTitleTabletMargin}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletMargin: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTitleTabletMarginCssStyle: value })}
+                        mobileSpacing={postTitleMobileMargin}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTitleMobileMargin: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTitleMobileMarginCssStyle: value })}
+                        isLinked={postTitleMarginLink}
+                        onChangeLink={(value) => setAttributes({ postTitleMarginLink: value })}
+                    />
+    
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTitlePaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postTitlePaddingUnits: value })}
+                        desktopSpacing={postTitleDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTitleDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTitleDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postTitleTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTitleTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTitleTabletPaddingCssStyle: value })}
+                        mobileSpacing={postTitleMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTitleMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTitleMobilePaddingCssStyle: value })}
+                        isLinked={postTitlePaddingLink}
+                        onChangeLink={(value) => setAttributes({ postTitlePaddingLink: value })}
+                    />
 
-            {showReadMoreButton && (
+                    <ToggleControl
+                        label={__("Show Bottom Divider", "gslider-blocks")}
+                        checked={showPostTitleDivider}
+                        onChange={(value) => setAttributes({ showPostTitleDivider: value })}
+                    />
+
+                    {showPostTitleDivider && (
+                        <>
+                            <Select2Control
+                                label={__("Divider Style", "gslider-blocks")}
+                                options={[
+                                    { label: __("Solid", "gslider-blocks"), value: "solid" },
+                                    { label: __("Dashed", "gslider-blocks"), value: "dashed" },
+                                    { label: __("Dotted", "gslider-blocks"), value: "dotted" },
+                                    { label: __("Double", "gslider-blocks"), value: "double" },
+                                    { label: __("Gradient", "gslider-blocks"), value: "gradient" },
+                                ]}
+                                value={postTitleDividerStyle}
+                                onChange={(value) => setAttributes({ postTitleDividerStyle: value })}
+                            />
+                            {postTitleDividerStyle !== "gradient" && (
+                                <>
+                                    <SwitcherControl
+                                        label={__("Divider Color", "gslider-blocks")}
+                                        options={NORMAL_HOVER}
+                                        value={postTitleDividerColorSwitcher}
+                                        onChange={(value) => setAttributes({ postTitleDividerColorSwitcher: value })}
+                                    />
+                                    {postTitleDividerColorSwitcher === 'normal' && (
+                                        <ColorControl
+                                            label={__("Normal Color", "gslider-blocks")}
+                                            color={postTitleDividerColor}
+                                            onChangeColor={(value) => setAttributes({ postTitleDividerColor: value })}
+                                            defaultColor="#333333"
+                                        />
+                                    )}
+                                    {postTitleDividerColorSwitcher === 'hover' && (
+                                        <ColorControl
+                                            label={__("Hover Color", "gslider-blocks")}
+                                            color={postTitleDividerHoverColor}
+                                            onChangeColor={(value) => setAttributes({ postTitleDividerHoverColor: value })}
+                                            defaultColor=""
+                                        />
+                                    )}
+                                </>
+                            )}
+                            <ResponsiveRangeControl
+                                label={__("Divider Width", "gslider-blocks")}
+                                rangeValue={postTitleDividerWidth}
+                                onChangeValue={(value) => setAttributes({ postTitleDividerWidth: value })}
+                                onUnitChange={(value) => setAttributes({ postTitleDividerWidthUnits: value })}
+                                deviceType={deviceType}
+                                units={postTitleDividerWidthUnits}
+                                resetFallbackValue={{
+                                    px: "50",
+                                    "%": "30",
+                                }}
+                            />
+                            <ResponsiveRangeControl
+                                label={__("Divider Height (Thickness)", "gslider-blocks")}
+                                rangeValue={postTitleDividerHeight}
+                                onChangeValue={(value) => setAttributes({ postTitleDividerHeight: value })}
+                                onUnitChange={(value) => setAttributes({ postTitleDividerHeightUnits: value })}
+                                deviceType={deviceType}
+                                units={postTitleDividerHeightUnits}
+                                resetFallbackValue={{
+                                    px: "2",
+                                }}
+                            />
+                            <ToggleControl
+                                label={__("Expand Divider on Hover", "gslider-blocks")}
+                                checked={enablePostTitleDividerHoverExpand}
+                                onChange={(value) => setAttributes({ enablePostTitleDividerHoverExpand: value })}
+                            />
+                        </>
+                    )}
+                </PanelBody>
+            )}
+
+            {showExcerpt?.[deviceType] && (
+                <PanelBody
+                    title={__("Excerpt", "gslider-blocks")}
+                    opened={openPanels.styles === "post-excerpt"}
+                    onToggle={() => togglePanel("styles", "post-excerpt")}
+                >
+                    <HtmlTagControl
+                        label={__("Html Tag", "gslider-blocks")}
+                        options={HTML_TAGS}
+                        value={postExcerptHtmlTag}
+                        onChange={(value) => setAttributes({ postExcerptHtmlTag: value })}
+                    />
+
+                    <ResponsiveTypographyControl
+                        fontFamily={postExcerptFontFamily}
+                        onChangeFontFamily={(value) => setAttributes({ postExcerptFontFamily: value })}
+
+                        fontSize={postExcerptFontSize}
+                        onChangeFontSize={(value) => setAttributes({ postExcerptFontSize: value })}
+
+                        fontSizeUnits={postExcerptFontSizeUnits}
+                        onChangeFontSizeUnit={(value) => setAttributes({ postExcerptFontSizeUnits: value })}
+
+                        fontWeight={postExcerptFontWeight}
+                        onChangeFontWeight={(value) => setAttributes({ postExcerptFontWeight: value })}
+
+                        fontStyle={postExcerptFontStyle}
+                        onChangeFontStyle={(value) => setAttributes({ postExcerptFontStyle: value })}
+
+                        textTransform={postExcerptTextTransform}
+                        onChangeTextTransform={(value) => setAttributes({ postExcerptTextTransform: value })}
+
+                        textDecoration={postExcerptTextDecoration}
+                        onChangeTextDecoration={(value) => setAttributes({ postExcerptTextDecoration: value })}
+
+                        lineHeight={postExcerptLineHeight}
+                        onChangeLineHeight={(value) => setAttributes({ postExcerptLineHeight: value })}
+
+                        lineHeightUnits={postExcerptLineHeightUnits}
+                        onChangeLineHeightUnit={(value) => setAttributes({ postExcerptLineHeightUnits: value })}
+
+                        letterSpacing={postExcerptLetterSpacing}
+                        onChangeLetterSpacing={(value) => setAttributes({ postExcerptLetterSpacing: value })}
+
+                        letterSpacingUnits={postExcerptLetterSpacingUnits}
+                        onChangeLetterSpacingUnit={(value) => setAttributes({ postExcerptLetterSpacingUnits: value })}
+
+                        wordSpacing={postExcerptWordSpacing}
+                        onChangeWordSpacing={(value) => setAttributes({ postExcerptWordSpacing: value })}
+
+                        wordSpacingUnits={postExcerptWordSpacingUnits}
+                        onChangeWordSpacingUnit={(value) => setAttributes({ postExcerptWordSpacingUnits: value })}
+
+                        deviceType={deviceType}
+                    />
+
+                    <ResponsiveAlignmentControl
+                        label={__("Alignment", "gslider-blocks")}
+                        options={TEXT_ALIGN}
+                        alignmentValue={postExcerptAlign}
+                        setAlignmentValue={(value) => setAttributes({ postExcerptAlign: value })}
+                        deviceType={deviceType}
+                        setAttributes={setAttributes}
+                    />
+
+                    <SwitcherControl
+                        label={__("Color", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={postExcerptColorSwitcher}
+                        onChange={(value) => setAttributes({ postExcerptColorSwitcher: value })}
+                    />
+
+                    {postExcerptColorSwitcher === 'normal' && (
+                        <ColorControl
+                            label={__("Normal Color", "gslider-blocks")}
+                            color={postExcerptColor}
+                            onChangeColor={(value) => setAttributes({ postExcerptColor: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    {postExcerptColorSwitcher === 'hover' && (
+                        <ColorControl
+                            label={__("Hover Color", "gslider-blocks")}
+                            color={postExcerptColorHover}
+                            onChangeColor={(value) => setAttributes({ postExcerptColorHover: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    <ResponsiveSpacingControl
+                        label={__("Margin", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postExcerptMarginUnits}
+                        onChangeUnits={(value) => setAttributes({ postExcerptMarginUnits: value })}
+                        desktopSpacing={postExcerptDesktopMargin}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopMargin: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopMarginCssStyle: value })}
+                        tabletSpacing={postExcerptTabletMargin}
+                        onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletMargin: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletMarginCssStyle: value })}
+                        mobileSpacing={postExcerptMobileMargin}
+                        onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobileMargin: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postExcerptMobileMarginCssStyle: value })}
+                        isLinked={postExcerptMarginLink}
+                        onChangeLink={(value) => setAttributes({ postExcerptMarginLink: value })}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postExcerptPaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postExcerptPaddingUnits: value })}
+                        desktopSpacing={postExcerptDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postExcerptDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postExcerptDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postExcerptTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postExcerptTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postExcerptTabletPaddingCssStyle: value })}
+                        mobileSpacing={postExcerptMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postExcerptMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postExcerptMobilePaddingCssStyle: value })}
+                        isLinked={postExcerptPaddingLink}
+                        onChangeLink={(value) => setAttributes({ postExcerptPaddingLink: value })}
+                    />
+                </PanelBody>
+            )}
+
+            {showReadMoreButton?.[deviceType] && (
                 <>
                     <PanelBody
                         title={__("Read More Button", "gslider-blocks")}

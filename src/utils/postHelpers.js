@@ -103,3 +103,16 @@ export const getFormattedDate = (post, locale = 'en-US', options = { year: 'nume
     const date = new Date(post.date);
     return date.toLocaleDateString(locale, options);
 };
+
+/**
+ * Get tags array from embedded post REST API data.
+ * 
+ * @param {Object} post Embedded post record from WP REST API.
+ * @returns {Array}     List of tag term objects.
+ */
+export const getPostTags = (post) => {
+    if (post?._embedded && post._embedded['wp:term'] && post._embedded['wp:term'][1]) {
+        return post._embedded['wp:term'][1].filter(term => term.taxonomy === 'post_tag');
+    }
+    return [];
+};

@@ -139,6 +139,17 @@ $read_more_button_icon_img_alt  = isset( $attributes['readMoreButtonIconImageAlt
 // Show/Hide Elements
 $show_navigation     = isset( $attributes['showNavigation'] ) ? $attributes['showNavigation'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_pagination     = isset( $attributes['showPagination'] ) ? $attributes['showPagination'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_featured_image = isset( $attributes['showFeaturedImage'] ) ? $attributes['showFeaturedImage'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_post_title     = isset( $attributes['showPostTitle'] )     ? $attributes['showPostTitle']     : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_excerpt        = isset( $attributes['showExcerpt'] )        ? $attributes['showExcerpt']        : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_meta           = isset( $attributes['showMeta'] )           ? $attributes['showMeta']           : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_taxonomy       = isset( $attributes['showTaxonomy'] )       ? $attributes['showTaxonomy']       : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+
+$any_image_enabled    = ! empty( $show_featured_image['Desktop'] ) || ! empty( $show_featured_image['Tablet'] ) || ! empty( $show_featured_image['Mobile'] );
+$any_title_enabled    = ! empty( $show_post_title['Desktop'] )     || ! empty( $show_post_title['Tablet'] )     || ! empty( $show_post_title['Mobile'] );
+$any_excerpt_enabled  = ! empty( $show_excerpt['Desktop'] )        || ! empty( $show_excerpt['Tablet'] )        || ! empty( $show_excerpt['Mobile'] );
+$any_meta_enabled     = ! empty( $show_meta['Desktop'] )           || ! empty( $show_meta['Tablet'] )           || ! empty( $show_meta['Mobile'] );
+$any_taxonomy_enabled = ! empty( $show_taxonomy['Desktop'] )       || ! empty( $show_taxonomy['Tablet'] )       || ! empty( $show_taxonomy['Mobile'] );
 
 // Navigation settings
 $pagination_position_type     = isset( $attributes['paginationPositionType'] ) ? sanitize_text_field( $attributes['paginationPositionType'] ) : 'outside';
@@ -442,7 +453,7 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                             foreach ( $content_order as $element ) {
                                 switch ( $element ) {
                                     case 'thumbnail':
-                                        if ( has_post_thumbnail( $post_id ) ) :
+                                        if ( $any_image_enabled && has_post_thumbnail( $post_id ) ) :
                                             ?>
                                             <div class="gslider-post-carousel-image">
                                                 <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
@@ -460,67 +471,90 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                             <?php
                                         endif;
                                         break;
-
+ 
                                     case 'categories':
-                                        if ( ! empty( $categories ) ) :
-                                            ?>
-                                            <div class="gslider-post-carousel-categories">
-                                                <?php foreach ( $categories as $cat ) : ?>
-                                                    <span><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
-                                                <?php endforeach; ?>
-                                            </div>
-                                            <?php
-                                        endif;
-                                        break;
-
-                                    case 'title':
-                                        $raw_title = get_the_title();
-                                        $rendered_title = $raw_title;
-                                        if ( $enable_post_title_limit ) {
-                                            $limit_val = isset( $post_title_limit['Desktop'] ) ? intval( $post_title_limit['Desktop'] ) : ( 'words' === $post_title_limit_type ? 10 : 50 );
-                                            if ( 'words' === $post_title_limit_type ) {
-                                                $rendered_title = wp_trim_words( $raw_title, $limit_val, $post_title_limit_suffix );
-                                            } else {
-                                                if ( mb_strlen( $raw_title ) > $limit_val ) {
-                                                    $rendered_title = mb_substr( $raw_title, 0, $limit_val ) . $post_title_limit_suffix;
+                                        if ( $any_taxonomy_enabled ) {
+                                            $post_taxonomy_display = isset( $attributes['postTaxonomyDisplay'] ) ? $attributes['postTaxonomyDisplay'] : 'category';
+                                            $show_cat = ( 'category' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
+                                            $show_tag = ( 'tag' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
+ 
+                                            $rendered_terms_html = '';
+ 
+                                            if ( $show_cat && ! empty( $categories ) ) {
+                                                foreach ( $categories as $cat ) {
+                                                    $rendered_terms_html .= '<span><a href="' . esc_url( get_category_link( $cat->term_id ) ) . '">' . esc_html( $cat->name ) . '</a></span>';
                                                 }
                                             }
+ 
+                                            if ( $show_tag ) {
+                                                $tags = get_the_tags( $post_id );
+                                                if ( ! empty( $tags ) ) {
+                                                    foreach ( $tags as $tag ) {
+                                                        $rendered_terms_html .= '<span><a href="' . esc_url( get_tag_link( $tag->term_id ) ) . '">' . esc_html( $tag->name ) . '</a></span>';
+                                                    }
+                                                }
+                                            }
+ 
+                                            if ( ! empty( $rendered_terms_html ) ) :
+                                                ?>
+                                                <div class="gslider-post-carousel-categories">
+                                                    <?php echo $rendered_terms_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                                </div>
+                                                <?php
+                                            endif;
                                         }
-
-                                        $title_wrapper_class = 'gslider-post-carousel-title-wrapper' . ( $show_post_title_divider ? ' has-divider' : '' );
-                                        $title_class = 'gslider-post-carousel-title' . ( $enable_post_title_hover_underline_anim ? ' hover-underline-anim' : '' );
-
-                                        $title_link_html = '';
-                                        if ( $enable_post_title_link ) {
-                                            $target_attr = $post_title_link_target ? ' target="_blank"' : '';
-                                            $rel_items = array();
-                                            if ( $post_title_link_target ) {
-                                                $rel_items[] = 'noopener';
-                                                $rel_items[] = 'noreferrer';
-                                            }
-                                            if ( $post_title_link_nofollow ) {
-                                                $rel_items[] = 'nofollow';
-                                            }
-                                            if ( $post_title_link_sponsored ) {
-                                                $rel_items[] = 'sponsored';
-                                            }
-                                            $rel_attr = ! empty( $rel_items ) ? ' rel="' . esc_attr( implode( ' ', $rel_items ) ) . '"' : '';
-                                            
-                                            $title_inner = '<a href="' . esc_url( get_permalink() ) . '"' . $target_attr . $rel_attr . '>' . esc_html( $rendered_title ) . '</a>';
-                                        } else {
-                                            $title_inner = esc_html( $rendered_title );
-                                        }
-                                        ?>
-                                        <div class="<?php echo esc_attr( $title_wrapper_class ); ?>">
-                                            <<?php echo esc_attr( $post_title_html_tag ); ?> class="<?php echo esc_attr( $title_class ); ?>">
-                                                <?php echo $title_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                                            </<?php echo esc_attr( $post_title_html_tag ); ?>>
-                                        </div>
-                                        <?php
                                         break;
-
+ 
+                                    case 'title':
+                                        if ( $any_title_enabled ) {
+                                            $raw_title = get_the_title();
+                                            $rendered_title = $raw_title;
+                                            if ( $enable_post_title_limit ) {
+                                                $limit_val = isset( $post_title_limit['Desktop'] ) ? intval( $post_title_limit['Desktop'] ) : ( 'words' === $post_title_limit_type ? 10 : 50 );
+                                                if ( 'words' === $post_title_limit_type ) {
+                                                    $rendered_title = wp_trim_words( $raw_title, $limit_val, $post_title_limit_suffix );
+                                                } else {
+                                                    if ( mb_strlen( $raw_title ) > $limit_val ) {
+                                                        $rendered_title = mb_substr( $raw_title, 0, $limit_val ) . $post_title_limit_suffix;
+                                                    }
+                                                }
+                                            }
+ 
+                                            $title_wrapper_class = 'gslider-post-carousel-title-wrapper' . ( $show_post_title_divider ? ' has-divider' : '' );
+                                            $title_class = 'gslider-post-carousel-title' . ( $enable_post_title_hover_underline_anim ? ' hover-underline-anim' : '' );
+ 
+                                            $title_link_html = '';
+                                            if ( $enable_post_title_link ) {
+                                                $target_attr = $post_title_link_target ? ' target="_blank"' : '';
+                                                $rel_items = array();
+                                                if ( $post_title_link_target ) {
+                                                    $rel_items[] = 'noopener';
+                                                    $rel_items[] = 'noreferrer';
+                                                }
+                                                if ( $post_title_link_nofollow ) {
+                                                    $rel_items[] = 'nofollow';
+                                                }
+                                                if ( $post_title_link_sponsored ) {
+                                                    $rel_items[] = 'sponsored';
+                                                }
+                                                $rel_attr = ! empty( $rel_items ) ? ' rel="' . esc_attr( implode( ' ', $rel_items ) ) . '"' : '';
+                                                
+                                                $title_inner = '<a href="' . esc_url( get_permalink() ) . '"' . $target_attr . $rel_attr . '>' . esc_html( $rendered_title ) . '</a>';
+                                            } else {
+                                                $title_inner = esc_html( $rendered_title );
+                                            }
+                                            ?>
+                                            <div class="<?php echo esc_attr( $title_wrapper_class ); ?>">
+                                                <<?php echo esc_attr( $post_title_html_tag ); ?> class="<?php echo esc_attr( $title_class ); ?>">
+                                                    <?php echo $title_inner; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                                </<?php echo esc_attr( $post_title_html_tag ); ?>>
+                                            </div>
+                                            <?php
+                                        }
+                                        break;
+ 
                                     case 'excerpt':
-                                        if ( $excerpt ) :
+                                        if ( $any_excerpt_enabled && $excerpt ) :
                                             ?>
                                             <div class="gslider-post-carousel-excerpt-wrapper">
                                                 <<?php echo esc_attr( $post_excerpt_html_tag ); ?> class="gslider-post-carousel-excerpt"><?php echo esc_html( $excerpt ); ?></<?php echo esc_attr( $post_excerpt_html_tag ); ?>>
@@ -528,20 +562,22 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                             <?php
                                         endif;
                                         break;
-
+ 
                                     case 'meta':
-                                        ?>
-                                        <div class="gslider-post-carousel-meta">
-                                            <span class="gslider-post-author">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                                <?php the_author(); ?>
-                                            </span>
-                                            <span class="gslider-post-date">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                                                <?php echo get_the_date(); ?>
-                                            </span>
-                                        </div>
-                                        <?php
+                                        if ( $any_meta_enabled ) :
+                                            ?>
+                                            <div class="gslider-post-carousel-meta">
+                                                <span class="gslider-post-author">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                                    <?php the_author(); ?>
+                                                </span>
+                                                <span class="gslider-post-date">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                                    <?php echo get_the_date(); ?>
+                                                </span>
+                                            </div>
+                                            <?php
+                                        endif;
                                         break;
 
                                     case 'readmore':
