@@ -202,7 +202,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		const { getTaxonomies } = select('core');
 		return {
 			currentPostId: getCurrentPostId ? getCurrentPostId() : null,
-			taxonomies: getTaxonomies ? getTaxonomies({ per_page: -1 }) || [] : [],
+			taxonomies: getTaxonomies ? getTaxonomies() || [] : [],
 		};
 	}, []);
 

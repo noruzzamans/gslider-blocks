@@ -80,13 +80,18 @@ const QuerySettingsPanel = ({
         (select) => {
             const { getPostTypes, getTaxonomies, getEntityRecords } = select('core');
 
-            const activePostTypes = getPostTypes({ per_page: -1 }) || [];
-            const allTax = getTaxonomies({ per_page: -1 }) || [];
+            const activePostTypes = getPostTypes() || [];
+            const allTax = getTaxonomies() || [];
 
             // Filter taxonomies belonging to the selected postType
             const postTax = allTax.filter(
-                (tax) => tax.types.includes(postType) && tax.show_in_rest
+                (tax) => tax.types && tax.types.includes(postType)
             );
+
+            console.log("=== GSlider Query Debug ===");
+            console.log("Selected Post Type:", postType);
+            console.log("All Taxonomies from WP:", allTax);
+            console.log("Filtered Taxonomies for CPT:", postTax);
 
             // Fetch terms for each taxonomy
             const termsMap = {};
