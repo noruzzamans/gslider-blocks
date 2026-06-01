@@ -632,6 +632,97 @@ const generatePostCarouselStyle = (attributes) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
+        /** Start Post Tag Styling */
+        postTagAlign,
+
+        postTagFontFamily,
+        postTagFontSize,
+        postTagFontSizeUnits,
+        postTagFontWeight,
+        postTagFontStyle,
+        postTagTextTransform,
+        postTagTextDecoration,
+        postTagLineHeight,
+        postTagLineHeightUnits,
+        postTagLetterSpacing,
+        postTagLetterSpacingUnits,
+        postTagWordSpacing,
+        postTagWordSpacingUnits,
+
+        postTagColorSwitcher,
+        postTagColor,
+        postTagColorHover,
+
+        postTagNormalBackgroundType,
+        postTagNormalClassicColor,
+        postTagNormalGradientColor,
+        postTagNormalCustomGradientSwitcher,
+        postTagNormalCustomGradientInputValue,
+        postTagHoverBackgroundType,
+        postTagHoverClassicColor,
+        postTagHoverGradientColor,
+        postTagHoverCustomGradientSwitcher,
+        postTagHoverCustomGradientInputValue,
+
+        postTagBorder,
+        postTagBorderColorSwitcher,
+        postTagBorderColor,
+        postTagBorderHoverColor,
+        postTagBorderUnits,
+        postTagBorderDesktop,
+        postTagBorderDesktopCssStyle,
+        postTagBorderTablet,
+        postTagBorderTabletCssStyle,
+        postTagBorderMobile,
+        postTagBorderMobileCssStyle,
+        postTagBorderLink,
+
+        postTagBorderRadiusUnits,
+        postTagBorderRadiusDesktop,
+        postTagBorderRadiusDesktopCssStyle,
+        postTagBorderRadiusTablet,
+        postTagBorderRadiusTabletCssStyle,
+        postTagBorderRadiusMobile,
+        postTagBorderRadiusMobileCssStyle,
+        postTagBorderRadiusLink,
+
+        postTagBoxShadowValuesSwitcher,
+        postTagBoxShadowValues,
+        postTagBoxShadowCssValue,
+        postTagBoxShadowHoverValues,
+        postTagBoxShadowHoverCssValue,
+
+        postTagGap,
+        postTagGapUnits,
+
+        postTagMarginUnits,
+        postTagDesktopMargin,
+        postTagDesktopMarginCssStyle,
+        postTagTabletMargin,
+        postTagTabletMarginCssStyle,
+        postTagMobileMargin,
+        postTagMobileMarginCssStyle,
+        postTagMarginLink,
+
+        postTagPaddingUnits,
+        postTagDesktopPadding,
+        postTagDesktopPaddingCssStyle,
+        postTagTabletPadding,
+        postTagTabletPaddingCssStyle,
+        postTagMobilePadding,
+        postTagMobilePaddingCssStyle,
+        postTagPaddingLink,
+
+        postTagItemPaddingUnits,
+        postTagItemDesktopPadding,
+        postTagItemDesktopPaddingCssStyle,
+        postTagItemTabletPadding,
+        postTagItemTabletPaddingCssStyle,
+        postTagItemMobilePadding,
+        postTagItemMobilePaddingCssStyle,
+        postTagItemPaddingLink,
+        /** End Post Tag Styling */
+
                 /** Start Author Image Style */
         authorImageSize,
         authorImageSizeUnits,
@@ -1226,6 +1317,57 @@ const generatePostCarouselStyle = (attributes) => {
     const postCategoryBackgroundNormalStyles = globalBackgroundStyleObjectToString(getPostCategoryBackgroundNormalStyles());
     const postCategoryBackgroundHoverStyles = globalBackgroundStyleObjectToString(getPostCategoryBackgroundHoverStyles());
 
+    /**
+     * Get postTag background normal styles
+     */
+    const getPostTagBackgroundNormalStyles = () => {
+        const bgType = postTagNormalBackgroundType;
+        const bgColor = postTagNormalClassicColor;
+        const bgGradient = postTagNormalGradientColor;
+        const customGradient = postTagNormalCustomGradientInputValue;
+        const customGradientEnabled = postTagNormalCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    /**
+     * Get postTag background hover styles
+     */
+    const getPostTagBackgroundHoverStyles = () => {
+        const bgType = postTagHoverBackgroundType;
+        const bgColor = postTagHoverClassicColor;
+        const bgGradient = postTagHoverGradientColor;
+        const customGradient = postTagHoverCustomGradientInputValue;
+        const customGradientEnabled = postTagHoverCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return { background: customGradient };
+            } else if (bgGradient) {
+                return { background: bgGradient };
+            } else if (bgColor) {
+                return { background: bgColor };
+            }
+            return {};
+        }
+
+        return bgColor ? { background: bgColor } : {};
+    };
+
+    const postTagBackgroundNormalStyles = globalBackgroundStyleObjectToString(getPostTagBackgroundNormalStyles());
+    const postTagBackgroundHoverStyles = globalBackgroundStyleObjectToString(getPostTagBackgroundHoverStyles());
+
     /** Start All Block Style */
     const postCarouselCSS = `
         .${blockId}.gslider-post-carousel-wrapper {
@@ -1726,6 +1868,56 @@ const generatePostCarouselStyle = (attributes) => {
 
         .${blockId} .gslider-post-carousel-categories span:hover a {
             ${postCategoryColorHover ? `color: ${postCategoryColorHover};` : ''}
+        }
+
+        /* Post Tag Styles */
+        .${blockId} .gslider-post-carousel-tags {
+            display: ${showTaxonomy?.Desktop ? 'flex' : 'none'};
+            flex-wrap: wrap;
+            ${postTagAlign?.Desktop ? `justify-content: ${postTagAlign.Desktop === 'left' ? 'flex-start' : postTagAlign.Desktop === 'right' ? 'flex-end' : 'center'};` : ''}
+            ${postTagGap?.Desktop ? `gap: ${postTagGap.Desktop}${postTagGapUnits.Desktop};` : ''}
+            ${postTagDesktopMarginCssStyle ? `margin: ${postTagDesktopMarginCssStyle};` : ''}
+            ${postTagDesktopPaddingCssStyle ? `padding: ${postTagDesktopPaddingCssStyle};` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-tags span {
+            ${postTagBackgroundNormalStyles ? `${postTagBackgroundNormalStyles}` : ''}
+            ${postTagColor ? `color: ${postTagColor};` : ''}
+            ${postTagFontFamily ? `font-family: ${postTagFontFamily};` : ''}
+            ${postTagFontSize.Desktop && postTagFontSizeUnits.Desktop ? `font-size: ${postTagFontSize.Desktop}${postTagFontSizeUnits.Desktop};` : ''}
+            ${postTagFontWeight ? `font-weight: ${postTagFontWeight};` : ''}
+            ${postTagFontStyle ? `font-style: ${postTagFontStyle};` : ''}
+            ${postTagTextTransform ? `text-transform: ${postTagTextTransform};` : ''}
+            ${postTagTextDecoration ? `text-decoration: ${postTagTextDecoration};` : ''}
+            ${postTagLineHeight.Desktop && postTagLineHeightUnits.Desktop ? `line-height: ${postTagLineHeight.Desktop}${postTagLineHeightUnits.Desktop};` : ''}
+            ${postTagLetterSpacing.Desktop && postTagLetterSpacingUnits.Desktop ? `letter-spacing: ${postTagLetterSpacing.Desktop}${postTagLetterSpacingUnits.Desktop};` : ''}
+            ${postTagWordSpacing.Desktop && postTagWordSpacingUnits.Desktop ? `word-spacing: ${postTagWordSpacing.Desktop}${postTagWordSpacingUnits.Desktop};` : ''}
+            ${postTagItemDesktopPaddingCssStyle ? `padding: ${postTagItemDesktopPaddingCssStyle};` : ''}
+            ${postTagBorder ? `border: ${postTagBorder};` : ''}
+            ${postTagBorderDesktopCssStyle ? `border-width: ${postTagBorderDesktopCssStyle};` : ''}
+            ${postTagBorderRadiusDesktopCssStyle ? `border-radius: ${postTagBorderRadiusDesktopCssStyle} !important;` : ''}
+            ${postTagBorderColor ? `border-color: ${postTagBorderColor};` : ''}
+            ${postTagBoxShadowCssValue ? `box-shadow: ${postTagBoxShadowCssValue} !important;` : ''}
+            display: inline-flex;
+            align-items: center;
+            transition: all .3s ease-in-out;
+        }
+
+        .${blockId} .gslider-post-carousel-tags span:hover {
+            ${postTagBackgroundHoverStyles ? `${postTagBackgroundHoverStyles}` : ''}
+            ${postTagColorHover ? `color: ${postTagColorHover};` : ''}
+            ${postTagBorderHoverColor ? `border-color: ${postTagBorderHoverColor};` : ''}
+            ${postTagBoxShadowHoverCssValue ? `box-shadow: ${postTagBoxShadowHoverCssValue} !important;` : ''}
+        }
+
+        .${blockId} .gslider-post-carousel-tags span a {
+            ${postTagColor ? `color: ${postTagColor};` : ''}
+            transition: all .3s ease-in-out;
+            text-decoration: none;
+        }
+
+        .${blockId} .gslider-post-carousel-tags span:hover a {
+            ${postTagColorHover ? `color: ${postTagColorHover};` : ''}
         }
 
         .${blockId} .gslider-post-carousel-image img {
@@ -2248,6 +2440,25 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postCategoryBorderRadiusTabletCssStyle ? `border-radius: ${postCategoryBorderRadiusTabletCssStyle} !important;` : ''}
             }
 
+            /* Post Tag Styles */
+            .${blockId} .gslider-post-carousel-tags {
+                display: ${showTaxonomy?.Tablet ? 'flex' : 'none'};
+                ${postTagAlign?.Tablet ? `justify-content: ${postTagAlign.Tablet === 'left' ? 'flex-start' : postTagAlign.Tablet === 'right' ? 'flex-end' : 'center'};` : ''}
+                ${postTagGap?.Tablet ? `gap: ${postTagGap.Tablet}${postTagGapUnits.Tablet};` : ''}
+                ${postTagTabletMarginCssStyle ? `margin: ${postTagTabletMarginCssStyle};` : ''}
+                ${postTagTabletPaddingCssStyle ? `padding: ${postTagTabletPaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-tags span {
+                ${postTagFontSize.Tablet && postTagFontSizeUnits.Tablet ? `font-size: ${postTagFontSize.Tablet}${postTagFontSizeUnits.Tablet};` : ''}
+                ${postTagLineHeight.Tablet && postTagLineHeightUnits.Tablet ? `line-height: ${postTagLineHeight.Tablet}${postTagLineHeightUnits.Tablet};` : ''}
+                ${postTagLetterSpacing.Tablet && postTagLetterSpacingUnits.Tablet ? `letter-spacing: ${postTagLetterSpacing.Tablet}${postTagLetterSpacingUnits.Tablet};` : ''}
+                ${postTagWordSpacing.Tablet && postTagWordSpacingUnits.Tablet ? `word-spacing: ${postTagWordSpacing.Tablet}${postTagWordSpacingUnits.Tablet};` : ''}
+                ${postTagItemTabletPaddingCssStyle ? `padding: ${postTagItemTabletPaddingCssStyle};` : ''}
+                ${postTagBorderTabletCssStyle ? `border-width: ${postTagBorderTabletCssStyle};` : ''}
+                ${postTagBorderRadiusTabletCssStyle ? `border-radius: ${postTagBorderRadiusTabletCssStyle} !important;` : ''}
+            }
+
             .${blockId} .gslider-post-carousel-image img {
                 ${imageMaxWidth.Tablet ? `max-width: ${imageMaxWidth.Tablet}${imageMaxWidthUnits.Tablet} !important;` : ''}
                 height: 100% !important;
@@ -2569,6 +2780,25 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postCategoryItemMobilePaddingCssStyle ? `padding: ${postCategoryItemMobilePaddingCssStyle};` : ''}
                 ${postCategoryBorderMobileCssStyle ? `border-width: ${postCategoryBorderMobileCssStyle};` : ''}
                 ${postCategoryBorderRadiusMobileCssStyle ? `border-radius: ${postCategoryBorderRadiusMobileCssStyle} !important;` : ''}
+            }
+
+            /* Post Tag Styles */
+            .${blockId} .gslider-post-carousel-tags {
+                display: ${showTaxonomy?.Mobile ? 'flex' : 'none'};
+                ${postTagAlign?.Mobile ? `justify-content: ${postTagAlign.Mobile === 'left' ? 'flex-start' : postTagAlign.Mobile === 'right' ? 'flex-end' : 'center'};` : ''}
+                ${postTagGap?.Mobile ? `gap: ${postTagGap.Mobile}${postTagGapUnits.Mobile};` : ''}
+                ${postTagMobileMarginCssStyle ? `margin: ${postTagMobileMarginCssStyle};` : ''}
+                ${postTagMobilePaddingCssStyle ? `padding: ${postTagMobilePaddingCssStyle};` : ''}
+            }
+
+            .${blockId} .gslider-post-carousel-tags span {
+                ${postTagFontSize.Mobile && postTagFontSizeUnits.Mobile ? `font-size: ${postTagFontSize.Mobile}${postTagFontSizeUnits.Mobile};` : ''}
+                ${postTagLineHeight.Mobile && postTagLineHeightUnits.Mobile ? `line-height: ${postTagLineHeight.Mobile}${postTagLineHeightUnits.Mobile};` : ''}
+                ${postTagLetterSpacing.Mobile && postTagLetterSpacingUnits.Mobile ? `letter-spacing: ${postTagLetterSpacing.Mobile}${postTagLetterSpacingUnits.Mobile};` : ''}
+                ${postTagWordSpacing.Mobile && postTagWordSpacingUnits.Mobile ? `word-spacing: ${postTagWordSpacing.Mobile}${postTagWordSpacingUnits.Mobile};` : ''}
+                ${postTagItemMobilePaddingCssStyle ? `padding: ${postTagItemMobilePaddingCssStyle};` : ''}
+                ${postTagBorderMobileCssStyle ? `border-width: ${postTagBorderMobileCssStyle};` : ''}
+                ${postTagBorderRadiusMobileCssStyle ? `border-radius: ${postTagBorderRadiusMobileCssStyle} !important;` : ''}
             }
 
             .${blockId} .gslider-post-carousel-image img {

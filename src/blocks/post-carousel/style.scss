@@ -91,10 +91,10 @@
 			align-items: center;
 			justify-content: center;
 			flex-shrink: 0;
-			width: 28px;  // default fallback, overridden by styling.js
-			height: 28px; // default fallback, overridden by styling.js
+			width: 28px;
+			height: 28px;
 			overflow: hidden;
-			border-radius: 50%; // default fallback
+			border-radius: 50%;
 		}
 
 		.gslider-post-author-avatar {
@@ -113,6 +113,7 @@
 		.gslider-post-author {
 			flex: 1;
 			min-width: 0;
+			font-size: 14px;
 		}
 
 		.gslider-post-date-wrapper {
@@ -135,6 +136,7 @@
 		.gslider-post-date {
 			flex: 1;
 			min-width: 0;
+			font-size: 14px;
 		}
 	}
 

@@ -730,6 +730,97 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         postCategoryItemPaddingLink,
         /** End Post Category Styling */
 
+        /** Start Post Tag Styling */
+        postTagAlign,
+
+        postTagFontFamily,
+        postTagFontSize,
+        postTagFontSizeUnits,
+        postTagFontWeight,
+        postTagFontStyle,
+        postTagTextTransform,
+        postTagTextDecoration,
+        postTagLineHeight,
+        postTagLineHeightUnits,
+        postTagLetterSpacing,
+        postTagLetterSpacingUnits,
+        postTagWordSpacing,
+        postTagWordSpacingUnits,
+
+        postTagColorSwitcher,
+        postTagColor,
+        postTagColorHover,
+
+        postTagNormalBackgroundType,
+        postTagNormalClassicColor,
+        postTagNormalGradientColor,
+        postTagNormalCustomGradientSwitcher,
+        postTagNormalCustomGradientInputValue,
+        postTagHoverBackgroundType,
+        postTagHoverClassicColor,
+        postTagHoverGradientColor,
+        postTagHoverCustomGradientSwitcher,
+        postTagHoverCustomGradientInputValue,
+
+        postTagBorder,
+        postTagBorderColorSwitcher,
+        postTagBorderColor,
+        postTagBorderHoverColor,
+        postTagBorderUnits,
+        postTagBorderDesktop,
+        postTagBorderDesktopCssStyle,
+        postTagBorderTablet,
+        postTagBorderTabletCssStyle,
+        postTagBorderMobile,
+        postTagBorderMobileCssStyle,
+        postTagBorderLink,
+
+        postTagBorderRadiusUnits,
+        postTagBorderRadiusDesktop,
+        postTagBorderRadiusDesktopCssStyle,
+        postTagBorderRadiusTablet,
+        postTagBorderRadiusTabletCssStyle,
+        postTagBorderRadiusMobile,
+        postTagBorderRadiusMobileCssStyle,
+        postTagBorderRadiusLink,
+
+        postTagBoxShadowValuesSwitcher,
+        postTagBoxShadowValues,
+        postTagBoxShadowCssValue,
+        postTagBoxShadowHoverValues,
+        postTagBoxShadowHoverCssValue,
+
+        postTagGap,
+        postTagGapUnits,
+
+        postTagMarginUnits,
+        postTagDesktopMargin,
+        postTagDesktopMarginCssStyle,
+        postTagTabletMargin,
+        postTagTabletMarginCssStyle,
+        postTagMobileMargin,
+        postTagMobileMarginCssStyle,
+        postTagMarginLink,
+
+        postTagPaddingUnits,
+        postTagDesktopPadding,
+        postTagDesktopPaddingCssStyle,
+        postTagTabletPadding,
+        postTagTabletPaddingCssStyle,
+        postTagMobilePadding,
+        postTagMobilePaddingCssStyle,
+        postTagPaddingLink,
+
+        postTagItemPaddingUnits,
+        postTagItemDesktopPadding,
+        postTagItemDesktopPaddingCssStyle,
+        postTagItemTabletPadding,
+        postTagItemTabletPaddingCssStyle,
+        postTagItemMobilePadding,
+        postTagItemMobilePaddingCssStyle,
+        postTagItemPaddingLink,
+        /** End Post Tag Styling */
+
         /** Start Author Image Style */
         authorImageSize,
         authorImageSizeUnits,
@@ -1066,6 +1157,9 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
     if (postCategoryFontFamily && postCategoryFontFamily !== 'Default') {
         LoadGoogleFont(postCategoryFontFamily);
     }
+    if (postTagFontFamily && postTagFontFamily !== 'Default') {
+        LoadGoogleFont(postTagFontFamily);
+    }
     if (authorNameFontFamily !== 'Default') {
         LoadGoogleFont(authorNameFontFamily);
     }
@@ -1142,6 +1236,26 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             postCategoryBorderRadiusTabletCssStyle: spacingFormat(postCategoryBorderRadiusTablet, postCategoryBorderRadiusUnits.Tablet),
             postCategoryBorderRadiusMobileCssStyle: spacingFormat(postCategoryBorderRadiusMobile, postCategoryBorderRadiusUnits.Mobile),
 
+            postTagDesktopMarginCssStyle: spacingFormat(postTagDesktopMargin, postTagMarginUnits.Desktop),
+            postTagTabletMarginCssStyle: spacingFormat(postTagTabletMargin, postTagMarginUnits.Tablet),
+            postTagMobileMarginCssStyle: spacingFormat(postTagMobileMargin, postTagMarginUnits.Mobile),
+
+            postTagDesktopPaddingCssStyle: spacingFormat(postTagDesktopPadding, postTagPaddingUnits.Desktop),
+            postTagTabletPaddingCssStyle: spacingFormat(postTagTabletPadding, postTagPaddingUnits.Tablet),
+            postTagMobilePaddingCssStyle: spacingFormat(postTagMobilePadding, postTagPaddingUnits.Mobile),
+
+            postTagItemDesktopPaddingCssStyle: spacingFormat(postTagItemDesktopPadding, postTagItemPaddingUnits.Desktop),
+            postTagItemTabletPaddingCssStyle: spacingFormat(postTagItemTabletPadding, postTagItemPaddingUnits.Tablet),
+            postTagItemMobilePaddingCssStyle: spacingFormat(postTagItemMobilePadding, postTagItemPaddingUnits.Mobile),
+
+            postTagBorderDesktopCssStyle: spacingFormat(postTagBorderDesktop, postTagBorderUnits.Desktop),
+            postTagBorderTabletCssStyle: spacingFormat(postTagBorderTablet, postTagBorderUnits.Tablet),
+            postTagBorderMobileCssStyle: spacingFormat(postTagBorderMobile, postTagBorderUnits.Mobile),
+
+            postTagBorderRadiusDesktopCssStyle: spacingFormat(postTagBorderRadiusDesktop, postTagBorderRadiusUnits.Desktop),
+            postTagBorderRadiusTabletCssStyle: spacingFormat(postTagBorderRadiusTablet, postTagBorderRadiusUnits.Tablet),
+            postTagBorderRadiusMobileCssStyle: spacingFormat(postTagBorderRadiusMobile, postTagBorderRadiusUnits.Mobile),
+
             readMoreButtonDesktopBorderRadiusCssStyle: spacingFormat(readMoreButtonDesktopBorderRadius, readMoreButtonBorderRadiusUnits.Desktop),
             readMoreButtonTabletBorderRadiusCssStyle: spacingFormat(readMoreButtonTabletBorderRadius, readMoreButtonBorderRadiusUnits.Tablet),
             readMoreButtonMobileBorderRadiusCssStyle: spacingFormat(readMoreButtonMobileBorderRadius, readMoreButtonBorderRadiusUnits.Mobile),
@@ -1200,6 +1314,31 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         postCategoryBorderRadiusTablet,
         postCategoryBorderRadiusMobile,
         postCategoryBorderRadiusUnits,
+
+        postTagDesktopMargin,
+        postTagTabletMargin,
+        postTagMobileMargin,
+        postTagMarginUnits,
+
+        postTagDesktopPadding,
+        postTagTabletPadding,
+        postTagMobilePadding,
+        postTagPaddingUnits,
+
+        postTagItemDesktopPadding,
+        postTagItemTabletPadding,
+        postTagItemMobilePadding,
+        postTagItemPaddingUnits,
+
+        postTagBorderDesktop,
+        postTagBorderTablet,
+        postTagBorderMobile,
+        postTagBorderUnits,
+
+        postTagBorderRadiusDesktop,
+        postTagBorderRadiusTablet,
+        postTagBorderRadiusMobile,
+        postTagBorderRadiusUnits,
 
         readMoreButtonDesktopBorderRadius,
         readMoreButtonTabletBorderRadius,
@@ -2344,7 +2483,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                 </PanelBody>
             )}
 
-            {showTaxonomy?.[deviceType] && (
+            {showTaxonomy?.[deviceType] && (postTaxonomyDisplay === 'category' || postTaxonomyDisplay === 'both') && (
                 <PanelBody
                     title={__("Categories", "gslider-blocks")}
                     opened={openPanels.styles === "post-categories"}
@@ -2627,6 +2766,291 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     />
                 </PanelBody>
             )}
+
+            {showTaxonomy?.[deviceType] && (postTaxonomyDisplay === 'tag' || postTaxonomyDisplay === 'both') && (
+                <PanelBody
+                    title={__("Tags", "gslider-blocks")}
+                    opened={openPanels.styles === "post-tags"}
+                    onToggle={() => togglePanel("styles", "post-tags")}
+                >
+                    <ResponsiveTypographyControl
+                        fontFamily={postTagFontFamily}
+                        onChangeFontFamily={(value) => setAttributes({ postTagFontFamily: value })}
+
+                        fontSize={postTagFontSize}
+                        onChangeFontSize={(value) => setAttributes({ postTagFontSize: value })}
+
+                        fontSizeUnits={postTagFontSizeUnits}
+                        onChangeFontSizeUnit={(value) => setAttributes({ postTagFontSizeUnits: value })}
+
+                        fontWeight={postTagFontWeight}
+                        onChangeFontWeight={(value) => setAttributes({ postTagFontWeight: value })}
+
+                        fontStyle={postTagFontStyle}
+                        onChangeFontStyle={(value) => setAttributes({ postTagFontStyle: value })}
+
+                        textTransform={postTagTextTransform}
+                        onChangeTextTransform={(value) => setAttributes({ postTagTextTransform: value })}
+
+                        textDecoration={postTagTextDecoration}
+                        onChangeTextDecoration={(value) => setAttributes({ postTagTextDecoration: value })}
+
+                        lineHeight={postTagLineHeight}
+                        onChangeLineHeight={(value) => setAttributes({ postTagLineHeight: value })}
+
+                        lineHeightUnits={postTagLineHeightUnits}
+                        onChangeLineHeightUnit={(value) => setAttributes({ postTagLineHeightUnits: value })}
+
+                        letterSpacing={postTagLetterSpacing}
+                        onChangeLetterSpacing={(value) => setAttributes({ postTagLetterSpacing: value })}
+
+                        letterSpacingUnits={postTagLetterSpacingUnits}
+                        onChangeLetterSpacingUnit={(value) => setAttributes({ postTagLetterSpacingUnits: value })}
+
+                        wordSpacing={postTagWordSpacing}
+                        onChangeWordSpacing={(value) => setAttributes({ postTagWordSpacing: value })}
+
+                        wordSpacingUnits={postTagWordSpacingUnits}
+                        onChangeWordSpacingUnit={(value) => setAttributes({ postTagWordSpacingUnits: value })}
+
+                        deviceType={deviceType}
+                    />
+
+                    <ResponsiveAlignmentControl
+                        label={__("Alignment", "gslider-blocks")}
+                        options={TEXT_ALIGN}
+                        alignmentValue={postTagAlign}
+                        setAlignmentValue={(value) => setAttributes({ postTagAlign: value })}
+                        deviceType={deviceType}
+                        setAttributes={setAttributes}
+                    />
+
+                    <SwitcherControl
+                        label={__("Text Color", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={postTagColorSwitcher}
+                        onChange={(value) => setAttributes({ postTagColorSwitcher: value })}
+                    />
+
+                    {postTagColorSwitcher === 'normal' && (
+                        <ColorControl
+                            label={__("Normal Color", "gslider-blocks")}
+                            color={postTagColor}
+                            onChangeColor={(value) => setAttributes({ postTagColor: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    {postTagColorSwitcher === 'hover' && (
+                        <ColorControl
+                            label={__("Hover Color", "gslider-blocks")}
+                            color={postTagColorHover}
+                            onChangeColor={(value) => setAttributes({ postTagColorHover: value })}
+                            defaultColor=''
+                        />
+                    )}
+
+                    <BackgroundControl
+                        label={__("Background Color", "gslider-blocks")}
+                        deviceType={deviceType}
+
+                        normalBackgroundType={postTagNormalBackgroundType}
+                        setNormalBackgroundType={(value) => setAttributes({ postTagNormalBackgroundType: value })}
+                        normalClassicColor={postTagNormalClassicColor}
+                        setNormalClassicColor={(value) => setAttributes({ postTagNormalClassicColor: value })}
+                        normalGradientColor={postTagNormalGradientColor}
+                        setNormalGradientColor={(value) => setAttributes({ postTagNormalGradientColor: value })}
+                        normalCustomGradientSwitcher={postTagNormalCustomGradientSwitcher}
+                        setNormalCustomGradientSwitcher={(value) => setAttributes({ postTagNormalCustomGradientSwitcher: value })}
+                        normalCustomGradientInputValue={postTagNormalCustomGradientInputValue}
+                        setNormalCustomGradientInputValue={(value) => setAttributes({ postTagNormalCustomGradientInputValue: value })}
+
+                        hoverBackgroundType={postTagHoverBackgroundType}
+                        setHoverBackgroundType={(value) => setAttributes({ postTagHoverBackgroundType: value })}
+                        hoverClassicColor={postTagHoverClassicColor}
+                        setHoverClassicColor={(value) => setAttributes({ postTagHoverClassicColor: value })}
+                        hoverGradientColor={postTagHoverGradientColor}
+                        setHoverGradientColor={(value) => setAttributes({ postTagHoverGradientColor: value })}
+                        hoverCustomGradientSwitcher={postTagHoverCustomGradientSwitcher}
+                        setHoverCustomGradientSwitcher={(value) => setAttributes({ postTagHoverCustomGradientSwitcher: value })}
+                        hoverCustomGradientInputValue={postTagHoverCustomGradientInputValue}
+                        setHoverCustomGradientInputValue={(value) => setAttributes({ postTagHoverCustomGradientInputValue: value })}
+                        setAttributes={setAttributes}
+                        isBackgroundImage={false}
+                    />
+
+                    <Select2Control
+                        label={__('Border Style', 'gslider-blocks')}
+                        options={BORDER_STYLES}
+                        value={postTagBorder}
+                        onChange={(value) => setAttributes({ postTagBorder: value })}
+                    />
+
+                    {postTagBorder !== 'none' && (
+                        <>
+                            <SwitcherControl
+                                label={__("Border Color", "gslider-blocks")}
+                                options={NORMAL_HOVER}
+                                value={postTagBorderColorSwitcher}
+                                onChange={(value) => setAttributes({ postTagBorderColorSwitcher: value })}
+                            />
+
+                            {postTagBorderColorSwitcher === 'normal' && (
+                                <ColorControl
+                                    label={__("Border Color", "gslider-blocks")}
+                                    color={postTagBorderColor}
+                                    onChangeColor={(value) => setAttributes({ postTagBorderColor: value })}
+                                />
+                            )}
+
+                            {postTagBorderColorSwitcher === 'hover' && (
+                                <ColorControl
+                                    label={__("Hover Color", "gslider-blocks")}
+                                    color={postTagBorderHoverColor}
+                                    onChangeColor={(value) => setAttributes({ postTagBorderHoverColor: value })}
+                                />
+                            )}
+
+                            <ResponsiveSpacingControl
+                                label={__("Border Width", "gslider-blocks")}
+                                deviceType={deviceType}
+                                onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                                units={postTagBorderUnits}
+                                onChangeUnits={(value) => setAttributes({ postTagBorderUnits: value })}
+                                desktopSpacing={postTagBorderDesktop}
+                                onChangeDesktopSpacing={(value) => setAttributes({ postTagBorderDesktop: value })}
+                                desktopSpacingStyle={(value) => setAttributes({ postTagBorderDesktopCssStyle: value })}
+                                tabletSpacing={postTagBorderTablet}
+                                onChangeTabletSpacing={(value) => setAttributes({ postTagBorderTablet: value })}
+                                tabletSpacingStyle={(value) => setAttributes({ postTagBorderTabletCssStyle: value })}
+                                mobileSpacing={postTagBorderMobile}
+                                onChangeMobileSpacing={(value) => setAttributes({ postTagBorderMobile: value })}
+                                mobileSpacingStyle={(value) => setAttributes({ postTagBorderMobileCssStyle: value })}
+                                isLinked={postTagBorderLink}
+                                onChangeLink={(value) => setAttributes({ postTagBorderLink: value })}
+                            />
+                        </>
+                    )}
+
+                    <ResponsiveSpacingControl
+                        label={__("Border Radius", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTagBorderRadiusUnits}
+                        onChangeUnits={(value) => setAttributes({ postTagBorderRadiusUnits: value })}
+                        desktopSpacing={postTagBorderRadiusDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTagBorderRadiusDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTagBorderRadiusDesktopCssStyle: value })}
+                        tabletSpacing={postTagBorderRadiusTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTagBorderRadiusTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTagBorderRadiusTabletCssStyle: value })}
+                        mobileSpacing={postTagBorderRadiusMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTagBorderRadiusMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTagBorderRadiusMobileCssStyle: value })}
+                        isLinked={postTagBorderRadiusLink}
+                        onChangeLink={(value) => setAttributes({ postTagBorderRadiusLink: value })}
+                    />
+
+                    <SwitcherControl
+                        label={__("Box Shadow", "gslider-blocks")}
+                        options={NORMAL_HOVER}
+                        value={postTagBoxShadowValuesSwitcher}
+                        onChange={(value) => setAttributes({ postTagBoxShadowValuesSwitcher: value })}
+                    />
+
+                    {postTagBoxShadowValuesSwitcher === 'normal' && (
+                        <BoxShadowSettingsControl
+                            label={__("Normal Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ postTagBoxShadowValues: value })}
+                            initialShadowValue={postTagBoxShadowValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ postTagBoxShadowCssValue: value })}
+                        />
+                    )}
+
+                    {postTagBoxShadowValuesSwitcher === 'hover' && (
+                        <BoxShadowSettingsControl
+                            label={__("Hover Shadow", "gslider-blocks")}
+                            onBoxShadowChange={(value) => setAttributes({ postTagBoxShadowHoverValues: value })}
+                            initialShadowValue={postTagBoxShadowHoverValues}
+                            onBoxShadowStyleChange={(value) => setAttributes({ postTagBoxShadowHoverCssValue: value })}
+                        />
+                    )}
+
+                    <ResponsiveRangeControl
+                        min={0}
+                        max={100}
+                        label={__("Gap", "gslider-blocks")}
+                        rangeValue={postTagGap}
+                        onChangeValue={(value) => setAttributes({ postTagGap: value })}
+                        onUnitChange={(value) => setAttributes({ postTagGapUnits: value })}
+                        deviceType={deviceType}
+                        units={postTagGapUnits}
+                        resetFallbackValue={{
+                            px: "5",
+                            em: "0.5",
+                            rem: "0.5"
+                        }}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Margin", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTagMarginUnits}
+                        onChangeUnits={(value) => setAttributes({ postTagMarginUnits: value })}
+                        desktopSpacing={postTagDesktopMargin}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTagDesktopMargin: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTagDesktopMarginCssStyle: value })}
+                        tabletSpacing={postTagTabletMargin}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTagTabletMargin: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTagTabletMarginCssStyle: value })}
+                        mobileSpacing={postTagMobileMargin}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTagMobileMargin: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTagMobileMarginCssStyle: value })}
+                        isLinked={postTagMarginLink}
+                        onChangeLink={(value) => setAttributes({ postTagMarginLink: value })}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTagPaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postTagPaddingUnits: value })}
+                        desktopSpacing={postTagDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTagDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTagDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postTagTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTagTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTagTabletPaddingCssStyle: value })}
+                        mobileSpacing={postTagMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTagMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTagMobilePaddingCssStyle: value })}
+                        isLinked={postTagPaddingLink}
+                        onChangeLink={(value) => setAttributes({ postTagPaddingLink: value })}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Item Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={postTagItemPaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ postTagItemPaddingUnits: value })}
+                        desktopSpacing={postTagItemDesktopPadding}
+                        onChangeDesktopSpacing={(value) => setAttributes({ postTagItemDesktopPadding: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ postTagItemDesktopPaddingCssStyle: value })}
+                        tabletSpacing={postTagItemTabletPadding}
+                        onChangeTabletSpacing={(value) => setAttributes({ postTagItemTabletPadding: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ postTagItemTabletPaddingCssStyle: value })}
+                        mobileSpacing={postTagItemMobilePadding}
+                        onChangeMobileSpacing={(value) => setAttributes({ postTagItemMobilePadding: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ postTagItemMobilePaddingCssStyle: value })}
+                        isLinked={postTagItemPaddingLink}
+                        onChangeLink={(value) => setAttributes({ postTagItemPaddingLink: value })}
+                    />
+                </PanelBody>
+            )}
+
 
             {showPostTitle?.[deviceType] && (
                 <PanelBody

@@ -471,28 +471,29 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														const showCat = postTaxonomyDisplay === 'category' || postTaxonomyDisplay === 'both';
 														const showTag = postTaxonomyDisplay === 'tag' || postTaxonomyDisplay === 'both';
 
-														const renderedTerms = [];
+														const hasCat = showCat && categories.length > 0;
+														const hasTag = showTag && tags.length > 0;
 
-														if (showCat && categories.length > 0) {
-															categories.forEach((cat) => {
-																renderedTerms.push(<span key={`cat-${cat.id}`}>{cat.name}</span>);
-															});
-														}
+														if (!hasCat && !hasTag) return null;
 
-														if (showTag && tags.length > 0) {
-															tags.forEach((tag) => {
-																renderedTerms.push(<span key={`tag-${tag.id}`}>{tag.name}</span>);
-															});
-														}
-
-														if (renderedTerms.length > 0) {
-															return (
-																<div key="categories" className="gslider-post-carousel-categories">
-																	{renderedTerms}
-																</div>
-															);
-														}
-														return null;
+														return (
+															<>
+																{hasCat && (
+																	<div key="categories-wrap" className="gslider-post-carousel-categories">
+																		{categories.map((cat) => (
+																			<span key={`cat-${cat.id}`} className="gslider-category-item">{cat.name}</span>
+																		))}
+																	</div>
+																)}
+																{hasTag && (
+																	<div key="tags-wrap" className="gslider-post-carousel-tags">
+																		{tags.map((tag) => (
+																			<span key={`tag-${tag.id}`} className="gslider-tag-item">{tag.name}</span>
+																		))}
+																	</div>
+																)}
+															</>
+														);
 													})() : null,
 
 													title: showPostTitle?.[deviceType] ? (() => {

@@ -478,30 +478,28 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                             $show_cat = ( 'category' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
                                             $show_tag = ( 'tag' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
  
-                                            $rendered_terms_html = '';
- 
                                             if ( $show_cat && ! empty( $categories ) ) {
-                                                foreach ( $categories as $cat ) {
-                                                    $rendered_terms_html .= '<span><a href="' . esc_url( get_category_link( $cat->term_id ) ) . '">' . esc_html( $cat->name ) . '</a></span>';
-                                                }
+                                                ?>
+                                                <div class="gslider-post-carousel-categories">
+                                                    <?php foreach ( $categories as $cat ) : ?>
+                                                        <span class="gslider-category-item"><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                                <?php
                                             }
  
                                             if ( $show_tag ) {
-                                                $tags = get_the_tags( $post_id );
-                                                if ( ! empty( $tags ) ) {
-                                                    foreach ( $tags as $tag ) {
-                                                        $rendered_terms_html .= '<span><a href="' . esc_url( get_tag_link( $tag->term_id ) ) . '">' . esc_html( $tag->name ) . '</a></span>';
-                                                    }
+                                                $post_tags = get_the_tags( $post_id );
+                                                if ( ! empty( $post_tags ) ) {
+                                                    ?>
+                                                    <div class="gslider-post-carousel-tags">
+                                                        <?php foreach ( $post_tags as $tag ) : ?>
+                                                            <span class="gslider-tag-item"><a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>"><?php echo esc_html( $tag->name ); ?></a></span>
+                                                        <?php endforeach; ?>
+                                                    </div>
+                                                    <?php
                                                 }
                                             }
- 
-                                            if ( ! empty( $rendered_terms_html ) ) :
-                                                ?>
-                                                <div class="gslider-post-carousel-categories">
-                                                    <?php echo $rendered_terms_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-                                                </div>
-                                                <?php
-                                            endif;
                                         }
                                         break;
  
