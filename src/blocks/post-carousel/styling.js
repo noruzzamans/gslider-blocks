@@ -168,6 +168,8 @@ const generatePostCarouselStyle = (attributes) => {
         paginationDotsPositionUnits,
         paginationProgressbarPosition,
         paginationProgressbarPositionUnits,
+        paginationOutsideOffset,
+        paginationOutsideOffsetUnits,
         /** End Dots Position */
 
         /** Start Dots Style */
@@ -1428,7 +1430,25 @@ const generatePostCarouselStyle = (attributes) => {
             ${navigationArrowBoxShadowCssValue ? `box-shadow: ${navigationArrowBoxShadowCssValue};` : ''}
             ${navigationArrowWidth.Desktop ? `width: ${navigationArrowWidth.Desktop}${navigationArrowWidthUnits.Desktop};` : ''}
             ${navigationArrowHeight.Desktop ? `height: ${navigationArrowHeight.Desktop}${navigationArrowHeightUnits.Desktop};` : ''}
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
             transition: all .3s ease-in-out;
+        }
+        .${blockId} .swiper-button-prev:focus-visible,
+        .${blockId} .swiper-button-next:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 2px;
+        }
+        .${blockId} .swiper-button-prev.swiper-button-disabled,
+        .${blockId} .swiper-button-next.swiper-button-disabled {
+            cursor: default;
+            opacity: 0.45;
         }
         .${blockId} .swiper-button-prev:hover,
         .${blockId} .swiper-button-next:hover {
@@ -1526,12 +1546,12 @@ const generatePostCarouselStyle = (attributes) => {
             .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-bullets.swiper-pagination-horizontal,
             .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-custom,
             .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-fraction {
-                bottom: -30px !important;
+                bottom: -${paginationOutsideOffset.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits.Desktop}` : '30px'} !important;
             }
         ` : ''}
 
         .${blockId}.gslider-post-carousel-wrapper.has-pagination {
-            margin-bottom: 30px;
+            margin-bottom: ${paginationOutsideOffset.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits.Desktop}` : '30px'};
         }
 
         .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
@@ -2135,6 +2155,18 @@ const generatePostCarouselStyle = (attributes) => {
                 ${paginationProgressbarHeight.Tablet ? `height: ${paginationProgressbarHeight.Tablet}${paginationProgressbarHeightUnits.Tablet};` : ''}
             }
 
+            ${paginationPositionType === 'outside' ? `   
+                .${blockId}.gslider-post-carousel-wrapper .swiper-horizontal>.swiper-pagination-bullets,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-bullets.swiper-pagination-horizontal,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-custom,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-fraction {
+                    bottom: -${paginationOutsideOffset.Tablet ? `${paginationOutsideOffset.Tablet}${paginationOutsideOffsetUnits.Tablet}` : '30px'} !important;
+                }
+                .${blockId}.gslider-post-carousel-wrapper.has-pagination {
+                    margin-bottom: ${paginationOutsideOffset.Tablet ? `${paginationOutsideOffset.Tablet}${paginationOutsideOffsetUnits.Tablet}` : '30px'};
+                }
+            ` : ''}
+
             .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
                 ${postTitleAlign?.Tablet ? `text-align: ${postTitleAlign.Tablet};` : ''}
                 ${postTitleFontSize.Tablet && postTitleFontSizeUnits.Tablet ? `font-size: ${postTitleFontSize.Tablet}${postTitleFontSizeUnits.Tablet};` : ''}
@@ -2445,6 +2477,18 @@ const generatePostCarouselStyle = (attributes) => {
             .${blockId} .swiper-pagination-progressbar {
                 ${paginationProgressbarHeight.Mobile ? `height: ${paginationProgressbarHeight.Mobile}${paginationProgressbarHeightUnits.Mobile};` : ''}
             }
+
+            ${paginationPositionType === 'outside' ? `   
+                .${blockId}.gslider-post-carousel-wrapper .swiper-horizontal>.swiper-pagination-bullets,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-bullets.swiper-pagination-horizontal,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-custom,
+                .${blockId}.gslider-post-carousel-wrapper .swiper-pagination-fraction {
+                    bottom: -${paginationOutsideOffset.Mobile ? `${paginationOutsideOffset.Mobile}${paginationOutsideOffsetUnits.Mobile}` : '30px'} !important;
+                }
+                .${blockId}.gslider-post-carousel-wrapper.has-pagination {
+                    margin-bottom: ${paginationOutsideOffset.Mobile ? `${paginationOutsideOffset.Mobile}${paginationOutsideOffsetUnits.Mobile}` : '30px'};
+                }
+            ` : ''}
 
             .${blockId} .gslider-post-carousel-title-wrapper .gslider-post-carousel-title {
                 ${postTitleAlign?.Mobile ? `text-align: ${postTitleAlign.Mobile};` : ''}

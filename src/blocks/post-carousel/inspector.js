@@ -252,6 +252,8 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         paginationDotsPositionUnits,
         paginationProgressbarPosition,
         paginationProgressbarPositionUnits,
+        paginationOutsideOffset,
+        paginationOutsideOffsetUnits,
         /** End Dots Position */
 
         /** Start Dots Style */
@@ -4227,6 +4229,23 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                             resetFallbackValue={""}
                             unitBounds={{
                                 px: { min: -200, max: 200, step: 1 },
+                            }}
+                        />
+                    )}
+
+                    {paginationPositionType === 'outside' && (
+                        <ResponsiveRangeControl
+                            label={__("Outside Offset", "gslider-blocks")}
+                            rangeValue={paginationOutsideOffset}
+                            onChangeValue={(value) => setAttributes({ paginationOutsideOffset: value })}
+                            onUnitChange={(value) => setAttributes({ paginationOutsideOffsetUnits: value })}
+                            deviceType={deviceType}
+                            units={paginationOutsideOffsetUnits}
+                            resetFallbackValue={{
+                                px: "30",
+                            }}
+                            unitBounds={{
+                                px: { min: 0, max: 200, step: 1 },
                             }}
                         />
                     )}

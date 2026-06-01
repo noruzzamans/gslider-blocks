@@ -153,7 +153,7 @@ $any_taxonomy_enabled = ! empty( $show_taxonomy['Desktop'] )       || ! empty( $
 
 // Navigation settings
 $pagination_position_type     = isset( $attributes['paginationPositionType'] ) ? sanitize_text_field( $attributes['paginationPositionType'] ) : 'outside';
-$navigation_arrow_position_type = isset( $attributes['navigationArrowPositionType'] ) ? sanitize_text_field( $attributes['navigationArrowPositionType'] ) : 'inside';
+$navigation_arrow_position_type = isset( $attributes['navigationArrowPositionType'] ) ? sanitize_text_field( $attributes['navigationArrowPositionType'] ) : 'outside';
 $navigation_arrow_position      = isset( $attributes['navigationArrowPosition'] ) ? sanitize_text_field( $attributes['navigationArrowPosition'] ) : 'center';
 
 // Navigation Custom Icon settings
@@ -368,8 +368,8 @@ $swiper_settings = array(
 
     'navigation' => array(
         'enabled' => $any_navigation_enabled,
-        'nextEl'  => '.swiper-button-next',
-        'prevEl'  => '.swiper-button-prev',
+        'nextEl'  => '.' . $block_id . ' .swiper-button-next',
+        'prevEl'  => '.' . $block_id . ' .swiper-button-prev',
     ),
 
     'pagination' => array(
