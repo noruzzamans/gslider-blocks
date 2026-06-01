@@ -2412,6 +2412,39 @@ const attributes = {
         type: "string",
         default: "p",
     },
+    enablePostExcerptLimit: {
+        type: "boolean",
+        default: false,
+    },
+    postExcerptLimitType: {
+        type: "string",
+        default: "words",
+    },
+    postExcerptLimit: {
+        type: "object",
+        default: {
+            Desktop: "20",
+            Tablet: "20",
+            Mobile: "20",
+        },
+    },
+    postExcerptLimitSuffix: {
+        type: "string",
+        default: "...",
+    },
+    postExcerptSource: {
+        type: "string",
+        default: "auto",
+    },
+    postExcerptLineClamp: {
+        type: "object",
+        default: {
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
+        },
+    },
+
 
     /** Start Post Excerpt Typography */
     postExcerptFontFamily: {

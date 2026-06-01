@@ -601,6 +601,12 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         /** Start Post Excerpt Styling */
         postExcerptAlign,
         postExcerptHtmlTag,
+        enablePostExcerptLimit,
+        postExcerptLimitType,
+        postExcerptLimit,
+        postExcerptLimitSuffix,
+        postExcerptSource,
+        postExcerptLineClamp,
 
         postExcerptFontFamily,
         postExcerptFontSize,
@@ -3380,6 +3386,65 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         options={HTML_TAGS}
                         value={postExcerptHtmlTag}
                         onChange={(value) => setAttributes({ postExcerptHtmlTag: value })}
+                    />
+
+                    <Select2Control
+                        label={__("Excerpt Source", "gslider-blocks")}
+                        options={[
+                            { label: __("Auto Fallback", "gslider-blocks"), value: "auto" },
+                            { label: __("Manual Excerpt Only", "gslider-blocks"), value: "excerpt" },
+                            { label: __("Post Content Only", "gslider-blocks"), value: "content" },
+                        ]}
+                        value={postExcerptSource}
+                        onChange={(value) => setAttributes({ postExcerptSource: value })}
+                    />
+
+                    <ToggleControl
+                        label={__("Limit Excerpt Length", "gslider-blocks")}
+                        checked={enablePostExcerptLimit}
+                        onChange={(value) => setAttributes({ enablePostExcerptLimit: value })}
+                    />
+
+                    {enablePostExcerptLimit && (
+                        <>
+                            <SwitcherControl
+                                label={__("Limit Type", "gslider-blocks")}
+                                options={[
+                                    { label: __("Words", "gslider-blocks"), value: "words" },
+                                    { label: __("Characters", "gslider-blocks"), value: "characters" },
+                                ]}
+                                value={postExcerptLimitType}
+                                onChange={(value) => setAttributes({ postExcerptLimitType: value })}
+                            />
+                            <ResponsiveRangeControl
+                                min={1}
+                                max={postExcerptLimitType === "words" ? 200 : 1000}
+                                label={postExcerptLimitType === "words" ? __("Word Limit", "gslider-blocks") : __("Character Limit", "gslider-blocks")}
+                                rangeValue={postExcerptLimit}
+                                onChangeValue={(value) => setAttributes({ postExcerptLimit: value })}
+                                deviceType={deviceType}
+                                step={1}
+                                resetFallbackValue={postExcerptLimitType === "words" ? "20" : "100"}
+                                isRangeUnit={false}
+                            />
+                            <TextControl
+                                label={__("Trim Suffix", "gslider-blocks")}
+                                value={postExcerptLimitSuffix}
+                                onChange={(value) => setAttributes({ postExcerptLimitSuffix: value })}
+                            />
+                        </>
+                    )}
+
+                    <ResponsiveRangeControl
+                        min={1}
+                        max={10}
+                        label={__("Line Clamp (CSS Lines Limit)", "gslider-blocks")}
+                        rangeValue={postExcerptLineClamp}
+                        onChangeValue={(value) => setAttributes({ postExcerptLineClamp: value })}
+                        deviceType={deviceType}
+                        step={1}
+                        resetFallbackValue=""
+                        isRangeUnit={false}
                     />
 
                     <ResponsiveTypographyControl

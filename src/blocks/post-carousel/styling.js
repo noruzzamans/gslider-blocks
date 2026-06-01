@@ -539,6 +539,7 @@ const generatePostCarouselStyle = (attributes) => {
         postExcerptDesktopPaddingCssStyle,
         postExcerptTabletPaddingCssStyle,
         postExcerptMobilePaddingCssStyle,
+        postExcerptLineClamp,
         /** End Post Excerpt Styling */
 
         /** Start Post Category Styling */
@@ -1780,6 +1781,12 @@ const generatePostCarouselStyle = (attributes) => {
             ${postExcerptColor ? `color: ${postExcerptColor};` : ''}
             ${postExcerptDesktopMarginCssStyle ? `margin: ${postExcerptDesktopMarginCssStyle};` : ''}
             ${postExcerptDesktopPaddingCssStyle ? `padding: ${postExcerptDesktopPaddingCssStyle};` : ''}
+            ${postExcerptLineClamp?.Desktop ? `
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                -webkit-line-clamp: ${postExcerptLineClamp.Desktop};
+            ` : ''}
             transition: all .3s ease-in-out;
         }
 
@@ -2398,6 +2405,12 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postExcerptWordSpacing.Tablet && postExcerptWordSpacingUnits.Tablet ? `word-spacing: ${postExcerptWordSpacing.Tablet}${postExcerptWordSpacingUnits.Tablet};` : ''}
                 ${postExcerptTabletMarginCssStyle ? `margin: ${postExcerptTabletMarginCssStyle};` : ''}
                 ${postExcerptTabletPaddingCssStyle ? `padding: ${postExcerptTabletPaddingCssStyle};` : ''}
+                ${postExcerptLineClamp?.Tablet ? `
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    -webkit-line-clamp: ${postExcerptLineClamp.Tablet};
+                ` : ''}
             }
 
             .${blockId} .gslider-post-carousel-image {
@@ -2740,6 +2753,12 @@ const generatePostCarouselStyle = (attributes) => {
                 ${postExcerptWordSpacing.Mobile && postExcerptWordSpacingUnits.Mobile ? `word-spacing: ${postExcerptWordSpacing.Mobile}${postExcerptWordSpacingUnits.Mobile};` : ''}
                 ${postExcerptMobileMarginCssStyle ? `margin: ${postExcerptMobileMarginCssStyle};` : ''}
                 ${postExcerptMobilePaddingCssStyle ? `padding: ${postExcerptMobilePaddingCssStyle};` : ''}
+                ${postExcerptLineClamp?.Mobile ? `
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    -webkit-line-clamp: ${postExcerptLineClamp.Mobile};
+                ` : ''}
             }
 
             .${blockId} .gslider-post-carousel-image {

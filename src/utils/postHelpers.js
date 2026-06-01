@@ -62,19 +62,57 @@ export const getPostCategories = (post) => {
  * @param {number} wordLimit Maximum number of words to return.
  * @returns {string}         Truncated plain excerpt text.
  */
-export const getExcerpt = (post, wordLimit = 20) => {
-    let text = post?.excerpt?.rendered || post?.content?.rendered || '';
+export const getExcerpt = (post, wordLimit = 20, options = {}) => {
+    if (typeof options !== 'object' || options === null) {
+        options = {};
+    }
+
+    const {
+        enablePostExcerptLimit = (options.enablePostExcerptLimit !== undefined ? options.enablePostExcerptLimit : true),
+        postExcerptLimitType = 'words',
+        postExcerptLimit = { Desktop: String(wordLimit), Tablet: String(wordLimit), Mobile: String(wordLimit) },
+        postExcerptLimitSuffix = '...',
+        postExcerptSource = 'auto',
+        deviceType = 'Desktop'
+    } = options;
+
+    let text = '';
+    if (postExcerptSource === 'excerpt') {
+        text = post?.excerpt?.rendered || '';
+    } else if (postExcerptSource === 'content') {
+        text = post?.content?.rendered || '';
+    } else {
+        text = post?.excerpt?.rendered || post?.content?.rendered || '';
+    }
+    
     if (!text) return '';
     
     const div = document.createElement('div');
     div.innerHTML = text;
     text = div.textContent || div.innerText || '';
+    text = text.trim();
     
-    const words = text.trim().split(/\s+/);
-    if (words.length > wordLimit) {
-        return words.slice(0, wordLimit).join(' ') + '...';
+    if (options.enablePostExcerptLimit === false) {
+        return text;
     }
-    return text.trim();
+
+    let limitValue = parseInt(postExcerptLimit?.[deviceType] || wordLimit, 10);
+    if (isNaN(limitValue) || limitValue <= 0) {
+        limitValue = parseInt(wordLimit, 10) || 20;
+    }
+
+    if (postExcerptLimitType === 'characters') {
+        if (text.length > limitValue) {
+            return text.substring(0, limitValue) + postExcerptLimitSuffix;
+        }
+        return text;
+    } else {
+        const words = text.split(/\s+/);
+        if (words.length > limitValue) {
+            return words.slice(0, limitValue).join(' ') + postExcerptLimitSuffix;
+        }
+        return text;
+    }
 };
 
 /**

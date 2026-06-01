@@ -119,6 +119,12 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		postTitleDividerHeightUnits,
 		enablePostTitleDividerHoverExpand,
 		postExcerptHtmlTag,
+		enablePostExcerptLimit,
+		postExcerptLimitType,
+		postExcerptLimit,
+		postExcerptLimitSuffix,
+		postExcerptSource,
+		postExcerptLineClamp,
 
 		// Animations
 		cardEntranceAnimation,
@@ -438,7 +444,14 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							const featuredImageUrl = getFeaturedImageUrl(post);
 							const categories = getPostCategories(post);
 							const tags = getPostTags(post);
-							const excerpt = getExcerpt(post);
+							const excerpt = getExcerpt(post, 20, {
+								enablePostExcerptLimit,
+								postExcerptLimitType,
+								postExcerptLimit,
+								postExcerptLimitSuffix,
+								postExcerptSource,
+								deviceType,
+							});
 							const authorName = getAuthorName(post);
 							const authorAvatarUrl = getAuthorAvatarUrl(post);
 							const formattedDate = getFormattedDate(post);
@@ -531,11 +544,26 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														);
 													})() : null,
 
-													excerpt: (showExcerpt?.[deviceType] && excerpt) ? (
-														<div key="excerpt" className="gslider-post-carousel-excerpt-wrapper">
-															<ExcerptTagName className="gslider-post-carousel-excerpt">{excerpt}</ExcerptTagName>
-														</div>
-													) : null,
+													excerpt: (showExcerpt?.[deviceType] && excerpt) ? (() => {
+														const clampValue = postExcerptLineClamp?.[deviceType];
+														const clampStyles = clampValue ? {
+															display: '-webkit-box',
+															WebkitBoxOrient: 'vertical',
+															overflow: 'hidden',
+															WebkitLineClamp: clampValue,
+														} : {};
+
+														return (
+															<div key="excerpt" className="gslider-post-carousel-excerpt-wrapper">
+																<ExcerptTagName 
+																	className="gslider-post-carousel-excerpt"
+																	style={clampStyles}
+																>
+																	{excerpt}
+																</ExcerptTagName>
+															</div>
+														);
+													})() : null,
 
 													meta: (showMeta?.[deviceType] && (authorName || formattedDate)) ? (
 														<div key="meta" className="gslider-post-carousel-meta">

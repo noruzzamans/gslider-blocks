@@ -55,7 +55,15 @@ $enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
 $post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
 $post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
 
-// Custom Pro Title Settings
+// Excerpt Settings
+$enable_post_excerpt_limit = ! empty( $attributes['enablePostExcerptLimit'] );
+$post_excerpt_limit_type   = isset( $attributes['postExcerptLimitType'] ) ? sanitize_text_field( $attributes['postExcerptLimitType'] ) : 'words';
+$post_excerpt_limit_raw    = isset( $attributes['postExcerptLimit'] ) ? $attributes['postExcerptLimit'] : null;
+$post_excerpt_limit        = gslider_get_responsive_int( $post_excerpt_limit_raw, array( 'Desktop' => 20, 'Tablet' => 20, 'Mobile' => 20 ) );
+$post_excerpt_limit_suffix = isset( $attributes['postExcerptLimitSuffix'] ) ? sanitize_text_field( $attributes['postExcerptLimitSuffix'] ) : '...';
+$post_excerpt_source       = isset( $attributes['postExcerptSource'] ) ? sanitize_text_field( $attributes['postExcerptSource'] ) : 'auto';
+
+// Title Settings
 $enable_post_title_limit          = ! empty( $attributes['enablePostTitleLimit'] );
 $post_title_limit_type           = isset( $attributes['postTitleLimitType'] ) ? sanitize_text_field( $attributes['postTitleLimitType'] ) : 'words';
 $post_title_limit_raw            = isset( $attributes['postTitleLimit'] ) ? $attributes['postTitleLimit'] : null;
@@ -437,7 +445,40 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                 $posts_query->the_post();
                 $post_id    = get_the_ID();
                 $categories = get_the_category( $post_id );
-                $excerpt    = wp_trim_words( get_the_excerpt(), 20, '...' );
+                // Smart Excerpt fallback and limit rendering
+                $raw_excerpt = '';
+                if ( 'excerpt' === $post_excerpt_source ) {
+                    if ( has_excerpt( $post_id ) ) {
+                        $raw_excerpt = get_the_excerpt( $post_id );
+                    }
+                } elseif ( 'content' === $post_excerpt_source ) {
+                    $raw_excerpt = get_the_content( null, false, $post_id );
+                } else {
+                    $raw_excerpt = get_the_excerpt( $post_id );
+                }
+
+                $clean_excerpt = strip_shortcodes( $raw_excerpt );
+                $clean_excerpt = wp_strip_all_tags( $clean_excerpt );
+                $clean_excerpt = trim( $clean_excerpt );
+
+                if ( ! $enable_post_excerpt_limit ) {
+                    $excerpt = $clean_excerpt;
+                } else {
+                    $limit_val = isset( $post_excerpt_limit['Desktop'] ) ? intval( $post_excerpt_limit['Desktop'] ) : 20;
+                    if ( $limit_val <= 0 ) {
+                        $limit_val = 20;
+                    }
+
+                    if ( 'characters' === $post_excerpt_limit_type ) {
+                        if ( mb_strlen( $clean_excerpt ) > $limit_val ) {
+                            $excerpt = mb_substr( $clean_excerpt, 0, $limit_val ) . $post_excerpt_limit_suffix;
+                        } else {
+                            $excerpt = $clean_excerpt;
+                        }
+                    } else {
+                        $excerpt = wp_trim_words( $clean_excerpt, $limit_val, $post_excerpt_limit_suffix );
+                    }
+                }
                 ?>
                 <div class="swiper-slide">
                     <div class="gslider-post-carousel-content-wrapper <?php echo esc_attr( $global_class ); ?>"<?php echo $global_id ? ' id="' . esc_attr( $global_id ) . '"' : ''; ?>>
