@@ -46,6 +46,14 @@ const generatePostCarouselStyle = (attributes) => {
         showMetaAvatar,
         showMetaDate,
         showTaxonomy,
+
+        enableTaxonomyBadgeOverlay,
+        taxonomyBadgeOverlayPosition,
+        taxonomyBadgeOverlayVisibility,
+        taxonomyBadgeOverlayTopOffset,
+        taxonomyBadgeOverlayTopOffsetUnits,
+        taxonomyBadgeOverlayLeftOffset,
+        taxonomyBadgeOverlayLeftOffsetUnits,
         /** End Show/Hide Elements */
 
 
@@ -1372,6 +1380,35 @@ const generatePostCarouselStyle = (attributes) => {
     const postTagBackgroundNormalStyles = globalBackgroundStyleObjectToString(getPostTagBackgroundNormalStyles());
     const postTagBackgroundHoverStyles = globalBackgroundStyleObjectToString(getPostTagBackgroundHoverStyles());
 
+    // Taxonomy Badge Overlay position styling helper
+    const getTaxonomyBadgeOverlayPositionStyles = (device) => {
+        if (!enableTaxonomyBadgeOverlay) return '';
+        
+        const topOffset = taxonomyBadgeOverlayTopOffset?.[device] ?? (device === 'Mobile' ? 12 : 15);
+        const topUnit = taxonomyBadgeOverlayTopOffsetUnits?.[device] ?? 'px';
+        const topVal = `${topOffset}${topUnit}`;
+        
+        const leftOffset = taxonomyBadgeOverlayLeftOffset?.[device] ?? (device === 'Mobile' ? 12 : 15);
+        const leftUnit = taxonomyBadgeOverlayLeftOffsetUnits?.[device] ?? 'px';
+        const leftVal = `${leftOffset}${leftUnit}`;
+        
+        switch (taxonomyBadgeOverlayPosition) {
+            case 'top-left':
+                return `top: ${topVal}; left: ${leftVal}; bottom: auto; right: auto;`;
+            case 'top-right':
+                return `top: ${topVal}; right: ${leftVal}; bottom: auto; left: auto;`;
+            case 'bottom-left':
+                return `bottom: ${topVal}; left: ${leftVal}; top: auto; right: auto;`;
+            case 'bottom-right':
+                return `bottom: ${topVal}; right: ${leftVal}; top: auto; left: auto;`;
+            default:
+                return `top: ${topVal}; left: ${leftVal}; bottom: auto; right: auto;`;
+        }
+    };
+
+    const isBadgeHover = taxonomyBadgeOverlayVisibility === 'hover';
+    const badgeHoverTransformValue = (taxonomyBadgeOverlayPosition || 'top-left').startsWith('bottom') ? 'translateY(5px)' : 'translateY(-5px)';
+
     /** Start All Block Style */
     const postCarouselCSS = `
         .${blockId}.gslider-post-carousel-wrapper {
@@ -1811,6 +1848,33 @@ const generatePostCarouselStyle = (attributes) => {
             overflow: hidden;
             transition: all ${(imageTransitionDuration?.Desktop || 300)}ms ease-in-out;
         }
+
+        ${enableTaxonomyBadgeOverlay ? `
+        .${blockId} .gslider-post-carousel-image {
+            position: relative !important;
+        }
+        .${blockId} .gslider-taxonomy-badge-overlay {
+            position: absolute !important;
+            z-index: 10 !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: ${postCategoryGap?.Desktop ?? 5}${postCategoryGapUnits?.Desktop ?? 'px'} !important;
+            pointer-events: none !important;
+            transition: opacity ${(imageTransitionDuration?.Desktop || 300)}ms ease, transform ${(imageTransitionDuration?.Desktop || 300)}ms ease !important;
+            ${getTaxonomyBadgeOverlayPositionStyles('Desktop')}
+            ${isBadgeHover ? `opacity: 0 !important; transform: ${badgeHoverTransformValue} !important;` : 'opacity: 1 !important; transform: translateY(0) !important;'}
+        }
+        .${blockId} .gslider-taxonomy-badge-overlay a,
+        .${blockId} .gslider-taxonomy-badge-overlay span {
+            pointer-events: auto !important;
+        }
+        ${isBadgeHover ? `
+        .${blockId} .gslider-post-carousel-card:hover .gslider-taxonomy-badge-overlay {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+        ` : ''}
+        ` : ''}
 
         .${blockId} .gslider-post-carousel-image:hover {
             ${imageBackgroundHoverStyles ? `${imageBackgroundHoverStyles}` : ''}
@@ -2428,6 +2492,14 @@ const generatePostCarouselStyle = (attributes) => {
                 ` : ''}
             }
 
+            ${enableTaxonomyBadgeOverlay ? `
+            .${blockId} .gslider-taxonomy-badge-overlay {
+                ${getTaxonomyBadgeOverlayPositionStyles('Tablet')}
+                gap: ${postCategoryGap?.Tablet ?? 5}${postCategoryGapUnits?.Tablet ?? 'px'} !important;
+                transition: opacity ${(imageTransitionDuration?.Tablet || 300)}ms ease, transform ${(imageTransitionDuration?.Tablet || 300)}ms ease !important;
+            }
+            ` : ''}
+
             .${blockId} .gslider-post-carousel-image {
                 display: ${showFeaturedImage?.Tablet ? 'block' : 'none'};
                 ${imageHeight.Tablet ? `height: ${imageHeight.Tablet}${imageHeightUnits.Tablet} !important;` : ''}
@@ -2787,6 +2859,14 @@ const generatePostCarouselStyle = (attributes) => {
                     -webkit-line-clamp: ${postExcerptLineClamp.Mobile};
                 ` : ''}
             }
+
+            ${enableTaxonomyBadgeOverlay ? `
+            .${blockId} .gslider-taxonomy-badge-overlay {
+                ${getTaxonomyBadgeOverlayPositionStyles('Mobile')}
+                gap: ${postCategoryGap?.Mobile ?? 5}${postCategoryGapUnits?.Mobile ?? 'px'} !important;
+                transition: opacity ${(imageTransitionDuration?.Mobile || 300)}ms ease, transform ${(imageTransitionDuration?.Mobile || 300)}ms ease !important;
+            }
+            ` : ''}
 
             .${blockId} .gslider-post-carousel-image {
                 display: ${showFeaturedImage?.Mobile ? 'block' : 'none'};

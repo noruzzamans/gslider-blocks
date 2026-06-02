@@ -115,6 +115,13 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         layoutHeightUnits,
         contentOrder,
         postTaxonomyDisplay,
+        enableTaxonomyBadgeOverlay,
+        taxonomyBadgeOverlayPosition,
+        taxonomyBadgeOverlayVisibility,
+        taxonomyBadgeOverlayTopOffset,
+        taxonomyBadgeOverlayTopOffsetUnits,
+        taxonomyBadgeOverlayLeftOffset,
+        taxonomyBadgeOverlayLeftOffsetUnits,
         /** End Layout & Content Setting */
 
         /** Start Query Settings */
@@ -1553,6 +1560,88 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     ]}
                     onChange={(value) => setAttributes({ postTaxonomyDisplay: value })}
                 />
+
+                {postTaxonomyDisplay !== 'none' && (
+                    <>
+                        <ToggleControl
+                            label={__("Overlay Badge on Image", "gslider-blocks")}
+                            checked={!!enableTaxonomyBadgeOverlay}
+                            onChange={(value) => setAttributes({ enableTaxonomyBadgeOverlay: value })}
+                        />
+
+                        {!!enableTaxonomyBadgeOverlay && (
+                            <>
+                                <Select2Control
+                                    label={__("Badge Position", "gslider-blocks")}
+                                    value={taxonomyBadgeOverlayPosition}
+                                    options={[
+                                        { label: __('Top Left', 'gslider-blocks'), value: 'top-left' },
+                                        { label: __('Top Right', 'gslider-blocks'), value: 'top-right' },
+                                        { label: __('Bottom Left', 'gslider-blocks'), value: 'bottom-left' },
+                                        { label: __('Bottom Right', 'gslider-blocks'), value: 'bottom-right' },
+                                    ]}
+                                    onChange={(value) => setAttributes({ taxonomyBadgeOverlayPosition: value })}
+                                />
+
+                                <SwitcherControl
+                                    label={__("Badge Visibility", "gslider-blocks")}
+                                    options={[
+                                        { label: __('Always', 'gslider-blocks'), value: 'always' },
+                                        { label: __('On Hover', 'gslider-blocks'), value: 'hover' },
+                                    ]}
+                                    value={taxonomyBadgeOverlayVisibility}
+                                    onChange={(value) => setAttributes({ taxonomyBadgeOverlayVisibility: value })}
+                                />
+
+                                <ResponsiveRangeControl
+                                    label={__("Badge Vertical Offset (Top/Bottom)", "gslider-blocks")}
+                                    rangeValue={taxonomyBadgeOverlayTopOffset}
+                                    onChangeValue={(value) => setAttributes({ taxonomyBadgeOverlayTopOffset: value })}
+                                    onUnitChange={(value) => setAttributes({ taxonomyBadgeOverlayTopOffsetUnits: value })}
+                                    deviceType={deviceType}
+                                    units={taxonomyBadgeOverlayTopOffsetUnits}
+                                    resetFallbackValue={{
+                                        px: "15",
+                                        "%": "5",
+                                        vh: "5",
+                                        vw: "5",
+                                        em: "1",
+                                        rem: "1",
+                                    }}
+                                    unitBounds={{
+                                        px: { min: 0, max: 100, step: 1 },
+                                        em: { min: 0, max: 10, step: 0.1 },
+                                        rem: { min: 0, max: 10, step: 0.1 },
+                                        "%": { min: 0, max: 100, step: 1 },
+                                    }}
+                                />
+
+                                <ResponsiveRangeControl
+                                    label={__("Badge Horizontal Offset (Left/Right)", "gslider-blocks")}
+                                    rangeValue={taxonomyBadgeOverlayLeftOffset}
+                                    onChangeValue={(value) => setAttributes({ taxonomyBadgeOverlayLeftOffset: value })}
+                                    onUnitChange={(value) => setAttributes({ taxonomyBadgeOverlayLeftOffsetUnits: value })}
+                                    deviceType={deviceType}
+                                    units={taxonomyBadgeOverlayLeftOffsetUnits}
+                                    resetFallbackValue={{
+                                        px: "15",
+                                        "%": "5",
+                                        vh: "5",
+                                        vw: "5",
+                                        em: "1",
+                                        rem: "1",
+                                    }}
+                                    unitBounds={{
+                                        px: { min: 0, max: 100, step: 1 },
+                                        em: { min: 0, max: 10, step: 0.1 },
+                                        rem: { min: 0, max: 10, step: 0.1 },
+                                        "%": { min: 0, max: 100, step: 1 },
+                                    }}
+                                />
+                            </>
+                        )}
+                    </>
+                )}
             </PanelBody>
 
             <PanelBody

@@ -156,6 +156,10 @@ $show_meta_avatar_raw = isset( $attributes['showMetaAvatar'] ) ? $attributes['sh
 $show_meta_date_raw   = isset( $attributes['showMetaDate'] )   ? $attributes['showMetaDate']   : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_taxonomy       = isset( $attributes['showTaxonomy'] )       ? $attributes['showTaxonomy']       : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 
+$enable_taxonomy_badge_overlay     = ! empty( $attributes['enableTaxonomyBadgeOverlay'] );
+$taxonomy_badge_overlay_position   = isset( $attributes['taxonomyBadgeOverlayPosition'] ) ? sanitize_text_field( $attributes['taxonomyBadgeOverlayPosition'] ) : 'top-left';
+$taxonomy_badge_overlay_visibility = isset( $attributes['taxonomyBadgeOverlayVisibility'] ) ? sanitize_text_field( $attributes['taxonomyBadgeOverlayVisibility'] ) : 'always';
+
 $any_image_enabled    = ! empty( $show_featured_image['Desktop'] ) || ! empty( $show_featured_image['Tablet'] ) || ! empty( $show_featured_image['Mobile'] );
 $any_title_enabled    = ! empty( $show_post_title['Desktop'] )     || ! empty( $show_post_title['Tablet'] )     || ! empty( $show_post_title['Mobile'] );
 $any_excerpt_enabled  = ! empty( $show_excerpt['Desktop'] )        || ! empty( $show_excerpt['Tablet'] )        || ! empty( $show_excerpt['Mobile'] );
@@ -520,6 +524,40 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                 $posts_query->the_post();
                 $post_id    = get_the_ID();
                 $categories = get_the_category( $post_id );
+
+                // Build taxonomy HTML markup for reuse
+                $taxonomy_markup = '';
+                if ( $any_taxonomy_enabled ) {
+                    $post_taxonomy_display = isset( $attributes['postTaxonomyDisplay'] ) ? $attributes['postTaxonomyDisplay'] : 'category';
+                    $show_cat = ( 'category' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
+                    $show_tag = ( 'tag' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
+
+                    ob_start();
+                    if ( $show_cat && ! empty( $categories ) ) {
+                        ?>
+                        <div class="gslider-post-carousel-categories">
+                            <?php foreach ( $categories as $cat ) : ?>
+                                <span class="gslider-category-item"><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php
+                    }
+
+                    if ( $show_tag ) {
+                        $post_tags = get_the_tags( $post_id );
+                        if ( ! empty( $post_tags ) ) {
+                            ?>
+                            <div class="gslider-post-carousel-tags">
+                                <?php foreach ( $post_tags as $tag ) : ?>
+                                    <span class="gslider-tag-item"><a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>"><?php echo esc_html( $tag->name ); ?></a></span>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php
+                        }
+                    }
+                    $taxonomy_markup = ob_get_clean();
+                }
+
                 // Smart Excerpt fallback and limit rendering
                 $raw_excerpt = '';
                 if ( 'excerpt' === $post_excerpt_source ) {
@@ -583,39 +621,20 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                                     );
                                                     ?>
                                                 </a>
+                                                <?php if ( $enable_taxonomy_badge_overlay && ! empty( $taxonomy_markup ) ) : ?>
+                                                    <div class="gslider-taxonomy-badge-overlay gslider-badge-visibility-<?php echo esc_attr( $taxonomy_badge_overlay_visibility ); ?> gslider-badge-position-<?php echo esc_attr( $taxonomy_badge_overlay_position ); ?>">
+                                                        <?php echo $taxonomy_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                                    </div>
+                                                <?php endif; ?>
                                             </div>
                                             <?php
                                         endif;
                                         break;
  
                                     case 'categories':
-                                        if ( $any_taxonomy_enabled ) {
-                                            $post_taxonomy_display = isset( $attributes['postTaxonomyDisplay'] ) ? $attributes['postTaxonomyDisplay'] : 'category';
-                                            $show_cat = ( 'category' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
-                                            $show_tag = ( 'tag' === $post_taxonomy_display || 'both' === $post_taxonomy_display );
- 
-                                            if ( $show_cat && ! empty( $categories ) ) {
-                                                ?>
-                                                <div class="gslider-post-carousel-categories">
-                                                    <?php foreach ( $categories as $cat ) : ?>
-                                                        <span class="gslider-category-item"><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                                <?php
-                                            }
- 
-                                            if ( $show_tag ) {
-                                                $post_tags = get_the_tags( $post_id );
-                                                if ( ! empty( $post_tags ) ) {
-                                                    ?>
-                                                    <div class="gslider-post-carousel-tags">
-                                                        <?php foreach ( $post_tags as $tag ) : ?>
-                                                            <span class="gslider-tag-item"><a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>"><?php echo esc_html( $tag->name ); ?></a></span>
-                                                        <?php endforeach; ?>
-                                                    </div>
-                                                    <?php
-                                                }
-                                            }
+                                        $has_image = $any_image_enabled && has_post_thumbnail( $post_id );
+                                        if ( ! $enable_taxonomy_badge_overlay || ! $has_image ) {
+                                            echo $taxonomy_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                         }
                                         break;
  

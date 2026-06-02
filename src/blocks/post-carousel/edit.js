@@ -146,6 +146,9 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		cardTiltPerspective,
 		cardTiltHoverScale,
 		cardTiltTransitionSpeed,
+		enableTaxonomyBadgeOverlay,
+		taxonomyBadgeOverlayPosition,
+		taxonomyBadgeOverlayVisibility,
 	} = attributes;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
@@ -467,6 +470,36 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							const TagName = postTitleHtmlTag || 'h3';
 							const ExcerptTagName = postExcerptHtmlTag || 'p';
 
+							const renderTaxonomies = () => {
+								if (!showTaxonomy?.[deviceType]) return null;
+								const showCat = postTaxonomyDisplay === 'category' || postTaxonomyDisplay === 'both';
+								const showTag = postTaxonomyDisplay === 'tag' || postTaxonomyDisplay === 'both';
+
+								const hasCat = showCat && categories.length > 0;
+								const hasTag = showTag && tags.length > 0;
+
+								if (!hasCat && !hasTag) return null;
+
+								return (
+									<>
+										{hasCat && (
+											<div key="categories-wrap" className="gslider-post-carousel-categories">
+												{categories.map((cat) => (
+													<span key={`cat-${cat.id}`} className="gslider-category-item">{cat.name}</span>
+												))}
+											</div>
+										)}
+										{hasTag && (
+											<div key="tags-wrap" className="gslider-post-carousel-tags">
+												{tags.map((tag) => (
+													<span key={`tag-${tag.id}`} className="gslider-tag-item">{tag.name}</span>
+												))}
+											</div>
+										)}
+									</>
+								);
+							};
+
 							return (
 								<div className="swiper-slide" key={post.id}>
 									<div className={`gslider-post-carousel-content-wrapper ${globalClass}`} {...(globalID && { id: globalID })} ref={panelRef}>
@@ -486,37 +519,15 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 																alt={decodeHtmlEntities(post.title.rendered)}
 																loading={enableLazyLoad ? "lazy" : undefined}
 															/>
+															{enableTaxonomyBadgeOverlay && (
+																<div className={`gslider-taxonomy-badge-overlay gslider-badge-visibility-${taxonomyBadgeOverlayVisibility} gslider-badge-position-${taxonomyBadgeOverlayPosition}`}>
+																	{renderTaxonomies()}
+																</div>
+															)}
 														</div>
 													) : null,
 
-													categories: showTaxonomy?.[deviceType] ? (() => {
-														const showCat = postTaxonomyDisplay === 'category' || postTaxonomyDisplay === 'both';
-														const showTag = postTaxonomyDisplay === 'tag' || postTaxonomyDisplay === 'both';
-
-														const hasCat = showCat && categories.length > 0;
-														const hasTag = showTag && tags.length > 0;
-
-														if (!hasCat && !hasTag) return null;
-
-														return (
-															<>
-																{hasCat && (
-																	<div key="categories-wrap" className="gslider-post-carousel-categories">
-																		{categories.map((cat) => (
-																			<span key={`cat-${cat.id}`} className="gslider-category-item">{cat.name}</span>
-																		))}
-																	</div>
-																)}
-																{hasTag && (
-																	<div key="tags-wrap" className="gslider-post-carousel-tags">
-																		{tags.map((tag) => (
-																			<span key={`tag-${tag.id}`} className="gslider-tag-item">{tag.name}</span>
-																		))}
-																	</div>
-																)}
-															</>
-														);
-													})() : null,
+													categories: (!enableTaxonomyBadgeOverlay || !(showFeaturedImage?.[deviceType] && featuredImageUrl)) ? renderTaxonomies() : null,
 
 													title: showPostTitle?.[deviceType] ? (() => {
 														const rawTitleText = decodeHtmlEntities(post.title.rendered);

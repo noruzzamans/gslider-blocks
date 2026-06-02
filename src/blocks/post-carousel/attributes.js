@@ -157,6 +157,50 @@ const attributes = {
         type: "string",
         default: "category",
     },
+    enableTaxonomyBadgeOverlay: {
+        type: "boolean",
+        default: false,
+    },
+    taxonomyBadgeOverlayPosition: {
+        type: "string",
+        default: "top-left",
+    },
+    taxonomyBadgeOverlayVisibility: {
+        type: "string",
+        default: "always",
+    },
+    taxonomyBadgeOverlayTopOffset: {
+        type: "object",
+        default: {
+            Desktop: "15",
+            Tablet: "15",
+            Mobile: "12",
+        },
+    },
+    taxonomyBadgeOverlayTopOffsetUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
+    taxonomyBadgeOverlayLeftOffset: {
+        type: "object",
+        default: {
+            Desktop: "15",
+            Tablet: "15",
+            Mobile: "12",
+        },
+    },
+    taxonomyBadgeOverlayLeftOffsetUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px",
+        },
+    },
     /** End Content Order */
 
     /** Query Attributes */
