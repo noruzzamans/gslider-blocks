@@ -47,6 +47,7 @@ const QuerySettingsPanel = ({
     opened,
     onToggle,
     deviceType = 'Desktop',
+    showRelatedPostsQuery = false,
 }) => {
     const {
         postType,
@@ -70,6 +71,8 @@ const QuerySettingsPanel = ({
         metaCompare,
         dateRange,
         excludeCurrentPost,
+        useRelatedPostsQuery = false,
+        relatedPostsTaxonomy = 'category',
     } = attributes;
 
     /**
@@ -337,22 +340,58 @@ const QuerySettingsPanel = ({
         >
             <div className="gslider-query-settings-panel">
 
-                {/* Post Type */}
-                <BaseControl
-                    label={__('Post Type', 'gslider-blocks')}
-                    className="gslider-query-post-type"
-                >
-                    <Select
-                        options={postTypeOptions}
-                        value={selectedPostType}
-                        onChange={handlePostTypeChange}
-                        className="gslider-query-select2-control"
-                        classNamePrefix="gslider-select2"
-                    />
-                </BaseControl>
+                {/* Related Posts Mode */}
+                {showRelatedPostsQuery && (
+                    <div className="gslider-query-related-posts-section" style={{ marginBottom: '15px', borderBottom: '1px solid #e0e0e0', paddingBottom: '15px' }}>
+                        <ToggleControl
+                            label={__('Related Posts Mode', 'gslider-blocks')}
+                            checked={!!useRelatedPostsQuery}
+                            onChange={(value) => setAttributes({ useRelatedPostsQuery: value })}
+                            help={__('Automatically fetch posts related to the current post by category or tag.', 'gslider-blocks')}
+                        />
+                        {!!useRelatedPostsQuery && (
+                            <BaseControl
+                                label={__('Match Taxonomy By', 'gslider-blocks')}
+                                className="gslider-query-related-taxonomy"
+                            >
+                                <Select
+                                    options={[
+                                        { label: __('Categories', 'gslider-blocks'), value: 'category' },
+                                        { label: __('Tags', 'gslider-blocks'), value: 'post_tag' },
+                                        { label: __('Categories & Tags', 'gslider-blocks'), value: 'both' },
+                                    ]}
+                                    value={[
+                                        { label: __('Categories', 'gslider-blocks'), value: 'category' },
+                                        { label: __('Tags', 'gslider-blocks'), value: 'post_tag' },
+                                        { label: __('Categories & Tags', 'gslider-blocks'), value: 'both' },
+                                    ].find(opt => opt.value === relatedPostsTaxonomy) || { label: __('Categories', 'gslider-blocks'), value: 'category' }}
+                                    onChange={(option) => setAttributes({ relatedPostsTaxonomy: option.value })}
+                                    className="gslider-query-select2-control"
+                                    classNamePrefix="gslider-select2"
+                                />
+                            </BaseControl>
+                        )}
+                    </div>
+                )}
 
-                {/* Dynamic Taxonomies (Category, Tag, Custom Taxonomies) */}
-                {taxonomies && taxonomies.map((taxonomy) => {
+                {/* Post Type (Hide if related query active) */}
+                {!useRelatedPostsQuery && (
+                    <BaseControl
+                        label={__('Post Type', 'gslider-blocks')}
+                        className="gslider-query-post-type"
+                    >
+                        <Select
+                            options={postTypeOptions}
+                            value={selectedPostType}
+                            onChange={handlePostTypeChange}
+                            className="gslider-query-select2-control"
+                            classNamePrefix="gslider-select2"
+                        />
+                    </BaseControl>
+                )}
+
+                {/* Dynamic Taxonomies (Category, Tag, Custom Taxonomies) (Hide if related query active) */}
+                {!useRelatedPostsQuery && taxonomies && taxonomies.map((taxonomy) => {
                     const { options, selectedOptions, filterType } = getTaxonomyData(taxonomy.slug);
 
                     return (
@@ -387,37 +426,39 @@ const QuerySettingsPanel = ({
                     );
                 })}
 
-                {/* Authors */}
-                <div className="gslider-query-taxonomy-section">
-                    <SwitcherControl
-                        label={__('Author', 'gslider-blocks')}
-                        options={INCLUDE_EXCLUDE_OPTIONS}
-                        value={authorFilterType || 'include'}
-                        onChange={(value) =>
-                            setAttributes({ authorFilterType: value })
-                        }
-                    />
-
-                    <BaseControl
-                        label={
-                            (authorFilterType || 'include') === 'exclude'
-                                ? __('Exclude Authors', 'gslider-blocks')
-                                : __('Include Authors', 'gslider-blocks')
-                        }
-                        className="gslider-query-author-select"
-                    >
-                        <Select
-                            options={authorOptions}
-                            value={selectedAuthorOptions}
-                            onChange={handleAuthorsChange}
-                            isMulti
-                            isClearable
-                            placeholder={__('Select...', 'gslider-blocks')}
-                            className="gslider-query-select2-control"
-                            classNamePrefix="gslider-select2"
+                {/* Authors (Hide if related query active) */}
+                {!useRelatedPostsQuery && (
+                    <div className="gslider-query-taxonomy-section">
+                        <SwitcherControl
+                            label={__('Author', 'gslider-blocks')}
+                            options={INCLUDE_EXCLUDE_OPTIONS}
+                            value={authorFilterType || 'include'}
+                            onChange={(value) =>
+                                setAttributes({ authorFilterType: value })
+                            }
                         />
-                    </BaseControl>
-                </div>
+
+                        <BaseControl
+                            label={
+                                (authorFilterType || 'include') === 'exclude'
+                                    ? __('Exclude Authors', 'gslider-blocks')
+                                    : __('Include Authors', 'gslider-blocks')
+                            }
+                            className="gslider-query-author-select"
+                        >
+                            <Select
+                                options={authorOptions}
+                                value={selectedAuthorOptions}
+                                onChange={handleAuthorsChange}
+                                isMulti
+                                isClearable
+                                placeholder={__('Select...', 'gslider-blocks')}
+                                className="gslider-query-select2-control"
+                                classNamePrefix="gslider-select2"
+                            />
+                        </BaseControl>
+                    </div>
+                )}
 
                 {/* Order By */}
                 <BaseControl
@@ -479,8 +520,8 @@ const QuerySettingsPanel = ({
                     />
                 )}
 
-                {/* Sticky Posts */}
-                {showStickyPosts && (
+                {/* Sticky Posts (Hide if related query active) */}
+                {!useRelatedPostsQuery && showStickyPosts && (
                     <BaseControl
                         label={__('Sticky Posts', 'gslider-blocks')}
                         className="gslider-query-sticky-posts"
@@ -497,8 +538,8 @@ const QuerySettingsPanel = ({
                     </BaseControl>
                 )}
 
-                {/* Date Range */}
-                {showDateRange && (
+                {/* Date Range (Hide if related query active) */}
+                {!useRelatedPostsQuery && showDateRange && (
                     <BaseControl
                         label={__('Date Range', 'gslider-blocks')}
                         className="gslider-query-date-range"
@@ -515,8 +556,8 @@ const QuerySettingsPanel = ({
                     </BaseControl>
                 )}
 
-                {/* Meta Query */}
-                {showMetaQuery && (
+                {/* Meta Query (Hide if related query active) */}
+                {!useRelatedPostsQuery && showMetaQuery && (
                     <>
                         <ToggleControl
                             label={__('Filter by Custom Field (Meta)', 'gslider-blocks')}
@@ -575,8 +616,8 @@ const QuerySettingsPanel = ({
                     </>
                 )}
 
-                {/* Search Keyword */}
-                {showSearchQuery && (
+                {/* Search Keyword (Hide if related query active) */}
+                {!useRelatedPostsQuery && showSearchQuery && (
                     <TextControl
                         label={__('Search Keyword', 'gslider-blocks')}
                         value={searchQuery}
@@ -587,8 +628,8 @@ const QuerySettingsPanel = ({
                     />
                 )}
 
-                {/* Exclude Post IDs */}
-                {showExcludePosts && (
+                {/* Exclude Post IDs (Hide if related query active) */}
+                {!useRelatedPostsQuery && showExcludePosts && (
                     <TextControl
                         label={__('Exclude Post IDs', 'gslider-blocks')}
                         value={excludePosts}
@@ -599,8 +640,8 @@ const QuerySettingsPanel = ({
                     />
                 )}
 
-                {/* Exclude Current Post */}
-                {showExcludeCurrentPost && (
+                {/* Exclude Current Post (Hide if related query active - automatically excluded) */}
+                {!useRelatedPostsQuery && showExcludeCurrentPost && (
                     <ToggleControl
                         label={__('Exclude Current Post', 'gslider-blocks')}
                         checked={excludeCurrentPost}

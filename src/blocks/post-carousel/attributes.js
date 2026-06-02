@@ -161,6 +161,14 @@ const attributes = {
 
     /** Query Attributes */
     ...queryAttributes,
+    useRelatedPostsQuery: {
+        type: "boolean",
+        default: false,
+    },
+    relatedPostsTaxonomy: {
+        type: "string",
+        default: "category",
+    },
     /** End Query Attributes */
 
     /** Start Navigation Custom Arrows */

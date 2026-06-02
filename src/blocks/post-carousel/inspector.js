@@ -1519,6 +1519,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                 onToggle={() => togglePanel("general", "query-settings")}
                 panelTitle={__("Query Settings", "gslider-blocks")}
                 deviceType={deviceType}
+                showRelatedPostsQuery={true}
             />
 
             <PanelBody

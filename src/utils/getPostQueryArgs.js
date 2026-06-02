@@ -8,7 +8,7 @@
  * @param {Array}  taxonomies    List of registered WordPress taxonomies.
  * @returns {Object}             Formed query object for usePostQuery.
  */
-export const getPostQueryArgs = (attributes, deviceType = 'Desktop', currentPostId = null, taxonomies = []) => {
+export const getPostQueryArgs = (attributes, deviceType = 'Desktop', currentPostId = null, taxonomies = [], currentPostCategories = [], currentPostTags = []) => {
     const {
         postType = 'post',
         postsPerPage = 6,
@@ -30,6 +30,8 @@ export const getPostQueryArgs = (attributes, deviceType = 'Desktop', currentPost
         metaValue = '',
         metaCompare = '=',
         dateRange = 'any',
+        useRelatedPostsQuery = false,
+        relatedPostsTaxonomy = 'category',
     } = attributes;
 
     // Resolve responsive posts count and offset
@@ -54,52 +56,12 @@ export const getPostQueryArgs = (attributes, deviceType = 'Desktop', currentPost
         queryArgs.offset = activeOffset;
     }
 
-    // Apply categories filter
-    if (categories && categories.length > 0) {
-        if (categoryFilterType === 'exclude') {
-            queryArgs.categories_exclude = categories.join(',');
-        } else {
-            queryArgs.categories = categories.join(',');
-        }
-    }
-
-    // Apply tags filter
-    if (tags && tags.length > 0) {
-        if (tagFilterType === 'exclude') {
-            queryArgs.tags_exclude = tags.join(',');
-        } else {
-            queryArgs.tags = tags.join(',');
-        }
-    }
-
-    // Apply authors filter
-    if (authors && authors.length > 0) {
-        if (authorFilterType === 'exclude') {
-            queryArgs.author_exclude = authors.join(',');
-        } else {
-            queryArgs.author = authors.join(',');
-        }
-    }
-
-    // Dynamic taxonomies mapping for custom post types
-    if (taxonomyQuery && Object.keys(taxonomyQuery).length > 0 && taxonomies && taxonomies.length > 0) {
-        taxonomies.forEach(tax => {
-            if (tax.types.includes(postType) && taxonomyQuery[tax.slug] && taxonomyQuery[tax.slug].length > 0) {
-                // Ignore category and post_tag as they are already handled separately
-                if (tax.slug !== 'category' && tax.slug !== 'post_tag') {
-                    const restBase = tax.rest_base || tax.slug;
-                    queryArgs[restBase] = taxonomyQuery[tax.slug].join(',');
-                }
-            }
-        });
-    }
-
     // Exclude posts
     const excludedIds = excludePosts
         ? excludePosts.split(',').map(id => parseInt(id.trim(), 10)).filter(id => !isNaN(id))
         : [];
 
-    if (excludeCurrentPost && currentPostId) {
+    if ((excludeCurrentPost || useRelatedPostsQuery) && currentPostId) {
         excludedIds.push(currentPostId);
     }
 
@@ -107,60 +69,129 @@ export const getPostQueryArgs = (attributes, deviceType = 'Desktop', currentPost
         queryArgs.exclude = excludedIds;
     }
 
-    // Relative date range
-    if (dateRange && dateRange !== 'any') {
-        const now = new Date();
-        let afterDate;
+    if (useRelatedPostsQuery) {
+        // Apply dynamic related post taxonomy query
+        let hasTaxonomyMatch = false;
+
+        if (relatedPostsTaxonomy === 'category' || relatedPostsTaxonomy === 'both') {
+            if (currentPostCategories && currentPostCategories.length > 0) {
+                queryArgs.categories = currentPostCategories.join(',');
+                hasTaxonomyMatch = true;
+            }
+        }
         
-        switch (dateRange) {
-            case 'last_24_hours':
-                afterDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-                break;
-            case 'last_7_days':
-                afterDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-                break;
-            case 'last_30_days':
-                afterDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-                break;
-            case 'last_365_days':
-                afterDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
-                break;
-            case 'current_month':
-                afterDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-                break;
-            case 'current_year':
-                afterDate = new Date(now.getFullYear(), 0, 1).toISOString();
-                break;
-            default:
-                break;
+        if (relatedPostsTaxonomy === 'post_tag' || relatedPostsTaxonomy === 'both') {
+            if (currentPostTags && currentPostTags.length > 0) {
+                queryArgs.tags = currentPostTags.join(',');
+                hasTaxonomyMatch = true;
+            }
         }
 
-        if (afterDate) {
-            queryArgs.after = afterDate;
+        // If 'both' was selected but we only have categories, we queried categories.
+        // If neither was matched (e.g. no categories/tags on current post), return nothing by setting invalid filter.
+        if (!hasTaxonomyMatch) {
+            if (relatedPostsTaxonomy === 'post_tag') {
+                queryArgs.tags = '0';
+            } else {
+                queryArgs.categories = '0';
+            }
         }
-    }
-
-    // Custom Fields (Meta query)
-    if (metaKey) {
-        queryArgs.meta_key = metaKey;
-        if (metaValue) {
-            queryArgs.meta_value = metaValue;
+    } else {
+        // Apply categories filter
+        if (categories && categories.length > 0) {
+            if (categoryFilterType === 'exclude') {
+                queryArgs.categories_exclude = categories.join(',');
+            } else {
+                queryArgs.categories = categories.join(',');
+            }
         }
-        if (metaCompare) {
-            queryArgs.meta_compare = metaCompare;
+
+        // Apply tags filter
+        if (tags && tags.length > 0) {
+            if (tagFilterType === 'exclude') {
+                queryArgs.tags_exclude = tags.join(',');
+            } else {
+                queryArgs.tags = tags.join(',');
+            }
         }
-    }
 
-    // Search query
-    if (searchQuery) {
-        queryArgs.search = searchQuery;
-    }
+        // Apply authors filter
+        if (authors && authors.length > 0) {
+            if (authorFilterType === 'exclude') {
+                queryArgs.author_exclude = authors.join(',');
+            } else {
+                queryArgs.author = authors.join(',');
+            }
+        }
 
-    // Sticky posts handling
-    if (stickyPosts === 'exclude') {
-        queryArgs.sticky = false;
-    } else if (stickyPosts === 'only') {
-        queryArgs.sticky = true;
+        // Dynamic taxonomies mapping for custom post types
+        if (taxonomyQuery && Object.keys(taxonomyQuery).length > 0 && taxonomies && taxonomies.length > 0) {
+            taxonomies.forEach(tax => {
+                if (tax.types.includes(postType) && taxonomyQuery[tax.slug] && taxonomyQuery[tax.slug].length > 0) {
+                    // Ignore category and post_tag as they are already handled separately
+                    if (tax.slug !== 'category' && tax.slug !== 'post_tag') {
+                        const restBase = tax.rest_base || tax.slug;
+                        queryArgs[restBase] = taxonomyQuery[tax.slug].join(',');
+                    }
+                }
+            });
+        }
+
+        // Relative date range
+        if (dateRange && dateRange !== 'any') {
+            const now = new Date();
+            let afterDate;
+            
+            switch (dateRange) {
+                case 'last_24_hours':
+                    afterDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+                    break;
+                case 'last_7_days':
+                    afterDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+                    break;
+                case 'last_30_days':
+                    afterDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+                    break;
+                case 'last_365_days':
+                    afterDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString();
+                    break;
+                case 'current_month':
+                    afterDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+                    break;
+                case 'current_year':
+                    afterDate = new Date(now.getFullYear(), 0, 1).toISOString();
+                    break;
+                default:
+                    break;
+            }
+
+            if (afterDate) {
+                queryArgs.after = afterDate;
+            }
+        }
+
+        // Custom Fields (Meta query)
+        if (metaKey) {
+            queryArgs.meta_key = metaKey;
+            if (metaValue) {
+                queryArgs.meta_value = metaValue;
+            }
+            if (metaCompare) {
+                queryArgs.meta_compare = metaCompare;
+            }
+        }
+
+        // Search query
+        if (searchQuery) {
+            queryArgs.search = searchQuery;
+        }
+
+        // Sticky posts handling
+        if (stickyPosts === 'exclude') {
+            queryArgs.sticky = false;
+        } else if (stickyPosts === 'only') {
+            queryArgs.sticky = true;
+        }
     }
 
     return queryArgs;

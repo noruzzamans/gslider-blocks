@@ -256,63 +256,132 @@ $meta_compare          = isset( $attributes['metaCompare'] ) ? sanitize_text_fie
 $date_range            = isset( $attributes['dateRange'] ) ? sanitize_text_field( $attributes['dateRange'] ) : 'any';
 $exclude_current_post  = ! empty( $attributes['excludeCurrentPost'] );
 
-// Construct query arguments for WP_Query
-$query_args = array(
-    'post_type'      => $post_type,
-    'posts_per_page' => $posts_per_page,
-    'post_status'    => 'publish',
-    'orderby'        => $orderby,
-    'order'          => $order,
-);
+$use_related_posts_query = ! empty( $attributes['useRelatedPostsQuery'] );
+$related_posts_taxonomy  = isset( $attributes['relatedPostsTaxonomy'] ) ? sanitize_text_field( $attributes['relatedPostsTaxonomy'] ) : 'category';
 
-// Call Helper methods to compile dynamic options
-$tax_query = \GSlider\Utils\Helper::build_tax_query( $categories, $category_filter_type, $tags, $tag_filter_type, $taxonomy_query, $taxonomy_filter_types );
-if ( ! empty( $tax_query ) ) {
-    $query_args['tax_query'] = $tax_query;
-}
+if ( $use_related_posts_query ) {
+    $current_post_id = get_the_ID();
+    $resolved_post_type = $current_post_id ? get_post_type( $current_post_id ) : $post_type;
 
-$author_query = \GSlider\Utils\Helper::build_author_query( $authors, $author_filter_type );
-if ( ! empty( $author_query ) ) {
-    $query_args = array_merge( $query_args, $author_query );
-}
+    $query_args = array(
+        'post_type'      => $resolved_post_type,
+        'posts_per_page' => $posts_per_page,
+        'post_status'    => 'publish',
+        'orderby'        => $orderby,
+        'order'          => $order,
+    );
 
-if ( $offset > 0 ) {
-    $query_args['offset'] = $offset;
-}
+    // Build tax query matching the current post's categories/tags
+    $tax_query = array();
+    if ( $current_post_id ) {
+        if ( 'category' === $related_posts_taxonomy || 'both' === $related_posts_taxonomy ) {
+            $current_cats = wp_get_post_categories( $current_post_id );
+            if ( ! empty( $current_cats ) ) {
+                $tax_query[] = array(
+                    'taxonomy' => 'category',
+                    'field'    => 'term_id',
+                    'terms'    => $current_cats,
+                    'operator' => 'IN',
+                );
+            }
+        }
 
-$excluded_ids = \GSlider\Utils\Helper::build_excluded_posts( $exclude_posts, $exclude_current_post );
-if ( ! empty( $excluded_ids ) ) {
-    $query_args['post__not_in'] = $excluded_ids;
-}
+        if ( 'post_tag' === $related_posts_taxonomy || 'both' === $related_posts_taxonomy ) {
+            $current_tags = wp_get_post_terms( $current_post_id, 'post_tag', array( 'fields' => 'ids' ) );
+            if ( ! empty( $current_tags ) && ! is_wp_error( $current_tags ) ) {
+                $tax_query[] = array(
+                    'taxonomy' => 'post_tag',
+                    'field'    => 'term_id',
+                    'terms'    => $current_tags,
+                    'operator' => 'IN',
+                );
+            }
+        }
 
-if ( ! empty( $search_query ) ) {
-    $query_args['s'] = $search_query;
-}
-
-$date_query = \GSlider\Utils\Helper::build_date_query( $date_range );
-if ( ! empty( $date_query ) ) {
-    $query_args['date_query'] = $date_query;
-}
-
-$meta_query = \GSlider\Utils\Helper::build_meta_query( $meta_key, $meta_value, $meta_compare );
-if ( ! empty( $meta_query ) ) {
-    $query_args['meta_query'] = $meta_query;
-    if ( in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) ) {
-        $query_args['meta_key'] = $meta_key;
+        if ( ! empty( $tax_query ) ) {
+            if ( count( $tax_query ) > 1 ) {
+                $tax_query['relation'] = 'OR';
+            }
+            $query_args['tax_query'] = $tax_query;
+        } else {
+            // Force return empty query if no tax matches exist (avoid showing all posts)
+            $query_args['post__in'] = array( 0 );
+        }
     }
-}
 
-// Construct Sticky Posts rules
-if ( 'exclude' === $sticky_posts ) {
-    $sticky_ids = get_option( 'sticky_posts' );
-    if ( ! empty( $sticky_ids ) ) {
-        $query_args['post__not_in'] = isset( $query_args['post__not_in'] )
-            ? array_merge( $query_args['post__not_in'], $sticky_ids )
-            : $sticky_ids;
+    // Force exclude current post
+    $excluded_ids = array();
+    if ( $current_post_id ) {
+        $excluded_ids[] = $current_post_id;
     }
-} elseif ( 'only' === $sticky_posts ) {
-    $sticky_ids = get_option( 'sticky_posts' );
-    $query_args['post__in'] = ! empty( $sticky_ids ) ? $sticky_ids : array( 0 );
+    if ( ! empty( $exclude_posts ) ) {
+        $additional_excludes = array_map( 'intval', explode( ',', $exclude_posts ) );
+        $excluded_ids = array_merge( $excluded_ids, $additional_excludes );
+    }
+    $query_args['post__not_in'] = array_unique( $excluded_ids );
+
+    if ( $offset > 0 ) {
+        $query_args['offset'] = $offset;
+    }
+} else {
+    // Construct query arguments for WP_Query
+    $query_args = array(
+        'post_type'      => $post_type,
+        'posts_per_page' => $posts_per_page,
+        'post_status'    => 'publish',
+        'orderby'        => $orderby,
+        'order'          => $order,
+    );
+
+    // Call Helper methods to compile dynamic options
+    $tax_query = \GSlider\Utils\Helper::build_tax_query( $categories, $category_filter_type, $tags, $tag_filter_type, $taxonomy_query, $taxonomy_filter_types );
+    if ( ! empty( $tax_query ) ) {
+        $query_args['tax_query'] = $tax_query;
+    }
+
+    $author_query = \GSlider\Utils\Helper::build_author_query( $authors, $author_filter_type );
+    if ( ! empty( $author_query ) ) {
+        $query_args = array_merge( $query_args, $author_query );
+    }
+
+    if ( $offset > 0 ) {
+        $query_args['offset'] = $offset;
+    }
+
+    $excluded_ids = \GSlider\Utils\Helper::build_excluded_posts( $exclude_posts, $exclude_current_post );
+    if ( ! empty( $excluded_ids ) ) {
+        $query_args['post__not_in'] = $excluded_ids;
+    }
+
+    if ( ! empty( $search_query ) ) {
+        $query_args['s'] = $search_query;
+    }
+
+    $date_query = \GSlider\Utils\Helper::build_date_query( $date_range );
+    if ( ! empty( $date_query ) ) {
+        $query_args['date_query'] = $date_query;
+    }
+
+    $meta_query = \GSlider\Utils\Helper::build_meta_query( $meta_key, $meta_value, $meta_compare );
+    if ( ! empty( $meta_query ) ) {
+        $query_args['meta_query'] = $meta_query;
+        if ( in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) ) {
+            $query_args['meta_key'] = $meta_key;
+        }
+    }
+
+    // Construct Sticky Posts rules
+    if ( 'exclude' === $sticky_posts ) {
+        $sticky_ids = get_option( 'sticky_posts' );
+        if ( ! empty( $sticky_ids ) ) {
+            $query_args['post__not_in'] = isset( $query_args['post__not_in'] )
+                ? array_merge( $query_args['post__not_in'], $sticky_ids )
+                : $sticky_ids;
+        }
+    } elseif ( 'only' === $sticky_posts ) {
+        $sticky_ids = get_option( 'sticky_posts' );
+        $query_args['post__in'] = ! empty( $sticky_ids ) ? $sticky_ids : array( 0 );
+    }
 }
 
 $posts_query = new WP_Query( $query_args );

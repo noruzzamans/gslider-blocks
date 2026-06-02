@@ -94,6 +94,8 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		readMoreButtonIconImageAlt,
 
 		postType,
+		useRelatedPostsQuery,
+		relatedPostsTaxonomy,
 		postTitleHtmlTag,
 		enablePostTitleLimit,
 		postTitleLimitType,
@@ -213,21 +215,25 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 
 	const normalizedContentOrder = normalizeContentOrder(contentOrder);
 
-	/** Fetch current post ID and CPT taxonomies for query mapping */
-	const { currentPostId, taxonomies } = useSelect((select) => {
-		const { getCurrentPostId } = select('core/editor') || {};
+	/** Fetch current post ID, categories, tags, and CPT taxonomies for query mapping */
+	const { currentPostId, taxonomies, currentPostCategories, currentPostTags, currentPostType } = useSelect((select) => {
+		const { getCurrentPostId, getEditedPostAttribute, getCurrentPostType } = select('core/editor') || {};
 		const { getTaxonomies } = select('core');
 		return {
 			currentPostId: getCurrentPostId ? getCurrentPostId() : null,
 			taxonomies: getTaxonomies ? getTaxonomies() || [] : [],
+			currentPostCategories: getEditedPostAttribute ? (getEditedPostAttribute('categories') || []) : [],
+			currentPostTags: getEditedPostAttribute ? (getEditedPostAttribute('tags') || []) : [],
+			currentPostType: getCurrentPostType ? getCurrentPostType() : null,
 		};
 	}, []);
 
 	/** Construct dynamic query arguments for the REST API */
-	const queryArgs = getPostQueryArgs(attributes, deviceType, currentPostId, taxonomies);
+	const queryArgs = getPostQueryArgs(attributes, deviceType, currentPostId, taxonomies, currentPostCategories, currentPostTags);
 
 	/** Fetch posts using global usePostQuery hook */
-	const { posts, isLoading } = usePostQuery(queryArgs, postType);
+	const resolvedPostType = (useRelatedPostsQuery && currentPostType) ? currentPostType : postType;
+	const { posts, isLoading } = usePostQuery(queryArgs, resolvedPostType);
 
 	/** Refs for vanilla JS Swiper */
 	const swiperContainerRef = useRef(null);
