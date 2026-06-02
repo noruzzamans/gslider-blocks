@@ -42,6 +42,9 @@ const generatePostCarouselStyle = (attributes) => {
         showPostTitle,
         showExcerpt,
         showMeta,
+        showMetaAuthor,
+        showMetaAvatar,
+        showMetaDate,
         showTaxonomy,
         /** End Show/Hide Elements */
 
@@ -1827,6 +1830,18 @@ const generatePostCarouselStyle = (attributes) => {
             display: ${showMeta?.Desktop ? 'flex' : 'none'};
         }
 
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper {
+            display: ${(showMetaAuthor?.Desktop ?? true) ? 'flex' : 'none'};
+        }
+
+        .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+            display: ${(showMetaAvatar?.Desktop ?? true) ? 'flex' : 'none'};
+        }
+
+        .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+            display: ${(showMetaDate?.Desktop ?? true) ? 'flex' : 'none'};
+        }
+
         /* Post Category Styles */
         .${blockId} .gslider-post-carousel-categories {
             display: ${showTaxonomy?.Desktop ? 'flex' : 'none'};
@@ -2434,6 +2449,18 @@ const generatePostCarouselStyle = (attributes) => {
                 display: ${showMeta?.Tablet ? 'flex' : 'none'};
             }
 
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper {
+                display: ${(showMetaAuthor?.Tablet ?? true) ? 'flex' : 'none'};
+            }
+
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+                display: ${(showMetaAvatar?.Tablet ?? true) ? 'flex' : 'none'};
+            }
+
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+                display: ${(showMetaDate?.Tablet ?? true) ? 'flex' : 'none'};
+            }
+
             /* Post Category Styles */
             .${blockId} .gslider-post-carousel-categories {
                 display: ${showTaxonomy?.Tablet ? 'flex' : 'none'};
@@ -2780,6 +2807,18 @@ const generatePostCarouselStyle = (attributes) => {
 
             .${blockId} .gslider-post-carousel-meta {
                 display: ${showMeta?.Mobile ? 'flex' : 'none'};
+            }
+
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper {
+                display: ${(showMetaAuthor?.Mobile ?? true) ? 'flex' : 'none'};
+            }
+
+            .${blockId} .gslider-post-carousel-meta .gslider-post-author-wrapper .gslider-post-author-avatar-wrapper {
+                display: ${(showMetaAvatar?.Mobile ?? true) ? 'flex' : 'none'};
+            }
+
+            .${blockId} .gslider-post-carousel-meta .gslider-post-date-wrapper {
+                display: ${(showMetaDate?.Mobile ?? true) ? 'flex' : 'none'};
             }
 
             /* Post Category Styles */

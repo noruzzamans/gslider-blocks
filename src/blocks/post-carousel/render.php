@@ -151,12 +151,18 @@ $show_featured_image = isset( $attributes['showFeaturedImage'] ) ? $attributes['
 $show_post_title     = isset( $attributes['showPostTitle'] )     ? $attributes['showPostTitle']     : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_excerpt        = isset( $attributes['showExcerpt'] )        ? $attributes['showExcerpt']        : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_meta           = isset( $attributes['showMeta'] )           ? $attributes['showMeta']           : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_meta_author_raw = isset( $attributes['showMetaAuthor'] ) ? $attributes['showMetaAuthor'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_meta_avatar_raw = isset( $attributes['showMetaAvatar'] ) ? $attributes['showMetaAvatar'] : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
+$show_meta_date_raw   = isset( $attributes['showMetaDate'] )   ? $attributes['showMetaDate']   : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 $show_taxonomy       = isset( $attributes['showTaxonomy'] )       ? $attributes['showTaxonomy']       : array( 'Desktop' => true, 'Tablet' => true, 'Mobile' => true );
 
 $any_image_enabled    = ! empty( $show_featured_image['Desktop'] ) || ! empty( $show_featured_image['Tablet'] ) || ! empty( $show_featured_image['Mobile'] );
 $any_title_enabled    = ! empty( $show_post_title['Desktop'] )     || ! empty( $show_post_title['Tablet'] )     || ! empty( $show_post_title['Mobile'] );
 $any_excerpt_enabled  = ! empty( $show_excerpt['Desktop'] )        || ! empty( $show_excerpt['Tablet'] )        || ! empty( $show_excerpt['Mobile'] );
 $any_meta_enabled     = ! empty( $show_meta['Desktop'] )           || ! empty( $show_meta['Tablet'] )           || ! empty( $show_meta['Mobile'] );
+$any_author_enabled   = ! empty( $show_meta_author_raw['Desktop'] ) || ! empty( $show_meta_author_raw['Tablet'] ) || ! empty( $show_meta_author_raw['Mobile'] );
+$any_avatar_enabled   = ! empty( $show_meta_avatar_raw['Desktop'] ) || ! empty( $show_meta_avatar_raw['Tablet'] ) || ! empty( $show_meta_avatar_raw['Mobile'] );
+$any_date_enabled     = ! empty( $show_meta_date_raw['Desktop'] )   || ! empty( $show_meta_date_raw['Tablet'] )   || ! empty( $show_meta_date_raw['Mobile'] );
 $any_taxonomy_enabled = ! empty( $show_taxonomy['Desktop'] )       || ! empty( $show_taxonomy['Tablet'] )       || ! empty( $show_taxonomy['Mobile'] );
 
 // Navigation settings
@@ -603,10 +609,12 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                         break;
  
                                     case 'meta':
-                                        if ( $any_meta_enabled ) :
+                                        if ( $any_meta_enabled && ( $any_author_enabled || $any_date_enabled ) ) :
                                             ?>
                                             <div class="gslider-post-carousel-meta">
+                                                <?php if ( $any_author_enabled ) : ?>
                                                 <div class="gslider-post-author-wrapper">
+                                                    <?php if ( $any_avatar_enabled ) : ?>
                                                     <div class="gslider-post-author-avatar-wrapper">
                                                         <?php
                                                         $author_id  = get_the_author_meta( 'ID' );
@@ -618,11 +626,15 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                                             <svg class="gslider-post-author-avatar-placeholder" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                                         <?php endif; ?>
                                                     </div>
+                                                    <?php endif; ?>
                                                     <div class="gslider-post-author"><?php the_author(); ?></div>
                                                 </div>
+                                                <?php endif; ?>
+                                                <?php if ( $any_date_enabled ) : ?>
                                                 <div class="gslider-post-date-wrapper">
                                                     <div class="gslider-post-date"><?php echo get_the_date(); ?></div>
                                                 </div>
+                                                <?php endif; ?>
                                             </div>
 
                                             <?php

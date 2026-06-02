@@ -53,6 +53,9 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 		showPostTitle,
 		showExcerpt,
 		showMeta,
+		showMetaAuthor,
+		showMetaAvatar,
+		showMetaDate,
 		showTaxonomy,
 
 		globalID,
@@ -565,27 +568,29 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 														);
 													})() : null,
 
-													meta: (showMeta?.[deviceType] && (authorName || formattedDate)) ? (
+													meta: (showMeta?.[deviceType] && (((showMetaAuthor?.[deviceType] ?? true) && authorName) || ((showMetaDate?.[deviceType] ?? true) && formattedDate))) ? (
 														<div key="meta" className="gslider-post-carousel-meta">
-															{authorName && (
+															{(showMetaAuthor?.[deviceType] ?? true) && authorName && (
 																<div className="gslider-post-author-wrapper">
-																	<div className="gslider-post-author-avatar-wrapper">
-																		{authorAvatarUrl ? (
-																			<img
-																				className="gslider-post-author-avatar"
-																				src={authorAvatarUrl}
-																				alt={authorName}
-																				width="28"
-																				height="28"
-																			/>
-																		) : (
-																			<svg className="gslider-post-author-avatar-placeholder" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-																		)}
-																	</div>
+																	{(showMetaAvatar?.[deviceType] ?? true) && (
+																		<div className="gslider-post-author-avatar-wrapper">
+																			{authorAvatarUrl ? (
+																				<img
+																					className="gslider-post-author-avatar"
+																					src={authorAvatarUrl}
+																					alt={authorName}
+																					width="28"
+																					height="28"
+																				/>
+																			) : (
+																				<svg className="gslider-post-author-avatar-placeholder" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+																			)}
+																		</div>
+																	)}
 																	<div className="gslider-post-author">{authorName}</div>
 																</div>
 															)}
-															{formattedDate && (
+															{(showMetaDate?.[deviceType] ?? true) && formattedDate && (
 																<div className="gslider-post-date-wrapper">
 																	<div className="gslider-post-date">{formattedDate}</div>
 																</div>

@@ -3642,6 +3642,30 @@ const attributes = {
             Mobile: true,
         },
     },
+    showMetaAuthor: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
+    showMetaAvatar: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
+    showMetaDate: {
+        type: "object",
+        default: {
+            Desktop: true,
+            Tablet: true,
+            Mobile: true,
+        },
+    },
 
     /** Start Author Image Style */
 
