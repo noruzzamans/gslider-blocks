@@ -611,15 +611,18 @@ $wrapper_attributes = get_block_wrapper_attributes( $wrapper_data );
                                             ?>
                                             <div class="gslider-post-carousel-image">
                                                 <a href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
-                                                    <?php
-                                                    the_post_thumbnail(
-                                                        'medium_large',
-                                                        array(
-                                                            'loading' => $enable_lazy_load ? 'lazy' : 'eager',
-                                                            'alt'     => get_the_title(),
-                                                        )
-                                                    );
-                                                    ?>
+                                                     <?php
+                                                     global $gslider_first_image_optimized;
+                                                     $img_attributes = array(
+                                                         'loading' => ( ! isset( $gslider_first_image_optimized ) || ! $gslider_first_image_optimized ) ? 'eager' : ( $enable_lazy_load ? 'lazy' : 'eager' ),
+                                                         'alt'     => get_the_title(),
+                                                     );
+                                                     if ( ! isset( $gslider_first_image_optimized ) || ! $gslider_first_image_optimized ) {
+                                                         $img_attributes['fetchpriority'] = 'high';
+                                                         $gslider_first_image_optimized = true;
+                                                     }
+                                                     the_post_thumbnail( 'medium_large', $img_attributes );
+                                                     ?>
                                                 </a>
                                                 <?php if ( $enable_taxonomy_badge_overlay && ! empty( $taxonomy_markup ) ) : ?>
                                                     <div class="gslider-taxonomy-badge-overlay gslider-badge-visibility-<?php echo esc_attr( $taxonomy_badge_overlay_visibility ); ?> gslider-badge-position-<?php echo esc_attr( $taxonomy_badge_overlay_position ); ?>">

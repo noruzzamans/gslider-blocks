@@ -1773,13 +1773,15 @@ const generatePostCarouselStyle = (attributes) => {
             position: absolute !important;
             left: 0 !important;
             bottom: ${postTitleHoverUnderlineBottomOffset?.Desktop || '-2'}px !important;
-            width: 0 !important;
+            width: 100% !important;
             height: ${postTitleHoverUnderlineHeight?.Desktop || '2'}px !important;
             background-color: ${postTitleHoverUnderlineColor || postTitleNormalClassicColor || '#333'} !important;
-            transition: width ${postTitleHoverUnderlineTransitionSpeed?.Desktop || '0.3'}s ease-in-out !important;
+            transform: scaleX(0) !important;
+            transform-origin: left !important;
+            transition: transform ${postTitleHoverUnderlineTransitionSpeed?.Desktop || '0.3'}s ease-in-out !important;
         }
         .${blockId} .gslider-post-carousel-card:hover .gslider-post-carousel-title a::after {
-            width: 100% !important;
+            transform: scaleX(1) !important;
         }
         ` : ''}
 
@@ -2459,7 +2461,7 @@ const generatePostCarouselStyle = (attributes) => {
             .${blockId} .gslider-post-carousel-title a::after {
                 bottom: ${postTitleHoverUnderlineBottomOffset?.Tablet || '-2'}px !important;
                 height: ${postTitleHoverUnderlineHeight?.Tablet || '2'}px !important;
-                transition: width ${postTitleHoverUnderlineTransitionSpeed?.Tablet || '0.3'}s ease-in-out !important;
+                transition: transform ${postTitleHoverUnderlineTransitionSpeed?.Tablet || '0.3'}s ease-in-out !important;
             }
             ` : ''}
 
@@ -2827,7 +2829,7 @@ const generatePostCarouselStyle = (attributes) => {
             .${blockId} .gslider-post-carousel-title a::after {
                 bottom: ${postTitleHoverUnderlineBottomOffset?.Mobile || '-2'}px !important;
                 height: ${postTitleHoverUnderlineHeight?.Mobile || '2'}px !important;
-                transition: width ${postTitleHoverUnderlineTransitionSpeed?.Mobile || '0.3'}s ease-in-out !important;
+                transition: transform ${postTitleHoverUnderlineTransitionSpeed?.Mobile || '0.3'}s ease-in-out !important;
             }
             ` : ''}
 

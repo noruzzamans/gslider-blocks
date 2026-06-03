@@ -12,6 +12,7 @@
 namespace GSlider\Classes;
 
 use GSlider\Traits\SingletonTrait;
+use GSlider\Classes\PerformanceOptimizer;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -96,6 +97,19 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
             add_filter( 'render_block', [ $this, 'collect_dynamic_styles' ], 10, 2 );
             add_action( 'wp_footer', [ $this, 'generate_css_file' ], 10 );
             add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_dynamic_styles' ] );
+            add_action( 'save_post', [ $this, 'delete_cached_css' ] );
+        }
+
+        /**
+         * Clears cached dynamic CSS when a post is saved or updated.
+         *
+         * @since 1.2.0
+         *
+         * @param int $post_id The ID of the post being saved.
+         * @return void
+         */
+        public function delete_cached_css( $post_id ) {
+            delete_post_meta( $post_id, '_gslider_dynamic_css' );
         }
 
         /**
@@ -178,6 +192,14 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
             $css_content = "/* GSlider Blocks Dynamic Styles - Page ID: $page_id - Generated on " .
                 current_time( 'mysql' ) . " */\n" . $this->minify_css( $css_content );
 
+            // Save to post meta if performance mode is active
+            if ( PerformanceOptimizer::is_performance_mode_active() && $page_id > 0 ) {
+                update_post_meta( $page_id, '_gslider_dynamic_css', $css_content );
+                if ( ! is_admin() ) {
+                    echo "<style id='gslider-blocks-dynamic-styles-{$page_id}-inline-css'>{$css_content}</style>\n";
+                }
+            }
+
             if ( ! function_exists( 'WP_Filesystem' ) ) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
             }
@@ -219,8 +241,17 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
          * @return void
          */
         public function enqueue_dynamic_styles() {
+            $page_id = get_queried_object_id();
+
+            if ( PerformanceOptimizer::is_performance_mode_active() ) {
+                $cached_css = get_post_meta( $page_id, '_gslider_dynamic_css', true );
+                if ( $cached_css ) {
+                    wp_add_inline_style( 'gslider-blocks-swiper-style', $cached_css );
+                    return;
+                }
+            }
+
             clearstatcache();
-            $page_id       = get_queried_object_id();
             $css_filename  = 'gslider-blocks-dynamic-styles-' . $page_id . '.min.css';
             $css_file_path = $this->css_dir . '/' . $css_filename;
             $css_file_url  = $this->css_url . '/' . $css_filename;

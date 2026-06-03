@@ -164,11 +164,22 @@ export function initCardTilt( wrapper ) {
         card.style.transformStyle = 'preserve-3d';
         card.style.willChange     = 'transform';
 
+        let rect = null;
+
+        const updateRect = () => {
+            rect = card.getBoundingClientRect();
+        };
+
+        card.addEventListener( 'mouseenter', updateRect );
+        window.addEventListener( 'resize', updateRect );
+
         card.addEventListener( 'mousemove', ( e ) => {
             const { maxAngle, perspective, scale, speed } = getTiltSettings();
             card.style.transition = `transform ${ speed }ms ease`;
 
-            const rect    = card.getBoundingClientRect();
+            if ( ! rect ) {
+                rect = card.getBoundingClientRect();
+            }
             const x       = e.clientX - rect.left;
             const y       = e.clientY - rect.top;
             const centerX = rect.width  / 2;

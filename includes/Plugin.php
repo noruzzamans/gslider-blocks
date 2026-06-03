@@ -21,6 +21,7 @@ use GSlider\Classes\FontLoader;
 use GSlider\Classes\SupportSVG;
 use GSlider\Utils\Utils;
 use GSlider\RestApi\QueryManager;
+use GSlider\Classes\PerformanceOptimizer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -74,6 +75,7 @@ if ( ! class_exists( 'Plugin' ) ) {
 			FontLoader::getInstance()->register();
 			Utils::getInstance()->register();
 			QueryManager::getInstance()->register();
+			PerformanceOptimizer::getInstance()->register();
 
 			// SVG Support (admin only).
 			if ( is_admin() ) {
