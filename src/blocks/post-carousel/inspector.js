@@ -1346,10 +1346,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             readMoreButtonTabletBorderRadiusCssStyle: spacingFormat(readMoreButtonTabletBorderRadius, readMoreButtonBorderRadiusUnits.Tablet),
             readMoreButtonMobileBorderRadiusCssStyle: spacingFormat(readMoreButtonMobileBorderRadius, readMoreButtonBorderRadiusUnits.Mobile),
 
-            readMoreButtonDesktopPaddingCssStyle: spacingFormat(readMoreButtonDesktopPadding, readMoreButtonPaddingUnits.Desktop),
-            readMoreButtonTabletPaddingCssStyle: spacingFormat(readMoreButtonTabletPadding, readMoreButtonPaddingUnits.Tablet),
-            readMoreButtonMobilePaddingCssStyle: spacingFormat(readMoreButtonMobilePadding, readMoreButtonPaddingUnits.Mobile),
-
             postCardMarginDesktopCssStyle: spacingFormat(postCardMarginDesktop, postCardMarginUnits.Desktop),
             postCardMarginTabletCssStyle: spacingFormat(postCardMarginTablet, postCardMarginUnits.Tablet),
             postCardMarginMobileCssStyle: spacingFormat(postCardMarginMobile, postCardMarginUnits.Mobile),
@@ -1445,10 +1441,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonDesktopBorderRadius,
         readMoreButtonTabletBorderRadius,
         readMoreButtonMobileBorderRadius,
-
-        readMoreButtonDesktopPadding,
-        readMoreButtonTabletPadding,
-        readMoreButtonMobilePadding,
 
         postCardMarginDesktop,
         postCardMarginTablet,

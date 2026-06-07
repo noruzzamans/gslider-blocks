@@ -4770,9 +4770,9 @@ const attributes = {
     readMoreButtonFontSize: {
         type: 'object',
         default: {
-            Desktop: '16',
-            Tablet: '16',
-            Mobile: '14'
+            Desktop: '',
+            Tablet: '',
+            Mobile: ''
         }
     },
     readMoreButtonFontSizeUnits: {
@@ -4856,11 +4856,11 @@ const attributes = {
     },
     readMoreButtonColor: {
         type: "string",
-        default: "",
+        default: "#111c2d",
     },
     readMoreButtonColorHover: {
         type: "string",
-        default: "",
+        default: "#FFFFFF",
     },
     /** End Read More Button Color */
 
@@ -4989,10 +4989,10 @@ const attributes = {
     readMoreButtonDesktopBorderRadius: {
         type: "object", 
         default: {
-            top: "4",
-            bottom: "4",
-            left: "4",
-            right: "4",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonDesktopBorderRadiusCssStyle: { 
@@ -5002,10 +5002,10 @@ const attributes = {
     readMoreButtonTabletBorderRadius: {
         type: "object",  
         default: {
-            top: "4",
-            bottom: "4",
-            left: "4",
-            right: "4",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonTabletBorderRadiusCssStyle: { 
@@ -5015,10 +5015,10 @@ const attributes = {
     readMoreButtonMobileBorderRadius: {
         type: "object",  
         default: {
-            top: "4",
-            bottom: "4",
-            left: "4",
-            right: "4",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonMobileBorderRadiusCssStyle: { 
@@ -5120,10 +5120,10 @@ const attributes = {
     readMoreButtonDesktopPadding: {
         type: "object", 
         default: {
-            top: "12",
-            bottom: "12",
-            left: "24",
-            right: "24",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonDesktopPaddingCssStyle: { 
@@ -5133,10 +5133,10 @@ const attributes = {
     readMoreButtonTabletPadding: {
         type: "object",  
         default: {
-            top: "12",
-            bottom: "12",
-            left: "24",
-            right: "24",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonTabletPaddingCssStyle: { 
@@ -5146,10 +5146,10 @@ const attributes = {
     readMoreButtonMobilePadding: {
         type: "object",  
         default: {
-            top: "8",
-            bottom: "8",
-            left: "16",
-            right: "16",
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
         },
     },
     readMoreButtonMobilePaddingCssStyle: { 
@@ -5173,7 +5173,7 @@ const attributes = {
     },
     readMoreButtonWidth: {
         type: "string",
-        default: "inline",
+        default: "full",
     },
     readMoreButtonHoverAnimation: {
         type: "string",
@@ -5185,8 +5185,8 @@ const attributes = {
     readMoreButtonIconSize: {
         type: "object",
         default: {
-            Desktop: "16",
-            Tablet: "16",
+            Desktop: "14",
+            Tablet: "14",
             Mobile: "14",
         },
     },
