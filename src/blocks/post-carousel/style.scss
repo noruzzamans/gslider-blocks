@@ -236,48 +236,21 @@
 			}
 
 			&:hover .gslider-readmore-icon-wrap {
-				transform: translateX(4px); /* translate-x-1 */
+				transform: translateX(4px);
 			}
-		}
-	}
-
-	/* Swiper Navigation Buttons */
-	.swiper-button-prev,
-	.swiper-button-next {
-		width: 48px;
-		height: 48px;
-		border-radius: 50%;
-		background-color: #f9f9ff;
-		border: 1px solid #c6c6cd;
-		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #111c2d;
-		transition: all 0.2s ease;
-
-		&::after {
-			font-size: 16px;
-			font-weight: bold;
-		}
-
-		&:hover {
-			background-color: #dee8ff;
-			color: #000000;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 		}
 	}
 
 	/* Swiper Pagination Bullets */
 	.swiper-pagination-bullet {
-		background-color: rgba(80, 95, 118, 0.3);
+		width: 8px;
+		height: 8px;
 		opacity: 1;
-		width: 10px;
-		height: 10px;
 		transition: all 0.3s ease;
 
 		&-active {
-			background-color: #000000;
+			width: 10px;
+			height: 10px;
 			transform: scale(1.25);
 		}
 	}

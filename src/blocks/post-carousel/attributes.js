@@ -159,7 +159,7 @@ const attributes = {
     },
     enableTaxonomyBadgeOverlay: {
         type: "boolean",
-        default: false,
+        default: true,
     },
     taxonomyBadgeOverlayPosition: {
         type: "string",
@@ -773,9 +773,9 @@ const attributes = {
     paginationNormalDotsWidth: {
         type: "object",
         default: {
-            Desktop: "8",
-            Tablet: "8",
-            Mobile: "8",
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
         },
     },
     paginationNormalDotsWidthUnits: {
@@ -789,9 +789,9 @@ const attributes = {
     paginationNormalDotsHeight: {
         type: "object",
         default: {
-            Desktop: "8",
-            Tablet: "8",
-            Mobile: "8",
+            Desktop: "",
+            Tablet: "",
+            Mobile: "",
         },
     },
     paginationNormalDotsHeightUnits: {
@@ -5291,11 +5291,11 @@ const attributes = {
     },
     readMoreButtonIconColor: {
         type: "string",
-        default: "#333333",
+        default: "#111c2d",
     },
     readMoreButtonIconColorHover: {
         type: "string",
-        default: "",
+        default: "#FFFFFF",
     },
     /** End Read More Button Icon Color */
 
