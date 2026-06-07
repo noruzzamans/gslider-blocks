@@ -454,6 +454,76 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         globalCustomCSS,
         /** End Global Custom CSS */
 
+        /** Start Post Card Margin */
+        postCardMarginUnits,
+        postCardMarginDesktop,
+        postCardMarginDesktopCssStyle,
+        postCardMarginTablet,
+        postCardMarginTabletCssStyle,
+        postCardMarginMobile,
+        postCardMarginMobileCssStyle,
+        postCardMarginLink,
+        /** End Post Card Margin */
+
+        /** Start Post Card Padding */
+        postCardPaddingUnits,
+        postCardPaddingDesktop,
+        postCardPaddingDesktopCssStyle,
+        postCardPaddingTablet,
+        postCardPaddingTabletCssStyle,
+        postCardPaddingMobile,
+        postCardPaddingMobileCssStyle,
+        postCardPaddingLink,
+        /** End Post Card Padding */
+
+        /** Start Post Card Background */
+        postCardNormalBackgroundType,
+        postCardNormalClassicColor,
+        postCardNormalGradientColor,
+        postCardNormalCustomGradientSwitcher,
+        postCardNormalCustomGradientInputValue,
+
+        postCardHoverBackgroundType,
+        postCardHoverClassicColor,
+        postCardHoverGradientColor,
+        postCardHoverCustomGradientSwitcher,
+        postCardHoverCustomGradientInputValue,
+        /** End Post Card Background */
+
+        /** Start Post Card Border */
+        postCardBorder,
+        postCardBorderColorSwitcher,
+        postCardBorderColor,
+        postCardBorderHoverColor,
+        postCardBorderUnits,
+        postCardBorderDesktop,
+        postCardBorderDesktopCssStyle,
+        postCardBorderTablet,
+        postCardBorderTabletCssStyle,
+        postCardBorderMobile,
+        postCardBorderMobileCssStyle,
+        postCardBorderLink,
+        /** End Post Card Border */
+
+        /** Start Post Card Border Radius */
+        postCardBorderRadiusUnits,
+        postCardBorderRadiusDesktop,
+        postCardBorderRadiusDesktopCssStyle,
+        postCardBorderRadiusTablet,
+        postCardBorderRadiusTabletCssStyle,
+        postCardBorderRadiusMobile,
+        postCardBorderRadiusMobileCssStyle,
+        postCardBorderRadiusLink,
+        /** End Post Card Border Radius */
+
+        /** Start Post Card Box Shadow */
+        postCardBoxShadowValuesSwitcher,
+        postCardBoxShadowValues,
+        postCardBoxShadowCssValue,
+        postCardBoxShadowHoverValues,
+        postCardBoxShadowHoverCssValue,
+        /** End Post Card Box Shadow */
+
         /** Start Image Settings */
         imageMaxWidth,
         imageMaxWidthUnits,
@@ -1189,7 +1259,7 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
     /** Default Open Panels */
     const defaultOpenPanels = {
         general: 'show-hide-elements',
-        styles: 'content',
+        styles: 'post-card',
         advanced: 'layout',
     };
 
@@ -1279,6 +1349,22 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
             readMoreButtonDesktopPaddingCssStyle: spacingFormat(readMoreButtonDesktopPadding, readMoreButtonPaddingUnits.Desktop),
             readMoreButtonTabletPaddingCssStyle: spacingFormat(readMoreButtonTabletPadding, readMoreButtonPaddingUnits.Tablet),
             readMoreButtonMobilePaddingCssStyle: spacingFormat(readMoreButtonMobilePadding, readMoreButtonPaddingUnits.Mobile),
+
+            postCardMarginDesktopCssStyle: spacingFormat(postCardMarginDesktop, postCardMarginUnits.Desktop),
+            postCardMarginTabletCssStyle: spacingFormat(postCardMarginTablet, postCardMarginUnits.Tablet),
+            postCardMarginMobileCssStyle: spacingFormat(postCardMarginMobile, postCardMarginUnits.Mobile),
+
+            postCardPaddingDesktopCssStyle: spacingFormat(postCardPaddingDesktop, postCardPaddingUnits.Desktop),
+            postCardPaddingTabletCssStyle: spacingFormat(postCardPaddingTablet, postCardPaddingUnits.Tablet),
+            postCardPaddingMobileCssStyle: spacingFormat(postCardPaddingMobile, postCardPaddingUnits.Mobile),
+
+            postCardBorderDesktopCssStyle: spacingFormat(postCardBorderDesktop, postCardBorderUnits.Desktop),
+            postCardBorderTabletCssStyle: spacingFormat(postCardBorderTablet, postCardBorderUnits.Tablet),
+            postCardBorderMobileCssStyle: spacingFormat(postCardBorderMobile, postCardBorderUnits.Mobile),
+
+            postCardBorderRadiusDesktopCssStyle: spacingFormat(postCardBorderRadiusDesktop, postCardBorderRadiusUnits.Desktop),
+            postCardBorderRadiusTabletCssStyle: spacingFormat(postCardBorderRadiusTablet, postCardBorderRadiusUnits.Tablet),
+            postCardBorderRadiusMobileCssStyle: spacingFormat(postCardBorderRadiusMobile, postCardBorderRadiusUnits.Mobile),
         });
     }, [
         navigationArrowDesktopBorderRadius,
@@ -1363,6 +1449,26 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
         readMoreButtonDesktopPadding,
         readMoreButtonTabletPadding,
         readMoreButtonMobilePadding,
+
+        postCardMarginDesktop,
+        postCardMarginTablet,
+        postCardMarginMobile,
+        postCardMarginUnits,
+
+        postCardPaddingDesktop,
+        postCardPaddingTablet,
+        postCardPaddingMobile,
+        postCardPaddingUnits,
+
+        postCardBorderDesktop,
+        postCardBorderTablet,
+        postCardBorderMobile,
+        postCardBorderUnits,
+
+        postCardBorderRadiusDesktop,
+        postCardBorderRadiusTablet,
+        postCardBorderRadiusMobile,
+        postCardBorderRadiusUnits,
     ]);
     /** end if have default padding then set the css style */
 
@@ -2215,6 +2321,172 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
      */
     const styleControls = (
         <>
+            <PanelBody
+                title={__("Post Card", "gslider-blocks")}
+                opened={openPanels.styles === "post-card"}
+                onToggle={() => togglePanel("styles", "post-card")}
+            >
+                <ResponsiveSpacingControl
+                    label={__("Margin", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postCardMarginUnits}
+                    onChangeUnits={(value) => setAttributes({ postCardMarginUnits: value })}
+                    desktopSpacing={postCardMarginDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postCardMarginDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postCardMarginDesktopCssStyle: value })}
+                    tabletSpacing={postCardMarginTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ postCardMarginTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postCardMarginTabletCssStyle: value })}
+                    mobileSpacing={postCardMarginMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ postCardMarginMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postCardMarginMobileCssStyle: value })}
+                    isLinked={postCardMarginLink}
+                    onChangeLink={(value) => setAttributes({ postCardMarginLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Padding", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postCardPaddingUnits}
+                    onChangeUnits={(value) => setAttributes({ postCardPaddingUnits: value })}
+                    desktopSpacing={postCardPaddingDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postCardPaddingDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postCardPaddingDesktopCssStyle: value })}
+                    tabletSpacing={postCardPaddingTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ postCardPaddingTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postCardPaddingTabletCssStyle: value })}
+                    mobileSpacing={postCardPaddingMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ postCardPaddingMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postCardPaddingMobileCssStyle: value })}
+                    isLinked={postCardPaddingLink}
+                    onChangeLink={(value) => setAttributes({ postCardPaddingLink: value })}
+                />
+
+                <BackgroundControl
+                    label={__("Background Color", "gslider-blocks")}
+                    deviceType={deviceType}
+
+                    normalBackgroundType={postCardNormalBackgroundType}
+                    setNormalBackgroundType={(value) => setAttributes({ postCardNormalBackgroundType: value })}
+                    normalClassicColor={postCardNormalClassicColor}
+                    setNormalClassicColor={(value) => setAttributes({ postCardNormalClassicColor: value })}
+                    normalGradientColor={postCardNormalGradientColor}
+                    setNormalGradientColor={(value) => setAttributes({ postCardNormalGradientColor: value })}
+                    normalCustomGradientSwitcher={postCardNormalCustomGradientSwitcher}
+                    setNormalCustomGradientSwitcher={(value) => setAttributes({ postCardNormalCustomGradientSwitcher: value })}
+                    normalCustomGradientInputValue={postCardNormalCustomGradientInputValue}
+                    setNormalCustomGradientInputValue={(value) => setAttributes({ postCardNormalCustomGradientInputValue: value })}
+
+                    hoverBackgroundType={postCardHoverBackgroundType}
+                    setHoverBackgroundType={(value) => setAttributes({ postCardHoverBackgroundType: value })}
+                    hoverClassicColor={postCardHoverClassicColor}
+                    setHoverClassicColor={(value) => setAttributes({ postCardHoverClassicColor: value })}
+                    hoverGradientColor={postCardHoverGradientColor}
+                    setHoverGradientColor={(value) => setAttributes({ postCardHoverGradientColor: value })}
+                    hoverCustomGradientSwitcher={postCardHoverCustomGradientSwitcher}
+                    setHoverCustomGradientSwitcher={(value) => setAttributes({ postCardHoverCustomGradientSwitcher: value })}
+                    hoverCustomGradientInputValue={postCardHoverCustomGradientInputValue}
+                    setHoverCustomGradientInputValue={(value) => setAttributes({ postCardHoverCustomGradientInputValue: value })}
+                    setAttributes={setAttributes}
+                    isBackgroundImage={false}
+                />
+
+                <Select2Control
+                    label={__("Border Style", "gslider-blocks")}
+                    options={BORDER_STYLES}
+                    value={postCardBorder}
+                    onChange={(value) => setAttributes({ postCardBorder: value })}
+                />
+
+                <SwitcherControl
+                    label={__("Border Color", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={postCardBorderColorSwitcher}
+                    onChange={(value) => setAttributes({ postCardBorderColorSwitcher: value })}
+                />
+
+                {postCardBorderColorSwitcher === 'normal' && (
+                    <ColorControl
+                        label={__("Normal Color", "gslider-blocks")}
+                        color={postCardBorderColor}
+                        onChangeColor={(value) => setAttributes({ postCardBorderColor: value })}
+                    />
+                )}
+
+                {postCardBorderColorSwitcher === 'hover' && (
+                    <ColorControl
+                        label={__("Hover Color", "gslider-blocks")}
+                        color={postCardBorderHoverColor}
+                        onChangeColor={(value) => setAttributes({ postCardBorderHoverColor: value })}
+                    />
+                )}
+
+                <ResponsiveSpacingControl
+                    label={__("Border Width", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postCardBorderUnits}
+                    onChangeUnits={(value) => setAttributes({ postCardBorderUnits: value })}
+                    desktopSpacing={postCardBorderDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postCardBorderDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postCardBorderDesktopCssStyle: value })}
+                    tabletSpacing={postCardBorderTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ postCardBorderTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postCardBorderTabletCssStyle: value })}
+                    mobileSpacing={postCardBorderMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ postCardBorderMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postCardBorderMobileCssStyle: value })}
+                    isLinked={postCardBorderLink}
+                    onChangeLink={(value) => setAttributes({ postCardBorderLink: value })}
+                />
+
+                <ResponsiveSpacingControl
+                    label={__("Border Radius", "gslider-blocks")}
+                    deviceType={deviceType}
+                    onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                    units={postCardBorderRadiusUnits}
+                    onChangeUnits={(value) => setAttributes({ postCardBorderRadiusUnits: value })}
+                    desktopSpacing={postCardBorderRadiusDesktop}
+                    onChangeDesktopSpacing={(value) => setAttributes({ postCardBorderRadiusDesktop: value })}
+                    desktopSpacingStyle={(value) => setAttributes({ postCardBorderRadiusDesktopCssStyle: value })}
+                    tabletSpacing={postCardBorderRadiusTablet}
+                    onChangeTabletSpacing={(value) => setAttributes({ postCardBorderRadiusTablet: value })}
+                    tabletSpacingStyle={(value) => setAttributes({ postCardBorderRadiusTabletCssStyle: value })}
+                    mobileSpacing={postCardBorderRadiusMobile}
+                    onChangeMobileSpacing={(value) => setAttributes({ postCardBorderRadiusMobile: value })}
+                    mobileSpacingStyle={(value) => setAttributes({ postCardBorderRadiusMobileCssStyle: value })}
+                    isLinked={postCardBorderRadiusLink}
+                    onChangeLink={(value) => setAttributes({ postCardBorderRadiusLink: value })}
+                />
+
+                <SwitcherControl
+                    label={__("Box Shadow", "gslider-blocks")}
+                    options={NORMAL_HOVER}
+                    value={postCardBoxShadowValuesSwitcher}
+                    onChange={(value) => setAttributes({ postCardBoxShadowValuesSwitcher: value })}
+                />
+
+                {postCardBoxShadowValuesSwitcher === 'normal' && (
+                    <BoxShadowSettingsControl
+                        label={__("Normal Shadow", "gslider-blocks")}
+                        onBoxShadowChange={(value) => setAttributes({ postCardBoxShadowValues: value })}
+                        initialShadowValue={postCardBoxShadowValues}
+                        onBoxShadowStyleChange={(value) => setAttributes({ postCardBoxShadowCssValue: value })}
+                    />
+                )}
+
+                {postCardBoxShadowValuesSwitcher === 'hover' && (
+                    <BoxShadowSettingsControl
+                        label={__("Hover Shadow", "gslider-blocks")}
+                        onBoxShadowChange={(value) => setAttributes({ postCardBoxShadowHoverValues: value })}
+                        initialShadowValue={postCardBoxShadowHoverValues}
+                        onBoxShadowStyleChange={(value) => setAttributes({ postCardBoxShadowHoverCssValue: value })}
+                    />
+                )}
+            </PanelBody>
+
             {showFeaturedImage?.[deviceType] && (
                 <PanelBody
                     title={__("Image", "gslider-blocks")}
@@ -2421,25 +2693,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                     />
 
                     <ResponsiveSpacingControl
-                        label={__("Padding", "gslider-blocks")}
-                        deviceType={deviceType}
-                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
-                        units={imagePaddingUnits}
-                        onChangeUnits={(value) => setAttributes({ imagePaddingUnits: value })}
-                        desktopSpacing={imagePaddingDesktop}
-                        onChangeDesktopSpacing={(value) => setAttributes({ imagePaddingDesktop: value })}
-                        desktopSpacingStyle={(value) => setAttributes({ imagePaddingDesktopCssStyle: value })}
-                        tabletSpacing={imagePaddingTablet}
-                        onChangeTabletSpacing={(value) => setAttributes({ imagePaddingTablet: value })}
-                        tabletSpacingStyle={(value) => setAttributes({ imagePaddingTabletCssStyle: value })}
-                        mobileSpacing={imagePaddingMobile}
-                        onChangeMobileSpacing={(value) => setAttributes({ imagePaddingMobile: value })}
-                        mobileSpacingStyle={(value) => setAttributes({ imagePaddingMobileCssStyle: value })}
-                        isLinked={imagePaddingLink}
-                        onChangeLink={(value) => setAttributes({ imagePaddingLink: value })}
-                    />
-
-                    <ResponsiveSpacingControl
                         label={__("Margin", "gslider-blocks")}
                         deviceType={deviceType}
                         onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
@@ -2456,6 +2709,25 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                         mobileSpacingStyle={(value) => setAttributes({ imageMarginMobileCssStyle: value })}
                         isLinked={imageMarginLink}
                         onChangeLink={(value) => setAttributes({ imageMarginLink: value })}
+                    />
+
+                    <ResponsiveSpacingControl
+                        label={__("Padding", "gslider-blocks")}
+                        deviceType={deviceType}
+                        onChangeDeviceType={(value) => setAttributes({ deviceType: value })}
+                        units={imagePaddingUnits}
+                        onChangeUnits={(value) => setAttributes({ imagePaddingUnits: value })}
+                        desktopSpacing={imagePaddingDesktop}
+                        onChangeDesktopSpacing={(value) => setAttributes({ imagePaddingDesktop: value })}
+                        desktopSpacingStyle={(value) => setAttributes({ imagePaddingDesktopCssStyle: value })}
+                        tabletSpacing={imagePaddingTablet}
+                        onChangeTabletSpacing={(value) => setAttributes({ imagePaddingTablet: value })}
+                        tabletSpacingStyle={(value) => setAttributes({ imagePaddingTabletCssStyle: value })}
+                        mobileSpacing={imagePaddingMobile}
+                        onChangeMobileSpacing={(value) => setAttributes({ imagePaddingMobile: value })}
+                        mobileSpacingStyle={(value) => setAttributes({ imagePaddingMobileCssStyle: value })}
+                        isLinked={imagePaddingLink}
+                        onChangeLink={(value) => setAttributes({ imagePaddingLink: value })}
                     />
 
                     <BackgroundControl

@@ -1628,6 +1628,299 @@ const attributes = {
     },
     /** End Global Custom CSS */
 
+    /** Start Post Card Margin */
+    postCardMarginUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCardMarginDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardMarginDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardMarginTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardMarginTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardMarginMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardMarginMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardMarginLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Card Margin */
+
+    /** Start Post Card Padding */
+    postCardPaddingUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCardPaddingDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardPaddingDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardPaddingTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardPaddingTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardPaddingMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardPaddingMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardPaddingLink: {
+        type: "boolean",
+        default: true
+    },
+    /** End Post Card Padding */
+
+    /** Start Post Card Background */
+    postCardNormalBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    postCardNormalClassicColor: {
+        type: "string",
+        default: "",
+    },
+    postCardNormalGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postCardNormalCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postCardNormalCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Card Background */
+
+    /** Start Post Card Hover Background */
+    postCardHoverBackgroundType: {
+        type: "string",
+        default: "classic",
+    },
+    postCardHoverClassicColor: {
+        type: "string",
+        default: "",
+    },
+    postCardHoverGradientColor: {
+        type: "string",
+        default: null,
+    },
+    postCardHoverCustomGradientSwitcher: {
+        type: "boolean",
+        default: false,
+    },
+    postCardHoverCustomGradientInputValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Card Hover Background */
+
+    /** Start Post Card Border */
+    postCardBorder: {
+        type: "string",
+        default: "none",
+    },
+    postCardBorderColorSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    postCardBorderColor: {
+        type: "string",
+    },
+    postCardBorderHoverColor: {
+        type: "string",
+    },
+    postCardBorderUnits: {
+        type: "object",
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCardBorderDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderDesktopCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardBorderTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderTabletCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardBorderMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardBorderLink: {
+        type: "boolean",
+        default: true
+    },
+    postCardBorderRadiusUnits: {
+        type: 'object',
+        default: {
+            Desktop: "px",
+            Tablet: "px",
+            Mobile: "px"
+        }
+    },
+    postCardBorderRadiusDesktop: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderRadiusDesktopCssStyle: {
+        type: 'string',
+        default: '',
+    },
+    postCardBorderRadiusTablet: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderRadiusTabletCssStyle: {
+        type: 'string',
+        default: '',
+    },
+    postCardBorderRadiusMobile: {
+        type: "object",
+        default: {
+            top: "",
+            bottom: "",
+            left: "",
+            right: "",
+        },
+    },
+    postCardBorderRadiusMobileCssStyle: {
+        type: "string",
+        default: "",
+    },
+    postCardBorderRadiusLink: {
+        type: "boolean",
+        default: true
+    },
+    postCardBoxShadowValuesSwitcher: {
+        type: "string",
+        default: "normal"
+    },
+    postCardBoxShadowValues: {
+        type: "array",
+        default: [],
+    },
+    postCardBoxShadowCssValue: {
+        type: "string",
+        default: "",
+    },
+    postCardBoxShadowHoverValues: {
+        type: "array",
+        default: [],
+    },
+    postCardBoxShadowHoverCssValue: {
+        type: "string",
+        default: "",
+    },
+    /** End Post Card Border */
+
     /** Start Image Settings */
     showFeaturedImage: {
         type: "object",

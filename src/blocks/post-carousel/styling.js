@@ -1035,6 +1035,66 @@ const generatePostCarouselStyle = (attributes) => {
         cardHoverGlowColor,
         cardHoverGlowSize,
         /** End Animation Settings */
+
+        /** Start Post Card Attributes */
+        postCardMarginUnits,
+        postCardMarginDesktop,
+        postCardMarginDesktopCssStyle,
+        postCardMarginTablet,
+        postCardMarginTabletCssStyle,
+        postCardMarginMobile,
+        postCardMarginMobileCssStyle,
+        postCardMarginLink,
+
+        postCardPaddingUnits,
+        postCardPaddingDesktop,
+        postCardPaddingDesktopCssStyle,
+        postCardPaddingTablet,
+        postCardPaddingTabletCssStyle,
+        postCardPaddingMobile,
+        postCardPaddingMobileCssStyle,
+        postCardPaddingLink,
+
+        postCardNormalBackgroundType,
+        postCardNormalClassicColor,
+        postCardNormalGradientColor,
+        postCardNormalCustomGradientSwitcher,
+        postCardNormalCustomGradientInputValue,
+
+        postCardHoverBackgroundType,
+        postCardHoverClassicColor,
+        postCardHoverGradientColor,
+        postCardHoverCustomGradientSwitcher,
+        postCardHoverCustomGradientInputValue,
+
+        postCardBorder,
+        postCardBorderColorSwitcher,
+        postCardBorderColor,
+        postCardBorderHoverColor,
+        postCardBorderUnits,
+        postCardBorderDesktop,
+        postCardBorderDesktopCssStyle,
+        postCardBorderTablet,
+        postCardBorderTabletCssStyle,
+        postCardBorderMobile,
+        postCardBorderMobileCssStyle,
+        postCardBorderLink,
+
+        postCardBorderRadiusUnits,
+        postCardBorderRadiusDesktop,
+        postCardBorderRadiusDesktopCssStyle,
+        postCardBorderRadiusTablet,
+        postCardBorderRadiusTabletCssStyle,
+        postCardBorderRadiusMobile,
+        postCardBorderRadiusMobileCssStyle,
+        postCardBorderRadiusLink,
+
+        postCardBoxShadowValuesSwitcher,
+        postCardBoxShadowValues,
+        postCardBoxShadowCssValue,
+        postCardBoxShadowHoverValues,
+        postCardBoxShadowHoverCssValue,
+        /** End Post Card Attributes */
     } = attributes;
 
     const getPostTitleNormalColorStyles = () => {
@@ -1409,6 +1469,45 @@ const generatePostCarouselStyle = (attributes) => {
     const isBadgeHover = taxonomyBadgeOverlayVisibility === 'hover';
     const badgeHoverTransformValue = (taxonomyBadgeOverlayPosition || 'top-left').startsWith('bottom') ? 'translateY(5px)' : 'translateY(-5px)';
 
+    const getPostCardBackgroundNormalStyles = () => {
+        const bgType = postCardNormalBackgroundType;
+        const bgColor = postCardNormalClassicColor;
+        const bgGradient = postCardNormalGradientColor;
+        const customGradient = postCardNormalCustomGradientInputValue;
+        const customGradientEnabled = postCardNormalCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return `background: ${customGradient} !important;`;
+            } else if (bgGradient) {
+                return `background: ${bgGradient} !important;`;
+            }
+            return '';
+        }
+        return bgColor ? `background: ${bgColor} !important;` : '';
+    };
+
+    const getPostCardBackgroundHoverStyles = () => {
+        const bgType = postCardHoverBackgroundType;
+        const bgColor = postCardHoverClassicColor;
+        const bgGradient = postCardHoverGradientColor;
+        const customGradient = postCardHoverCustomGradientInputValue;
+        const customGradientEnabled = postCardHoverCustomGradientSwitcher;
+
+        if (bgType === 'gradient') {
+            if (customGradientEnabled && customGradient) {
+                return `background: ${customGradient} !important;`;
+            } else if (bgGradient) {
+                return `background: ${bgGradient} !important;`;
+            }
+            return '';
+        }
+        return bgColor ? `background: ${bgColor} !important;` : '';
+    };
+
+    const postCardNormalBackgroundStyles = getPostCardBackgroundNormalStyles();
+    const postCardHoverBackgroundStyles = getPostCardBackgroundHoverStyles();
+
     /** Start All Block Style */
     const postCarouselCSS = `
         .${blockId}.gslider-post-carousel-wrapper {
@@ -1442,7 +1541,16 @@ const generatePostCarouselStyle = (attributes) => {
             flex-direction: column;
             height: 100%;
             width: 100%;
-            transition: transform ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, border-color ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out;
+            box-sizing: border-box;
+            ${postCardNormalBackgroundStyles}
+            ${postCardMarginDesktopCssStyle ? `margin: ${postCardMarginDesktopCssStyle};` : ''}
+            ${postCardPaddingDesktopCssStyle ? `padding: ${postCardPaddingDesktopCssStyle};` : ''}
+            ${postCardBorder ? `border-style: ${postCardBorder};` : ''}
+            ${postCardBorderDesktopCssStyle ? `border-width: ${postCardBorderDesktopCssStyle};` : ''}
+            ${postCardBorderColor ? `border-color: ${postCardBorderColor};` : ''}
+            ${postCardBorderRadiusDesktopCssStyle ? `border-radius: ${postCardBorderRadiusDesktopCssStyle} !important;` : ''}
+            ${postCardBoxShadowCssValue ? `box-shadow: ${postCardBoxShadowCssValue} !important;` : ''}
+            transition: all 0.3s ease, transform ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, box-shadow ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out, border-color ${cardHoverAnimationDuration?.Desktop || 300}ms ease-out;
             will-change: transform, box-shadow;
             --card-hover-lift: -${cardHoverLift?.Desktop ?? 8}px;
             --card-hover-scale: ${cardHoverScale?.Desktop ?? 1.03};
@@ -1450,6 +1558,12 @@ const generatePostCarouselStyle = (attributes) => {
             --card-hover-shadow-color: ${cardHoverShadowColor || 'rgba(0, 0, 0, 0.25)'};
             --card-hover-glow-color: ${cardHoverGlowColor || 'rgba(0, 122, 255, 0.5)'};
             --card-hover-glow-size: ${cardHoverGlowSize?.Desktop ?? 15}px;
+        }
+
+        .${blockId} .gslider-post-carousel-card:hover {
+            ${postCardHoverBackgroundStyles}
+            ${postCardBorderHoverColor ? `border-color: ${postCardBorderHoverColor} !important;` : ''}
+            ${postCardBoxShadowHoverCssValue ? `box-shadow: ${postCardBoxShadowHoverCssValue} !important;` : ''}
         }
 
         ${cardHoverAnimation === 'lift' ? `
@@ -2306,6 +2420,10 @@ const generatePostCarouselStyle = (attributes) => {
             }
 
             .${blockId} .gslider-post-carousel-card {
+                ${postCardMarginTabletCssStyle ? `margin: ${postCardMarginTabletCssStyle};` : ''}
+                ${postCardPaddingTabletCssStyle ? `padding: ${postCardPaddingTabletCssStyle};` : ''}
+                ${postCardBorderTabletCssStyle ? `border-width: ${postCardBorderTabletCssStyle};` : ''}
+                ${postCardBorderRadiusTabletCssStyle ? `border-radius: ${postCardBorderRadiusTabletCssStyle} !important;` : ''}
                 --card-hover-lift: -${cardHoverLift?.Tablet ?? 8}px;
                 --card-hover-scale: ${cardHoverScale?.Tablet ?? 1.03};
                 --card-hover-pop-scale: ${cardHoverPopScale?.Tablet ?? 1.06};
@@ -2675,6 +2793,10 @@ const generatePostCarouselStyle = (attributes) => {
             }
 
             .${blockId} .gslider-post-carousel-card {
+                ${postCardMarginMobileCssStyle ? `margin: ${postCardMarginMobileCssStyle};` : ''}
+                ${postCardPaddingMobileCssStyle ? `padding: ${postCardPaddingMobileCssStyle};` : ''}
+                ${postCardBorderMobileCssStyle ? `border-width: ${postCardBorderMobileCssStyle};` : ''}
+                ${postCardBorderRadiusMobileCssStyle ? `border-radius: ${postCardBorderRadiusMobileCssStyle} !important;` : ''}
                 --card-hover-lift: -${cardHoverLift?.Mobile ?? 8}px;
                 --card-hover-scale: ${cardHoverScale?.Mobile ?? 1.03};
                 --card-hover-pop-scale: ${cardHoverPopScale?.Mobile ?? 1.06};
