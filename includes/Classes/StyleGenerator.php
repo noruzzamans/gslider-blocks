@@ -95,8 +95,7 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
          */
         public function register(): void {
             add_filter( 'render_block', [ $this, 'collect_dynamic_styles' ], 10, 2 );
-            add_action( 'wp_footer', [ $this, 'generate_css_file' ], 10 );
-            add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_dynamic_styles' ] );
+            add_action( 'wp_footer', [ $this, 'output_collected_styles' ], 20 );
         }
 
         /**
@@ -141,12 +140,19 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
                 return $block_content;
             }
 
-            if ( false !== strpos( $block['blockName'], 'gslider-blocks/' ) && isset( $block['attrs']['blockStyle'] ) ) {
-                $block_id = isset( $block['attrs']['blockId'] ) ?
-                    sanitize_key( $block['attrs']['blockId'] ) :
-                    'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
-                self::$styles[ $block_id ] = $block['attrs']['blockStyle'];
+            if ( false === strpos( $block['blockName'], 'gslider-blocks/' ) || ! isset( $block['attrs']['blockStyle'] ) ) {
+                return $block_content;
             }
+
+            $style = $block['attrs']['blockStyle'];
+            if ( ! is_string( $style ) || '' === $style ) {
+                return $block_content;
+            }
+
+            $block_id = isset( $block['attrs']['blockId'] ) ?
+                sanitize_key( $block['attrs']['blockId'] ) :
+                'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
+            self::$styles[ $block_id ] = $style;
 
             return $block_content;
         }
@@ -164,23 +170,46 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
          *
          * @return void
          */
-        public function generate_css_file() {
-            if ( empty( self::$styles ) ) {
+        public function output_collected_styles(): void {
+            if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || empty( self::$styles ) ) {
                 return;
             }
 
-            clearstatcache();
-            $page_id      = get_queried_object_id();
-            $css_filename = 'gslider-blocks-dynamic-styles-' . $page_id . '.min.css';
-            $css_file     = $this->css_dir . '/' . $css_filename;
-
-            $css_content = '';
-            foreach ( self::$styles as $block_id => $style ) {
-                $css_content .= $style;
+            $raw = '';
+            foreach ( self::$styles as $style ) {
+                if ( is_string( $style ) && '' !== $style ) {
+                    $raw .= $style;
+                }
             }
 
-            $css_content = "/* GSlider Blocks Dynamic Styles - Page ID: $page_id - Generated on " .
-                current_time( 'mysql' ) . " */\n" . $this->minify_css( $css_content );
+            $minified = $this->minify_css( $raw );
+            if ( '' === $minified ) {
+                return;
+            }
+
+            $identity = $this->queried_style_identity();
+            if ( 0 !== $identity['id'] ) {
+                $this->write_css_if_changed( $identity, $minified );
+            }
+
+            $this->print_style_tag( $minified );
+        }
+
+        /**
+         * Writes the minified CSS when its body differs from the stored file.
+         *
+         * The compared bytes do not include a clock, so an unchanged page
+         * does not rewrite the file or move filemtime.
+         *
+         * @since 1.0.0
+         *
+         * @param array  $identity Query type and numeric ID.
+         * @param string $minified Minified CSS body.
+         * @return void
+         */
+        private function write_css_if_changed( array $identity, string $minified ): void {
+            clearstatcache();
+            $css_file = $this->css_dir . '/' . $this->css_filename( $identity );
 
             if ( ! function_exists( 'WP_Filesystem' ) ) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -191,62 +220,84 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
                 WP_Filesystem();
             }
 
-            if ( ! is_dir( $this->css_dir ) ) {
-                if ( ! wp_mkdir_p( $this->css_dir ) ) {
-                    if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                        error_log( 'GSlider Blocks: Failed to create CSS directory: ' . $this->css_dir );
-                    }
-                    return;
-                }
+            if ( ! is_dir( $this->css_dir ) && ! wp_mkdir_p( $this->css_dir ) ) {
+                return;
             }
 
             if ( file_exists( $css_file ) ) {
-                $existing_content = $wp_filesystem->get_contents( $css_file );
-                if ( $existing_content === $css_content ) {
+                $existing = $wp_filesystem->get_contents( $css_file );
+                if ( is_string( $existing ) && $this->css_body( $existing ) === $minified ) {
                     return;
                 }
             }
 
-            if ( ! $wp_filesystem->put_contents( $css_file, $css_content, self::FILE_PERMISSIONS ) ) {
-                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-                    error_log( 'GSlider Blocks: Failed to write CSS file: ' . $css_file );
-                }
-            }
-
-            self::$styles = [];
+            $comment = '/* GSlider Blocks Dynamic Styles - ' . $identity['type'] . ' ' . $identity['id'] . ' */';
+            $wp_filesystem->put_contents( $css_file, $comment . "\n" . $minified, self::FILE_PERMISSIONS );
         }
 
         /**
-         * Enqueues the generated dynamic CSS file.
-         *
-         * Loads the per-page CSS file if it exists, using the file
-         * modification time for cache busting.
+         * Prints this request's CSS after blocks have rendered.
          *
          * @since 1.0.0
          *
+         * @param string $minified Minified CSS body.
          * @return void
          */
-        public function enqueue_dynamic_styles() {
-            clearstatcache();
-            $page_id       = get_queried_object_id();
-            $css_filename  = 'gslider-blocks-dynamic-styles-' . $page_id . '.min.css';
-            $css_file_path = $this->css_dir . '/' . $css_filename;
-            $css_file_url  = $this->css_url . '/' . $css_filename;
+        private function print_style_tag( string $minified ): void {
+            echo '<style id="gslider-blocks-dynamic-styles">' . $minified . '</style>';
+        }
 
-            if ( ! file_exists( $css_file_path ) ) {
-                $this->generate_css_file();
+        /**
+         * Builds a filename that cannot collide across query types.
+         *
+         * @since 1.0.0
+         *
+         * @param array $identity Query type and numeric ID.
+         * @return string CSS filename.
+         */
+        private function css_filename( array $identity ): string {
+            return 'gslider-blocks-dynamic-styles-' . $identity['type'] . '-' . $identity['id'] . '.min.css';
+        }
+
+        /**
+         * Identifies the current query so post 12 and term 12 stay distinct.
+         *
+         * @since 1.0.0
+         *
+         * @return array{type: string, id: int}
+         */
+        private function queried_style_identity(): array {
+            $id     = function_exists( 'get_queried_object_id' ) ? (int) get_queried_object_id() : 0;
+            $object = function_exists( 'get_queried_object' ) ? get_queried_object() : null;
+            $type   = 'query';
+
+            if ( $object instanceof \WP_Post ) {
+                $type = 'post';
+            } elseif ( $object instanceof \WP_Term ) {
+                $type = 'term';
+            } elseif ( $object instanceof \WP_User ) {
+                $type = 'user';
+            } elseif ( $object instanceof \WP_Post_Type ) {
+                $type = 'post-type';
             }
 
-            if ( file_exists( $css_file_path ) ) {
-                wp_enqueue_style(
-                    'gslider-blocks-dynamic-styles-' . $page_id,
-                    $css_file_url,
-                    [],
-                    filemtime( $css_file_path )
-                );
-            }
+            return [
+                'type' => $type,
+                'id'   => $id,
+            ];
+        }
+
+        /**
+         * Returns stored CSS without the leading comment used as a label.
+         *
+         * @since 1.0.0
+         *
+         * @param string $css File contents.
+         * @return string CSS body used for equality.
+         */
+        private function css_body( string $css ): string {
+            $stripped = preg_replace( '/^\/\*.*?\*\/\s*/s', '', $css, 1 );
+            return is_string( $stripped ) ? $stripped : $css;
         }
 
         /**
