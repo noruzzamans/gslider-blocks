@@ -1,10 +1,12 @@
 import { __ } from '@wordpress/i18n';
+import { InspectorControls } from '@wordpress/block-editor';
 import { useState, useEffect, useMemo, memo, useCallback } from '@wordpress/element';
 import { 
     PanelBody,
     ToggleControl,
     BaseControl,
-
+    Button,
+    Notice,
 } from '@wordpress/components';
 
 /**
@@ -40,6 +42,7 @@ import BoxShadowSettingsControl from '@Components/box-shadow-control';
 import BackgroundControl from '@Components/background-control';
 import ImageControl from '@Components/image-control';
 import InspectorControl from '@Components/inspector-controls';
+import getCustomCss from '@Utils/getCustomCss';
 
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import {useDeviceType} from "@Utils/displayType";
@@ -1991,6 +1994,25 @@ const Inspector = ({ attributes, setAttributes }) => {
 
     return (
         <>
+            {globalCustomCSS && (
+                <InspectorControls>
+                    <div className="gslider-legacy-css-notice">
+                        <Notice status="warning" isDismissible={false}>
+                            <p>
+                                {__("This block has custom CSS saved before version 1.1.9. Custom CSS is no longer supported, so it is not applied in the editor and will stop applying on your site the next time this page is saved. Copy it to Additional CSS in the Customizer or the Site Editor, then remove it here.", "gslider-blocks")}
+                            </p>
+                            <pre>{getCustomCss(globalCustomCSS, `.${blockId}`)}</pre>
+                            <Button
+                                variant="secondary"
+                                isDestructive
+                                onClick={() => setAttributes({ globalCustomCSS: '' })}
+                            >
+                                {__("Remove Legacy CSS", "gslider-blocks")}
+                            </Button>
+                        </Notice>
+                    </div>
+                </InspectorControls>
+            )}
             <InspectorControl
                 generalControls={generalControls}
                 styleControls={styleControls}

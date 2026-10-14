@@ -113,3 +113,16 @@
         opacity: 1;
     }
 }
+
+// Legacy custom CSS notice (custom CSS was removed in 1.1.9)
+.gslider-legacy-css-notice {
+    padding: 16px 16px 0;
+
+    pre {
+        max-height: 200px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 12px;
+    }
+}

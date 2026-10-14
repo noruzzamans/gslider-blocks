@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { useDispatch } from '@wordpress/data';
 import {
 	RichText,
 	useBlockProps,
@@ -22,6 +23,17 @@ import { normalizeContentOrder } from './content-order';
 // We use vanilla JS Swiper in useEffect instead of swiper/react
 
 export default function Edit({ attributes, setAttributes, clientId, isSelected }) {
+	const { createWarningNotice } = useDispatch('core/notices');
+
+	useEffect(() => {
+		if (attributes.globalCustomCSS) {
+			createWarningNotice(
+				__('One or more GSlider blocks on this page have custom CSS saved before version 1.1.9. It is no longer applied and will be dropped from the page on the next save. Select each slider to copy its CSS from the settings sidebar.', 'gslider-blocks'),
+				{ id: 'gslider-legacy-custom-css' }
+			);
+		}
+	}, []);
+
 	const {
 		blockId,
         blockStyle,
