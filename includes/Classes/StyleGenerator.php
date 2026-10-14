@@ -144,10 +144,9 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
                 $block_id = isset( $block['attrs']['blockId'] ) ?
                     sanitize_key( $block['attrs']['blockId'] ) :
                     'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
-                $raw_style = is_string( $block['attrs']['blockStyle'] ) ? $block['attrs']['blockStyle'] : '';
-                $clean_style = wp_strip_all_tags( $raw_style );
-                $clean_style = preg_replace( '/(<\/?(?:script|style)[^>]*>|javascript:|expression\(|behavior:)/i', '', $clean_style );
-                if ( ! empty( $clean_style ) ) {
+                $raw_style   = is_string( $block['attrs']['blockStyle'] ) ? $block['attrs']['blockStyle'] : '';
+                $clean_style = $this->sanitize_block_style( $raw_style );
+                if ( '' !== $clean_style ) {
                     self::$styles[ $block_id ] = $clean_style;
                 }
             }
@@ -264,12 +263,48 @@ if ( ! class_exists( 'StyleGenerator' ) ) {
          * @param string $css The raw CSS string to minify.
          * @return string The minified CSS string.
          */
+        /**
+         * Removes HTML and dangerous CSS from a blockStyle attribute.
+         *
+         * Plugin-generated rules stay. The raw attribute is not written through.
+         *
+         * @since 1.1.9
+         *
+         * @param string $css CSS from the block attribute.
+         * @return string Sanitized CSS, or an empty string.
+         */
+        private function sanitize_block_style( $css ) {
+            if ( ! is_string( $css ) || '' === $css ) {
+                return '';
+            }
+
+            $css = wp_strip_all_tags( $css );
+            $css = preg_replace(
+                array(
+                    '/@import\b[^;]*;?/i',
+                    '/expression\s*\([^)]*\)/i',
+                    '/javascript\s*:/i',
+                    '/behavior\s*:/i',
+                    '/-moz-binding\s*:[^;}]*;?/i',
+                    '/url\s*\(\s*[\'"]?\s*data\s*:[^)]*\)/i',
+                ),
+                '',
+                $css
+            );
+
+            if ( ! is_string( $css ) ) {
+                return '';
+            }
+
+            return trim( $css );
+        }
+
         private function minify_css( $css ) {
             if ( empty( $css ) ) {
                 return '';
             }
 
-            $css = wp_strip_all_tags( $css );
+            $css = $this->sanitize_block_style( $css );
             $css = preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css );
             $css = preg_replace( '/\s*([:,;{}])\s*/', '$1', $css );
             $css = preg_replace( '/;}/', '}', $css );
