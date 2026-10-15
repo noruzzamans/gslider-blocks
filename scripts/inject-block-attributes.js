@@ -3,62 +3,62 @@
  *
  * WordPress registers blocks from build/blocks/<slug>/block.json. The source
  * block.json files have no attributes key, so PHP would otherwise register an
- * empty attribute set. This runs after wp-scripts build and writes only the
- * built copies. src/blocks/<slug>/block.json stays unchanged, and build/ is
+ * empty attribute set. Webpack runs this after every production build and
+ * every `npm run start` rebuild, so the built file stays in step with
+ * attributes.js. src/blocks/<slug>/block.json stays unchanged, and build/ is
  * not committed.
  *
- * Run with `npm run build` or `npm run build:production`.
+ * Attributes are loaded with esbuild, the same way the MCP schema extractor
+ * loads them, so imports from other local files or the repo aliases work.
  */
+const esbuild = require( 'esbuild' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-const vm = require( 'vm' );
 
 const rootDir = path.resolve( __dirname, '..' );
 const sourceDir = path.join( rootDir, 'src/blocks' );
 const buildDir = path.join( rootDir, 'build/blocks' );
 
-function exportedValue( source, name ) {
-	const match = source.match( new RegExp( `export const ${ name } = ([\\s\\S]*?);` ) );
-	if ( ! match ) {
-		throw new Error( `Could not read export ${ name }.` );
-	}
-	return match[ 1 ];
-}
+const alias = {
+	'@Controls': path.join( rootDir, 'blocks-config/gslider-controls' ),
+	'@Components': path.join( rootDir, 'src/components' ),
+	'@Utils': path.join( rootDir, 'src/utils' ),
+	'@Constants': path.join( rootDir, 'src/constants' ),
+	'@Blocks': path.join( rootDir, 'src/blocks' ),
+	'@Store': path.join( rootDir, 'src/store' ),
+	'@Attributes': path.join( rootDir, 'blocks-config/blocks-attributes' ),
+};
 
-function loadAttributes( slug ) {
+async function loadAttributes( slug ) {
 	const file = path.join( sourceDir, slug, 'attributes.js' );
-	let source = fs.readFileSync( file, 'utf8' );
-	let header = '';
-	const imports = [ ...source.matchAll( /import\s+\{([^}]+)\}\s+from\s+['"](\.[^'"]+)['"];?/g ) ];
-
-	for ( const match of imports ) {
-		const names = match[ 1 ].split( ',' ).map( ( name ) => name.trim() ).filter( Boolean );
-		const imported = path.resolve( path.dirname( file ), match[ 2 ].endsWith( '.js' ) ? match[ 2 ] : `${ match[ 2 ] }.js` );
-		const importedSource = fs.readFileSync( imported, 'utf8' );
-		for ( const name of names ) {
-			const binding = name.includes( ' as ' ) ? name.split( ' as ' ).pop().trim() : name;
-			const exported = name.includes( ' as ' ) ? name.split( ' as ' )[ 0 ].trim() : name;
-			header += `const ${ binding } = ${ exportedValue( importedSource, exported ) };\n`;
-		}
-	}
-
-	source = source.replace( /import\s+\{[^}]+\}\s+from\s+['"]\.[^'"]+['"];?/g, '' );
-	if ( ! source.includes( 'export default' ) ) {
-		throw new Error( `${ slug } attributes.js has no default export.` );
-	}
-	source = source.replace( 'export default', 'module.exports =' );
-
-	const sandbox = { module: { exports: {} }, exports: {} };
+	const result = await esbuild.build( {
+		entryPoints: [ file ],
+		bundle: true,
+		write: false,
+		format: 'cjs',
+		platform: 'node',
+		loader: { '.js': 'jsx' },
+		alias,
+		external: [ '@wordpress/*' ],
+		logLevel: 'silent',
+	} );
+	const sandbox = { module: { exports: {} }, exports: {}, require };
 	sandbox.exports = sandbox.module.exports;
-	vm.runInNewContext( header + source, sandbox, { filename: file } );
-	return sandbox.module.exports;
+	const run = new Function( 'module', 'exports', 'require', result.outputFiles[ 0 ].text );
+	run( sandbox.module, sandbox.exports, ( id ) => {
+		if ( id.startsWith( '@wordpress/' ) ) {
+			return { __: ( text ) => text };
+		}
+		return require( id );
+	} );
+	return sandbox.module.exports.default || sandbox.module.exports;
 }
 
 function readJson( file ) {
 	return JSON.parse( fs.readFileSync( file, 'utf8' ) );
 }
 
-function main() {
+async function injectBlockAttributes() {
 	const slugs = fs.readdirSync( sourceDir ).filter( ( slug ) => (
 		fs.existsSync( path.join( sourceDir, slug, 'attributes.js' ) )
 	) );
@@ -66,7 +66,7 @@ function main() {
 	for ( const slug of slugs ) {
 		const builtFile = path.join( buildDir, slug, 'block.json' );
 		if ( ! fs.existsSync( builtFile ) ) {
-			throw new Error( `Built block.json is missing for ${ slug }. Run wp-scripts build first.` );
+			throw new Error( `Built block.json is missing for ${ slug }.` );
 		}
 		const sourceFile = path.join( sourceDir, slug, 'block.json' );
 		if ( readJson( sourceFile ).attributes ) {
@@ -74,7 +74,7 @@ function main() {
 		}
 
 		const block = readJson( builtFile );
-		const attributes = loadAttributes( slug );
+		const attributes = await loadAttributes( slug );
 		block.attributes = JSON.parse( JSON.stringify( attributes ) );
 		if ( ! block.attributes || Object.keys( block.attributes ).length === 0 ) {
 			throw new Error( `${ slug } produced no attributes.` );
@@ -97,4 +97,11 @@ function main() {
 	}
 }
 
-main();
+module.exports = { injectBlockAttributes };
+
+if ( require.main === module ) {
+	injectBlockAttributes().catch( ( error ) => {
+		console.error( error );
+		process.exit( 1 );
+	} );
+}

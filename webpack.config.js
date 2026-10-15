@@ -1,8 +1,16 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const path = require( 'path' );
+const { injectBlockAttributes } = require( './scripts/inject-block-attributes' );
+
+class InjectBlockAttributesPlugin {
+	apply( compiler ) {
+		compiler.hooks.afterEmit.tapPromise( 'InjectBlockAttributes', () => injectBlockAttributes() );
+	}
+}
 
 module.exports = {
 	...defaultConfig,
+	plugins: [ ...( defaultConfig.plugins || [] ), new InjectBlockAttributesPlugin() ],
 	resolve: {
 		alias: {
 			...defaultConfig.resolve.alias,
