@@ -9,5 +9,5 @@
       "@Blocks/*": ["src/blocks/*"]
     }
   },
-  "include": ["src/**/*", "stories/**/*", ".storybook/**/*"]
+  "include": ["src/**/*", "storybook/**/*"]
 }

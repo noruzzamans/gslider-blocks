@@ -22,8 +22,8 @@
 		"mcp:test": "npm --prefix packages/mcp-server run test",
 		"test": "npm run test:php",
 		"test:php": "composer test",
-		"storybook": "storybook dev -p 6006 --disable-telemetry",
-		"storybook:build": "storybook build -o storybook-static --disable-telemetry"
+		"storybook": "storybook dev -c storybook -p 6006 --disable-telemetry",
+		"storybook:build": "storybook build -c storybook -o storybook-static --disable-telemetry"
 	},
 	"devDependencies": {
 		"@storybook/addon-essentials": "^8.6.19",

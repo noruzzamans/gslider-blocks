@@ -1,4 +1,5 @@
-import '@wordpress/components/build-style/style.css';
+import { WithWordPressStyles } from './decorators/with-wordpress-styles';
+import { WithGutenbergSidebar } from './decorators/with-gutenberg-sidebar';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -11,6 +12,10 @@ const preview = {
 		},
 		layout: 'centered',
 	},
+	decorators: [
+		WithWordPressStyles,
+		WithGutenbergSidebar,
+	],
 };
 
 export default preview;

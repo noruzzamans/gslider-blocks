@@ -3,8 +3,9 @@ const path = require('path');
 /** @type { import('@storybook/react-webpack5').StorybookConfig } */
 const config = {
 	stories: [
-		'../stories/**/*.mdx',
-		'../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
+		'./stories/**/*.mdx',
+		'./stories/**/*.story.@(js|jsx|mjs|ts|tsx)',
+		'./stories/**/*.stories.@(js|jsx|mjs|ts|tsx)',
 	],
 	addons: [
 		'@storybook/addon-essentials',
@@ -44,6 +45,20 @@ const config = {
 				},
 			],
 			include: path.resolve(__dirname, '../'),
+		});
+
+		// 3. Add rule for JavaScript & JSX using WordPress default Babel preset
+		config.module.rules.push({
+			test: /\.(js|jsx)$/,
+			exclude: /node_modules/,
+			use: {
+				loader: 'babel-loader',
+				options: {
+					presets: [
+						require.resolve('@wordpress/babel-preset-default'),
+					],
+				},
+			},
 		});
 
 		return config;
