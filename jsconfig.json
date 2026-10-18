@@ -11,5 +11,5 @@
       "@Blocks/*": ["src/blocks/*"]
     }
   },
-  "include": ["src/**/*", "storybook/**/*"]
+  "include": ["src/**/*", "storybook/**/*", "blocks-config/**/*"]
 }

@@ -1,10 +1,10 @@
-import React from 'react';
+import { createElement } from '@wordpress/element';
 
 /**
  * Decorator that replicates the WordPress Gutenberg Block Inspector sidebar width (280-300px)
  */
 export const WithGutenbergSidebar = (Story) =>
-	React.createElement(
+	createElement(
 		'div',
 		{
 			style: {
@@ -21,5 +21,5 @@ export const WithGutenbergSidebar = (Story) =>
 			},
 			className: 'block-editor-block-inspector components-panel',
 		},
-		React.createElement(Story)
+		createElement(Story)
 	);

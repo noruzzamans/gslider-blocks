@@ -34,6 +34,7 @@ const config = {
 		// 2. Add rule for SCSS stylesheets
 		config.module.rules.push({
 			test: /\.s[ac]ss$/i,
+			exclude: /node_modules/,
 			use: [
 				'style-loader',
 				'css-loader',
