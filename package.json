@@ -39,6 +39,7 @@
 		"@wordpress/scripts": "^30.17.0",
 		"babel-loader": "^9.2.1",
 		"css-loader": "^7.1.2",
+		"esbuild": "^0.28.2",
 		"mini-css-extract-plugin": "^2.9.2",
 		"sass": "^1.88.0",
 		"sass-loader": "^16.0.5",
