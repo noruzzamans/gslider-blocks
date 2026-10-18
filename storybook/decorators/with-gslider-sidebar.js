@@ -1,9 +1,9 @@
 import { createElement } from '@wordpress/element';
 
 /**
- * Decorator that replicates the WordPress Gutenberg Block Inspector sidebar width (280-300px)
+ * Decorator that replicates the GSlider Gutenberg Block Inspector sidebar canvas (280-300px)
  */
-export const WithGutenbergSidebar = (Story) =>
+export const WithGSliderSidebar = (Story) =>
 	createElement(
 		'div',
 		{

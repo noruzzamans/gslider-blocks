@@ -1,5 +1,5 @@
-import { WithWordPressStyles } from './decorators/with-wordpress-styles';
-import { WithGutenbergSidebar } from './decorators/with-gutenberg-sidebar';
+import { WithGSliderStyles } from './decorators/with-gslider-styles';
+import { WithGSliderSidebar } from './decorators/with-gslider-sidebar';
 
 /** @type { import('@storybook/react').Preview } */
 const preview = {
@@ -13,8 +13,8 @@ const preview = {
 		layout: 'centered',
 	},
 	decorators: [
-		WithWordPressStyles,
-		WithGutenbergSidebar,
+		WithGSliderStyles,
+		WithGSliderSidebar,
 	],
 };
 
