@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@Components/*": ["src/components/*"],
+      "@Utils/*": ["src/utils/*"],
+      "@Constants/*": ["src/constants/*"],
+      "@Store/*": ["src/store/*"],
+      "@Blocks/*": ["src/blocks/*"]
+    }
+  },
+  "include": ["src/**/*", "stories/**/*", ".storybook/**/*"]
+}
