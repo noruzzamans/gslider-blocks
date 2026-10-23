@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Flexi Content Item Block - Style Generation
  * Returns Dynamic Generated CSS
@@ -155,7 +156,7 @@ const generateFlexiContentItemStyle = (attributes) => {
             ${sliderItemDesktopBackgroundNormalStyles}
             box-sizing: border-box;
             position: relative;
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, background-color 0.3s ease;
         }
         .${blockId}.flexi-content-item:hover {
             ${sliderItemDesktopBackgroundHoverStyles}

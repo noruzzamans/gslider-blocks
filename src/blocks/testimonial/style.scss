@@ -1,4 +1,19 @@
 .gslider-testimonial-wrapper {
+
+	.gslider-testimonial-content-group,
+	.gslider-testimonial-rating-wrapper,
+	.gslider-author-info-group {
+		width: 100%;
+	}
+
+	.gslider-author-meta {
+		min-width: 0;
+	}
+
+	.gslider-testimonial-author-image {
+		object-fit: cover;
+	}
+
 	.gslider-content-wrapper {
 		display: flex;
 		flex-direction: column;
@@ -9,26 +24,61 @@
 			box-sizing: border-box;
 			margin: 0 auto;
 			width: 100%;
+			display: flex;
+			flex-direction: column;
 
 			figure {
 				margin: 0;
 			}
+
+			.gslider-testimonial-content-group {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.gslider-author-info-group {
+				display: flex;
+				flex-direction: column;
+
+				.gslider-author-meta {
+					min-width: 0;
+				}
+			}
+		}
+	}
+
+	.swiper-backface-hidden {
+
+		.swiper-slide {
+			backface-visibility: visible !important;
 		}
 	}
 
 	.swiper {
 		position: relative !important;
 		overflow: hidden !important;
-	}
 
-	.swiper-backface-hidden {
-		.swiper-slide {
-			backface-visibility: visible !important;
+		&:not(.swiper-initialized) {
+			overflow: hidden !important;
+
+			.swiper-wrapper {
+				display: flex;
+				flex-wrap: nowrap;
+				width: 100%;
+				box-sizing: border-box;
+			}
+
+			.swiper-slide {
+				flex-shrink: 0;
+				box-sizing: border-box;
+			}
 		}
 	}
 
 	.gslider-testimonial-rating-wrapper {
+
 		.gslider-testimonial-rating-inner {
+
 			.gslider-testimonial-rating-wrap {
 				display: flex;
 
@@ -48,6 +98,7 @@
 					}
 
 					&.gslider-testimonial-star-partial-wrap {
+
 						.gslider-testimonial-star-partial-container {
 							position: relative;
 							width: 100%;
@@ -73,41 +124,6 @@
 						}
 					}
 				}
-			}
-		}
-	}
-
-	.gslider-testimonial-content-group,
-	.gslider-testimonial-rating-wrapper,
-	.gslider-author-info-group {
-		width: 100%;
-	}
-
-	.gslider-author-meta {
-		min-width: 0;
-	}
-
-	.gslider-testimonial-author-image {
-		object-fit: cover;
-	}
-}
-
-.gslider-testimonial-wrapper {
-	.gslider-content-inner-wrapper {
-		display: flex;
-		flex-direction: column;
-
-		.gslider-testimonial-content-group {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.gslider-author-info-group {
-			display: flex;
-			flex-direction: column;
-
-			.gslider-author-meta {
-				min-width: 0;
 			}
 		}
 	}

@@ -139,6 +139,13 @@ if ( ! function_exists( 'is_admin' ) ) {
 	}
 }
 
+if ( ! function_exists( 'is_feed' ) ) {
+	function is_feed() {
+		global $is_feed_mock;
+		return isset( $is_feed_mock ) ? (bool) $is_feed_mock : false;
+	}
+}
+
 if ( ! function_exists( 'site_url' ) ) {
 	function site_url( $path = '' ) {
 		return 'http://example.org' . ( $path ? '/' . ltrim( $path, '/' ) : '' );
@@ -258,6 +265,20 @@ if ( ! function_exists( 'wp_kses_post' ) ) {
 if ( ! function_exists( 'render_block' ) ) {
 	function render_block( $block ) {
 		return '<p>flexi</p>';
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_metadata' ) ) {
+	function wp_get_attachment_metadata( $attachment_id ) {
+		global $attachment_metadata_mock;
+		return isset( $attachment_metadata_mock[ $attachment_id ] ) ? $attachment_metadata_mock[ $attachment_id ] : false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_image_src' ) ) {
+	function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail' ) {
+		global $attachment_image_src_mock;
+		return isset( $attachment_image_src_mock[ $attachment_id ] ) ? $attachment_image_src_mock[ $attachment_id ] : false;
 	}
 }
 
@@ -477,6 +498,22 @@ if ( ! function_exists( 'wp_register_style' ) ) {
 			'deps' => $deps,
 			'ver'  => $ver,
 		];
+	}
+}
+
+global $wp_scripts;
+$wp_scripts = [];
+
+if ( ! function_exists( 'wp_register_script' ) ) {
+	function wp_register_script( $handle, $src, $deps = [], $ver = false, $args = false ) {
+		global $wp_scripts;
+		$wp_scripts[ $handle ] = [
+			'src'  => $src,
+			'deps' => $deps,
+			'ver'  => $ver,
+			'args' => $args,
+		];
+		return true;
 	}
 }
 
