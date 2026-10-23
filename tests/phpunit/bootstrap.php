@@ -139,6 +139,13 @@ if ( ! function_exists( 'is_admin' ) ) {
 	}
 }
 
+if ( ! function_exists( 'is_feed' ) ) {
+	function is_feed() {
+		global $is_feed_mock;
+		return isset( $is_feed_mock ) ? (bool) $is_feed_mock : false;
+	}
+}
+
 if ( ! function_exists( 'site_url' ) ) {
 	function site_url( $path = '' ) {
 		return 'http://example.org' . ( $path ? '/' . ltrim( $path, '/' ) : '' );
@@ -477,6 +484,22 @@ if ( ! function_exists( 'wp_register_style' ) ) {
 			'deps' => $deps,
 			'ver'  => $ver,
 		];
+	}
+}
+
+global $wp_scripts;
+$wp_scripts = [];
+
+if ( ! function_exists( 'wp_register_script' ) ) {
+	function wp_register_script( $handle, $src, $deps = [], $ver = false, $args = false ) {
+		global $wp_scripts;
+		$wp_scripts[ $handle ] = [
+			'src'  => $src,
+			'deps' => $deps,
+			'ver'  => $ver,
+			'args' => $args,
+		];
+		return true;
 	}
 }
 

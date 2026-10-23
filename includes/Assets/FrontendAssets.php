@@ -63,7 +63,10 @@ class FrontendAssets implements Registrable {
             GSLIDER_PLUGIN_URL . 'assets/js/swiper-bundle.min.js',
             [],
             GSLIDER_VERSION,
-            true
+            [
+                'in_footer' => true,
+                'strategy'  => 'defer',
+            ]
         );
 
         wp_register_script(
@@ -71,7 +74,10 @@ class FrontendAssets implements Registrable {
             GSLIDER_PLUGIN_URL . 'assets/js/fslightbox.min.js',
             [],
             GSLIDER_VERSION,
-            true
+            [
+                'in_footer' => true,
+                'strategy'  => 'defer',
+            ]
         );
 
         // Enqueue fsLightbox for admin editor only.

@@ -45,6 +45,26 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         private static $styles = [];
 
         /**
+         * Track block IDs whose style tags have already been rendered on the current request.
+         *
+         * Prevents duplicate <style> tags for the same block ID (e.g. in query loops or synced patterns).
+         *
+         * @since 1.2.1
+         *
+         * @var array<string, bool>
+         */
+        private static $printed = [];
+
+        /**
+         * Track whether the LCP image priority has been applied to the first slide on the page.
+         *
+         * @since 1.2.1
+         *
+         * @var bool
+         */
+        private static $lcp_optimized = false;
+
+        /**
          * Registers hooks for style collection, sanitization, and rendering.
          *
          * @since 1.0.0
@@ -89,28 +109,93 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 return $block_content;
             }
 
-            if ( false !== strpos( $block['blockName'], 'gslider-blocks/' ) && ! empty( $block['attrs']['blockStyle'] ) ) {
-                $block_id = isset( $block['attrs']['blockId'] ) ?
-                    sanitize_key( $block['attrs']['blockId'] ) :
-                    'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
+            // Exclude styles and optimizations from RSS feeds to prevent feed validation errors.
+            if ( function_exists( 'is_feed' ) && is_feed() ) {
+                return $block_content;
+            }
 
-                $raw_style = is_string( $block['attrs']['blockStyle'] ) ? $block['attrs']['blockStyle'] : '';
+            if ( false !== strpos( $block['blockName'], 'gslider-blocks/' ) ) {
+                // Apply LCP image priority to the first slide image on the page (frontend only).
+                $block_content = $this->optimize_lcp_image( $block_content );
 
-                // Strictly sanitize CSS to prevent arbitrary CSS injection.
-                $clean_style = $this->sanitize_css( $raw_style, $block_id );
+                if ( ! empty( $block['attrs']['blockStyle'] ) ) {
+                    $block_id = isset( $block['attrs']['blockId'] ) ?
+                        sanitize_key( $block['attrs']['blockId'] ) :
+                        'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
 
-                if ( ! empty( $clean_style ) ) {
-                    self::$styles[ $block_id ] = $clean_style;
+                    $raw_style = is_string( $block['attrs']['blockStyle'] ) ? $block['attrs']['blockStyle'] : '';
 
-                    // Enqueue via WordPress native inline styles if handle is available.
-                    if ( function_exists( 'wp_style_is' ) && wp_style_is( 'gslider-blocks-dynamic-styles', 'registered' ) ) {
-                        wp_add_inline_style( 'gslider-blocks-dynamic-styles', $clean_style );
+                    // Strictly sanitize CSS to prevent arbitrary CSS injection.
+                    $clean_style = $this->sanitize_css( $raw_style, $block_id );
+
+                    if ( ! empty( $clean_style ) ) {
+                        self::$styles[ $block_id ] = $clean_style;
+
+                        // Deduplicate: only render the inline <style> tag once per unique block ID per request.
+                        if ( empty( self::$printed[ $block_id ] ) ) {
+                            self::$printed[ $block_id ] = true;
+                            $style_tag = '<style id="gslider-style-' . esc_attr( $block_id ) . '">' . $clean_style . '</style>';
+                            return $style_tag . $block_content;
+                        }
                     }
-
-                    // Render inline style tag directly scoped to this block for zero-FOUC and full compatibility.
-                    $style_tag = '<style id="gslider-style-' . esc_attr( $block_id ) . '">' . $clean_style . '</style>';
-                    return $style_tag . $block_content;
                 }
+            }
+
+            return $block_content;
+        }
+
+        /**
+         * Prioritizes the first slide image of the first GSlider block on the page for LCP.
+         *
+         * Injects fetchpriority="high", removes loading="lazy" (sets loading="eager"),
+         * and ensures decoding="async" on the first <img> tag of the first slider.
+         *
+         * @since 1.2.1
+         *
+         * @param string $block_content The block HTML content.
+         * @return string Optimized block HTML content.
+         */
+        public function optimize_lcp_image( string $block_content ): string {
+            if ( self::$lcp_optimized || empty( $block_content ) ) {
+                return $block_content;
+            }
+
+            // Only run on frontend page loads (skip admin, REST requests, and feeds).
+            if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) ) {
+                return $block_content;
+            }
+
+            // Find the first <img> tag in the slider block content.
+            if ( preg_match( '/<img\b([^>]*)>/i', $block_content, $matches, PREG_OFFSET_CAPTURE ) ) {
+                $full_img_tag = $matches[0][0];
+                $attributes   = $matches[1][0];
+                $offset       = $matches[0][1];
+
+                $is_self_closing = '/' === substr( trim( $attributes ), -1 );
+                $new_attributes  = rtrim( $attributes, " /\t\n\r\0\x0B" );
+
+                // 1. Ensure loading="eager" instead of loading="lazy".
+                if ( preg_match( '/\bloading\s*=\s*["\']lazy["\']/i', $new_attributes ) ) {
+                    $new_attributes = preg_replace( '/\bloading\s*=\s*["\']lazy["\']/i', 'loading="eager"', $new_attributes );
+                } elseif ( ! preg_match( '/\bloading\s*=/i', $new_attributes ) ) {
+                    $new_attributes .= ' loading="eager"';
+                }
+
+                // 2. Ensure fetchpriority="high".
+                if ( ! preg_match( '/\bfetchpriority\s*=/i', $new_attributes ) ) {
+                    $new_attributes .= ' fetchpriority="high"';
+                }
+
+                // 3. Ensure decoding="async".
+                if ( ! preg_match( '/\bdecoding\s*=/i', $new_attributes ) ) {
+                    $new_attributes .= ' decoding="async"';
+                }
+
+                $new_img_tag = '<img' . $new_attributes . ( $is_self_closing ? ' />' : '>' );
+
+                // Replace only the first occurrence.
+                $block_content = substr_replace( $block_content, $new_img_tag, $offset, strlen( $full_img_tag ) );
+                self::$lcp_optimized = true;
             }
 
             return $block_content;
@@ -272,14 +357,16 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         }
 
         /**
-         * Resets collected styles in memory (primarily for unit testing).
+         * Resets collected styles and optimization flags in memory (primarily for unit testing).
          *
          * @since 1.2.0
          *
          * @return void
          */
         public static function reset_styles(): void {
-            self::$styles = [];
+            self::$styles        = [];
+            self::$printed       = [];
+            self::$lcp_optimized = false;
         }
 
         /**
