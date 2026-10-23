@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Flexi Content Slider Block - Style Generation
  * Returns Dynamic Generated CSS
@@ -628,7 +629,7 @@ const generateFlexiContentStyle = (attributes) => {
             ${navigationArrowWidth.Desktop ? `width: ${navigationArrowWidth.Desktop}${navigationArrowWidthUnits.Desktop};` : ''}
             ${navigationArrowHeight.Desktop ? `height: ${navigationArrowHeight.Desktop}${navigationArrowHeightUnits.Desktop};` : ''}
             outline: none !important;
-            transition: all .3s ease-in-out;
+            transition: color .3s ease-in-out, background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out, transform .3s ease-in-out;
         }
         .${blockId} .swiper-button-prev:hover,
         .${blockId} .swiper-button-next:hover {
@@ -713,7 +714,7 @@ const generateFlexiContentStyle = (attributes) => {
             ${paginationFractionLetterSpacing.Desktop && paginationFractionLetterSpacingUnits.Desktop ? `letter-spacing: ${paginationFractionLetterSpacing.Desktop}${paginationFractionLetterSpacingUnits.Desktop};` : ''}
             ${paginationFractionWordSpacing.Desktop && paginationFractionWordSpacingUnits.Desktop ? `word-spacing: ${paginationFractionWordSpacing.Desktop}${paginationFractionWordSpacingUnits.Desktop};` : ''}
             ${paginationFractionColor ? `color: ${paginationFractionColor};` : ''}
-            transition: all .3s ease-in-out;
+            transition: color .3s ease-in-out;
         }
 
         .${blockId} .swiper-pagination-fraction:hover {

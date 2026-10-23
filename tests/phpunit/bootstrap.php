@@ -84,6 +84,14 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	}
 }
 
+if ( ! function_exists( 'remove_all_filters' ) ) {
+	function remove_all_filters( $tag ) {
+		global $wp_filters;
+		unset( $wp_filters[ $tag ] );
+		return true;
+	}
+}
+
 if ( ! function_exists( 'do_action' ) ) {
 	function do_action( $tag, ...$args ) {
 		// Mock do_action.
@@ -93,6 +101,18 @@ if ( ! function_exists( 'do_action' ) ) {
 if ( ! function_exists( 'trailingslashit' ) ) {
 	function trailingslashit( $string ) {
 		return rtrim( $string, '/\\' ) . '/';
+	}
+}
+
+if ( ! function_exists( '__return_true' ) ) {
+	function __return_true() {
+		return true;
+	}
+}
+
+if ( ! function_exists( '__return_false' ) ) {
+	function __return_false() {
+		return false;
 	}
 }
 
@@ -132,10 +152,23 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 	}
 }
 
+if ( ! function_exists( 'set_url_scheme' ) ) {
+	function set_url_scheme( $url, $scheme = null ) {
+		return $url;
+	}
+}
+
 if ( ! function_exists( 'is_admin' ) ) {
 	function is_admin() {
 		global $is_admin_mock;
 		return isset( $is_admin_mock ) ? (bool) $is_admin_mock : true;
+	}
+}
+
+if ( ! function_exists( 'is_feed' ) ) {
+	function is_feed() {
+		global $is_feed_mock;
+		return isset( $is_feed_mock ) ? (bool) $is_feed_mock : false;
 	}
 }
 
@@ -258,6 +291,20 @@ if ( ! function_exists( 'wp_kses_post' ) ) {
 if ( ! function_exists( 'render_block' ) ) {
 	function render_block( $block ) {
 		return '<p>flexi</p>';
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_metadata' ) ) {
+	function wp_get_attachment_metadata( $attachment_id ) {
+		global $attachment_metadata_mock;
+		return isset( $attachment_metadata_mock[ $attachment_id ] ) ? $attachment_metadata_mock[ $attachment_id ] : false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_image_src' ) ) {
+	function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail' ) {
+		global $attachment_image_src_mock;
+		return isset( $attachment_image_src_mock[ $attachment_id ] ) ? $attachment_image_src_mock[ $attachment_id ] : false;
 	}
 }
 
@@ -440,7 +487,10 @@ if ( ! function_exists( 'wp_upload_dir' ) ) {
 
 if ( ! function_exists( 'wp_mkdir_p' ) ) {
 	function wp_mkdir_p( $dir ) {
-		return true;
+		if ( ! is_dir( $dir ) ) {
+			@mkdir( $dir, 0777, true );
+		}
+		return is_dir( $dir );
 	}
 }
 
@@ -477,6 +527,22 @@ if ( ! function_exists( 'wp_register_style' ) ) {
 			'deps' => $deps,
 			'ver'  => $ver,
 		];
+	}
+}
+
+global $wp_scripts;
+$wp_scripts = [];
+
+if ( ! function_exists( 'wp_register_script' ) ) {
+	function wp_register_script( $handle, $src, $deps = [], $ver = false, $args = false ) {
+		global $wp_scripts;
+		$wp_scripts[ $handle ] = [
+			'src'  => $src,
+			'deps' => $deps,
+			'ver'  => $ver,
+			'args' => $args,
+		];
+		return true;
 	}
 }
 
