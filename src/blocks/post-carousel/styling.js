@@ -3,8 +3,6 @@
  * Returns Dynamic Generated CSS
  */
 
-import getCustomCss from '@Utils/getCustomCss';
-
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
@@ -3153,10 +3151,7 @@ const generatePostCarouselStyle = (attributes) => {
     `;
     /** End All Block Style */
 
-    // Custom CSS
-    const customCss = getCustomCss(globalCustomCSS, `.${blockId}`);
-
-    return `${postCarouselCSS} ${customCss}`.replace(/\s+/g, ' ').trim();
+    return postCarouselCSS.replace(/\s+/g, ' ').trim();
 }
 
 export default generatePostCarouselStyle;
