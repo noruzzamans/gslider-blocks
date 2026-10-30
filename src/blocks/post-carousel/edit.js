@@ -319,6 +319,14 @@ export default function Edit( {
 			swiperInstanceRef.current = null;
 		}
 
+		// Clean up any Swiper loop duplicates from the DOM before re-initialization
+		if ( swiperContainerRef.current ) {
+			const duplicates = swiperContainerRef.current.querySelectorAll(
+				'.swiper-slide-duplicate'
+			);
+			duplicates.forEach( ( slide ) => slide.remove() );
+		}
+
 		// Clear both pagination elements to prevent stale bullets when switching position
 		if ( paginationInsideRef.current ) {
 			paginationInsideRef.current.innerHTML = '';
@@ -435,6 +443,12 @@ export default function Edit( {
 				swiperInstanceRef.current.destroy( true, true );
 				swiperInstanceRef.current = null;
 			}
+			if ( swiperContainerRef.current ) {
+				const duplicates = swiperContainerRef.current.querySelectorAll(
+					'.swiper-slide-duplicate'
+				);
+				duplicates.forEach( ( slide ) => slide.remove() );
+			}
 		};
 	}, [
 		blockId,
@@ -479,12 +493,10 @@ export default function Edit( {
 
 	return (
 		<>
-			{ isSelected && (
-				<Inspector
-					attributes={ attributes }
-					setAttributes={ setAttributes }
-				/>
-			) }
+			<Inspector
+				attributes={ attributes }
+				setAttributes={ setAttributes }
+			/>
 
 			<div { ...blockProps }>
 				{ ( isLoading || ! posts ) && (

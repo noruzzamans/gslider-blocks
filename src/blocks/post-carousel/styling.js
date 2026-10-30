@@ -2009,7 +2009,9 @@ const generatePostCarouselStyle = ( attributes ) => {
             ${
 				navigationArrowDesktopBorderRadiusCssStyle
 					? `border-radius: ${ navigationArrowDesktopBorderRadiusCssStyle };`
-					: ''
+					: navigationArrowDesktopBorderRadius
+					? `border-radius: ${ navigationArrowDesktopBorderRadius.top }px ${ navigationArrowDesktopBorderRadius.right }px ${ navigationArrowDesktopBorderRadius.bottom }px ${ navigationArrowDesktopBorderRadius.left }px;`
+					: 'border-radius: 50px 50px 50px 50px;'
 			}
             ${
 				navigationArrowBorderColor
@@ -3998,7 +4000,9 @@ const generatePostCarouselStyle = ( attributes ) => {
                 ${
 					navigationArrowTabletBorderRadiusCssStyle
 						? `border-radius: ${ navigationArrowTabletBorderRadiusCssStyle };`
-						: ''
+						: navigationArrowTabletBorderRadius
+						? `border-radius: ${ navigationArrowTabletBorderRadius.top }px ${ navigationArrowTabletBorderRadius.right }px ${ navigationArrowTabletBorderRadius.bottom }px ${ navigationArrowTabletBorderRadius.left }px;`
+						: 'border-radius: 50px 50px 50px 50px;'
 				}
                 ${
 					navigationArrowWidth.Tablet
@@ -5027,7 +5031,9 @@ const generatePostCarouselStyle = ( attributes ) => {
                 ${
 					navigationArrowMobileBorderRadiusCssStyle
 						? `border-radius: ${ navigationArrowMobileBorderRadiusCssStyle };`
-						: ''
+						: navigationArrowMobileBorderRadius
+						? `border-radius: ${ navigationArrowMobileBorderRadius.top }px ${ navigationArrowMobileBorderRadius.right }px ${ navigationArrowMobileBorderRadius.bottom }px ${ navigationArrowMobileBorderRadius.left }px;`
+						: 'border-radius: 50px 50px 50px 50px;'
 				}
                 ${
 					navigationArrowWidth.Mobile

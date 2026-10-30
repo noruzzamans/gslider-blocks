@@ -488,7 +488,7 @@ const attributes = {
 	},
 	navigationArrowDesktopBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	navigationArrowTabletBorderRadius: {
 		type: 'object',
@@ -501,7 +501,7 @@ const attributes = {
 	},
 	navigationArrowTabletBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	navigationArrowMobileBorderRadius: {
 		type: 'object',
@@ -514,7 +514,7 @@ const attributes = {
 	},
 	navigationArrowMobileBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	navigationArrowBorderRadiusLink: {
 		type: 'boolean',
@@ -910,7 +910,7 @@ const attributes = {
 	},
 	paginationNormalDotsDesktopBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	paginationNormalDotsTabletBorderRadius: {
 		type: 'object',
@@ -923,7 +923,7 @@ const attributes = {
 	},
 	paginationNormalDotsTabletBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	paginationNormalDotsMobileBorderRadius: {
 		type: 'object',
@@ -936,7 +936,7 @@ const attributes = {
 	},
 	paginationNormalDotsMobileBorderRadiusCssStyle: {
 		type: 'string',
-		default: '',
+		default: '50px 50px 50px 50px',
 	},
 	paginationNormalDotsBorderRadiusLink: {
 		type: 'boolean',
