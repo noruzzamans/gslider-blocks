@@ -3,9 +3,6 @@ name: Deploy to WordPress.org & GitHub Release
 on:
   release:
     types: [published]
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -21,13 +18,12 @@ concurrency:
   group: deploy-${{ github.ref_name || github.ref }}
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
   deploy:
     name: Build, Verify & Deploy Plugin
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       HAS_SVN_CREDENTIALS: ${{ secrets.SVN_PASSWORD != '' }}
     steps:
@@ -66,11 +62,34 @@ jobs:
       - name: Build Admin Assets
         run: npm run admin:build
 
+      - name: Validate Release Tag Matches Plugin Version
+        if: github.event_name == 'release'
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          TAG="${REF_NAME#v}"
+          PLUGIN_VERSION=$(grep -m1 "^[[:space:]]*\*[[:space:]]*Version:" gslider-blocks.php | awk '{print $NF}' | tr -d '\r')
+          README_VERSION=$(grep -m1 "^[[:space:]]*Stable tag:" readme.txt | awk '{print $NF}' | tr -d '\r')
+
+          echo "Validating release version alignment: Tag='$TAG', Plugin='$PLUGIN_VERSION', Readme='$README_VERSION'"
+
+          if [ -z "$PLUGIN_VERSION" ] || [ "$TAG" != "$PLUGIN_VERSION" ]; then
+            echo "::error::Release tag '$TAG' does not match plugin header Version in gslider-blocks.php ('$PLUGIN_VERSION'). Aborting release."
+            exit 1
+          fi
+
+          if [ -z "$README_VERSION" ] || [ "$TAG" != "$README_VERSION" ]; then
+            echo "::error::Release tag '$TAG' does not match Stable tag in readme.txt ('$README_VERSION'). Aborting release."
+            exit 1
+          fi
+
+          echo "✅ Release tag '$TAG' perfectly matches plugin header and readme.txt Stable tag."
+
       - name: Generate Distributable Plugin ZIP
         run: npm run zip
 
       - name: Attach Plugin ZIP to GitHub Release
-        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: gslider-blocks.zip
@@ -78,8 +97,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to WordPress.org SVN
-        if: env.HAS_SVN_CREDENTIALS == 'true' && (github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v') || github.event.inputs.dry_run == 'true')
-        uses: 10up/action-wordpress-plugin-deploy@stable
+        if: env.HAS_SVN_CREDENTIALS == 'true' && (github.event_name == 'release' || github.event.inputs.dry_run == 'true')
+        uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # v2.3.0
         with:
           dry-run: ${{ github.event.inputs.dry_run || 'false' }}
         env:

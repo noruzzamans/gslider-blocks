@@ -197,6 +197,7 @@ This plugin may connect to or load resources from external third-party services 
 * Swiper Engine: Fixed active slide desynchronization in infinite loop mode by switching from activeIndex to realIndex for duplicate slides.
 * Block Fixes: Corrected rating star gap units and desktop fallback handling in Testimonial Slider.
 * Block Fixes: Resolved tablet background hover styling in Logo Carousel and localized button placeholders in Base Slider.
+* Block Fixes: Restored core Additional CSS classes (customClassName) support on frontend wrapper in Image Slider and all blocks.
 * Headless REST API: Expanded post and page endpoints with serialized Gutenberg block schemas and normalized attributes.
 * MCP AI Ecosystem: Officially published @gslider/mcp-server on NPM with zero-install npx support, model context protocol tools, and GitHub Actions trusted publishing.
 * Maintenance: Cleaned up unused imports, dead variables, and refined code documentation across block components.

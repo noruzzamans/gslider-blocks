@@ -46,6 +46,14 @@
 /composer.json
 /composer.lock
 
+# Vendor internal documentation and development artifacts
+/vendor/**/.*
+/vendor/**/*.md
+/vendor/**/composer.json
+/vendor/**/composer.lock
+/vendor/**/phpunit*
+/vendor/**/sebastian*
+
 # Archives and operating system artifacts
 *.zip
 *.log
