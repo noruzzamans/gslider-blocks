@@ -534,10 +534,7 @@ if ( ! function_exists( 'wp_upload_dir' ) ) {
 
 if ( ! function_exists( 'wp_mkdir_p' ) ) {
 	function wp_mkdir_p( $dir ) {
-		if ( ! is_dir( $dir ) ) {
-			@mkdir( $dir, 0777, true );
-		}
-		return is_dir( $dir );
+		return true;
 	}
 }
 
@@ -765,13 +762,6 @@ if ( ! class_exists( 'WP_Post' ) ) {
 	}
 }
 
-if ( ! function_exists( 'is_singular' ) ) {
-	function is_singular( $post_types = '' ) {
-		global $is_singular_mock;
-		return isset( $is_singular_mock ) ? (bool) $is_singular_mock : true;
-	}
-}
-
 if ( ! function_exists( 'get_post' ) ) {
 	function get_post( $id = null ) {
 		global $wp_post_content, $wp_mock_posts, $post;
@@ -841,25 +831,19 @@ if ( ! function_exists( 'doing_action' ) ) {
 
 if ( ! function_exists( 'parse_blocks' ) ) {
 	function parse_blocks( $content ) {
-		$blocks = [];
-		if ( false !== strpos( $content, 'wp:block' ) ) {
-			$blocks[] = [
-				'blockName'   => 'core/block',
-				'attrs'       => [ 'ref' => 42 ],
-				'innerBlocks' => [],
-			];
-		}
 		if ( false !== strpos( $content, 'wp:gslider-blocks/image-slider' ) ) {
-			$blocks[] = [
-				'blockName'   => 'gslider-blocks/image-slider',
-				'attrs'       => [
-					'blockId'    => 'slider-abc123',
-					'blockStyle' => '.slider-abc123 { border-radius: 8px; }',
+			return [
+				[
+					'blockName'   => 'gslider-blocks/image-slider',
+					'attrs'       => [
+						'blockId'    => 'slider-abc123',
+						'blockStyle' => '.slider-abc123 { border-radius: 8px; }',
+					],
+					'innerBlocks' => [],
 				],
-				'innerBlocks' => [],
 			];
 		}
-		return $blocks;
+		return [];
 	}
 }
 

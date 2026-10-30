@@ -465,6 +465,10 @@ class DashboardControllerTest {
 			fwrite( STDERR, "FAIL: image-slider was not added to disabled_blocks\n" );
 			exit( 1 );
 		}
+		if ( ! in_array( 'gslider-blocks/image-slider', (array) get_option( 'gslider_disabled_blocks' ), true ) ) {
+			fwrite( STDERR, "FAIL: get_option('gslider_disabled_blocks') did not persist disabled image-slider\n" );
+			exit( 1 );
+		}
 		echo "OK: toggle_block disables single block\n";
 
 		// 3. Re-enable block.
@@ -476,6 +480,10 @@ class DashboardControllerTest {
 		$data_enable     = $response_enable->get_data();
 		if ( in_array( 'gslider-blocks/image-slider', $data_enable['disabled_blocks'], true ) ) {
 			fwrite( STDERR, "FAIL: image-slider was not removed from disabled_blocks\n" );
+			exit( 1 );
+		}
+		if ( in_array( 'gslider-blocks/image-slider', (array) get_option( 'gslider_disabled_blocks' ), true ) ) {
+			fwrite( STDERR, "FAIL: get_option('gslider_disabled_blocks') still contains re-enabled image-slider\n" );
 			exit( 1 );
 		}
 		echo "OK: toggle_block re-enables single block\n";
@@ -491,6 +499,10 @@ class DashboardControllerTest {
 			fwrite( STDERR, "FAIL: flexi-content-item was not automatically disabled with flexi-content\n" );
 			exit( 1 );
 		}
+		if ( ! in_array( 'gslider-blocks/flexi-content-item', (array) get_option( 'gslider_disabled_blocks' ), true ) ) {
+			fwrite( STDERR, "FAIL: get_option('gslider_disabled_blocks') does not contain cascaded flexi-content-item\n" );
+			exit( 1 );
+		}
 		echo "OK: Disabling flexi-content also disables flexi-content-item child dependency\n";
 
 		// 5. Toggle 'all' disables all blocks.
@@ -500,8 +512,20 @@ class DashboardControllerTest {
 
 		$response_all_off = $controller->toggle_block( $request_all_off );
 		$data_all_off     = $response_all_off->get_data();
-		if ( count( $data_all_off['disabled_blocks'] ) < 5 ) {
-			fwrite( STDERR, "FAIL: toggle 'all' off did not disable all blocks\n" );
+		$expected_all_disabled = [
+			'gslider-blocks/base',
+			'gslider-blocks/flexi-content',
+			'gslider-blocks/flexi-content-item',
+			'gslider-blocks/image-slider',
+			'gslider-blocks/logo-carousel',
+			'gslider-blocks/testimonial',
+		];
+		if ( $expected_all_disabled !== $data_all_off['disabled_blocks'] ) {
+			fwrite( STDERR, "FAIL: toggle 'all' off expected exact 6 disabled slugs, got: " . json_encode( $data_all_off['disabled_blocks'] ) . "\n" );
+			exit( 1 );
+		}
+		if ( $expected_all_disabled !== get_option( 'gslider_disabled_blocks' ) ) {
+			fwrite( STDERR, "FAIL: get_option('gslider_disabled_blocks') did not match expected all disabled slugs\n" );
 			exit( 1 );
 		}
 		echo "OK: Toggling all off disables all blocks\n";
@@ -515,6 +539,10 @@ class DashboardControllerTest {
 		$data_all_on     = $response_all_on->get_data();
 		if ( ! empty( $data_all_on['disabled_blocks'] ) ) {
 			fwrite( STDERR, "FAIL: toggle 'all' on did not empty disabled_blocks\n" );
+			exit( 1 );
+		}
+		if ( ! empty( get_option( 'gslider_disabled_blocks' ) ) ) {
+			fwrite( STDERR, "FAIL: get_option('gslider_disabled_blocks') is not empty after toggle all on\n" );
 			exit( 1 );
 		}
 		echo "OK: Toggling all on enables all blocks\n";

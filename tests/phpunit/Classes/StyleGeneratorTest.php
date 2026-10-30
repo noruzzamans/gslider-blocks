@@ -1087,7 +1087,7 @@ class StyleGeneratorTest {
 		$expected_nonce_tag = '<style id="gslider-style-' . $block_id . '" nonce="nonce-gslider-custom-123">';
 
 		if ( false === strpos( $output, $expected_nonce_tag ) ) {
-			fwrite( STDERR, "FAIL: Inline <style> tag missing expected nonce attribute from gslider_style_nonce: $output\n" );
+			fwrite( STDERR, "FAIL: Inline <style> tag missing expected nonce attribute. Expected: {$expected_nonce_tag}, Got: {$output}\n" );
 			exit( 1 );
 		}
 		echo "OK: Dynamic <style> tag receives nonce from 'gslider_style_nonce' filter\n";
@@ -1112,7 +1112,7 @@ class StyleGeneratorTest {
 		$expected_wp_tag = '<style id="gslider-style-' . $block_id_2 . '" nonce="nonce-wp-core-456">';
 
 		if ( false === strpos( $output_2, $expected_wp_tag ) ) {
-			fwrite( STDERR, "FAIL: Inline <style> tag missing fallback nonce attribute from wp_csp_nonce: $output_2\n" );
+			fwrite( STDERR, "FAIL: Inline <style> tag missing fallback nonce attribute. Expected: {$expected_wp_tag}, Got: {$output_2}\n" );
 			exit( 1 );
 		}
 		echo "OK: Dynamic <style> tag falls back cleanly to 'wp_csp_nonce' compatibility filter\n";
