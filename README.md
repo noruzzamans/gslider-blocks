@@ -1,487 +1,195 @@
-<p align="center">
-  <img src="log/logo.png" alt="GSlider Blocks Logo" width="128" height="128">
-</p>
-
 <h1 align="center">GSlider Blocks</h1>
 
 <p align="center">
   <strong>🎠 The Ultimate Gutenberg Carousel Collection</strong><br>
-  10 Powerful Carousel Blocks for WordPress Block Editor
+  High-Performance, React & Swiper.js Powered Slider Blocks for Modern WordPress, Headless Stacks & Native MCP AI Workflows
 </p>
 
 <p align="center">
   <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/WordPress-5.0+-blue.svg?logo=wordpress" alt="WordPress">
+    <img src="https://ps.w.org/gslider-blocks/assets/banner-1544x500.png" width="100%" alt="GSlider Blocks - Gutenberg Carousel Collection">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://img.shields.io/wordpress/plugin/installs/gslider-blocks?color=2271b1&label=Active%20Installs&logo=wordpress" alt="Active Installs">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://img.shields.io/wordpress/plugin/rating/gslider-blocks?color=ffb800&label=Rating&logo=wordpress" alt="WordPress.org Rating">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/?preview=1">
+    <img src="https://img.shields.io/badge/Live%20Preview-WordPress.org-3858e9?logo=wordpress&logoColor=white" alt="Live Preview on WordPress.org">
+  </a>
+  <a href="https://github.com/noruzzamans/gslider-blocks/actions/workflows/ci.yml">
+    <img src="https://github.com/noruzzamans/gslider-blocks/actions/workflows/ci.yml/badge.svg" alt="CI Build Status">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://img.shields.io/badge/Version-1.2.0-orange.svg" alt="Version">
+  </a>
+  <a href="https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">
+    <img src="https://img.shields.io/github/issues/noruzzamans/gslider-blocks/good%20first%20issue?color=7057ff&label=Good%20First%20Issues" alt="Good First Issues">
+  </a>
+  <a href="https://github.com/noruzzamans/gslider-blocks/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
+  </a>
+  <a href="https://wordpress.org/">
+    <img src="https://img.shields.io/badge/WordPress-6.3+-blue.svg?logo=wordpress" alt="WordPress 6.3+">
   </a>
   <a href="https://php.net/">
-    <img src="https://img.shields.io/badge/PHP-7.0+-purple.svg?logo=php" alt="PHP">
+    <img src="https://img.shields.io/badge/PHP-7.4--8.5-purple.svg?logo=php" alt="PHP 7.4-8.5">
   </a>
   <a href="http://www.gnu.org/licenses/gpl-2.0.html">
-    <img src="https://img.shields.io/badge/License-GPLv2-green.svg" alt="License">
+    <img src="https://img.shields.io/badge/License-GPLv2+-green.svg" alt="License">
   </a>
-  <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/Version-1.1.6-orange.svg" alt="Version">
+  <a href="https://swiperjs.com/">
+    <img src="https://img.shields.io/badge/Engine-Swiper%2011-red.svg" alt="Swiper 11">
   </a>
-  <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/Active%20Installs-700+-brightgreen.svg" alt="Active Installs">
+  <a href="https://noruzzamans.github.io/gslider-blocks/">
+    <img src="https://img.shields.io/badge/Storybook-Live%20Explorer-ff4785.svg?logo=storybook" alt="Storybook Design System">
   </a>
-  <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/Rating-⭐⭐⭐⭐⭐-yellow.svg" alt="Rating">
+  <a href="docs/how-to-guides/mcp-server-ai-workflows.md">
+    <img src="https://img.shields.io/badge/MCP-Ready-9cf.svg?logo=anthropic" alt="MCP Compatible">
   </a>
 </p>
 
 <p align="center">
-  <a href="#-features">Features</a> •
+  <a href="https://wordpress.org/plugins/gslider-blocks/?preview=1">🚀 <strong>Live Preview (WordPress.org)</strong></a> •
+  <a href="https://noruzzamans.github.io/gslider-blocks/">🎨 <strong>Component Storybook</strong></a> •
+  <a href="https://wordpress.org/plugins/gslider-blocks/">🌟 <strong>WordPress.org Plugin</strong></a> •
+  <a href="#-support-the-project">⭐ <strong>Support on GitHub</strong></a>
+</p>
+
+<p align="center">
+  <a href="#-about--value-proposition">About</a> •
+  <a href="#-design-system--component-storybook">Storybook</a> •
   <a href="#-available-blocks">Blocks</a> •
-  <a href="#-installation">Installation</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-development">Development</a> •
-  <a href="#-roadmap">Roadmap</a>
+  <a href="#-developer-guides--headless--ai-workflows">Developer Guides</a> •
+  <a href="#-quick-installation">Installation</a> •
+  <a href="#-contributing--local-development">Contributing</a> •
+  <a href="#-support-the-project">Support ⭐</a>
 </p>
 
 ---
 
-## 📖 About
+## 📖 About & Value Proposition
 
-**GSlider Blocks** brings beautiful, feature-rich carousel blocks to WordPress Gutenberg. Create stunning logo carousels, testimonials, image sliders, and more - all with an intuitive block editor interface. No coding required!
+**GSlider Blocks** is an enterprise-grade Gutenberg carousel library designed for production WordPress websites. Built with modern React, PSR-4 PHP architecture, and Swiper 11, it delivers fluid hardware-accelerated animations, zero block invalidations, and native Headless/AI support without any jQuery dependencies.
 
 ### Why GSlider Blocks?
 
-| Feature | GSlider Blocks | Other Plugins |
-|---------|:-------------:|:-------------:|
-| Gutenberg Native | ✅ | ❌ Most use shortcodes |
-| 10 Block Types | ✅ | ❌ Usually 1-2 |
-| No jQuery | ✅ | ❌ Heavy dependencies |
-| 7+ Effects | ✅ | ⚠️ Limited |
-| 100% Free | ✅ | ⚠️ Freemium |
+| Feature | GSlider Blocks | Typical Slider Plugins |
+| :--- | :---: | :---: |
+| **Gutenberg Native** | ✅ Direct block canvas editing | ❌ Shortcodes or detached builders |
+| **Performance & Weight** | ✅ Hardware-accelerated Swiper 11, Zero jQuery | ❌ Heavy jQuery, bloated CSS bundles |
+| **Dynamic CSS Pipeline** | ✅ Scoped, deduplicated CSS generated via dynamic style engine instead of `style=""` attributes | ❌ Polluted inline `style=""` attributes |
+| **Responsive Architecture** | ✅ Dedicated 3-device controls (Desktop, Tablet, Mobile) | ⚠️ Generic breakpoint guessing |
+| **Local AI Integration** | ✅ Model Context Protocol (MCP) server ($0 cloud cost) | ❌ No AI schema support |
+| **Headless Ready** | ✅ Dedicated REST API JSON endpoints & serialized blocks | ❌ Shortcode regex parsing needed |
+| **Code Stability** | ✅ Backwards-compatible `deprecated.js` migrations | ❌ "Block invalidation" white screens on updates |
 
 ---
 
-## ✨ Features
+## 🎨 Design System & Component Storybook
 
-<table>
-<tr>
-<td width="50%">
+GSlider Blocks features an enterprise **23-component design system** modeled directly after the official [WordPress Gutenberg Storybook](https://wordpress.github.io/gutenberg). Every UI control is completely isolated, WCAG 2.1 AA accessible, responsive-aware (Desktop, Tablet, Mobile), and built strictly for the Gutenberg Inspector sidebar (280px–300px width).
 
-### 🎨 Design & Effects
-- **7+ Carousel Effects**
-  - Slide, Fade, Cube
-  - Coverflow, Flip, Cards
-  - Creative
-- **Hover Animations**
-  - Grayscale-to-color
-  - Opacity, Scale, Lift
-- **Custom Navigation**
-  - Icon picker
-  - Custom images
-- **Multiple Pagination**
-  - Bullets, Fraction
-  - Progressbar, Dynamic
+👉 **[Launch Interactive Storybook Explorer](https://noruzzamans.github.io/gslider-blocks/)**
 
-</td>
-<td width="50%">
-
-### ⚡ Performance
-- **Swiper.js Powered**
-  - Hardware-accelerated
-  - 60 FPS animations
-- **Lazy Loading**
-  - Optimized images
-  - Faster page speed
-- **Lightweight**
-  - No jQuery
-  - Minimal footprint
-- **Clean Code**
-  - Modern ES6+
-  - React components
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 📱 Responsive
-- **Device-Specific Settings**
-  - Desktop, Tablet, Mobile
-- **Touch/Swipe Support**
-  - Mobile-friendly
-- **Responsive Visibility**
-  - Show/hide per device
-- **Breakpoint Controls**
-  - Custom breakpoints
-
-</td>
-<td width="50%">
-
-### ♿ Accessibility
-- **Keyboard Navigation**
-  - Arrow keys, Tab
-- **ARIA Labels**
-  - Screen reader ready
-- **Focus Management**
-  - Proper focus states
-- **Pause on Hover**
-  - User control
-
-</td>
-</tr>
-</table>
+### 🧩 What's inside the Storybook:
+* **23 Isolated Controls**: Responsive range, spacing, typography, colors, gradients, background images, elevation/shadows, layout preset selector, accessible drag-and-drop slide content reordering (`@dnd-kit`), and more.
+* **Full Inspector Benchmark Composition**: Live simulation of the entire Gutenberg block settings sidebar mounting General, Style, and Advanced tabs in an authentic editor harness.
+* **Automated Accessibility Testing (`@storybook/addon-a11y`)**: Live Axe-core accessibility auditing on every component state.
+* **Architecture Guidelines & MDX Documentation**: Standardized 8-key spacing, 13-key typography, and 3-key color schemas.
 
 ---
 
 ## 📦 Available Blocks
 
 | # | Block | Description | Status |
-|:-:|-------|-------------|:------:|
-| 1 | 🎯 **Base Slider** | Hero sliders with Title, Subtitle, Description & CTA Button | ✅ Done |
-| 2 | 📝 **Flexi Content** | Use ANY Gutenberg blocks inside slides | ✅ Done |
-| 3 | 🏢 **Logo Carousel** | Client/partner logos with hover effects & tooltips | ✅ Done |
-| 4 | 🖼️ **Image Slider** | Beautiful image sliders with captions & lightbox | ✅ Done |
-| 5 | ⭐ **Testimonial Carousel** | Customer reviews with star ratings & avatars | 📋 Planned |
-| 6 | 👥 **Team Carousel** | Team member profiles with social links | 📋 Planned |
-| 7 | 🎥 **Video Carousel** | YouTube/Vimeo video sliders | 📋 Planned |
-| 8 | 📊 **Stats Carousel** | Animated counters & achievements | 📋 Planned |
-| 9 | 🏆 **Awards Carousel** | Certifications & awards display | 📋 Planned |
-| 10 | 📰 **Post Carousel** | Dynamic blog posts slider | 📋 Planned |
+| :-: | :--- | :--- | :-: |
+| 1 | 🎯 **Base Slider** | High-impact homepage hero sliders with headings, CTAs & custom backgrounds | ✅ Production |
+| 2 | 📝 **Flexi Content** | Full creative freedom: nest any WordPress block inside responsive slides | ✅ Production |
+| 3 | 🏢 **Logo Carousel** | Client & partner brand showcases with grayscale hover animations and links | ✅ Production |
+| 4 | 🖼️ **Image Slider** | Photography & product carousels with built-in Lightbox and captions | ✅ Production |
+| 5 | ⭐ **Testimonial Carousel** | Social proof reviews with fractional star ratings, avatars & quotes | ✅ Production |
+| 6 | 👥 **Team Carousel** | Staff & member profiles with bios, social links, and modal popups | 📋 Roadmap |
+| 7 | 🎥 **Video Carousel** | Responsive video sliders for YouTube, Vimeo & self-hosted MP4 videos | 📋 Roadmap |
+| 8 | 📊 **Stats Carousel** | Animated milestone metric counters and achievement sliders | 📋 Roadmap |
+| 9 | 🏆 **Awards Carousel** | Certification badges, client honors & industry recognition sliders | 📋 Roadmap |
+| 10 | 📰 **Post Carousel** | Dynamic query slider for WordPress blog posts and Custom Post Types | 📋 Roadmap |
 
-### Block Features Comparison
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        GSlider Blocks                           │
-├──────────────┬──────────────┬──────────────┬───────────────────┤
-│  Base Slider │ Flexi Content│Logo Carousel │  Image Slider     │
-├──────────────┼──────────────┼──────────────┼───────────────────┤
-│ • Pre-built  │ • Any blocks │ • Logos      │ • Gallery         │
-│   structure  │ • Full       │ • Hover FX   │ • Captions        │
-│ • Title      │   creative   │ • Tooltips   │ • Links           │
-│ • Subtitle   │   freedom    │ • Links      │ • Lightbox     │
-│ • Button     │ • InnerBlocks│ • Grayscale  │ • Lazy load       │
-└──────────────┴──────────────┴──────────────┴───────────────────┘
-```
+> [!TIP]
+> ### ⭐ Love GSlider Blocks? Give it a Star on GitHub!
+> If **GSlider Blocks** saves you time, powers your clients' websites, or helps your open-source journey, please consider giving it a **[Star on GitHub](https://github.com/noruzzamans/gslider-blocks)**! It takes only 2 seconds and helps our open-source project gain visibility across the WordPress community.
 
 ---
 
-## 📥 Installation
+## 📚 Developer Guides & Headless / AI Workflows
 
-### From WordPress Admin (Recommended)
+Looking to extend GSlider Blocks, connect with AI coding assistants, or build modern decoupled/headless web applications? Check out our dedicated developer guides:
 
-```bash
-1. Go to Plugins → Add New
-2. Search "GSlider Blocks"
-3. Click Install Now → Activate
-4. Done! 🎉
-```
-
-### Manual Installation
-
-```bash
-# Download from WordPress.org
-wget https://downloads.wordpress.org/plugin/gslider-blocks.zip
-
-# Unzip to plugins directory
-unzip gslider-blocks.zip -d /wp-content/plugins/
-
-# Activate via WP Admin or WP-CLI
-wp plugin activate gslider-blocks
-```
+| Guide | Description |
+| :--- | :--- |
+| 🤖 **[MCP Server & AI Assistant Guide](docs/how-to-guides/mcp-server-ai-workflows.md)** | Connect GSlider to **Claude Desktop**, **Cursor**, **Antigravity**, **ChatGPT**, and **Windsurf** with $0 cloud cost. |
+| 🌐 **[Headless WordPress & REST API Guide](docs/how-to-guides/headless-rest-api.md)** | Consume `/wp-json/gslider/v1/blocks/<id>` in **Next.js 14/15 App Router**, **Astro**, and **Remix** with pre-parsed Swiper configs. |
+| 🏗️ **[System Architecture Guide](docs/explanations/architecture.md)** | Learn about the PSR-4 Singleton backend, dynamic CSS generation pipeline, and zero-invalidation deprecation system. |
+| 🎣 **[PHP Hooks & Filters Reference](docs/reference-guides/php-hooks.md)** | Complete reference of action hooks and filter hooks for customizing slider markup, styles, CSP nonces, and caches. |
 
 ---
 
-## 🎯 Quick Start
+## 🚀 Quick Installation
 
-### 1️⃣ Base Slider (Hero Section)
+Getting started with GSlider Blocks takes less than 30 seconds:
 
-```
-┌────────────────────────────────────────┐
-│  Add Block → Search "Base Slider"      │
-│                ↓                        │
-│  Add slides → Title, Description        │
-│                ↓                        │
-│  Set background image/color            │
-│                ↓                        │
-│  Configure autoplay & navigation       │
-│                ↓                        │
-│  Publish! ✅                            │
-└────────────────────────────────────────┘
-```
+1. In your WordPress Admin Dashboard, navigate to **Plugins ➔ Add New Plugin**.
+2. Search for **"GSlider Blocks"**.
+3. Click **Install Now** and then **Activate**.
+4. Open the Gutenberg block editor, type `/gslider` or click the `+` Block Inserter to add any slider block!
 
-### 2️⃣ Logo Carousel (Client Showcase)
-
-```
-┌────────────────────────────────────────┐
-│  Add Block → Search "Logo Carousel"    │
-│                ↓                        │
-│  Upload multiple client logos          │
-│                ↓                        │
-│  Set grayscale-to-color hover effect   │
-│                ↓                        │
-│  Add links & tooltips (optional)       │
-│                ↓                        │
-│  Publish! ✅                            │
-└────────────────────────────────────────┘
-```
-
-### 3️⃣ Flexi Content (Custom Slides)
-
-```
-┌────────────────────────────────────────┐
-│  Add Block → Search "Flexi Content"    │
-│                ↓                        │
-│  Add any blocks inside each slide      │
-│  (Images, Text, Buttons, Galleries)    │
-│                ↓                        │
-│  Mix and match freely                  │
-│                ↓                        │
-│  Publish! ✅                            │
-└────────────────────────────────────────┘
-```
+> [!TIP]
+> 🌐 **[Live Preview on WordPress.org](https://wordpress.org/plugins/gslider-blocks/?preview=1)** — Official in-browser interactive preview running directly on WordPress.org!
+>
+> ⚡ **[Launch Gutenberg Editor in Playground](https://playground.wordpress.net/#eyJwcmVmZXJyZWRWZXJzaW9ucyI6eyJwaHAiOiJsYXRlc3QiLCJ3cCI6ImxhdGVzdCJ9LCJsb2dpbiI6dHJ1ZSwibGFuZGluZ1BhZ2UiOiIvd3AtYWRtaW4vcG9zdC1uZXcucGhwP3Bvc3RfdHlwZT1wYWdlIiwic3RlcHMiOlt7InN0ZXAiOiJpbnN0YWxsUGx1Z2luIiwicGx1Z2luRGF0YSI6eyJyZXNvdXJjZSI6IndvcmRwcmVzcy5vcmcvcGx1Z2lucyIsInNsdWciOiJnc2xpZGVyLWJsb2NrcyJ9fV19)** — One-click automated setup with WordPress admin auto-login, GSlider pre-activated, and landing straight in the block editor!
+>
+> 📖 **[Read Full Quick Start Guide](docs/getting-started/quick-start.md)** for step-by-step block pattern usage, slash commands, and block configuration.
 
 ---
 
-## 🛠️ Development
+## 🤝 Contributing & Local Development
 
-### Requirements
+Contributions from both human engineers and AI assistants are welcome! Whether you are building new features, fixing a bug, or polishing documentation:
 
-| Requirement | Version |
-|-------------|---------|
-| Node.js | ≥ 16.x |
-| npm | ≥ 8.x |
-| WordPress | ≥ 5.0 |
-| PHP | ≥ 7.0 |
+### 🌟 First-Time Contributors Welcome!
+Looking to make your first open-source contribution or build your WordPress / React portfolio? We have curated step-by-step beginner-friendly tasks with ready-to-run commands:
+👉 **[Browse Good First Issues](https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)**
 
-### Setup
+Every contributor with a merged PR is automatically inducted into our [Contributors](#-contributors) hall of fame and mentioned in our official release notes!
 
-```bash
-# Clone repository
-git clone https://github.com/noruzzamans/gslider-blocks.git
-cd gslider-blocks
+### 📚 Developer Resources & Setup
+- 🛠️ **[Local Development Setup Guide](docs/getting-started/local-development.md)**: Setup with LocalWP, Docker (`@wordpress/env`), Composer, and Node.js.
+- ⚡ **[NPM & Build Workflow](docs/getting-started/local-development.md#-daily-development-workflow)**: Watch mode (`npm run start`), production builds, and admin asset compilation.
+- 🧪 **[Testing & Code Quality Matrix](docs/getting-started/local-development.md#-testing-suite--quality-assurance)**: Standalone PHP CLI unit tests (PHP 7.4–8.5 matrix), schema drift tests, and CI checks.
+- 📖 **[CONTRIBUTING.md](CONTRIBUTING.md)**: Forking, branching, PR title conventions, and AI contribution policy.
+- 📚 **[Developer Handbook](docs/README.md)**: Central developer documentation map and technical guides.
+- 🏗️ **[Architecture Guide](docs/explanations/architecture.md)**: Engineering principles, patterns, and pre-flight developer checklist.
+- 📜 **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**: Contributor Covenant v2.1.
+- 🛡️ **[SECURITY.md](SECURITY.md)**: Vulnerability disclosure policy and security protections.
 
-# Install dependencies
-npm install
+> [!IMPORTANT]
+> **Issue-First Policy:** GSlider Blocks strictly requires all pull requests to resolve an approved [GitHub Issue](https://github.com/noruzzamans/gslider-blocks/issues) using `Closes #<issue_number>`. The maintainer closes unsolicited PRs submitted without an issue.
 
-# Start development (watch mode)
-npm run start
-
-# Production build
-npm run build
-
-# Create release ZIP
-npm run zip:package
-```
-
-### Project Structure
-
-```
-gslider-blocks/
-│
-├── 📁 src/                    # Source files
-│   ├── 📁 blocks/             # Individual blocks
-│   │   ├── 📁 base/           # Base Slider
-│   │   ├── 📁 flexi-content/  # Flexi Content
-│   │   ├── 📁 logo-carousel/  # Logo Carousel
-│   │   └── 📁 image-slider/   # Image Slider
-│   ├── 📁 components/         # Shared React components
-│   │   ├── color-control/
-│   │   ├── icon-picker/
-│   │   ├── responsive-range-control/
-│   │   └── typography-control/
-│   ├── 📁 constants/          # Constants & configs
-│   └── 📁 utils/              # Utility functions
-│
-├── 📁 build/                  # Compiled assets
-├── 📁 includes/               # PHP includes
-├── 📁 admin/                  # Admin UI
-├── 📁 languages/              # Translations
-├── 📁 log/                    # Strategy & planning
-│
-├── 📄 gslider-blocks.php      # Main plugin file
-├── 📄 readme.txt              # WordPress.org readme
-├── 📄 package.json            # npm config
-└── 📄 webpack.config.js       # Build config
-```
-
----
-
-## 🎨 Customization Options
-
-### General Settings
-
-| Category | Options |
-|----------|---------|
-| **Layout** | Slides per view (1-12), Gap, Height |
-| **Animation** | Effect type, Speed, Direction |
-| **Autoplay** | Enable/disable, Delay, Pause on hover |
-| **Loop** | Infinite scroll, Stop at last |
-
-### Navigation & Pagination
-
-| Category | Options |
-|----------|---------|
-| **Arrows** | Show/hide, Icon picker, Custom image |
-| **Position** | Inside/outside, 9 positions |
-| **Pagination** | Bullets, Fraction, Progressbar |
-| **Dots Style** | Size, Color, Active color |
-
-### Styling
-
-| Category | Options |
-|----------|---------|
-| **Background** | Color, Gradient, Image |
-| **Border** | Width, Style, Radius, Shadow |
-| **Typography** | Google Fonts, Size, Weight, Spacing |
-| **Spacing** | Margin, Padding (responsive) |
-| **Custom CSS** | Per-block custom styles |
-
----
-
-## 📋 Roadmap
-
-### 2026 Development Plan
-
-```mermaid
-gantt
-    title GSlider Blocks 2026 Roadmap
-    dateFormat  YYYY-MM
-    section Blocks
-    Logo Carousel       :done,    2025-12, 2025-12
-    Image Slider        :done,  2026-01, 2026-02
-    Testimonial         :         2026-02, 2026-02
-    Team Carousel       :         2026-03, 2026-04
-    section PRO
-    PRO Development     :         2026-02, 2026-03
-    PRO Launch          :milestone, 2026-04, 0d
-    section Growth
-    10K Installs        :milestone, 2026-12, 0d
-```
-
-### Quarterly Goals
-
-| Quarter | Blocks | Installs Target | Milestones |
-|---------|--------|-----------------|------------|
-| **Q1** | Image, Testimonial | 1,500 | Documentation |
-| **Q2** | Team, Video, Stats | 3,000 | **PRO Launch** 🚀 |
-| **Q3** | Awards, Post | 6,000 | WooCommerce Integration |
-| **Q4** | Before/After | 10,000+ | Lifetime Deals |
-
----
-
-## 💰 Free vs PRO
-
-| Feature | Free | PRO |
-|---------|:----:|:---:|
-| 10 Carousel Blocks | ✅ | ✅ |
-| 7+ Carousel Effects | ✅ | ✅ |
-| Responsive Controls | ✅ | ✅ |
-| Custom Navigation Icons | ✅ | ✅ |
-| Touch/Swipe Support | ✅ | ✅ |
-| Keyboard Navigation | ✅ | ✅ |
-| **Lightbox Integration** | ❌ | ✅ |
-| **Pre-built Templates (20+)** | ❌ | ✅ |
-| **Dynamic Content (ACF/CPT)** | ❌ | ✅ |
-| **WooCommerce Integration** | ❌ | ✅ |
-| **Advanced Hover Effects** | ❌ | ✅ |
-| **Categories & Filtering** | ❌ | ✅ |
-| **White Label** | ❌ | ✅ |
-| **Priority Support** | ❌ | ✅ |
-
-### PRO Pricing (Coming Q2 2026)
-
-| Plan | Price | Sites |
-|------|-------|-------|
-| **PRO** | $49/year | 1 site |
-| **Agency** | $149/year | Unlimited |
-| **Lifetime** | $299 | Forever |
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-### Ways to Contribute
-
-- 🐛 **Report Bugs** - Open an issue
-- 💡 **Suggest Features** - Open a discussion
-- 🔧 **Submit PRs** - Fix bugs or add features
-- 📖 **Improve Docs** - Help with documentation
-- ⭐ **Star the Repo** - Show your support!
-
-### Development Workflow
-
-```bash
-# 1. Fork the repository
-# 2. Create feature branch
-git checkout -b feature/amazing-feature
-
-# 3. Make changes
-npm run start  # Development mode
-
-# 4. Test your changes
-npm run build
-
-# 5. Commit with conventional commits
-git commit -m "feat: add amazing feature"
-
-# 6. Push and create PR
-git push origin feature/amazing-feature
-```
-
----
-
-## 📞 Support
-
-| Channel | Link |
-|---------|------|
-| 📧 Email | [gsliderblocks@gmail.com](mailto:gsliderblocks@gmail.com) |
-| 🐛 GitHub Issues | [Report Bug](https://github.com/noruzzamans/gslider-blocks/issues) |
-| 💬 WordPress Forum | [Support Forum](https://wordpress.org/support/plugin/gslider-blocks/) |
-| 📖 Documentation | Coming Soon |
-
----
-
-## 🌐 Stay Connected
-
-Follow us for tutorials, updates, and design inspiration!
-
-<p align="center">
-  <a href="https://x.com/gsliderblocks">
-    <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter">
-  </a>
-  <a href="https://facebook.com/gsliderblocks">
-    <img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook">
-  </a>
-  <a href="https://instagram.com/gsliderblocks">
-    <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram">
-  </a>
-  <a href="https://youtube.com/@gsliderblocks">
-    <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://linkedin.com/company/gsliderblocks">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
-  </a>
-  <a href="https://pinterest.com/gsliderblocks">
-    <img src="https://img.shields.io/badge/Pinterest-BD081C?style=for-the-badge&logo=pinterest&logoColor=white" alt="Pinterest">
-  </a>
-  <a href="https://reddit.com/user/gsliderblocks">
-    <img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" alt="Reddit">
-  </a>
-  <a href="https://threads.net/@gsliderblocks">
-    <img src="https://img.shields.io/badge/Threads-000000?style=for-the-badge&logo=threads&logoColor=white" alt="Threads">
-  </a>
-</p>
+> [!CAUTION]
+> **Component Lock Policy:** `src/components/` contains 23 core UI controls and is strictly locked to `@noruzzamans`. PRs modifying `src/components/` without maintainer authorization are flagged by CI with a warning comment and will not be merged.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **GPLv2 or later**.
+GSlider Blocks is open-source software licensed under the **GNU General Public License v2.0 or later (GPL-2.0-or-later)**.
 
 ```
-GSlider Blocks - WordPress Plugin
+GSlider Blocks - Gutenberg Carousel Collection for WordPress
 Copyright (C) 2025-2026 Noruzzaman
 
 This program is free software; you can redistribute it and/or modify
@@ -492,50 +200,105 @@ the Free Software Foundation; either version 2 of the License, or
 
 ---
 
-## 👨‍💻 Author
+## ⭐ Support the Project
+
+If you find **GSlider Blocks** valuable or use it in your projects, please consider giving it a star on GitHub! It takes just a second and helps the project gain visibility across the WordPress & open-source community, attract more contributors, and motivates ongoing active development.
 
 <p align="center">
-  <img src="https://avatars.githubusercontent.com/noruzzamans" alt="Noruzzaman" width="100" height="100" style="border-radius: 50%;">
+  <a href="https://github.com/noruzzamans/gslider-blocks">
+    <img src="https://img.shields.io/badge/⭐_Star_on_GitHub-gslider--blocks-yellow?style=for-the-badge&logo=github" alt="Star on GitHub">
+  </a>
+</p>
+
+- **Star this repository** to bookmark it for future use.
+- **Share it** with fellow WordPress developers, agencies, and friends.
+- **Contribute** code, docs, or ideas to our open [Good First Issues](https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or [Help Wanted issues](https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22).
+
+---
+
+<a id="contributors"></a>
+## 👥 Contributors
+
+Thank you to all the amazing people who contribute to GSlider Blocks!
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/noruzzamans"><img src="https://avatars.githubusercontent.com/u/46926901?v=4" width="100px;" alt="Noruzzaman"/><br /><sub><b>Noruzzaman</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/devmuhib009"><img src="https://avatars.githubusercontent.com/u/142894870?v=4" width="100px;" alt="devmuhib009"/><br /><sub><b>devmuhib009</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dbdefault"><img src="https://avatars.githubusercontent.com/u/246079841?v=4" width="100px;" alt="dbdefault"/><br /><sub><b>dbdefault</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Aaqibhafeezkhan"><img src="https://avatars.githubusercontent.com/u/292322256?v=4" width="100px;" alt="Aaqibhafeez Khan"/><br /><sub><b>Aaqibhafeez Khan</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/blank-0007"><img src="https://avatars.githubusercontent.com/u/285468035?v=4" width="100px;" alt="blank-0007"/><br /><sub><b>blank-0007</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Sinkleberg"><img src="https://avatars.githubusercontent.com/u/1676751?v=4" width="100px;" alt="Sgt_Sinky"/><br /><sub><b>Sgt_Sinky</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://portfolio-website.riseinspirethrive2008.workers.dev/"><img src="https://avatars.githubusercontent.com/u/273587221?v=4" width="100px;" alt="Pushkar Shahi"/><br /><sub><b>Pushkar Shahi</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/p00jitha"><img src="https://avatars.githubusercontent.com/u/129841150?v=4" width="100px;" alt="DASARI PUJITHA"/><br /><sub><b>DASARI PUJITHA</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/huzaifaalmesbah"><img src="https://avatars.githubusercontent.com/u/63150399?v=4" width="100px;" alt="Huzaifa Al Mesbah"/><br /><sub><b>Huzaifa Al Mesbah</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ect2000"><img src="https://avatars.githubusercontent.com/u/107069576?v=4" width="100px;" alt="Emilio Castejón"/><br /><sub><b>Emilio Castejón</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linuxhostlab.com/"><img src="https://avatars.githubusercontent.com/u/7321834?v=4" width="100px;" alt="Md Abul Bashar"/><br /><sub><b>Md Abul Bashar</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://devnethsara.com/"><img src="https://avatars.githubusercontent.com/u/110768660?v=4" width="100px;" alt="Sasindu Nethsara Karanayaka"/><br /><sub><b>Sasindu Nethsara Karanayaka</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/madhavidayma21"><img src="https://avatars.githubusercontent.com/u/98448374?v=4" width="100px;" alt="Madhavi Dayma"/><br /><sub><b>Madhavi Dayma</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zhiyilang"><img src="https://avatars.githubusercontent.com/u/154107452?v=4" width="100px;" alt="Zhiyilang"/><br /><sub><b>Zhiyilang</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/irfat-ifti"><img src="https://avatars.githubusercontent.com/u/197045488?v=4" width="100px;" alt="Md. Irfat Uddin Ifti"/><br /><sub><b>Md. Irfat Uddin Ifti</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mahender9390"><img src="https://avatars.githubusercontent.com/u/190497135?v=4" width="100px;" alt="Vennapureddy Mahender"/><br /><sub><b>Vennapureddy Mahender</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tu-lasizzzz"><img src="https://avatars.githubusercontent.com/u/172914448?v=4" width="100px;" alt="Tulasi Sahu"/><br /><sub><b>Tulasi Sahu</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rejaulalomkhan"><img src="https://avatars.githubusercontent.com/u/123895004?v=4" width="100px;" alt="Rejaul Alom Khan"/><br /><sub><b>Rejaul Alom Khan</b></sub></a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+Contributions of any kind are welcome! See our [Contributing Guide](CONTRIBUTING.md) to get started.
+
+---
+
+## 👨‍💻 Maintainer & Credits
+
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/noruzzamans" alt="Noruzzaman" width="90" height="90" style="border-radius: 50%;">
 </p>
 
 <p align="center">
   <strong>Noruzzaman</strong><br>
-  WordPress Developer | Open Source Contributor
+  WordPress Core & Gutenberg Engineer | Open Source Maintainer
 </p>
 
 <p align="center">
-  <a href="https://github.com/noruzzamans">
-    <img src="https://img.shields.io/badge/GitHub-@noruzzamans-181717?logo=github" alt="GitHub">
+  <a href="https://github.com/noruzzamans" title="GitHub">
+    <img src="https://img.shields.io/badge/--181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
   </a>
-  <a href="https://linkedin.com/in/noruzzaman">
-    <img src="https://img.shields.io/badge/LinkedIn-noruzzaman-0A66C2?logo=linkedin" alt="LinkedIn">
+  <a href="https://linkedin.com/in/noruzzaman" title="LinkedIn">
+    <img src="https://img.shields.io/badge/--0A66C2?style=for-the-badge&logo=data:image/svg%2Bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xOSAwaC0xNGMtMi43NjIgMC01IDIuMjM4LTUgNXYxNGMwIDIuNzYyIDIuMjM4IDUgNSA1aDE0YzIuNzYyIDAgNS0yLjIzOCA1LTV2LTE0YzAtMi43NjItMi4yMzgtNS01LTV6bS0xMSAxOWgtM3YtMTBoM3YxMHptLTEuNS0xMS4yNjhjLS45NjYgMC0xLjc1LS43OS0xLjc1LTEuNzY0cy43ODQtMS43NjQgMS43NS0xLjc2NCAxLjc1Ljc5IDEuNzUgMS43NjQtLjc4MyAxLjc2NC0xLjc1IDEuNzY0em0xMy41IDExLjI2OGgtM3YtNS42MDRjMC0zLjM2OC00LTMuMTEzLTQtMHY1LjYwNGgtM3YtMTBoM3YxLjMwOWMxLjM5Ni0yLjU4NiA3LTIuNzc3IDcgMi40NzZ2Ni4yMTV6Ii8+PC9zdmc+" alt="LinkedIn">
   </a>
-  <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/WordPress-GSlider%20Blocks-21759B?logo=wordpress" alt="WordPress">
+  <a href="https://x.com/Noruzzamanwp" title="X (Twitter)">
+    <img src="https://img.shields.io/badge/--000000?style=for-the-badge&logo=x&logoColor=white" alt="X (Twitter)">
+  </a>
+  <a href="https://profiles.wordpress.org/noruzzaman/" title="WordPress.org Profile">
+    <img src="https://img.shields.io/badge/--21759B?style=for-the-badge&logo=wordpress&logoColor=white" alt="WordPress Profile">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/" title="GSlider Blocks on WordPress.org">
+    <img src="https://ps.w.org/gslider-blocks/assets/icon-256x256.png" height="28" alt="GSlider Blocks" style="border-radius: 4px; vertical-align: middle;">
   </a>
 </p>
+
+### Special Credits
+- [Swiper.js](https://swiperjs.com/) — The modern mobile touch slider library.
+- [WordPress Gutenberg](https://github.com/WordPress/gutenberg) — Block editor framework.
+- [React](https://reactjs.org/) — Declarative UI component engine.
+- [Appsero](https://appsero.com/) — Telemetry and analytics.
 
 ---
 
-## 🙏 Credits
-
-- [Swiper.js](https://swiperjs.com/) - Modern touch slider library
-- [WordPress](https://wordpress.org/) - The world's best CMS
-- [React](https://reactjs.org/) - UI component library
-- [Google Fonts](https://fonts.google.com/) - Typography
-
----
-
 <p align="center">
-  <strong>⭐ If you find GSlider Blocks useful, please give it a star on GitHub!</strong>
-</p>
-
-<p align="center">
-  <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/Download-WordPress.org-blue?style=for-the-badge&logo=wordpress" alt="Download">
-  </a>
-</p>
-
-<p align="center">
-  Made with ❤️ for the WordPress Community
+  Made with ❤️ for the global WordPress Community
 </p>

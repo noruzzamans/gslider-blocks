@@ -11,13 +11,14 @@
 
 namespace GSlider\Classes;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'FontLoader' ) ) {
+if ( ! class_exists( FontLoader::class, false ) ) {
 
     /**
      * Loads Google Fonts used by GSlider blocks.
@@ -27,18 +28,27 @@ if ( ! class_exists( 'FontLoader' ) ) {
      *
      * @since 1.0.0
      */
-    class FontLoader {
+    class FontLoader implements Registrable {
 
         use SingletonTrait;
 
         /**
-         * Comma-separated list of all font weight variants to load.
+         * Weight requested when a block does not store a numeric weight.
          *
-         * @since 1.0.0
+         * @since 1.1.9
          *
          * @var string
          */
-        private const FONT_WEIGHTS = '100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic';
+        const DEFAULT_FONT_WEIGHT = '400';
+
+        /**
+         * Font family values that mean "no Google font selected".
+         *
+         * @since 1.1.9
+         *
+         * @var string[]
+         */
+        const IGNORED_FONT_FAMILIES = [ 'default', 'inherit' ];
 
         /**
          * Base URL for the Google Fonts CSS API.
@@ -47,14 +57,14 @@ if ( ! class_exists( 'FontLoader' ) ) {
          *
          * @var string
          */
-        private const GOOGLE_FONTS_URL = '//fonts.googleapis.com/css';
+        const GOOGLE_FONTS_URL = '//fonts.googleapis.com/css';
 
         /**
-         * Collection of Google Font families to load.
+         * Google Font variants to load, keyed by family then variant.
          *
          * @since 1.0.0
          *
-         * @var string[]
+         * @var array<string, array<string, bool>>
          */
         private static $gfonts = [];
 
@@ -65,16 +75,16 @@ if ( ! class_exists( 'FontLoader' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_filter( 'render_block', [ $this, 'get_fonts_on_render_block' ], 10, 2 );
             add_action( 'wp_footer', [ $this, 'fonts_loader' ], 10 );
         }
 
         /**
-         * Collects font families from rendered block attributes.
+         * Collects font variants from rendered GSlider block attributes.
          *
-         * Extracts font family attributes from each block during
-         * rendering and adds them to the fonts collection.
+         * Only `gslider-blocks/*` blocks are inspected, so other plugins'
+         * `*FontFamily` attributes never trigger a Google Fonts request.
          *
          * @since 1.0.0
          *
@@ -83,69 +93,144 @@ if ( ! class_exists( 'FontLoader' ) ) {
          * @return string The unmodified block content.
          */
         public function get_fonts_on_render_block( $block_content, $block ) {
+            if ( self::is_privacy_mode_enabled() ) {
+                return $block_content;
+            }
+
             if ( ! is_array( $block ) || empty( $block['attrs'] ) ) {
                 return $block_content;
             }
 
-            $fonts = self::get_fonts_family( $block['attrs'] );
-            if ( ! empty( $fonts ) ) {
-                self::$gfonts = array_unique( array_merge( self::$gfonts, $fonts ) );
+            if ( empty( $block['blockName'] ) || 0 !== strpos( $block['blockName'], 'gslider-blocks/' ) ) {
+                return $block_content;
+            }
+
+            foreach ( self::get_fonts_family( $block['attrs'] ) as $family => $variants ) {
+                if ( ! isset( self::$gfonts[ $family ] ) ) {
+                    self::$gfonts[ $family ] = [];
+                }
+                self::$gfonts[ $family ] += $variants;
             }
 
             return $block_content;
         }
 
         /**
-         * Extracts font family names from block attributes.
+         * Extracts Google Font families and their used variants from block attributes.
          *
-         * Searches for attribute keys matching the pattern
-         * `*FontFamily` and returns their sanitized values.
+         * For each `<prefix>FontFamily` attribute, the matching
+         * `<prefix>FontWeight` and `<prefix>FontStyle` attributes decide
+         * the variant, e.g. `400`, `700` or `600italic`.
          *
          * @since 1.0.0
          *
          * @param array $attributes Block attributes to search.
-         * @return string[] Array of font family names keyed by family name.
+         * @return array<string, array<string, bool>> Variants keyed by family name.
          */
         public static function get_fonts_family( $attributes ) {
             if ( ! is_array( $attributes ) ) {
                 return [];
             }
 
-            $keys              = preg_grep( '/^(\w+)FontFamily$/i', array_keys( $attributes ) );
-            $googleFontFamily = [];
+            $fonts = [];
 
-            foreach ( $keys as $key ) {
-                if ( isset( $attributes[ $key ] ) && is_string( $attributes[ $key ] ) ) {
-                    $fontFamily                    = sanitize_text_field( $attributes[ $key ] );
-                    $googleFontFamily[ $fontFamily ] = $fontFamily;
+            foreach ( array_keys( $attributes ) as $key ) {
+                if ( ! is_string( $key ) || ! preg_match( '/^(\w+)FontFamily$/', $key, $matches ) ) {
+                    continue;
                 }
+
+                if ( ! is_string( $attributes[ $key ] ) ) {
+                    continue;
+                }
+
+                $family = trim( sanitize_text_field( $attributes[ $key ] ) );
+
+                // Google family names only contain letters, digits and spaces.
+                if ( '' === $family
+                    || in_array( strtolower( $family ), self::IGNORED_FONT_FAMILIES, true )
+                    || ! preg_match( '/^[A-Za-z0-9 ]+$/', $family )
+                ) {
+                    continue;
+                }
+
+                $prefix = $matches[1];
+                $weight = isset( $attributes[ $prefix . 'FontWeight' ] ) ? (string) $attributes[ $prefix . 'FontWeight' ] : '';
+                $style  = isset( $attributes[ $prefix . 'FontStyle' ] ) ? (string) $attributes[ $prefix . 'FontStyle' ] : '';
+
+                if ( ! preg_match( '/^[1-9]00$/', $weight ) ) {
+                    $weight = self::DEFAULT_FONT_WEIGHT;
+                }
+
+                $variant = in_array( $style, [ 'italic', 'oblique' ], true ) ? $weight . 'italic' : $weight;
+
+                $fonts[ $family ][ $variant ] = true;
             }
 
-            return $googleFontFamily;
+            return $fonts;
+        }
+
+        /**
+         * Checks whether Google Fonts privacy mode (GDPR compliance) is enabled.
+         *
+         * When enabled, external requests to fonts.googleapis.com are suppressed
+         * and the frontend falls back to native system font stacks.
+         *
+         * @since 1.2.0
+         *
+         * @return bool True if privacy mode is enabled, false otherwise.
+         */
+        public static function is_privacy_mode_enabled(): bool {
+            $settings   = get_option( 'gslider_settings', [] );
+            $is_enabled = is_array( $settings ) && ! empty( $settings['google_fonts_privacy'] );
+
+            /**
+             * Filters whether Google Fonts privacy mode is active.
+             *
+             * @since 1.2.0
+             *
+             * @param bool $is_enabled Whether privacy mode is enabled.
+             */
+            return (bool) apply_filters( 'gslider_google_fonts_privacy_enabled', $is_enabled );
+        }
+
+        /**
+         * Clears collected fonts in memory (primarily for testing).
+         *
+         * @since 1.2.0
+         *
+         * @return void
+         */
+        public static function reset_collected_fonts(): void {
+            self::$gfonts = [];
         }
 
         /**
          * Registers and enqueues a Google Fonts stylesheet.
          *
-         * Builds the Google Fonts URL from the collected font families
-         * with all weight variants and enqueues it as a stylesheet.
+         * Builds one Google Fonts URL that requests only the
+         * variants collected for each family.
          *
          * @since 1.0.0
          *
-         * @param string[] $fonts Array of font family names to load.
+         * @param array<string, array<string, bool>> $fonts Variants keyed by family name.
          * @return void
          */
         private function load_google_font( $fonts ) {
-            if ( empty( $fonts ) ) {
+            if ( self::is_privacy_mode_enabled() || empty( $fonts ) ) {
                 return;
             }
 
+            ksort( $fonts );
+
             $gfonts = '';
-            foreach ( $fonts as $font ) {
+            foreach ( $fonts as $family => $variants ) {
+                $variants = array_keys( $variants );
+                sort( $variants, SORT_STRING );
+
                 $gfonts .= sprintf(
                     '%s:%s|',
-                    str_replace( ' ', '+', trim( $font ) ),
-                    self::FONT_WEIGHTS
+                    str_replace( ' ', '+', $family ),
+                    implode( ',', $variants )
                 );
             }
 
@@ -164,7 +249,7 @@ if ( ! class_exists( 'FontLoader' ) ) {
                 'gslider-blocks-fonts',
                 esc_url( $font_url ),
                 [],
-                defined( 'GSLIDER_VERSION' ) ? GSLIDER_VERSION : '1.1.5',
+                defined( 'GSLIDER_VERSION' ) ? GSLIDER_VERSION : '1.1.5'
             );
 
             wp_enqueue_style( 'gslider-blocks-fonts' );
@@ -181,13 +266,21 @@ if ( ! class_exists( 'FontLoader' ) ) {
          * @return void
          */
         public function fonts_loader() {
+            if ( self::is_privacy_mode_enabled() ) {
+                self::$gfonts = [];
+                return;
+            }
+
             try {
                 $fonts = array_filter( self::$gfonts );
                 if ( ! empty( $fonts ) ) {
                     $this->load_google_font( $fonts );
                 }
             } catch ( \Exception $e ) {
-                error_log( 'Font loading error: ' . $e->getMessage() );
+                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                    error_log( 'GSlider Blocks: Font loading error: ' . $e->getMessage() );
+                }
             } finally {
                 self::$gfonts = [];
             }

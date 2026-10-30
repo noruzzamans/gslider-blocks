@@ -11,6 +11,7 @@
 
 namespace GSlider\Assets;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-class AdminAssets {
+class AdminAssets implements Registrable {
     use SingletonTrait;
 
     /**
@@ -35,7 +36,7 @@ class AdminAssets {
      *
      * @return void
      */
-    public function register() {
+    public function register(): void {
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
         add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_assets' ] );
     }
@@ -52,37 +53,13 @@ class AdminAssets {
      */
     public function enqueue_assets() {
         wp_register_style(
-            'gslider-admin-style',
-            GSLIDER_PLUGIN_URL . 'assets/admin/css/admin.css',
+            'gslider-block-controls',
+            GSLIDER_PLUGIN_URL . 'assets/admin/css/block-controls.css',
             [],
             GSLIDER_VERSION
         );
 
-        wp_register_script(
-            'gslider-admin-script',
-            GSLIDER_PLUGIN_URL . 'assets/admin/js/admin.js',
-            [],
-            GSLIDER_VERSION,
-            true
-        );
-
-        wp_enqueue_style( 'gslider-admin-style' );
-        wp_enqueue_script( 'gslider-admin-script' );
-
-        /**
-         * Localize script for admin.
-         *
-         * Passes data to the admin script such as site URL,
-         * AJAX URL, nonce, and plugin URL.
-         */
-        $localize_array = [
-            'site_url'   => site_url(),
-            'ajax_url'   => admin_url( 'admin-ajax.php' ),
-            'nonce'      => wp_create_nonce( 'gslider_nonce' ),
-            'pluginUrl'  => GSLIDER_PLUGIN_URL,
-        ];
-
-        wp_localize_script( 'gslider-admin-script', 'GSliderBlocksData', $localize_array );
+        wp_enqueue_style( 'gslider-block-controls' );
     }
 
     /**
@@ -101,6 +78,7 @@ class AdminAssets {
             'ajax_url'   => admin_url( 'admin-ajax.php' ),
             'nonce'      => wp_create_nonce( 'gslider_nonce' ),
             'pluginUrl'  => GSLIDER_PLUGIN_URL,
+            'iconsUrl'   => GSLIDER_PLUGIN_URL . 'assets/icon-library/font-awesome.json',
         ];
 
         // We use a global handle for localization that blocks can access.

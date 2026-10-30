@@ -1,4 +1,21 @@
 .gslider-logo-carousel-wrapper {
+
+	.swiper:not(.swiper-initialized) {
+		overflow: hidden;
+
+		.swiper-wrapper {
+			display: flex;
+			flex-wrap: nowrap;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.swiper-slide {
+			flex-shrink: 0;
+			box-sizing: border-box;
+		}
+	}
+
 	.gslider-logo-carousel-content-wrapper {
 		box-sizing: border-box;
 		height: clamp(150px, 60vh, 150px);
@@ -21,7 +38,7 @@
 		line-height: 1.4;
 		text-align: center;
 		box-sizing: border-box;
-		background: rgba(0, 0, 0, .5);
+		background: rgba(0, 0, 0, 0.5);
 	}
 
 	// Logo link styles
@@ -29,6 +46,7 @@
 		display: block;
 		text-decoration: none;
 		outline: none;
+		transition: opacity 0.3s ease, transform 0.3s ease;
 
 		&:focus {
 			outline: 2px solid #2271b1;
@@ -72,6 +90,7 @@
 
 		// Grayscale to Color
 		&[data-hover-effect="grayscale"] {
+
 			img {
 				filter: grayscale(100%);
 				transition: filter 0.3s ease, transform 0.3s ease;
@@ -137,9 +156,25 @@
 		z-index: 1000;
 	}
 
-	.gslider-logo-item:hover .gslider-logo-tooltip {
+	.gslider-logo-item:hover .gslider-logo-tooltip,
+	.gslider-logo-item:focus-within .gslider-logo-tooltip {
 		opacity: 1;
 		visibility: visible;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+
+		.gslider-logo-item,
+		.gslider-logo-item img,
+		.gslider-logo-link,
+		.gslider-logo-tooltip {
+			transition: none !important;
+		}
+
+		.gslider-logo-item[data-hover-effect]:hover,
+		.gslider-logo-item[data-hover-effect]:hover img {
+			transform: none !important;
+		}
 	}
 }
 
@@ -149,6 +184,7 @@
 
 // Popover styles - WordPress renders popover in fallback container
 .components-popover__fallback-container {
+
 	.gslider-logo-link-popover {
 
 		// Popover wrapper
@@ -217,7 +253,7 @@
 				font-size: 14px;
 				font-weight: 500;
 				border-radius: 4px;
-				transition: all 0.2s ease;
+				transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
 				&.is-primary {
 					background: #2271b1;
@@ -231,6 +267,7 @@
 				}
 
 				&.is-secondary {
+
 					&.is-destructive {
 						color: #cc1818;
 						border-color: #cc1818;

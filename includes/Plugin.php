@@ -11,30 +11,33 @@
 
 namespace GSlider;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 use GSlider\Classes\StyleGenerator;
 use GSlider\Assets\FrontendAssets;
 use GSlider\Assets\AdminAssets;
 use GSlider\Classes\RegistrationBlocks;
 use GSlider\Classes\RegistrationCategory;
+use GSlider\Classes\RegistrationPatterns;
 use GSlider\Classes\FontLoader;
 use GSlider\Classes\SupportSVG;
 use GSlider\Utils\Utils;
+use GSlider\RestApi\BlocksController;
 use GSlider\RestApi\QueryManager;
-use GSlider\Classes\PerformanceOptimizer;
+use GSlider\Admin\Dashboard;
+use GSlider\Admin\DashboardController;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! class_exists( 'Plugin' ) ) {
+if ( ! class_exists( Plugin::class, false ) ) {
 
 	/**
 	 * Main plugin class for GSlider Blocks.
 	 *
 	 * Acts as the central bootstrap, initializing all plugin
-	 * components on the plugins_loaded hook and loading
-	 * the text domain for translations.
+	 * components on the plugins_loaded hook.
 	 *
 	 * @since 1.0.0
 	 */
@@ -43,16 +46,38 @@ if ( ! class_exists( 'Plugin' ) ) {
 		use SingletonTrait;
 
 		/**
+		 * Core service classes implementing Registrable.
+		 *
+		 * @since 1.1.9
+		 *
+		 * @var array<class-string<Registrable>>
+		 */
+		private $services = [
+			StyleGenerator::class,
+			FrontendAssets::class,
+			AdminAssets::class,
+			RegistrationBlocks::class,
+			RegistrationCategory::class,
+			RegistrationPatterns::class,
+			FontLoader::class,
+			Utils::class,
+			BlocksController::class,
+			QueryManager::class,
+			Dashboard::class,
+			DashboardController::class,
+		];
+
+		/**
 		 * Sets up core plugin hooks.
 		 *
-		 * Registers the plugins_loaded and init actions
-		 * for component initialization and text domain loading.
+		 * Registers the plugins_loaded action for component initialization.
+		 * Translation loading is handled automatically by WordPress for
+		 * plugins hosted on WordPress.org (since WordPress 4.6).
 		 *
 		 * @since 1.0.0
 		 */
-		public function __construct() {
+		private function __construct() {
 			add_action( 'plugins_loaded', [ $this, 'plugins_loaded' ] );
-			add_action( 'init', [ $this, 'gslider_load_textdomain' ] );
 		}
 
 		/**
@@ -67,15 +92,9 @@ if ( ! class_exists( 'Plugin' ) ) {
 		 * @return void
 		 */
 		public function plugins_loaded() {
-			StyleGenerator::getInstance()->register();
-			FrontendAssets::getInstance()->register();
-			AdminAssets::getInstance()->register();
-			RegistrationBlocks::getInstance()->register();
-			RegistrationCategory::getInstance()->register();
-			FontLoader::getInstance()->register();
-			Utils::getInstance()->register();
-			QueryManager::getInstance()->register();
-			PerformanceOptimizer::getInstance()->register();
+			foreach ( $this->services as $service_class ) {
+				$service_class::getInstance()->register();
+			}
 
 			// SVG Support (admin only).
 			if ( is_admin() ) {
@@ -83,19 +102,8 @@ if ( ! class_exists( 'Plugin' ) ) {
 			}
 		}
 
-		/**
-		 * Loads the plugin text domain for translations.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function gslider_load_textdomain() {
-			load_plugin_textdomain( 'gslider-blocks', false, basename( GSLIDER_DIR_PATH ) . '/languages' );
-		}
 	}
 
 }
 
 Plugin::getInstance();
-

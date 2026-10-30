@@ -1,0 +1,48 @@
+// ==========================================================================
+// GSlider Blocks - React Admin Dashboard Design Tokens
+// ==========================================================================
+// Centralized global design tokens for typography and color palette
+// for the React SPA Admin Dashboard.
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// 1. Typography Tokens (System Font Stacks)
+// --------------------------------------------------------------------------
+$font-family-sans: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen-sans, ubuntu, cantarell, "Helvetica Neue", sans-serif;
+$font-family-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
+
+// --------------------------------------------------------------------------
+// 2. React Admin Dashboard Color Palette (WCAG AA Compliant >= 4.5:1)
+// --------------------------------------------------------------------------
+
+// Canvas & Surfaces
+$color-canvas: #f8fafc;
+$color-surface: #fff;
+$color-surface-hover: #f1f5f9;
+$color-surface-subtle: #f1f5f9;
+$color-surface-sunken: #f1f5f9;
+
+// Subtle Borders & Dividers
+$color-border: #e2e8f0;
+$color-border-subtle: #edf2f7;
+$color-border-strong: #cbd5e1;
+$color-border-focus: #0f172a;
+
+// Text Hierarchy (WCAG AA Compliant Contrast >= 4.5:1 on #ffffff)
+$color-text-primary: #0f172a;   // Slate 900 (Contrast ~16.5:1)
+$color-text-secondary: #334155; // Slate 700 (Contrast ~9.6:1)
+$color-text-muted: #64748b;     // Slate 500 (Contrast ~4.6:1)
+$color-text-inverse: #fff;
+
+// Brand & Accent (WordPress Core Blue)
+$color-brand-primary: #007cba;
+$color-brand-hover: #006ba1;
+$color-brand-subtle: #f0f7fb;
+
+// Status & Indicators
+$color-success: #10b981;
+$color-success-bg: #ecfdf5;
+$color-warning: #f59e0b;
+$color-warning-bg: #fffbeb;
+$color-danger: #ef4444;
+$color-danger-bg: #fef2f2;

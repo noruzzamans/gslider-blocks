@@ -1,0 +1,52 @@
+@use "variables" as *;
+@use "setting-panel";
+@use "alignment-control";
+@use "background-control";
+@use "box-shadow-control";
+@use "color-control";
+@use "content-order-control";
+@use "dnd-items";
+@use "dropdown-popup";
+@use "gradient-color-control";
+@use "html-tag-control";
+@use "icon-picker";
+@use "image-control";
+@use "preset-selector";
+@use "responsive-background-image-control";
+@use "responsive-device-control";
+@use "responsive-range-control";
+@use "responsive-spacing-control";
+@use "responsive-typography-control";
+@use "select2-control";
+@use "switcher-control";
+@use "unit-control";
+@use "url-control";
+
+// Autocomplete Block Search selected state icon colors
+.components-autocomplete__result.is-selected {
+	svg.gslider-editor-icons {
+		rect,
+		path {
+			stroke: #fff !important;
+		}
+		circle {
+			fill: #fff !important;
+		}
+	}
+}
+
+// List View sidebar selected/active block icon colors
+// Covers: tr.is-selected, td[aria-selected="true"], and focused button state
+.block-editor-list-view-leaf.is-selected,
+.block-editor-list-view-block__contents-cell[aria-selected="true"],
+.block-editor-list-view-block__contents.is-selected {
+	svg.gslider-editor-icons {
+		rect,
+		path {
+			stroke: #fff !important;
+		}
+		circle {
+			fill: #fff !important;
+		}
+	}
+}

@@ -11,13 +11,15 @@
 
 namespace GSlider\Classes;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
+use GSlider\Assets\FrontendAssets;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'RegistrationBlocks' ) ) {
+if ( ! class_exists( RegistrationBlocks::class, false ) ) {
 
     /**
      * Handles dynamic registration of Gutenberg blocks.
@@ -27,7 +29,7 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
      *
      * @since 1.0.0
      */
-    class RegistrationBlocks {
+    class RegistrationBlocks implements Registrable {
         use SingletonTrait;
 
         /**
@@ -37,7 +39,7 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_action( 'init', [ $this, 'register_blocks' ] );
         }
 
@@ -52,11 +54,19 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
          * @return void
          */
         public function register_blocks() {
+            // Swiper must be registered before block view scripts so it can be a real dependency.
+            if ( class_exists( FrontendAssets::class ) ) {
+                FrontendAssets::getInstance()->register_vendor_scripts();
+            }
+
             $plugin_dir = defined( 'GSLIDER_DIR_PATH' ) ? GSLIDER_DIR_PATH : plugin_dir_path( __FILE__ );
             $build_dir  = trailingslashit( $plugin_dir ) . 'build/blocks/';
 
             if ( ! is_readable( $build_dir ) ) {
-                error_log( 'GSlider Blocks: Build directory is not readable: ' . $build_dir );
+                if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                    error_log( 'GSlider Blocks: Build directory is not readable: ' . $build_dir );
+                }
                 return;
             }
 
@@ -67,7 +77,10 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
                 try {
                     $this->register_single_block( $build_dir, $block );
                 } catch ( \Exception $e ) {
-                    error_log( 'GSlider Blocks: Error registering block "' . $block . '": ' . $e->getMessage() );
+                    if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+                        error_log( 'GSlider Blocks: Error registering block "' . $block . '": ' . $e->getMessage() );
+                    }
                 }
             }
         }
@@ -100,6 +113,43 @@ if ( ! class_exists( 'RegistrationBlocks' ) ) {
 
             if ( false === register_block_type( $block_dir ) ) {
                 throw new \Exception( 'Block registration failed for ' . esc_html( $block ) );
+            }
+
+            $this->prepare_view_script( sanitize_file_name( $block ) );
+        }
+
+        /**
+         * Applies defer and the Swiper dependency to a block's generated view-script handle.
+         *
+         * This is the single place where block view scripts get the defer strategy.
+         *
+         * @since 1.2.0
+         *
+         * @param string $slug Block folder slug (e.g. "image-slider").
+         * @return void
+         */
+        private function prepare_view_script( string $slug ) {
+            $view_handle   = 'gslider-blocks-' . $slug . '-view-script';
+            $swiper_handle = 'gslider-blocks-swiper-script';
+
+            if ( ! wp_script_is( $view_handle, 'registered' ) ) {
+                return;
+            }
+
+            wp_script_add_data( $view_handle, 'strategy', 'defer' );
+
+            // Only depend on Swiper when it is registered, otherwise WordPress would drop the view script.
+            if ( ! wp_script_is( $swiper_handle, 'registered' ) ) {
+                return;
+            }
+
+            $scripts = wp_scripts();
+            if ( ! isset( $scripts->registered[ $view_handle ] ) || ! is_array( $scripts->registered[ $view_handle ]->deps ) ) {
+                return;
+            }
+
+            if ( ! in_array( $swiper_handle, $scripts->registered[ $view_handle ]->deps, true ) ) {
+                $scripts->registered[ $view_handle ]->deps[] = $swiper_handle;
             }
         }
 

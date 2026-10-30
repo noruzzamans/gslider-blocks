@@ -1,0 +1,213 @@
+name: PR Playground Preview
+
+# Use workflow_run for privileged operations
+# Runs with write permissions and access to secrets
+# Operates on artifacts from the unprivileged build workflow
+on:
+  workflow_run:
+    workflows: ['Build Plugin Zip']
+    types:
+      - completed
+
+# Disable permissions for all available scopes by default.
+# Any needed permissions should be configured at the job level.
+permissions: {}
+
+jobs:
+  # Updates the unified PR meta comment with Playground preview links.
+  playground-details:
+    name: Update Playground preview in PR meta
+    runs-on: ubuntu-24.04
+    # Only run if the build workflow succeeded and was triggered by a pull_request
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    outputs:
+      artifact-url: ${{ steps.expose.outputs.artifact-url }}
+      artifact-name: ${{ steps.expose.outputs.artifact-name }}
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout Repository Scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+
+      - name: Resolve trusted PR metadata
+        id: pr-metadata
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            // The build runs untrusted PR code; the run's head SHA is the
+            // only trusted value.
+            const trustedSha = context.payload.workflow_run.head_sha;
+
+            // Resolve the PR from the trusted head SHA, not the PR number in
+            // the artifact name.
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const pr = pulls.find(p => p.head.sha === trustedSha);
+            if (!pr) {
+              throw new Error(`Could not resolve an open pull request for head SHA ${trustedSha}`);
+            }
+
+            // Match the artifact by the name the trusted build derives, not by
+            // prefix.
+            const expectedName = `gslider-blocks-zip-pr${pr.number}-${trustedSha}`;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+            const artifact = artifacts.find(a => a.name === expectedName);
+            if (!artifact) {
+              throw new Error(`Could not find plugin artifact named ${expectedName}`);
+            }
+
+            core.setOutput('pr-number', String(pr.number));
+            core.setOutput('commit-sha', trustedSha);
+            core.setOutput('artifact-name', artifact.name);
+
+      - name: Expose built artifact
+        id: expose
+        uses: WordPress/action-wp-playground-pr-preview/.github/actions/expose-artifact-on-public-url@1b15093d61b5e98cdfeb31466f34ade495762cd7 # v4.0.0
+        with:
+          artifact-name: ${{ steps.pr-metadata.outputs.artifact-name }}
+          artifact-filename: gslider-blocks.zip
+          pr-number: ${{ steps.pr-metadata.outputs.pr-number }}
+          commit-sha: ${{ steps.pr-metadata.outputs.commit-sha }}
+          artifact-source-run-id: ${{ github.event.workflow_run.id }}
+          artifacts-to-keep: '2'
+
+      - name: Update Playground preview in PR meta
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_NUMBER: ${{ steps.pr-metadata.outputs.pr-number }}
+          HEAD_SHA: ${{ steps.pr-metadata.outputs.commit-sha }}
+          ARTIFACT_URL: ${{ steps.expose.outputs.artifact-url }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const artifactUrl = process.env.ARTIFACT_URL;
+            if (!artifactUrl) {
+              throw new Error('ARTIFACT_URL is required to generate Playground previews');
+            }
+
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            const fullSha = process.env.HEAD_SHA;
+            const shortSha = fullSha.slice(0, 7);
+            const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${fullSha}`;
+
+            const createPlaygroundUrl = ({ isMultisite, landingPage }) => {
+              const steps = [];
+              if (isMultisite) {
+                steps.push(
+                  {
+                    step: 'defineWpConfigConsts',
+                    consts: {
+                      WP_DEBUG: true,
+                    },
+                  },
+                  {
+                    step: 'enableMultisite',
+                  },
+                  {
+                    step: 'installPlugin',
+                    pluginData: {
+                      resource: 'url',
+                      url: artifactUrl,
+                    },
+                    options: {
+                      activate: false,
+                    },
+                  },
+                  {
+                    step: 'wp-cli',
+                    command: 'wp plugin activate gslider-blocks --network',
+                  }
+                );
+              } else {
+                steps.push({
+                  step: 'installPlugin',
+                  pluginData: {
+                    resource: 'url',
+                    url: artifactUrl,
+                  },
+                });
+              }
+
+              const blueprint = {
+                preferredVersions: {
+                  php: 'latest',
+                  wp: 'latest',
+                },
+                login: true,
+                landingPage,
+                steps,
+              };
+
+              const b64 = Buffer.from(JSON.stringify(blueprint)).toString('base64');
+              return `https://playground.wordpress.net/#${b64}`;
+            };
+
+            const badge = 'https://img.shields.io/badge/Launch-3858E9?style=for-the-badge&logo=wordpress&logoColor=white';
+            const launch = (href, label) => `[![${label}](${badge})](${href})`;
+
+            const singlePostUrl = createPlaygroundUrl({ isMultisite: false, landingPage: '/wp-admin/post-new.php' });
+            const singlePageUrl = createPlaygroundUrl({ isMultisite: false, landingPage: '/wp-admin/post-new.php?post_type=page' });
+            const singleSettingsUrl = createPlaygroundUrl({ isMultisite: false, landingPage: '/wp-admin/admin.php?page=gslider-blocks' });
+
+            const multiPostUrl = createPlaygroundUrl({ isMultisite: true, landingPage: '/wp-admin/post-new.php' });
+            const multiPageUrl = createPlaygroundUrl({ isMultisite: true, landingPage: '/wp-admin/post-new.php?post_type=page' });
+            const multiSettingsUrl = createPlaygroundUrl({ isMultisite: true, landingPage: '/wp-admin/admin.php?page=gslider-blocks' });
+
+            const playgroundContent = [
+              `Built from <a href="${commitUrl}"><samp>${shortSha}</samp></a>`,
+              '',
+              '|  | Post editor | Page editor | Settings |',
+              '| --- | --- | --- | --- |',
+              `| **Single site** | ${launch(singlePostUrl, 'Launch Post editor in Playground (single site)')} | ${launch(singlePageUrl, 'Launch Page editor in Playground (single site)')} | ${launch(singleSettingsUrl, 'Launch Settings in Playground (single site)')} |`,
+              `| **Multisite** | ${launch(multiPostUrl, 'Launch Post editor in Playground (multisite)')} | ${launch(multiPageUrl, 'Launch Page editor in Playground (multisite)')} | ${launch(multiSettingsUrl, 'Launch Settings in Playground (multisite)')} |`,
+            ].join('\n');
+
+            const path = require('path');
+            const { updatePrMetaComment } = require(path.resolve(process.env.GITHUB_WORKSPACE, '.github/scripts/pr-meta.js'));
+            await updatePrMetaComment({
+              github,
+              context,
+              prNumber,
+              sectionId: 'playground',
+              content: playgroundContent,
+            });
+
+            core.info(`Updated Playground section in PR meta comment on PR #${prNumber}`);
+
+            // Clean any legacy preview section appended to PR description by earlier workflow versions
+            try {
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              if (pr.data.body && pr.data.body.includes('<!-- action-wp-playground-pr-preview -->')) {
+                const cleanBody = pr.data.body.replace(/\n*<!-- action-wp-playground-pr-preview -->[\s\S]*$/, '').trimEnd();
+                if (cleanBody !== pr.data.body) {
+                  await github.rest.pulls.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: prNumber,
+                    body: cleanBody,
+                  });
+                  core.info('Cleaned legacy playground section from PR description.');
+                }
+              }
+            } catch (err) {
+              core.warning(`Could not inspect/clean PR description: ${err.message}`);
+            }

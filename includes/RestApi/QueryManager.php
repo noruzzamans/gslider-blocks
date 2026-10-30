@@ -12,6 +12,7 @@
 
 namespace GSlider\RestApi;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +26,7 @@ if ( ! class_exists( 'QueryManager' ) ) {
      *
      * @since 1.2.0
      */
-    class QueryManager {
+    class QueryManager implements Registrable {
         use SingletonTrait;
 
         /**
@@ -35,7 +36,7 @@ if ( ! class_exists( 'QueryManager' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_action( 'init', [ $this, 'register_filters' ], 20 );
         }
 

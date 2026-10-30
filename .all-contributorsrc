@@ -1,0 +1,184 @@
+{
+  "projectName": "gslider-blocks",
+  "projectOwner": "noruzzamans",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"<%= contributor.name %>\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
+  "commit": false,
+  "contributors": [
+    {
+      "login": "noruzzamans",
+      "name": "Noruzzaman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46926901?v=4",
+      "profile": "https://github.com/noruzzamans",
+      "contributions": [
+        "code",
+        "doc",
+        "design",
+        "maintenance",
+        "review"
+      ]
+    },
+    {
+      "login": "devmuhib009",
+      "name": "devmuhib009",
+      "avatar_url": "https://avatars.githubusercontent.com/u/142894870?v=4",
+      "profile": "https://github.com/devmuhib009",
+      "contributions": [
+        "test"
+      ]
+    },
+    {
+      "login": "dbdefault",
+      "name": "dbdefault",
+      "avatar_url": "https://avatars.githubusercontent.com/u/246079841?v=4",
+      "profile": "https://github.com/dbdefault",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Aaqibhafeezkhan",
+      "name": "Aaqibhafeez Khan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/292322256?v=4",
+      "profile": "https://github.com/Aaqibhafeezkhan",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "blank-0007",
+      "name": "blank-0007",
+      "avatar_url": "https://avatars.githubusercontent.com/u/285468035?v=4",
+      "profile": "https://github.com/blank-0007",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Sinkleberg",
+      "name": "Sgt_Sinky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1676751?v=4",
+      "profile": "https://github.com/Sinkleberg",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Pushkar-Shahi",
+      "name": "Pushkar Shahi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/273587221?v=4",
+      "profile": "https://portfolio-website.riseinspirethrive2008.workers.dev/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "p00jitha",
+      "name": "DASARI PUJITHA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/129841150?v=4",
+      "profile": "https://github.com/p00jitha",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "huzaifaalmesbah",
+      "name": "Huzaifa Al Mesbah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63150399?v=4",
+      "profile": "https://github.com/huzaifaalmesbah",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ect2000",
+      "name": "Emilio Castejón",
+      "avatar_url": "https://avatars.githubusercontent.com/u/107069576?v=4",
+      "profile": "https://github.com/ect2000",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hmbashar",
+      "name": "Md Abul Bashar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7321834?v=4",
+      "profile": "https://www.linuxhostlab.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nethsara14",
+      "name": "Sasindu Nethsara Karanayaka",
+      "avatar_url": "https://avatars.githubusercontent.com/u/110768660?v=4",
+      "profile": "https://devnethsara.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "madhavidayma21",
+      "name": "Madhavi Dayma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98448374?v=4",
+      "profile": "https://github.com/madhavidayma21",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Zhiyilang",
+      "name": "Zhiyilang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/154107452?v=4",
+      "profile": "https://github.com/Zhiyilang",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "irfat-ifti",
+      "name": "Md. Irfat Uddin Ifti",
+      "avatar_url": "https://avatars.githubusercontent.com/u/197045488?v=4",
+      "profile": "https://github.com/irfat-ifti",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mahender9390",
+      "name": "Vennapureddy Mahender",
+      "avatar_url": "https://avatars.githubusercontent.com/u/190497135?v=4",
+      "profile": "https://github.com/mahender9390",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tu-lasizzzz",
+      "name": "Tulasi Sahu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/172914448?v=4",
+      "profile": "https://github.com/tu-lasizzzz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rejaulalomkhan",
+      "name": "Rejaul Alom Khan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/123895004?v=4",
+      "profile": "https://github.com/rejaulalomkhan",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": false,
+  "commitConvention": "angular"
+}

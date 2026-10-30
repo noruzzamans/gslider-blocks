@@ -1,10 +1,13 @@
 <?php
 /**
- * Plugin Name: Slider Block for Gutenberg Gutenslider by GSlider
+ * Plugin Name: GSlider Blocks
+ * Plugin URI: 	https://github.com/noruzzamans/gslider-blocks
  * Description: Enhance your site with dynamic, customizable, and multi-functional slider blocks to create a more engaging and functional experience.
  * Author: 		Noruzzaman
  * Author URI: 	https://github.com/noruzzamans/
- * Version: 	1.1.7
+ * Version: 	1.2.0
+ * Requires at least: 6.3
+ * Requires PHP: 7.4
  * Text Domain: gslider-blocks
  * Domain Path: /languages
  * License: 	GPLv2 or later
@@ -69,7 +72,7 @@ if ( ! class_exists( 'GSliderBlocks' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		public function __construct() {
+		private function __construct() {
 			$this->define_constants();
 			$this->includes();
 		}
@@ -87,7 +90,7 @@ if ( ! class_exists( 'GSliderBlocks' ) ) {
 		public function define_constants() {
 			define( 'GSLIDER_FILE', __FILE__ );
 			define( 'GSLIDER_SLUG', 'gslider-blocks' );
-			define( 'GSLIDER_VERSION', '1.1.7' );
+			define( 'GSLIDER_VERSION', '1.2.0' );
 			define( 'GSLIDER_DIR_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'GSLIDER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 			define( 'GSLIDER_WP_VERSION', (float) get_bloginfo( 'version' ) );

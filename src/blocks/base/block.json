@@ -2,10 +2,18 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "gslider-blocks/base",
-	"version": "1.1.6",
+	"version": "1.2.0",
 	"title": "Base",
 	"category": "gslider-blocks",
 	"description": "Display fixed content in a sliding or carousel layout.",
+	"keywords": [
+		"slider",
+		"carousel",
+		"hero",
+		"hero slider",
+		"banner",
+		"slideshow"
+	],
 	"example": {
 		"attributes": {
 		  "preview": true
@@ -15,7 +23,6 @@
 	"supports": {
 		"html": false,
 		"anchor": false,
-		"customClassName": false,
 		"align": ["wide", "full"]
 	},
 	"textdomain": "gslider-blocks",

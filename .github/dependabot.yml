@@ -1,0 +1,89 @@
+version: 2
+updates:
+  # 1. Root npm dependencies (Gutenberg blocks & Storybook)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Asia/Dhaka"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "focus: ci-cd"
+    groups:
+      all-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "esbuild"
+        update-types: ["version-update:semver-minor"]
+
+  # 2. Local MCP Server package dependencies
+  - package-ecosystem: "npm"
+    directory: "/packages/mcp-server"
+    schedule:
+      interval: "monthly"
+      timezone: "Asia/Dhaka"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps-mcp)"
+    labels:
+      - "focus: mcp"
+    groups:
+      all-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # 3. GitHub Actions CI workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Asia/Dhaka"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci(actions)"
+    labels:
+      - "focus: ci-cd"
+    groups:
+      actions:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # 4. PHP Composer dependencies
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "Asia/Dhaka"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps-php)"
+    labels:
+      - "focus: php-backend"
+    groups:
+      appsero:
+        patterns:
+          - "appsero/*"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

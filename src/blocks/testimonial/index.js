@@ -1,4 +1,3 @@
-
 import { registerBlockType } from '@wordpress/blocks';
 import './style.scss';
 
@@ -10,10 +9,12 @@ import save from './save';
 import metadata from './block.json';
 import attributes from './attributes.js';
 import Icon from './icon';
+import deprecated from './deprecated';
 
 registerBlockType( metadata.name, {
 	attributes,
 	edit: Edit,
 	save,
+	deprecated,
 	icon: Icon,
 } );

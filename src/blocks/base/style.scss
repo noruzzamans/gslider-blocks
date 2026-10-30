@@ -1,4 +1,5 @@
 .gslider-base-wrapper {
+
 	.gslider-content-wrapper {
 		display: flex;
 		flex-direction: column;
@@ -6,7 +7,7 @@
 		justify-content: center;
 
 		.gslider-content-inner-wrapper {
-        	box-sizing: border-box;
+			box-sizing: border-box;
 			margin: 0 auto;
 			padding: clamp(15px, 6vw, 30px);
 			width: 100%;
@@ -17,16 +18,32 @@
 			}
 		}
 	}
-	
-	.swiper {
-		position: relative !important;
-		overflow: hidden !important;
-	}
 
 	.swiper-backface-hidden {
+
 		.swiper-slide {
 			backface-visibility: visible !important;
 		}
+	}
+
+	.swiper:not(.swiper-initialized) {
+		overflow: hidden;
+
+		.swiper-wrapper {
+			display: flex;
+			flex-wrap: nowrap;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		.swiper-slide {
+			flex-shrink: 0;
+			box-sizing: border-box;
+		}
+	}
+
+	.swiper.swiper-initialized {
+		overflow: hidden;
 	}
 }
 

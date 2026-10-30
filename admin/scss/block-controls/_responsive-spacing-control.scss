@@ -1,0 +1,107 @@
+@use "variables" as *;
+
+.gslider-setting-spacing-container {
+	display: flex;
+	flex-direction: column;
+
+	.gslider-setting-spacing-inner-container {
+		margin-bottom: 20px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		.gslider-setting-spacing-input-container {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+
+			.gslider-setting-spacing-input-wrapper {
+				display: flex;
+				flex-direction: column;
+				width: 20%;
+
+				.gslider-setting-spacing-input-label {
+					text-align: center;
+					font-size: 11px !important;
+					margin: 0 4px 4px 0 !important;
+
+					&.link-label {
+						visibility: hidden;
+						opacity: 0;
+					}
+				}
+
+				input {
+					border-color: $border_color !important;
+					color: $secondary_color;
+					height: 30px !important;
+					border-left-width: 0;
+					border-radius: 0;
+					margin: 0;
+					min-height: 30px;
+					padding: 0;
+					text-align: center;
+					width: 100%;
+					font-size: $font_size_12;
+
+					&:focus {
+						outline: none !important;
+						box-shadow: none !important;
+					}
+				}
+
+				&:first-child {
+
+					input {
+						border-bottom-left-radius: 4px;
+						border-top-left-radius: 4px;
+						border-width: 1px;
+					}
+				}
+
+				span {
+					color: $label_color;
+					border: 1px solid $border_color !important;
+					border-left-width: 0 !important;
+					border-radius: 0;
+					margin: 0;
+					height: 30px !important;
+					min-height: 30px;
+					padding: 0;
+					text-align: center;
+					width: 100%;
+					border-bottom-right-radius: 4px;
+					border-top-right-radius: 4px;
+					align-items: center;
+					display: flex;
+					justify-content: center;
+					cursor: pointer;
+
+					&.is-checked {
+						background-color: $background_color;
+					}
+				}
+
+				.dashicons-admin-links,
+				.dashicons-editor-unlink {
+
+					&::before {
+						color: $primary_color;
+					}
+				}
+			}
+		}
+
+		.gslider-setting-spacing-label-container {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 8px;
+		}
+
+		.components-base-control {
+			margin-bottom: 0 !important;
+		}
+	}
+}

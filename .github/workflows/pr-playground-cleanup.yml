@@ -1,0 +1,107 @@
+name: PR Playground Cleanup
+
+# Deletes a pull request's Playground preview zips (`pr-NUMBER-SHA.zip`)
+# from the `ci-artifacts` release once the PR is closed or merged, and
+# updates the PR meta comment to show an expired notice.
+#
+# Uses pull_request_target so it also runs for PRs from forks (the
+# pull_request token is read-only there). It never checks out PR code and
+# only uses trusted properties from the event payload, so this is safe.
+on:
+  pull_request_target:
+    types:
+      - closed
+
+# Disable permissions for all available scopes by default.
+# Any needed permissions should be configured at the job level.
+permissions: {}
+
+jobs:
+  cleanup:
+    name: Clean up Playground preview for closed pull request
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout Repository Scripts
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+
+      - name: Delete release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # Nothing to clean if no preview was ever published.
+          if ! release_id=$(gh api "repos/${GH_REPO}/releases/tags/ci-artifacts" --jq '.id' 2>/dev/null); then
+            echo "No ci-artifacts release; nothing to clean up."
+            exit 0
+          fi
+
+          # The trailing dash keeps PR 1 from matching PR 10, 11, ...
+          gh api --paginate "repos/${GH_REPO}/releases/${release_id}/assets?per_page=100" \
+            --jq ".[] | select(.name | startswith(\"pr-${PR_NUMBER}-\") and endswith(\".zip\")) | \"\(.id) \(.name)\"" \
+            | while read -r asset_id asset_name; do
+                echo "Deleting ${asset_name}"
+                gh api --method DELETE "repos/${GH_REPO}/releases/assets/${asset_id}" --silent
+              done
+
+      - name: Update Playground section in PR meta to expired notice
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          IS_MERGED: ${{ github.event.pull_request.merged }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = parseInt(process.env.PR_NUMBER, 10);
+            const isMerged = process.env.IS_MERGED === 'true';
+            const stateText = isMerged ? 'merged' : 'closed';
+
+            const expiredNotice = [
+              '> [!NOTE]',
+              `> **Playground preview expired**`,
+              `> This pull request has been ${stateText} and the preview build has been removed.`,
+            ].join('\n');
+
+            const path = require('path');
+            const { updatePrMetaComment } = require(path.resolve(process.env.GITHUB_WORKSPACE, '.github/scripts/pr-meta.js'));
+            await updatePrMetaComment({
+              github,
+              context,
+              prNumber,
+              sectionId: 'playground',
+              content: expiredNotice,
+            });
+
+            core.info(`Updated Playground section in PR meta comment #${prNumber} to expired notice.`);
+
+            // Clean legacy appended preview from PR description if present
+            try {
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+              });
+              if (pr.data.body && pr.data.body.includes('<!-- action-wp-playground-pr-preview -->')) {
+                const cleanBody = pr.data.body.replace(/\n*<!-- action-wp-playground-pr-preview -->[\s\S]*$/, '').trimEnd();
+                if (cleanBody !== pr.data.body) {
+                  await github.rest.pulls.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: prNumber,
+                    body: cleanBody,
+                  });
+                  core.info('Cleaned legacy playground section from PR description.');
+                }
+              }
+            } catch (err) {
+              core.warning(`Could not inspect/clean PR description: ${err.message}`);
+            }

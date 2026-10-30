@@ -1,13 +1,18 @@
 {
     "name": "noruzzaman/gslider",
     "description": "A slider block plugin for WordPress",
+    "version": "1.2.0",
+    "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "autoload": {
         "psr-4": {
             "GSlider\\": "includes/"
         }
     },
+    "scripts": {
+        "test": "for test in $(find tests -name '*.php' ! -name 'bootstrap.php' ! -path '*/stubs/*' | sort); do php \"$test\" || exit 1; done"
+    },
     "require": {
-        "appsero/client": "^2.0"
+        "appsero/client": "^2.0.7"
     }
 }

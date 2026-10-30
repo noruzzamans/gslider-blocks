@@ -1,0 +1,81 @@
+@use "variables" as *;
+
+.gslider-setting-device-label-wrapper {
+	display: inline-flex;
+	align-items: center;
+
+	span {
+
+		&.gslider-setting-label-text {
+			color: $label_color;
+			font-size: $font_size_13;
+			line-height: $line_height_3;
+			text-transform: $text_transform_capitalize;
+			font-weight: $font_weight_400;
+			margin-right: 8px;
+		}
+	}
+}
+
+.gslider-responsive-device-wrapper {
+	height: 26px;
+	position: relative;
+	width: 26px;
+
+	.gslider-device-switcher {
+		align-items: center;
+		border: none !important;
+		color: #808080;
+		cursor: pointer;
+		display: flex;
+		justify-content: center;
+		opacity: 0;
+		position: relative;
+		transform: scale(0);
+		transition: 0.15s;
+		height: 0;
+		width: 100% !important;
+		z-index: 2;
+
+		&.active {
+			height: 26px;
+			width: 26px;
+			background: $background_color;
+			border-radius: 50%;
+			opacity: 1;
+			transform: scale(1);
+
+			path {
+				fill: $primary_color;
+				stroke: $primary_color;
+			}
+
+			rect {
+				stroke: $primary_color;
+			}
+		}
+
+		svg {
+			width: 10px;
+			height: 10px;
+			fill: none;
+		}
+	}
+
+	&.gslider-device-switchers-open {
+
+		.gslider-responsive-device-inner-wrapper {
+			background: $background_color;
+			border-radius: 2px;
+			position: relative;
+			z-index: 11;
+		}
+
+		.gslider-device-switcher {
+			height: 26px;
+			opacity: 1;
+			transform: scale(1);
+
+		}
+	}
+}

@@ -11,13 +11,14 @@
 
 namespace GSlider\Utils;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'Utils' ) ) {
+if ( ! class_exists( Utils::class, false ) ) {
 
     /**
      * Provides utility services for the GSlider plugin.
@@ -27,7 +28,7 @@ if ( ! class_exists( 'Utils' ) ) {
      *
      * @since 1.0.0
      */
-    class Utils {
+    class Utils implements Registrable {
 
         use SingletonTrait;
 
@@ -38,7 +39,7 @@ if ( ! class_exists( 'Utils' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             $this->gslider_init_tracker_gslider_blocks();
         }
 
@@ -56,7 +57,7 @@ if ( ! class_exists( 'Utils' ) ) {
 
             $client = new \Appsero\Client(
                 '3b9e5a5d-b238-4acf-b1e2-3c1faee503bb',
-                'Slider Block for Gutenberg Gutenslider by GSlider',
+                'GSlider Blocks',
                 GSLIDER_DIR_PATH . 'gslider-blocks.php'
             );
 

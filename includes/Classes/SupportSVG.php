@@ -11,13 +11,14 @@
 
 namespace GSlider\Classes;
 
+use GSlider\Interfaces\Registrable;
 use GSlider\Traits\SingletonTrait;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'SupportSVG' ) ) {
+if ( ! class_exists( SupportSVG::class, false ) ) {
 
     /**
      * Handles SVG file upload support and security.
@@ -28,7 +29,7 @@ if ( ! class_exists( 'SupportSVG' ) ) {
      *
      * @since 1.0.0
      */
-    class SupportSVG {
+    class SupportSVG implements Registrable {
 
         use SingletonTrait;
 
@@ -50,7 +51,7 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          *
          * @return void
          */
-        public function register() {
+        public function register(): void {
             add_filter( 'upload_mimes', [ $this, 'allowSvgMimeType' ] );
             add_filter( 'wp_handle_upload_prefilter', [ $this, 'validateSvgUpload' ] );
             add_filter( 'wp_prepare_attachment_for_js', [ $this, 'fixSvgThumbnail' ] );
@@ -82,7 +83,9 @@ if ( ! class_exists( 'SupportSVG' ) ) {
         /**
          * Validates and sanitizes an uploaded SVG file.
          *
-         * Checks file extension, reads content, validates XML
+         * Runs for every .svg/.svgz file name regardless of the
+         * client-sent MIME type, and rejects image/svg+xml sent with
+         * any other extension. Reads content, validates XML
          * structure, checks for prohibited elements/attributes,
          * and sanitizes the SVG before saving.
          *
@@ -93,13 +96,17 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          * @return array The file data array, possibly with 'error' set.
          */
         public function validateSvgUpload( array $file ): array {
-            if ( 'image/svg+xml' !== $file['type'] ) {
+            $name            = isset( $file['name'] ) ? (string) $file['name'] : '';
+            $clientType      = isset( $file['type'] ) ? (string) $file['type'] : '';
+            $extension       = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+            $hasSvgExtension = in_array( $extension, [ 'svg', 'svgz' ], true );
+
+            // The client type is untrusted; filterFiletypeAndExt() saves any .svg/.svgz as SVG.
+            if ( ! $hasSvgExtension && 'image/svg+xml' !== $clientType ) {
                 return $file;
             }
 
-            // Validate file extension.
-            $extension = pathinfo( $file['name'], PATHINFO_EXTENSION );
-            if ( ! in_array( $extension, [ 'svg', 'svgz' ], true ) ) {
+            if ( ! $hasSvgExtension ) {
                 $file['error'] = __( 'Invalid SVG file extension.', 'gslider-blocks' );
                 return $file;
             }
@@ -119,7 +126,11 @@ if ( ! class_exists( 'SupportSVG' ) ) {
             // Validate SVG structure.
             libxml_use_internal_errors( true );
             $doc = new \DOMDocument();
-            if ( ! $doc->loadXML( $content, LIBXML_NOERROR | LIBXML_NOWARNING ) ) {
+
+            // Prevent XXE by disabling external entities via LIBXML_NONET.
+            $loadResult = $doc->loadXML( $content, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
+
+            if ( ! $loadResult ) {
                 $file['error'] = __( 'Invalid SVG XML structure.', 'gslider-blocks' );
                 libxml_clear_errors();
                 return $file;
@@ -177,15 +188,34 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          *
          * @return void
          */
-        public function enableSvgSupport(): void {
-            add_filter( 'wp_check_filetype_and_ext', function ( $data, $file, $filename, $mimes ) {
-                $filetype = wp_check_filetype( $filename, $mimes );
-                return [
-                    'ext'             => $filetype['ext'],
-                    'type'            => $filetype['type'],
-                    'proper_filename' => $data['proper_filename'],
-                ];
-            }, 10, 4 );
+        public function enableSvgSupport() {
+            add_filter( 'wp_check_filetype_and_ext', [ $this, 'filterFiletypeAndExt' ], 10, 4 );
+        }
+
+        /**
+         * Keeps WordPress's content sniff for every file except SVG and SVGZ.
+         *
+         * @since 1.0.0
+         *
+         * @param array         $data     File type data from WordPress.
+         * @param string        $file     Full path to the file.
+         * @param string        $filename Sanitized filename.
+         * @param string[]|null $mimes    Allowed MIME types.
+         * @return array File type data.
+         */
+        public function filterFiletypeAndExt( $data, $file, $filename, $mimes ) {
+            unset( $file );
+            $extension = strtolower( pathinfo( (string) $filename, PATHINFO_EXTENSION ) );
+            if ( ! in_array( $extension, [ 'svg', 'svgz' ], true ) ) {
+                return $data;
+            }
+
+            $filetype = wp_check_filetype( $filename, $mimes );
+            return [
+                'ext'             => $filetype['ext'],
+                'type'            => $filetype['type'],
+                'proper_filename' => $data['proper_filename'],
+            ];
         }
 
         /**
@@ -200,21 +230,64 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          * @return bool True if the SVG is safe, false if prohibited content found.
          */
         private function validateSvgContent( \DOMDocument $doc ): bool {
-            $xpath = new \DOMXPath( $doc );
+            // Elements that are dangerous and should be banned completely.
+            $prohibitedElements = [
+                'script',
+                'iframe',
+                'object',
+                'embed',
+                'foreignobject',
+                'html',
+                'body',
+                'head',
+                'use',
+                'image',
+                'set',
+                'animate',
+                'animatetransform',
+                'animatemotion',
+            ];
 
-            // Prohibited elements.
-            $prohibitedElements = [ 'script', 'iframe' ];
-            foreach ( $prohibitedElements as $tag ) {
-                if ( $xpath->query( "//{$tag}" )->length > 0 ) {
+            // Loop through all elements and check their tag names.
+            $elements = $doc->getElementsByTagName( '*' );
+            foreach ( $elements as $element ) {
+                $tagName = strtolower( $element->nodeName );
+                if ( in_array( $tagName, $prohibitedElements, true ) ) {
                     return false;
                 }
-            }
 
-            // Prohibited attributes.
-            $prohibitedAttributes = [ 'onclick', 'onload', 'onerror', 'xlink:href', 'javascript:', 'data:' ];
-            foreach ( $prohibitedAttributes as $attr ) {
-                if ( $xpath->query( "//*[contains(@*, '{$attr}')]" )->length > 0 ) {
-                    return false;
+                // Check text content of style tags for dynamic styles / import payloads.
+                if ( 'style' === $tagName ) {
+                    $styleContent = html_entity_decode( $element->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+                    $styleContent = preg_replace( '/[\s\x00-\x1F\x7F-\x9F]+/', '', $styleContent );
+                    $styleContent = strtolower( $styleContent );
+                    if ( strpos( $styleContent, 'javascript:' ) !== false ||
+                         strpos( $styleContent, 'data:' ) !== false ||
+                         strpos( $styleContent, 'vbscript:' ) !== false ) {
+                        return false;
+                    }
+                }
+
+                // Check attributes.
+                foreach ( $element->attributes as $attribute ) {
+                    $name  = strtolower( $attribute->nodeName );
+                    // Decode HTML entities (e.g. &#106;&#x61;vascript: to javascript:)
+                    $value = html_entity_decode( $attribute->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+                    // Strip whitespaces, control characters, newlines, tabs, etc.
+                    $value = preg_replace( '/[\s\x00-\x1F\x7F-\x9F]+/', '', $value );
+                    $value = strtolower( $value );
+
+                    // Check for any event handler attributes (starts with "on").
+                    if ( 0 === strpos( $name, 'on' ) ) {
+                        return false;
+                    }
+
+                    // Check for dangerous protocols.
+                    if ( strpos( $value, 'javascript:' ) !== false ||
+                         strpos( $value, 'data:' ) !== false ||
+                         strpos( $value, 'vbscript:' ) !== false ) {
+                        return false;
+                    }
                 }
             }
 
@@ -232,10 +305,17 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          * @param string $content The raw SVG XML content.
          * @return string The sanitized SVG XML content.
          */
-        private function sanitizeSvgContent( string $content ): string {
+        private function sanitizeSvgContent( $content ) {
             libxml_use_internal_errors( true );
             $doc = new \DOMDocument();
-            $doc->loadXML( $content );
+
+            // Prevent XXE by disabling external entities via LIBXML_NONET.
+            $loadResult = $doc->loadXML( $content, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
+
+            if ( ! $loadResult ) {
+                libxml_clear_errors();
+                return '';
+            }
 
             // Remove comments.
             $xpath = new \DOMXPath( $doc );
