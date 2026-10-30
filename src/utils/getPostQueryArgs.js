@@ -93,7 +93,9 @@ export const getPostQueryArgs = (
 			relatedPostsTaxonomy === 'both'
 		) {
 			if ( currentPostCategories && currentPostCategories.length > 0 ) {
-				queryArgs.categories = currentPostCategories.join( ',' );
+				queryArgs.categories = currentPostCategories
+					.map( ( id ) => parseInt( id, 10 ) )
+					.filter( ( id ) => ! isNaN( id ) );
 				hasTaxonomyMatch = true;
 			}
 		}
@@ -103,7 +105,9 @@ export const getPostQueryArgs = (
 			relatedPostsTaxonomy === 'both'
 		) {
 			if ( currentPostTags && currentPostTags.length > 0 ) {
-				queryArgs.tags = currentPostTags.join( ',' );
+				queryArgs.tags = currentPostTags
+					.map( ( id ) => parseInt( id, 10 ) )
+					.filter( ( id ) => ! isNaN( id ) );
 				hasTaxonomyMatch = true;
 			}
 		}
@@ -112,36 +116,69 @@ export const getPostQueryArgs = (
 		// If neither was matched (e.g. no categories/tags on current post), return nothing by setting invalid filter.
 		if ( ! hasTaxonomyMatch ) {
 			if ( relatedPostsTaxonomy === 'post_tag' ) {
-				queryArgs.tags = '0';
+				queryArgs.tags = [ 0 ];
 			} else {
-				queryArgs.categories = '0';
+				queryArgs.categories = [ 0 ];
 			}
 		}
 	} else {
 		// Apply categories filter
 		if ( categories && categories.length > 0 ) {
-			if ( categoryFilterType === 'exclude' ) {
-				queryArgs.categories_exclude = categories.join( ',' );
-			} else {
-				queryArgs.categories = categories.join( ',' );
+			const catIds = Array.isArray( categories )
+				? categories
+						.map( ( id ) => parseInt( id, 10 ) )
+						.filter( ( id ) => ! isNaN( id ) )
+				: String( categories )
+						.split( ',' )
+						.map( ( id ) => parseInt( id.trim(), 10 ) )
+						.filter( ( id ) => ! isNaN( id ) );
+
+			if ( catIds.length > 0 ) {
+				if ( categoryFilterType === 'exclude' ) {
+					queryArgs.categories_exclude = catIds;
+				} else {
+					queryArgs.categories = catIds;
+				}
 			}
 		}
 
 		// Apply tags filter
 		if ( tags && tags.length > 0 ) {
-			if ( tagFilterType === 'exclude' ) {
-				queryArgs.tags_exclude = tags.join( ',' );
-			} else {
-				queryArgs.tags = tags.join( ',' );
+			const tagIds = Array.isArray( tags )
+				? tags
+						.map( ( id ) => parseInt( id, 10 ) )
+						.filter( ( id ) => ! isNaN( id ) )
+				: String( tags )
+						.split( ',' )
+						.map( ( id ) => parseInt( id.trim(), 10 ) )
+						.filter( ( id ) => ! isNaN( id ) );
+
+			if ( tagIds.length > 0 ) {
+				if ( tagFilterType === 'exclude' ) {
+					queryArgs.tags_exclude = tagIds;
+				} else {
+					queryArgs.tags = tagIds;
+				}
 			}
 		}
 
 		// Apply authors filter
 		if ( authors && authors.length > 0 ) {
-			if ( authorFilterType === 'exclude' ) {
-				queryArgs.author_exclude = authors.join( ',' );
-			} else {
-				queryArgs.author = authors.join( ',' );
+			const authorIds = Array.isArray( authors )
+				? authors
+						.map( ( id ) => parseInt( id, 10 ) )
+						.filter( ( id ) => ! isNaN( id ) )
+				: String( authors )
+						.split( ',' )
+						.map( ( id ) => parseInt( id.trim(), 10 ) )
+						.filter( ( id ) => ! isNaN( id ) );
+
+			if ( authorIds.length > 0 ) {
+				if ( authorFilterType === 'exclude' ) {
+					queryArgs.author_exclude = authorIds;
+				} else {
+					queryArgs.author = authorIds;
+				}
 			}
 		}
 
@@ -161,8 +198,20 @@ export const getPostQueryArgs = (
 					// Ignore category and post_tag as they are already handled separately
 					if ( tax.slug !== 'category' && tax.slug !== 'post_tag' ) {
 						const restBase = tax.rest_base || tax.slug;
-						queryArgs[ restBase ] =
-							taxonomyQuery[ tax.slug ].join( ',' );
+						const taxIds = Array.isArray(
+							taxonomyQuery[ tax.slug ]
+						)
+							? taxonomyQuery[ tax.slug ]
+									.map( ( id ) => parseInt( id, 10 ) )
+									.filter( ( id ) => ! isNaN( id ) )
+							: String( taxonomyQuery[ tax.slug ] )
+									.split( ',' )
+									.map( ( id ) => parseInt( id.trim(), 10 ) )
+									.filter( ( id ) => ! isNaN( id ) );
+
+						if ( taxIds.length > 0 ) {
+							queryArgs[ restBase ] = taxIds;
+						}
 					}
 				}
 			} );

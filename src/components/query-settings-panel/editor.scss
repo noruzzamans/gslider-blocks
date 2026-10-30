@@ -11,7 +11,6 @@
 		/* Container & Control */
 		.gslider-select2__control {
 			min-height: 32px;
-			height: 32px;
 			border: 1px solid #f0f0f0;
 			border-radius: 4px;
 			background-color: #fff;
@@ -32,10 +31,12 @@
 
 		/* Value Container */
 		.gslider-select2__value-container {
-			padding: 0 8px;
-			height: 32px;
+			padding: 2px 8px;
+			min-height: 32px;
 			display: flex;
 			align-items: center;
+			flex-wrap: wrap;
+			gap: 2px;
 		}
 
 		/* Single Value text styling */
@@ -93,7 +94,7 @@
 
 		.gslider-select2__indicators {
 			padding-right: 6px;
-			height: 32px;
+			min-height: 32px;
 		}
 
 		.gslider-select2__dropdown-indicator,

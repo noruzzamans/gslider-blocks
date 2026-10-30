@@ -91,16 +91,15 @@ const QuerySettingsPanel = ({
                 (tax) => tax.types && tax.types.includes(postType)
             );
 
-            console.log("=== GSlider Query Debug ===");
-            console.log("Selected Post Type:", postType);
-            console.log("All Taxonomies from WP:", allTax);
-            console.log("Filtered Taxonomies for CPT:", postTax);
-
             // Fetch terms for each taxonomy
             const termsMap = {};
             postTax.forEach((tax) => {
                 termsMap[tax.slug] =
-                    getEntityRecords('taxonomy', tax.slug, { per_page: -1 }) || [];
+                    getEntityRecords('taxonomy', tax.slug, {
+                        per_page: 100,
+                        _fields: 'id,name',
+                        context: 'view',
+                    }) || [];
             });
 
             return {
@@ -108,7 +107,11 @@ const QuerySettingsPanel = ({
                 taxonomies: postTax,
                 termsData: termsMap,
                 allAuthors:
-                    getEntityRecords('root', 'user', { per_page: -1 }) || [],
+                    getEntityRecords('root', 'user', {
+                        per_page: 100,
+                        _fields: 'id,name',
+                        context: 'view',
+                    }) || [],
             };
         },
         [postType]
@@ -176,7 +179,10 @@ const QuerySettingsPanel = ({
             }
 
             const selectedOptions = selectedIds
-                .map((id) => options.find((opt) => opt.value === id))
+                .map((id) => {
+                    const found = options.find((opt) => opt.value === id);
+                    return found || { value: id, label: String( id ) };
+                })
                 .filter(Boolean);
 
             return { options, selectedOptions, filterType };

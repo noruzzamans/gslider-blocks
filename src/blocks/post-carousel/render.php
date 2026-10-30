@@ -233,11 +233,11 @@ if ( isset( $attributes['postsPerPage'] ) ) {
         $posts_per_page = intval( $attributes['postsPerPage'] );
     }
 }
-$categories            = isset( $attributes['categories'] ) ? array_map( 'intval', $attributes['categories'] ) : array();
+$categories            = isset( $attributes['categories'] ) ? array_map( 'intval', (array) $attributes['categories'] ) : array();
 $category_filter_type  = isset( $attributes['categoryFilterType'] ) ? sanitize_text_field( $attributes['categoryFilterType'] ) : 'include';
-$tags                  = isset( $attributes['tags'] ) ? array_map( 'intval', $attributes['tags'] ) : array();
+$tags                  = isset( $attributes['tags'] ) ? array_map( 'intval', (array) $attributes['tags'] ) : array();
 $tag_filter_type       = isset( $attributes['tagFilterType'] ) ? sanitize_text_field( $attributes['tagFilterType'] ) : 'include';
-$authors               = isset( $attributes['authors'] ) ? array_map( 'intval', $attributes['authors'] ) : array();
+$authors               = isset( $attributes['authors'] ) ? array_map( 'intval', (array) $attributes['authors'] ) : array();
 $author_filter_type    = isset( $attributes['authorFilterType'] ) ? sanitize_text_field( $attributes['authorFilterType'] ) : 'include';
 $exclude_posts         = isset( $attributes['excludePosts'] ) ? sanitize_text_field( $attributes['excludePosts'] ) : '';
 $offset                = 0;

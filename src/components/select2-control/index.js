@@ -47,7 +47,7 @@ const Select2Control = ({
             boxShadow: 'none',
             borderRadius: '4px',
             minHeight: '32px',
-            height: '32px',
+            height: isMulti ? 'auto' : '32px',
             outline: 'none',
             '&:hover': {
                 borderColor: '#f0f0f0',
@@ -55,14 +55,18 @@ const Select2Control = ({
         }),
         valueContainer: (base) => ({
             ...base,
-            padding: '0 8px',
-            height: '32px',
+            padding: isMulti ? '2px 8px' : '0 8px',
+            minHeight: '32px',
+            height: isMulti ? 'auto' : '32px',
             display: 'flex',
             alignItems: 'center',
+            flexWrap: isMulti ? 'wrap' : 'nowrap',
+            gap: '2px',
         }),
         indicatorsContainer: (base) => ({
             ...base,
-            height: '32px',
+            minHeight: '32px',
+            height: isMulti ? 'auto' : '32px',
         }),
         dropdownIndicator: (base, state) => ({
             ...base,

@@ -36,13 +36,31 @@ export const usePostQuery = ( queryArgs = {}, postType = 'post' ) => {
 				...sanitizedQueryArgs,
 			};
 
-			// Format exclude to integer array as expected by core store API
-			if ( query.exclude && typeof query.exclude === 'string' ) {
-				query.exclude = query.exclude
-					.split( ',' )
-					.map( ( id ) => parseInt( id.trim(), 10 ) )
-					.filter( ( id ) => ! isNaN( id ) );
-			}
+			// Format taxonomy and author filter arrays to integer arrays as expected by core store API
+			const idArrayKeys = [
+				'exclude',
+				'categories',
+				'categories_exclude',
+				'tags',
+				'tags_exclude',
+				'author',
+				'author_exclude',
+			];
+
+			idArrayKeys.forEach( ( key ) => {
+				if ( query[ key ] ) {
+					if ( typeof query[ key ] === 'string' ) {
+						query[ key ] = query[ key ]
+							.split( ',' )
+							.map( ( id ) => parseInt( id.trim(), 10 ) )
+							.filter( ( id ) => ! isNaN( id ) );
+					} else if ( Array.isArray( query[ key ] ) ) {
+						query[ key ] = query[ key ]
+							.map( ( id ) => parseInt( id, 10 ) )
+							.filter( ( id ) => ! isNaN( id ) );
+					}
+				}
+			} );
 
 			return {
 				posts: getEntityRecords( 'postType', postType, query ),

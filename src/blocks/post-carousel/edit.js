@@ -541,6 +541,7 @@ export default function Edit( {
 						ref={ swiperContainerRef }
 						role="region"
 						aria-label="Post Carousel"
+						key={ posts.map( ( p ) => p.id ).join( '-' ) }
 					>
 						<div className="swiper-wrapper">
 							{ posts.map( ( post ) => {
