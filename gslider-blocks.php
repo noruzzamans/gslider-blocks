@@ -1,10 +1,12 @@
 <?php
 /**
  * Plugin Name: GSlider Blocks
+ * Plugin URI: 	https://github.com/noruzzamans/gslider-blocks
  * Description: Enhance your site with dynamic, customizable, and multi-functional slider blocks to create a more engaging and functional experience.
  * Author: 		Noruzzaman
  * Author URI: 	https://github.com/noruzzamans/
  * Version: 	1.2.0
+ * Requires at least: 6.3
  * Requires PHP: 7.4
  * Text Domain: gslider-blocks
  * Domain Path: /languages

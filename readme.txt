@@ -7,6 +7,7 @@ Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Donate link: https://github.com/noruzzamans/gslider-blocks
 
 Logo Carousel, Image Slider & Testimonial blocks for Gutenberg. 5 transition effects, responsive design & full customization!
 
@@ -120,11 +121,20 @@ https://noruzzamans.github.io/gslider-blocks/
 
 == Source Code & Build Instructions ==
 
-The uncompiled human-readable source code for all Gutenberg blocks, React components, and scripts is bundled directly within this plugin in the `src/` directory.
+The uncompiled, human-readable source code (blocks, React components, scripts, build config) is publicly available at https://github.com/noruzzamans/gslider-blocks. The `build/` directory in this plugin is generated from that source.
 
 To build and compile the production assets from source:
+0. Clone the repository: `git clone https://github.com/noruzzamans/gslider-blocks`
 1. Install dependencies: `npm install` and `composer install`
 2. Compile production assets: `npm run build`
+
+== Contributing & Community ==
+
+GSlider Blocks is 100% open-source software! We warmly welcome community contributions, bug reports, and feedback:
+
+* GitHub Repository: https://github.com/noruzzamans/gslider-blocks
+* Browse Good First Issues: https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+* Interactive Component Storybook: https://noruzzamans.github.io/gslider-blocks/
 
 == Third-Party Libraries ==
 
@@ -255,7 +265,7 @@ This plugin may connect to or load resources from external third-party services 
 - **Fixed**: Minor CSS issues
 
 = 1.1.0 – October 11, 2025 =
-- **Fixed**: Fixed-height mode now uses the tallest (max-content) slide to set a uniform slider and background-image height across all Flexi Content items, resolving the navigation “bottom jump.
+- **Fixed**: Fixed-height mode now uses the tallest (max-content) slide to set a uniform slider and background-image height across all Flexi Content items, resolving the navigation “bottom jump”.
 
 = 1.0.10 – October 02, 2025 =
 - **Added**: Accessibility improvements — navigation arrows.
@@ -263,7 +273,7 @@ This plugin may connect to or load resources from external third-party services 
 - **Fixed**: Auto-height alignment issue causing content/navigation jump.
 
 = 1.0.9 – September 29, 2025 =
-- **Added**: Mimmum height option for all blocks  
+- **Added**: Minimum height option for all blocks  
 - **Fixed**: Minor CSS issues  
 
 = 1.0.8 – September 20, 2025 =

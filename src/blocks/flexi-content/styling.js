@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-tag-names */
+/* eslint-disable no-unused-vars, jsdoc/require-param */
 /**
  * Flexi Content Slider Block - Style Generation
  * Returns Dynamic Generated CSS
@@ -63,7 +63,7 @@ const getHasPaginationCss = (
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
- * @returns {string} CSS string
+ * @return {string} CSS string
  */
 const generateFlexiContentStyle = ( attributes ) => {
 	const {
@@ -919,8 +919,12 @@ const generateFlexiContentStyle = ( attributes ) => {
 					? `height: ${ navigationArrowHeight.Desktop }${ navigationArrowHeightUnits.Desktop };`
 					: ''
 			}
-            outline: none !important;
             transition: color .3s ease-in-out, background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out, transform .3s ease-in-out;
+        }
+        .${ blockId } .swiper-button-prev:focus-visible,
+        .${ blockId } .swiper-button-next:focus-visible {
+            outline: 2px solid currentColor;
+            outline-offset: 2px;
         }
         .${ blockId } .swiper-button-prev:hover,
         .${ blockId } .swiper-button-next:hover {

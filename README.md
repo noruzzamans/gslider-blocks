@@ -6,17 +6,26 @@
 </p>
 
 <p align="center">
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://ps.w.org/gslider-blocks/assets/banner-1544x500.png" width="100%" alt="GSlider Blocks - Gutenberg Carousel Collection">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://img.shields.io/wordpress/plugin/installs/gslider-blocks?color=2271b1&label=Active%20Installs&logo=wordpress" alt="Active Installs">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
+    <img src="https://img.shields.io/wordpress/plugin/rating/gslider-blocks?color=ffb800&label=Rating&logo=wordpress" alt="WordPress.org Rating">
+  </a>
+  <a href="https://wordpress.org/plugins/gslider-blocks/?preview=1">
+    <img src="https://img.shields.io/badge/Live%20Preview-WordPress.org-3858e9?logo=wordpress&logoColor=white" alt="Live Preview on WordPress.org">
+  </a>
   <a href="https://github.com/noruzzamans/gslider-blocks/actions/workflows/ci.yml">
     <img src="https://github.com/noruzzamans/gslider-blocks/actions/workflows/ci.yml/badge.svg" alt="CI Build Status">
   </a>
-  <a href="https://github.com/noruzzamans/gslider-blocks/releases">
+  <a href="https://wordpress.org/plugins/gslider-blocks/">
     <img src="https://img.shields.io/badge/Version-1.2.0-orange.svg" alt="Version">
-  </a>
-  <a href="https://github.com/noruzzamans/gslider-blocks/stargazers">
-    <img src="https://img.shields.io/github/stars/noruzzamans/gslider-blocks?color=ffb800&label=Stars&logo=github" alt="GitHub Stars">
-  </a>
-  <a href="https://github.com/noruzzamans/gslider-blocks/network/members">
-    <img src="https://img.shields.io/github/forks/noruzzamans/gslider-blocks?color=blue&label=Forks&logo=github" alt="GitHub Forks">
   </a>
   <a href="https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22">
     <img src="https://img.shields.io/github/issues/noruzzamans/gslider-blocks/good%20first%20issue?color=7057ff&label=Good%20First%20Issues" alt="Good First Issues">
@@ -39,20 +48,25 @@
   <a href="https://noruzzamans.github.io/gslider-blocks/">
     <img src="https://img.shields.io/badge/Storybook-Live%20Explorer-ff4785.svg?logo=storybook" alt="Storybook Design System">
   </a>
-  <a href="#-ai-assistant-integration-model-context-protocol---mcp">
+  <a href="docs/how-to-guides/mcp-server-ai-workflows.md">
     <img src="https://img.shields.io/badge/MCP-Ready-9cf.svg?logo=anthropic" alt="MCP Compatible">
   </a>
 </p>
 
 <p align="center">
+  <a href="https://wordpress.org/plugins/gslider-blocks/?preview=1">🚀 <strong>Live Preview (WordPress.org)</strong></a> •
+  <a href="https://noruzzamans.github.io/gslider-blocks/">🎨 <strong>Component Storybook</strong></a> •
+  <a href="https://wordpress.org/plugins/gslider-blocks/">🌟 <strong>WordPress.org Plugin</strong></a> •
+  <a href="#-support-the-project">⭐ <strong>Support on GitHub</strong></a>
+</p>
+
+<p align="center">
   <a href="#-about--value-proposition">About</a> •
-  <a href="#-system-architecture">Architecture</a> •
   <a href="#-design-system--component-storybook">Storybook</a> •
   <a href="#-available-blocks">Blocks</a> •
-  <a href="#-ai-assistant-integration-model-context-protocol---mcp">MCP AI Guide</a> •
-  <a href="#-headless-wordpress--nextjs-showcase">Headless</a> •
-  <a href="#-local-environment-setup">Setup</a> •
-  <a href="#-contributing--governance">Contributing</a> •
+  <a href="#-developer-guides--headless--ai-workflows">Developer Guides</a> •
+  <a href="#-quick-installation">Installation</a> •
+  <a href="#-contributing--local-development">Contributing</a> •
   <a href="#-support-the-project">Support ⭐</a>
 </p>
 
@@ -94,343 +108,57 @@ GSlider Blocks features an enterprise **23-component design system** modeled dir
 
 | # | Block | Description | Status |
 | :-: | :--- | :--- | :-: |
-| 1 | 🎯 **Base Slider** | High-impact hero sliders with Title, Subtitle, Description & CTA buttons | ✅ Production |
-| 2 | 📝 **Flexi Content** | Full creative freedom: nest ANY Gutenberg block inside responsive slides | ✅ Production |
-| 3 | 🏢 **Logo Carousel** | Partner/client showcases with hover effects (grayscale-to-color, opacity, scale, move up), links, tooltips, and captions | ✅ Production |
-| 4 | 🖼️ **Image Slider** | Image carousels with lightbox, captions, tooltips, and per-image links | ✅ Production |
-| 5 | ⭐ **Testimonial Carousel** | Customer reviews with fractional star ratings, author avatars, and quote icons | ✅ Production |
-| 6 | 👥 **Team Carousel** | Member profiles with bio, social links, and modal bio triggers | 📋 Roadmap |
-| 7 | 🎥 **Video Carousel** | Self-hosted, YouTube, and Vimeo responsive video carousels | 📋 Roadmap |
-| 8 | 📊 **Stats Carousel** | Animated milestone counters and metric sliders | 📋 Roadmap |
-| 9 | 🏆 **Awards Carousel** | Certification badges and industry recognition carousels | 📋 Roadmap |
-| 10 | 📰 **Post Carousel** | Dynamic WordPress posts & custom post type query slider | 📋 Roadmap |
+| 1 | 🎯 **Base Slider** | High-impact homepage hero sliders with headings, CTAs & custom backgrounds | ✅ Production |
+| 2 | 📝 **Flexi Content** | Full creative freedom: nest any WordPress block inside responsive slides | ✅ Production |
+| 3 | 🏢 **Logo Carousel** | Client & partner brand showcases with grayscale hover animations and links | ✅ Production |
+| 4 | 🖼️ **Image Slider** | Photography & product carousels with built-in Lightbox and captions | ✅ Production |
+| 5 | ⭐ **Testimonial Carousel** | Social proof reviews with fractional star ratings, avatars & quotes | ✅ Production |
+| 6 | 👥 **Team Carousel** | Staff & member profiles with bios, social links, and modal popups | 📋 Roadmap |
+| 7 | 🎥 **Video Carousel** | Responsive video sliders for YouTube, Vimeo & self-hosted MP4 videos | 📋 Roadmap |
+| 8 | 📊 **Stats Carousel** | Animated milestone metric counters and achievement sliders | 📋 Roadmap |
+| 9 | 🏆 **Awards Carousel** | Certification badges, client honors & industry recognition sliders | 📋 Roadmap |
+| 10 | 📰 **Post Carousel** | Dynamic query slider for WordPress blog posts and Custom Post Types | 📋 Roadmap |
+
+> [!TIP]
+> ### ⭐ Love GSlider Blocks? Give it a Star on GitHub!
+> If **GSlider Blocks** saves you time, powers your clients' websites, or helps your open-source journey, please consider giving it a **[Star on GitHub](https://github.com/noruzzamans/gslider-blocks)**! It takes only 2 seconds and helps our open-source project gain visibility across the WordPress community.
 
 ---
 
-## 🤖 AI Assistant Integration (Model Context Protocol - MCP)
+## 📚 Developer Guides & Headless / AI Workflows
 
-GSlider Blocks ships with an official local **Model Context Protocol (MCP)** server located in `packages/mcp-server`. It lets AI assistants and agentic IDEs (Cursor, Claude Desktop, Windsurf, Antigravity, etc.) list the GSlider blocks, read each block's attribute schema and defaults, and load starter templates, locally with **$0 cloud cost**. Generating block markup is planned ([#33](https://github.com/noruzzamans/gslider-blocks/issues/33)) and not available yet.
+Looking to extend GSlider Blocks, connect with AI coding assistants, or build modern decoupled/headless web applications? Check out our dedicated developer guides:
 
-### 🧠 Model-Agnostic Architecture (OpenAI, Claude, Gemini)
-
-The GSlider MCP Server operates over standard input/output (`stdio`) and is completely **model-agnostic**. You can connect it to any leading foundation model:
-- **OpenAI Ecosystem:** GPT-4o, o1, o3-mini, ChatGPT, and OpenAI-compatible developer agents.
-- **Anthropic Ecosystem:** Claude 3.7 Sonnet, Claude 3.5 Haiku, Claude Desktop.
-- **Google Ecosystem:** Gemini 2.0 Pro, Gemini 2.0 Flash via agentic environments.
-- **Open Weights:** DeepSeek-R1, Llama 3.3 via Ollama or local inference runtimes.
-
----
-
-### 1-Click Client Configurations
-
-#### 1. Claude Desktop (`claude_desktop_config.json`)
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
-- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
-#### 2. OpenAI Models & ChatGPT (GPT-4o, o1, o3-mini)
-
-Connect the GSlider MCP server to any OpenAI model via standard Function Calling / Agent SDK:
-
-```javascript
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import OpenAI from "openai";
-
-const transport = new StdioClientTransport({
-  command: "node",
-  args: ["./packages/mcp-server/dist/index.js"]
-});
-const mcp = new Client({ name: "openai-gslider-agent", version: "1.0.0" }, { capabilities: {} });
-await mcp.connect(transport);
-
-// Dynamically expose GSlider MCP tools to OpenAI GPT-4o
-const { tools } = await mcp.listTools();
-const openai = new OpenAI();
-const completion = await openai.chat.completions.create({
-  model: "gpt-4o",
-  messages: [{ role: "user", content: "Inspect available GSlider block schemas" }],
-  tools: tools.map(t => ({
-    type: "function",
-    function: { name: t.name, description: t.description, parameters: t.inputSchema }
-  }))
-});
-```
-
-#### 3. Cursor IDE (`.cursor/mcp.json`)
-*Compatible with Claude 3.7, OpenAI GPT-4o, and Gemini models inside Cursor:*
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "./packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
-#### 4. Antigravity IDE (Google DeepMind Agentic Workflow)
-Configure in your workspace `.antigravity/mcp.json` or global Antigravity MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
-#### 5. GitHub Copilot & VS Code (Cline / Roo Code)
-In VS Code, add to `cline_mcp_settings.json` or Roo Code MCP Settings:
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
-#### 6. Windsurf IDE (`~/.codeium/windsurf/mcp_config.json`)
-*Compatible with Windsurf Cascade and Codeium agentic workflows:*
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
-### Available MCP Tools
-
-| Tool | Purpose | Status |
-| :--- | :--- | :---: |
-| `gslider_ping` | Verifies the MCP server connection and returns the MCP server's own version (not the plugin version) | ✅ Available |
-| `gslider_list_blocks` | Returns all registered blocks and supported visual controls | ✅ Available |
-| `gslider_get_block_schema` | Returns exact attribute schemas and slide data structures | ✅ Available |
-| `gslider_generate_block` | Generates validated Gutenberg markup with automated CSS | 🔜 In Progress |
-
----
-
-## 🌐 Headless WordPress & Next.js Showcase
-
-GSlider Blocks provides dedicated machine-readable REST API endpoints for decoupled and headless architectures. Retrieve structured slider data via the dedicated endpoint `GET /wp-json/gslider/v1/blocks/<post_id>` or via the `gslider_blocks` field on standard `/wp/v2/pages/<id>` and `/wp/v2/posts/<id>`.
-
-Each response holds `{ post_id, post_title, total_sliders, blocks }`. Every entry in `blocks` has this shape:
-
-| Field | Contents |
+| Guide | Description |
 | :--- | :--- |
-| `blockId` | The block's scoped class, for example `gslider-1a2b3c4d`. |
-| `blockName` | For example `gslider-blocks/image-slider`. |
-| `swiperConfig` | Swiper options built by `BlockParser`, with block defaults filled in: `effect`, `loop`, `autoplay`, `keyboard`, `mousewheel`, `navigation.enabled`, `pagination`, and per-breakpoint (`0`, `768`, `1025`) `slidesPerView`, `spaceBetween`, `speed`, and `autoplay.delay`. It has no `navigation.nextEl`/`prevEl` or `pagination.el`; your renderer supplies those. |
-| `slides` | Sanitized slide data. Image and logo slides are `{ id, url, alt, caption, link, tooltipText }`. |
-| `css` | The block's generated CSS, scoped to the WordPress markup (`.gslider-xxxxxxxx.gslider-image-slider-wrapper …`). It only matches if you reproduce the `save.js` wrapper classes. |
-| `attrs` | Every block attribute: the values stored in the block comment, plus the `attributes.js` default for each attribute Gutenberg left out because it was still at its default. Stored values always win. |
-
-On collection requests such as `/wp/v2/posts?per_page=100`, the `gslider_blocks` field parses every post. Use `_fields=` to skip it when you do not need it.
-
-An untouched Base or Testimonial block returns its 3 default slides. The defaults ship as one generated file per block in `includes/RestApi/defaults/`, which `npm run build` regenerates from the MCP schemas. The `gslider_block_attribute_defaults` filter can change them.
-
-### Consuming GSlider in Next.js 14/15 (App Router)
-
-```tsx
-// app/components/GSliderImageSlider.tsx
-'use client';
-
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectCoverflow, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper/modules';
-import type { SwiperOptions } from 'swiper/types';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-interface GSliderImageSlide {
-  id: number;
-  url: string;
-  alt: string;
-  caption: string;
-  link: string;
-  tooltipText: string;
-}
-
-export interface GSliderBlock {
-  blockId: string;
-  blockName: string;
-  sliderType: string;
-  totalSlides: number;
-  swiperConfig: SwiperOptions;
-  css: string;
-  slides: unknown[];
-  attrs: Record<string, unknown>;
-}
-
-export default function GSliderImageSlider({ block }: { block: GSliderBlock }) {
-  if (block.blockName !== 'gslider-blocks/image-slider') return null;
-
-  const slides = block.slides as GSliderImageSlide[];
-
-  // Swiper React renders its own arrows and bullets when navigation/pagination
-  // are set without elements, so swiperConfig can be spread as-is.
-  return (
-    <Swiper
-      modules={[Autoplay, EffectCoverflow, Keyboard, Mousewheel, Navigation, Pagination]}
-      {...block.swiperConfig}
-    >
-      {slides.map((slide) => (
-        <SwiperSlide key={slide.id}>
-          <img src={slide.url} alt={slide.alt} loading="lazy" />
-          {slide.caption && <p>{slide.caption}</p>}
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  );
-}
-```
-
-```tsx
-// app/[slug]/page.tsx (server component)
-import GSliderImageSlider, { type GSliderBlock } from '../components/GSliderImageSlider';
-
-export default async function Page() {
-  const res = await fetch(`${process.env.WP_URL}/wp-json/gslider/v1/blocks/42`, {
-    next: { revalidate: 60 },
-  });
-  const { blocks } = (await res.json()) as { blocks: GSliderBlock[] };
-
-  return blocks.map((block) => <GSliderImageSlider key={block.blockId} block={block} />);
-}
-```
-
-> [!NOTE]
-> - `slides[].link` is always returned. The WordPress frontend only links an image when the block's `enableimageLinks` setting is on. Check `attrs.enableimageLinks` before rendering the link.
-> - Treat `css` as content written by post authors. Do not inject it into a `<style>` tag unless you trust everyone who can edit the post.
+| 🤖 **[MCP Server & AI Assistant Guide](docs/how-to-guides/mcp-server-ai-workflows.md)** | Connect GSlider to **Claude Desktop**, **Cursor**, **Antigravity**, **ChatGPT**, and **Windsurf** with $0 cloud cost. |
+| 🌐 **[Headless WordPress & REST API Guide](docs/how-to-guides/headless-rest-api.md)** | Consume `/wp-json/gslider/v1/blocks/<id>` in **Next.js 14/15 App Router**, **Astro**, and **Remix** with pre-parsed Swiper configs. |
+| 🏗️ **[System Architecture Guide](docs/explanations/architecture.md)** | Learn about the PSR-4 Singleton backend, dynamic CSS generation pipeline, and zero-invalidation deprecation system. |
+| 🎣 **[PHP Hooks & Filters Reference](docs/reference-guides/php-hooks.md)** | Complete reference of action hooks and filter hooks for customizing slider markup, styles, CSP nonces, and caches. |
 
 ---
 
-## 💻 Local Environment Setup
+## 🚀 Quick Installation
 
-We support both GUI-based workflows (LocalWP) and zero-config containerized workflows (Docker via `@wordpress/env`):
+Getting started with GSlider Blocks takes less than 30 seconds:
 
-### Prerequisites
+1. In your WordPress Admin Dashboard, navigate to **Plugins ➔ Add New Plugin**.
+2. Search for **"GSlider Blocks"**.
+3. Click **Install Now** and then **Activate**.
+4. Open the Gutenberg block editor, type `/gslider` or click the `+` Block Inserter to add any slider block!
 
-| Requirement | Minimum Version | Recommended |
-| :--- | :--- | :--- |
-| **Node.js** | `>= 18.0.0` | `20.x LTS` |
-| **npm** | `>= 9.0.0` | `10.x` |
-| **PHP** | `>= 7.4.0` | `8.2 / 8.3` |
-| **WordPress** | `>= 6.3.0` (required for `apiVersion: 3`) | `6.7+` |
-
----
-
-### Option A: LocalWP (Recommended GUI Workflow)
-
-1. Open [Local](https://localwp.com/) and create a new WordPress site.
-2. Clone this repository directly into the site's plugin directory:
-   ```bash
-   cd ~/Local\ Sites/<site-name>/app/public/wp-content/plugins/
-   git clone https://github.com/noruzzamans/gslider-blocks.git
-   cd gslider-blocks
-   ```
-3. Install dependencies and compile initial block assets (`build/` is gitignored):
-   ```bash
-   npm install
-   npm run build  # Required: compiles block bundles into build/
-   npm run start  # Starts development watch mode
-   ```
-4. Activate **GSlider Blocks** from WP Admin → Plugins.
+> [!TIP]
+> 🌐 **[Live Preview on WordPress.org](https://wordpress.org/plugins/gslider-blocks/?preview=1)** — Official in-browser interactive preview running directly on WordPress.org!
+>
+> ⚡ **[Launch Gutenberg Editor in Playground](https://playground.wordpress.net/#eyJwcmVmZXJyZWRWZXJzaW9ucyI6eyJwaHAiOiJsYXRlc3QiLCJ3cCI6ImxhdGVzdCJ9LCJsb2dpbiI6dHJ1ZSwibGFuZGluZ1BhZ2UiOiIvd3AtYWRtaW4vcG9zdC1uZXcucGhwP3Bvc3RfdHlwZT1wYWdlIiwic3RlcHMiOlt7InN0ZXAiOiJpbnN0YWxsUGx1Z2luIiwicGx1Z2luRGF0YSI6eyJyZXNvdXJjZSI6IndvcmRwcmVzcy5vcmcvcGx1Z2lucyIsInNsdWciOiJnc2xpZGVyLWJsb2NrcyJ9fV19)** — One-click automated setup with WordPress admin auto-login, GSlider pre-activated, and landing straight in the block editor!
+>
+> 📖 **[Read Full Quick Start Guide](docs/getting-started/quick-start.md)** for step-by-step block pattern usage, slash commands, and block configuration.
 
 ---
 
-### Option B: Docker via `@wordpress/env` (Zero-Config CLI)
+## 🤝 Contributing & Local Development
 
-If you have Docker Desktop installed, spin up a complete WordPress instance with GSlider Blocks pre-mounted in one command:
-
-```bash
-# 1. Clone repository
-git clone https://github.com/noruzzamans/gslider-blocks.git
-cd gslider-blocks
-
-# 2. Install dependencies
-npm install
-
-# 3. Build block assets into build/ (Required before starting)
-npm run build
-
-# 4. Start WordPress in Docker (Port 8888)
-npx @wordpress/env start
-```
-
-- **Frontend:** [http://localhost:8888](http://localhost:8888)
-- **WP Admin:** [http://localhost:8888/wp-admin](http://localhost:8888/wp-admin) (`Username: admin`, `Password: password`)
-- **Stop Environment:** `npx @wordpress/env stop`
-
----
-
-## ⚡ Essential NPM Scripts
-
-| Command | Purpose |
-| :--- | :--- |
-| `npm run start` | Starts watch mode for Gutenberg blocks development (`wp-scripts start`) |
-| `npm run build` | Compiles production assets into `build/` |
-| `npm run lint:js` | Runs ESLint across all JavaScript files |
-| `npm run lint:css` | Runs Stylelint across all SCSS/CSS stylesheets |
-| `npm run admin` | Starts watch mode for admin styles |
-| `npm run admin:build` | Compiles admin stylesheets for production |
-| `npm run mcp:build` | Builds the TypeScript MCP server in `packages/mcp-server` |
-| `npm run zip` | Generates a clean, production-ready WordPress.org distributable zip |
-
----
-
-## 🛡️ Testing & Code Quality Matrix
-
-Every pull request runs automated GitHub Actions CI (`.github/workflows/ci.yml`):
-- **Block Build:** Runs `npm run build` for the Gutenberg block bundles. The admin stylesheet (`npm run admin:build`) is not built in CI.
-- **MCP Server Tests:** Installs and builds `packages/mcp-server`, then runs its test suite (`npm test`).
-- **Distribution Zip:** Runs `npm run zip`.
-- **PHP Matrix Testing:** Runs the stub-based scripts in `tests/` on **7 PHP versions**: `PHP 7.4`, `8.0`, `8.1`, `8.2`, `8.3`, `8.4`, and `8.5`.
-
-ESLint and Stylelint are not part of CI yet. `npm run lint:js` and `npm run lint:css` currently report many existing errors, so run them on the files you change.
-
-`.github/workflows/pr-automation.yml` adds type and size labels. When a PR from anyone other than `@noruzzamans` touches `src/components/`, it adds the `needs: changes` label and posts a warning comment.
-
----
-
-## 🤝 Contributing & Governance
-
-Contributions from both human engineers and AI assistants are welcome! Please read our contributing documentation before starting:
+Contributions from both human engineers and AI assistants are welcome! Whether you are building new features, fixing a bug, or polishing documentation:
 
 ### 🌟 First-Time Contributors Welcome!
 Looking to make your first open-source contribution or build your WordPress / React portfolio? We have curated step-by-step beginner-friendly tasks with ready-to-run commands:
@@ -438,6 +166,10 @@ Looking to make your first open-source contribution or build your WordPress / Re
 
 Every contributor with a merged PR is automatically inducted into our [Contributors](#-contributors) hall of fame and mentioned in our official release notes!
 
+### 📚 Developer Resources & Setup
+- 🛠️ **[Local Development Setup Guide](docs/getting-started/local-development.md)**: Setup with LocalWP, Docker (`@wordpress/env`), Composer, and Node.js.
+- ⚡ **[NPM & Build Workflow](docs/getting-started/local-development.md#-daily-development-workflow)**: Watch mode (`npm run start`), production builds, and admin asset compilation.
+- 🧪 **[Testing & Code Quality Matrix](docs/getting-started/local-development.md#-testing-suite--quality-assurance)**: Standalone PHP CLI unit tests (PHP 7.4–8.5 matrix), schema drift tests, and CI checks.
 - 📖 **[CONTRIBUTING.md](CONTRIBUTING.md)**: Forking, branching, PR title conventions, and AI contribution policy.
 - 📚 **[Developer Handbook](docs/README.md)**: Central developer documentation map and technical guides.
 - 🏗️ **[Architecture Guide](docs/explanations/architecture.md)**: Engineering principles, patterns, and pre-flight developer checklist.
@@ -510,6 +242,13 @@ Thank you to all the amazing people who contribute to GSlider Blocks!
       <td align="center" valign="top" width="14.28%"><a href="https://www.linuxhostlab.com/"><img src="https://avatars.githubusercontent.com/u/7321834?v=4" width="100px;" alt="Md Abul Bashar"/><br /><sub><b>Md Abul Bashar</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://devnethsara.com/"><img src="https://avatars.githubusercontent.com/u/110768660?v=4" width="100px;" alt="Sasindu Nethsara Karanayaka"/><br /><sub><b>Sasindu Nethsara Karanayaka</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/madhavidayma21"><img src="https://avatars.githubusercontent.com/u/98448374?v=4" width="100px;" alt="Madhavi Dayma"/><br /><sub><b>Madhavi Dayma</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zhiyilang"><img src="https://avatars.githubusercontent.com/u/154107452?v=4" width="100px;" alt="Zhiyilang"/><br /><sub><b>Zhiyilang</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/irfat-ifti"><img src="https://avatars.githubusercontent.com/u/197045488?v=4" width="100px;" alt="Md. Irfat Uddin Ifti"/><br /><sub><b>Md. Irfat Uddin Ifti</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mahender9390"><img src="https://avatars.githubusercontent.com/u/190497135?v=4" width="100px;" alt="Vennapureddy Mahender"/><br /><sub><b>Vennapureddy Mahender</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tu-lasizzzz"><img src="https://avatars.githubusercontent.com/u/172914448?v=4" width="100px;" alt="Tulasi Sahu"/><br /><sub><b>Tulasi Sahu</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rejaulalomkhan"><img src="https://avatars.githubusercontent.com/u/123895004?v=4" width="100px;" alt="Rejaul Alom Khan"/><br /><sub><b>Rejaul Alom Khan</b></sub></a></td>
     </tr>
   </tbody>
 </table>
