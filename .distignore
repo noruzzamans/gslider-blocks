@@ -8,7 +8,9 @@
 /.distignore
 /.editorconfig
 /.eslintrc*
+/.eslintignore
 /.stylelint*
+/.stylelintignore
 /.nvmrc
 /.npmrc
 /.wp-env.json
