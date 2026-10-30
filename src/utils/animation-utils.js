@@ -1,3 +1,5 @@
+/* global IntersectionObserver */
+/* eslint-disable jsdoc/require-returns-description, jsdoc/empty-tags */
 /**
  * Animation Utils — Reusable Frontend JavaScript
  *
@@ -12,7 +14,7 @@
  *     initCardTilt( wrapper );
  * });
  *
- * @package GSlider\Utils
+ * @package
  */
 
 /**
@@ -23,8 +25,12 @@
  */
 function getCurrentBreakpoint() {
 	const width = window.innerWidth;
-	if ( width <= 767 ) return 'Mobile';
-	if ( width <= 1024 ) return 'Tablet';
+	if ( width <= 767 ) {
+		return 'Mobile';
+	}
+	if ( width <= 1024 ) {
+		return 'Tablet';
+	}
 	return 'Desktop';
 }
 
@@ -32,12 +38,14 @@ function getCurrentBreakpoint() {
  * Resolve a responsive value that may be a plain number OR a
  * { Desktop, Tablet, Mobile } object.  Falls back to `fallback`.
  *
- * @param {number|object} value     Raw parsed JSON value.
- * @param {number}        fallback  Default if unresolvable.
+ * @param {number|object} value    Raw parsed JSON value.
+ * @param {number}        fallback Default if unresolvable.
  * @return {number}
  */
 function resolveResponsive( value, fallback ) {
-	if ( value === null || value === undefined ) return fallback;
+	if ( value === null || value === undefined ) {
+		return fallback;
+	}
 	if ( typeof value === 'object' ) {
 		const bp = getCurrentBreakpoint();
 		// Walk up breakpoints if current is not set
@@ -63,16 +71,20 @@ function resolveResponsive( value, fallback ) {
  *  - offset    {number|object} %  — how far into viewport to trigger (responsive)
  *  - easing    {string}            — CSS timing function
  *
- * @param {HTMLElement} wrapper  The block wrapper element.
+ * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function initEntranceAnimations( wrapper ) {
 	const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
-	if ( ! cards.length ) return;
+	if ( ! cards.length ) {
+		return;
+	}
 
 	let settings = {};
 	try {
 		const raw = wrapper.dataset.animationSettings;
-		if ( raw ) settings = JSON.parse( raw );
+		if ( raw ) {
+			settings = JSON.parse( raw );
+		}
 	} catch ( e ) {}
 
 	const duration = resolveResponsive( settings.duration, 600 );
@@ -117,12 +129,14 @@ export function initEntranceAnimations( wrapper ) {
  *
  * Reads from wrapper's data-stagger-delay attribute (number or JSON object in ms).
  *
- * @param {HTMLElement} wrapper  The block wrapper element.
+ * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function applyStaggerDelays( wrapper ) {
-	if ( wrapper.dataset.staggerEnabled !== '1' ) return;
+	if ( wrapper.dataset.staggerEnabled !== '1' ) {
+		return;
+	}
 
-	let rawDelay = wrapper.dataset.staggerDelay;
+	const rawDelay = wrapper.dataset.staggerDelay;
 	let staggerMs;
 	try {
 		const parsed = JSON.parse( rawDelay );
@@ -144,11 +158,13 @@ export function applyStaggerDelays( wrapper ) {
  * Reads responsive values from wrapper's data-tilt-* attributes.
  * Automatically re-evaluates on window resize to match breakpoint.
  *
- * @param {HTMLElement} wrapper  The block wrapper element.
+ * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function initCardTilt( wrapper ) {
 	const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
-	if ( ! cards.length ) return;
+	if ( ! cards.length ) {
+		return;
+	}
 
 	function getTiltSettings() {
 		let maxAngle, perspective, scale, speed;

@@ -1,12 +1,15 @@
+/* eslint-disable jsdoc/require-param-type */
 /**
  * Build dynamic REST API query arguments from block attributes.
  * Supports categories, tags, authors, custom taxonomies, exclusions, date ranges, sticky posts, and search keywords.
  *
- * @param {Object} attributes    Block attributes.
- * @param {string} deviceType    Current active device type (Desktop, Tablet, Mobile).
- * @param {number} currentPostId Current editor post ID (to exclude).
- * @param {Array}  taxonomies    List of registered WordPress taxonomies.
- * @returns {Object}             Formed query object for usePostQuery.
+ * @param {Object} attributes            Block attributes.
+ * @param {string} deviceType            Current active device type (Desktop, Tablet, Mobile).
+ * @param {number} currentPostId         Current editor post ID (to exclude).
+ * @param {Array}  taxonomies            List of registered WordPress taxonomies.
+ * @param          currentPostCategories
+ * @param          currentPostTags
+ * @return {Object}             Formed query object for usePostQuery.
  */
 export const getPostQueryArgs = (
 	attributes,
@@ -57,7 +60,7 @@ export const getPostQueryArgs = (
 		per_page: activePostsPerPage,
 		status: 'publish',
 		orderby: orderBy,
-		order: order,
+		order,
 	};
 
 	// Apply offset

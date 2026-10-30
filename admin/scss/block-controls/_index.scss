@@ -24,11 +24,14 @@
 
 // Autocomplete Block Search selected state icon colors
 .components-autocomplete__result.is-selected {
+
 	svg.gslider-editor-icons {
+
 		rect,
 		path {
 			stroke: #fff !important;
 		}
+
 		circle {
 			fill: #fff !important;
 		}
@@ -40,11 +43,14 @@
 .block-editor-list-view-leaf.is-selected,
 .block-editor-list-view-block__contents-cell[aria-selected="true"],
 .block-editor-list-view-block__contents.is-selected {
+
 	svg.gslider-editor-icons {
+
 		rect,
 		path {
 			stroke: #fff !important;
 		}
+
 		circle {
 			fill: #fff !important;
 		}

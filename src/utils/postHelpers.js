@@ -1,13 +1,16 @@
+/* eslint-disable no-unused-vars, jsdoc/require-param-type */
 import { __ } from '@wordpress/i18n';
 
 /**
  * Decode HTML entities in text (e.g. converting &amp; to &)
  *
  * @param {string} text Raw text string with HTML entities.
- * @returns {string} Decoded plain text string.
+ * @return {string} Decoded plain text string.
  */
 export const decodeHtmlEntities = ( text ) => {
-	if ( ! text ) return '';
+	if ( ! text ) {
+		return '';
+	}
 	const textArea = document.createElement( 'textarea' );
 	textArea.innerHTML = text;
 	return textArea.value;
@@ -18,7 +21,7 @@ export const decodeHtmlEntities = ( text ) => {
  *
  * @param {Object} post          Embedded post record from WP REST API.
  * @param {string} preferredSize Preferred image size slug (default 'medium_large').
- * @returns {string|null}        Featured image URL or null if not found.
+ * @return {string|null}        Featured image URL or null if not found.
  */
 export const getFeaturedImageUrl = ( post, preferredSize = 'medium_large' ) => {
 	if (
@@ -50,7 +53,7 @@ export const getFeaturedImageUrl = ( post, preferredSize = 'medium_large' ) => {
  * Get categories array from embedded post REST API data.
  *
  * @param {Object} post Embedded post record from WP REST API.
- * @returns {Array}     List of category term objects.
+ * @return {Array}     List of category term objects.
  */
 export const getPostCategories = ( post ) => {
 	if (
@@ -70,7 +73,8 @@ export const getPostCategories = ( post ) => {
  *
  * @param {Object} post      Embedded post record from WP REST API.
  * @param {number} wordLimit Maximum number of words to return.
- * @returns {string}         Truncated plain excerpt text.
+ * @param          options
+ * @return {string}         Truncated plain excerpt text.
  */
 export const getExcerpt = ( post, wordLimit = 20, options = {} ) => {
 	if ( typeof options !== 'object' || options === null ) {
@@ -101,7 +105,9 @@ export const getExcerpt = ( post, wordLimit = 20, options = {} ) => {
 		text = post?.excerpt?.rendered || post?.content?.rendered || '';
 	}
 
-	if ( ! text ) return '';
+	if ( ! text ) {
+		return '';
+	}
 
 	const div = document.createElement( 'div' );
 	div.innerHTML = text;
@@ -125,23 +131,21 @@ export const getExcerpt = ( post, wordLimit = 20, options = {} ) => {
 			return text.substring( 0, limitValue ) + postExcerptLimitSuffix;
 		}
 		return text;
-	} else {
-		const words = text.split( /\s+/ );
-		if ( words.length > limitValue ) {
-			return (
-				words.slice( 0, limitValue ).join( ' ' ) +
-				postExcerptLimitSuffix
-			);
-		}
-		return text;
 	}
+	const words = text.split( /\s+/ );
+	if ( words.length > limitValue ) {
+		return (
+			words.slice( 0, limitValue ).join( ' ' ) + postExcerptLimitSuffix
+		);
+	}
+	return text;
 };
 
 /**
  * Get author display name from embedded post REST API data.
  *
  * @param {Object} post Embedded post record from WP REST API.
- * @returns {string}    Author name.
+ * @return {string}    Author name.
  */
 export const getAuthorName = ( post ) => {
 	if (
@@ -162,9 +166,9 @@ export const getAuthorName = ( post ) => {
  * Get author avatar URL from embedded post REST API data.
  * WordPress REST API provides avatar_urls with sizes: 24, 48, 96.
  *
- * @param {Object} post         Embedded post record from WP REST API.
+ * @param {Object} post          Embedded post record from WP REST API.
  * @param {number} preferredSize Preferred avatar size (24, 48, or 96). Default 96.
- * @returns {string}            Avatar image URL or empty string if not available.
+ * @return {string}            Avatar image URL or empty string if not available.
  */
 export const getAuthorAvatarUrl = ( post, preferredSize = 96 ) => {
 	if (
@@ -193,14 +197,16 @@ export const getAuthorAvatarUrl = ( post, preferredSize = 96 ) => {
  * @param {Object} post    Post record.
  * @param {string} locale  Locale string (default 'en-US').
  * @param {Object} options DateTimeFormat options.
- * @returns {string}       Formatted date string.
+ * @return {string}       Formatted date string.
  */
 export const getFormattedDate = (
 	post,
 	locale = 'en-US',
 	options = { year: 'numeric', month: 'short', day: 'numeric' }
 ) => {
-	if ( ! post?.date ) return '';
+	if ( ! post?.date ) {
+		return '';
+	}
 	const date = new Date( post.date );
 	return date.toLocaleDateString( locale, options );
 };
@@ -209,7 +215,7 @@ export const getFormattedDate = (
  * Get tags array from embedded post REST API data.
  *
  * @param {Object} post Embedded post record from WP REST API.
- * @returns {Array}     List of tag term objects.
+ * @return {Array}     List of tag term objects.
  */
 export const getPostTags = ( post ) => {
 	if (

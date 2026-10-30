@@ -1,6 +1,7 @@
-@use "../../components/animation-control/animate.scss";
+@use "../../components/animation-control/animate";
 
 .gslider-post-carousel-wrapper {
+
 	.gslider-post-carousel-content-wrapper {
 		box-sizing: border-box;
 		overflow: hidden;
@@ -47,8 +48,11 @@
 	}
 
 	.gslider-post-carousel-card:hover {
+
 		.gslider-post-carousel-image {
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+			box-shadow:
+				0 20px 25px -5px rgba(0, 0, 0, 0.1),
+				0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
 
 			img {
 				transform: scale(1.05);
@@ -132,7 +136,7 @@
 	}
 
 	.gslider-post-carousel-card:hover .gslider-post-carousel-title a {
-		color: #000000; /* hover:text-primary */
+		color: #000; /* hover:text-primary */
 	}
 
 	.gslider-post-carousel-excerpt-wrapper {
@@ -213,7 +217,7 @@
 	}
 
 	.gslider-post-carousel-readmore {
-		margin: 24px 0px 0px 0px;
+		margin: 24px 0 0 0;
 
 		.gslider-post-carousel-readmore-btn {
 			padding: 12px 24px 12px 24px;
@@ -230,7 +234,8 @@
 				justify-content: center;
 				transition: transform 0.2s ease-in-out;
 
-				svg, img {
+				svg,
+				img {
 					display: block;
 				}
 			}
@@ -261,20 +266,23 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .gslider-post-carousel-wrapper .animated {
-        animation: none !important;
-        transition: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-        visibility: visible !important;
-    }
-    .gslider-post-carousel-wrapper .gslider-post-carousel-card {
-        transition: none !important;
-        transform: none !important;
-    }
-    .gslider-post-carousel-wrapper .gslider-post-carousel-image img {
-        transition: none !important;
-        filter: none !important;
-        transform: none !important;
-    }
+
+	.gslider-post-carousel-wrapper .animated {
+		animation: none !important;
+		transition: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+		visibility: visible !important;
+	}
+
+	.gslider-post-carousel-wrapper .gslider-post-carousel-card {
+		transition: none !important;
+		transform: none !important;
+	}
+
+	.gslider-post-carousel-wrapper .gslider-post-carousel-image img {
+		transition: none !important;
+		filter: none !important;
+		transform: none !important;
+	}
 }
