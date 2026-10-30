@@ -29,7 +29,7 @@ jobs:
     name: Build, Verify & Deploy Plugin
     runs-on: ubuntu-latest
     env:
-      SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+      HAS_SVN_CREDENTIALS: ${{ secrets.SVN_PASSWORD != '' }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
       - name: Setup Node.js (.nvmrc)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Setup PHP
@@ -52,7 +52,7 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
 
       - name: Install NPM Dependencies
-        run: npm ci || npm install --legacy-peer-deps
+        run: npm ci
 
       - name: Run PHP Unit Tests
         run: composer test
@@ -78,7 +78,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to WordPress.org SVN
-        if: env.SVN_PASSWORD != ''
+        if: env.HAS_SVN_CREDENTIALS == 'true' && (github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v') || github.event.inputs.dry_run == 'true')
         uses: 10up/action-wordpress-plugin-deploy@stable
         with:
           dry-run: ${{ github.event.inputs.dry_run || 'false' }}
