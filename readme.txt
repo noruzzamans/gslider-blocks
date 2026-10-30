@@ -198,7 +198,7 @@ This plugin may connect to or load resources from external third-party services 
 * Block Fixes: Corrected rating star gap units and desktop fallback handling in Testimonial Slider.
 * Block Fixes: Resolved tablet background hover styling in Logo Carousel and localized button placeholders in Base Slider.
 * Block Fixes: Restored core Additional CSS classes (customClassName) support on frontend wrapper in Image Slider and all blocks.
-* Headless REST API: Expanded post and page endpoints with serialized Gutenberg block schemas and normalized attributes.
+* Admin & Architecture: Cleaned up obsolete dashboard endpoints and hardened REST API routing.
 * MCP AI Ecosystem: Officially published @gslider/mcp-server on NPM with zero-install npx support, model context protocol tools, and GitHub Actions trusted publishing.
 * Maintenance: Cleaned up unused imports, dead variables, and refined code documentation across block components.
 * Props: Heartfelt thanks to all community contributors and WordPress.org forum reporters who helped shape this release: @huzaifaalmesbah, @hmbashar, @Nethsara14, @Pushkar-Shahi, @rejaulalomkhan, @Zhiyilang, @blank-0007, @p00jitha, @Aaqibhafeezkhan, @Sinkleberg, @dbdefault, @ect2000, @irfat-ifti, @madhavidayma21, @mahender9390, @tu-lasizzzz, @devmuhib, @ateliercommodore, @jrevillini.
