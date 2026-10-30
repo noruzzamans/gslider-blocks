@@ -15,7 +15,7 @@ This document provides exhaustive reference tables and code recipes for the Word
 | `gslider_csp_nonce` | `(string $nonce)` | `''` | `StyleGenerator.php` | Secondary CSP nonce filter for dynamic `<style>` tags. |
 | `gslider_lcp_optimize` | `(bool $optimize)` | `true` | `StyleGenerator.php` | Toggles automated LCP image priority optimization on the first slide. |
 | `gslider_registered_blocks` | `(array $blocks)` | Available block slugs | `RegistrationBlocks.php` | Modifies the list of blocks registered with Gutenberg. |
-| `gslider_google_fonts_privacy_enabled` | `(bool $is_enabled)` | `true` | `FontLoader.php` | Enables or disables GDPR-compliant local hosting for Google Fonts. |
+| `gslider_google_fonts_privacy_enabled` | `(bool $is_enabled)` | `false` | `FontLoader.php` | Enables or disables GDPR-compliant local hosting for Google Fonts. |
 | `gslider_blocks_enable_patterns` | `(bool $enable)` | `true` | `RegistrationPatterns.php` | Toggles whether bundled starter block patterns register on `init`. |
 | `gslider_blocks_patterns_dir` | `(string $dir)` | Plugin `patterns/` path | `RegistrationPatterns.php` | Customizes filesystem directory from which starter patterns load. |
 | `gslider_blocks_patterns` | `(array $patterns)` | Parsed pattern list | `RegistrationPatterns.php` | Filters the complete loaded pattern templates array. |
