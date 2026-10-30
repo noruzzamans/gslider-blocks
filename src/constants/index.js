@@ -31,6 +31,16 @@ export const ARROW_ICON_ALIGN = [
 	{ label: <Dashicon icon={ 'format-image' } />, value: 'image' },
 ];
 
+export const ICON_TYPE = [
+	{ label: __( 'Icon', 'gslider-blocks' ), value: 'icon' },
+	{ label: __( 'Image', 'gslider-blocks' ), value: 'image' },
+];
+
+export const ICON_POSITION = [
+	{ label: __( 'Left', 'gslider-blocks' ), value: 'left' },
+	{ label: __( 'Right', 'gslider-blocks' ), value: 'right' },
+];
+
 export const ICON_ALIGN = [
 	{ label: <Dashicon icon={ 'remove' } />, value: 'none' },
 	{ label: <Dashicon icon={ 'admin-generic' } />, value: 'icon' },
@@ -265,6 +275,11 @@ export const TEXT_DECORATION = [
 export const LAYOUT_HEIGHT_SWITCHER = [
 	{ label: __( 'Fixed', 'gslider-blocks' ), value: 'fixed' },
 	{ label: __( 'Adapt', 'gslider-blocks' ), value: 'adapt' },
+];
+
+export const WIDTH_MODE = [
+	{ label: __( 'Inline', 'gslider-blocks' ), value: 'inline' },
+	{ label: __( 'Full Width', 'gslider-blocks' ), value: 'full' },
 ];
 
 export const OBJECT_FIT_OPTIONS = [
