@@ -699,12 +699,12 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          * 'wp_csp_nonce' is widely used by popular security plugins, but is NOT a standard WordPress core filter.
          *
          * CSP Level 3 Consideration:
-         * Injecting nonces onto dynamic <style> tags and enqueuing external CSS files allows sites to comply
+         * Injecting nonces onto dynamic <style> tags allows sites to comply
          * with strict 'style-src' policies without 'unsafe-inline'. However, any block using inline HTML
          * style="" attributes (such as the star rating width percentage in Testimonial blocks) still requires
          * 'style-src-attr' (e.g. 'unsafe-inline' or attribute hash) unless rewritten.
          *
-         * @since 1.2.1
+         * @since 1.2.0
          *
          * @return string The sanitized CSP nonce string, or empty string if not set.
          */
