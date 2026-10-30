@@ -32,13 +32,13 @@ export const ARROW_ICON_ALIGN = [
 ];
 
 export const ICON_TYPE = [
-	{ label: __("Icon", "gslider-blocks"), value: "icon" },
-	{ label: __("Image", "gslider-blocks"), value: "image" },
+	{ label: __( 'Icon', 'gslider-blocks' ), value: 'icon' },
+	{ label: __( 'Image', 'gslider-blocks' ), value: 'image' },
 ];
 
 export const ICON_POSITION = [
-	{ label: __("Left", "gslider-blocks"), value: "left" },
-	{ label: __("Right", "gslider-blocks"), value: "right" },
+	{ label: __( 'Left', 'gslider-blocks' ), value: 'left' },
+	{ label: __( 'Right', 'gslider-blocks' ), value: 'right' },
 ];
 
 export const ICON_ALIGN = [
@@ -278,8 +278,8 @@ export const LAYOUT_HEIGHT_SWITCHER = [
 ];
 
 export const WIDTH_MODE = [
-    { label: __("Inline", "gslider-blocks"), value: "inline" },
-    { label: __("Full Width", "gslider-blocks"), value: "full" },
+	{ label: __( 'Inline', 'gslider-blocks' ), value: 'inline' },
+	{ label: __( 'Full Width', 'gslider-blocks' ), value: 'full' },
 ];
 
 export const OBJECT_FIT_OPTIONS = [

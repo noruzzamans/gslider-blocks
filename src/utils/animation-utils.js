@@ -22,10 +22,10 @@
  * @return {'Desktop'|'Tablet'|'Mobile'}
  */
 function getCurrentBreakpoint() {
-    const width = window.innerWidth;
-    if ( width <= 767 ) return 'Mobile';
-    if ( width <= 1024 ) return 'Tablet';
-    return 'Desktop';
+	const width = window.innerWidth;
+	if ( width <= 767 ) return 'Mobile';
+	if ( width <= 1024 ) return 'Tablet';
+	return 'Desktop';
 }
 
 /**
@@ -37,19 +37,21 @@ function getCurrentBreakpoint() {
  * @return {number}
  */
 function resolveResponsive( value, fallback ) {
-    if ( value === null || value === undefined ) return fallback;
-    if ( typeof value === 'object' ) {
-        const bp = getCurrentBreakpoint();
-        // Walk up breakpoints if current is not set
-        if ( bp === 'Mobile' ) {
-            return parseFloat( value.Mobile ?? value.Tablet ?? value.Desktop ?? fallback );
-        }
-        if ( bp === 'Tablet' ) {
-            return parseFloat( value.Tablet ?? value.Desktop ?? fallback );
-        }
-        return parseFloat( value.Desktop ?? fallback );
-    }
-    return parseFloat( value ) || fallback;
+	if ( value === null || value === undefined ) return fallback;
+	if ( typeof value === 'object' ) {
+		const bp = getCurrentBreakpoint();
+		// Walk up breakpoints if current is not set
+		if ( bp === 'Mobile' ) {
+			return parseFloat(
+				value.Mobile ?? value.Tablet ?? value.Desktop ?? fallback
+			);
+		}
+		if ( bp === 'Tablet' ) {
+			return parseFloat( value.Tablet ?? value.Desktop ?? fallback );
+		}
+		return parseFloat( value.Desktop ?? fallback );
+	}
+	return parseFloat( value ) || fallback;
 }
 
 /**
@@ -64,45 +66,49 @@ function resolveResponsive( value, fallback ) {
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
 export function initEntranceAnimations( wrapper ) {
-    const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
-    if ( ! cards.length ) return;
+	const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
+	if ( ! cards.length ) return;
 
-    let settings = {};
-    try {
-        const raw = wrapper.dataset.animationSettings;
-        if ( raw ) settings = JSON.parse( raw );
-    } catch ( e ) {}
+	let settings = {};
+	try {
+		const raw = wrapper.dataset.animationSettings;
+		if ( raw ) settings = JSON.parse( raw );
+	} catch ( e ) {}
 
-    const duration = resolveResponsive( settings.duration, 600 );
-    const delay    = resolveResponsive( settings.delay, 0 );
-    const offset   = Math.min( Math.max( resolveResponsive( settings.offset, 15 ), 0 ), 50 ) / 100;
-    const easing   = settings.easing || 'ease-out';
+	const duration = resolveResponsive( settings.duration, 600 );
+	const delay = resolveResponsive( settings.delay, 0 );
+	const offset =
+		Math.min(
+			Math.max( resolveResponsive( settings.offset, 15 ), 0 ),
+			50
+		) / 100;
+	const easing = settings.easing || 'ease-out';
 
-    cards.forEach( ( card ) => {
-        // Set custom duration & easing via CSS variable
-        card.style.setProperty( '--animate-duration', duration + 'ms' );
-        card.style.animationTimingFunction = easing;
-        if ( delay > 0 ) {
-            const current = parseFloat( card.style.animationDelay ) || 0;
-            card.style.animationDelay = ( current + delay ) + 'ms';
-        }
-        // Hide until animation triggers (prevent FOUC)
-        card.style.visibility = 'hidden';
-    } );
+	cards.forEach( ( card ) => {
+		// Set custom duration & easing via CSS variable
+		card.style.setProperty( '--animate-duration', duration + 'ms' );
+		card.style.animationTimingFunction = easing;
+		if ( delay > 0 ) {
+			const current = parseFloat( card.style.animationDelay ) || 0;
+			card.style.animationDelay = current + delay + 'ms';
+		}
+		// Hide until animation triggers (prevent FOUC)
+		card.style.visibility = 'hidden';
+	} );
 
-    const observer = new IntersectionObserver(
-        ( entries ) => {
-            entries.forEach( ( entry ) => {
-                if ( entry.isIntersecting ) {
-                    entry.target.style.visibility = 'visible';
-                    observer.unobserve( entry.target ); // fire-and-forget
-                }
-            } );
-        },
-        { threshold: offset }
-    );
+	const observer = new IntersectionObserver(
+		( entries ) => {
+			entries.forEach( ( entry ) => {
+				if ( entry.isIntersecting ) {
+					entry.target.style.visibility = 'visible';
+					observer.unobserve( entry.target ); // fire-and-forget
+				}
+			} );
+		},
+		{ threshold: offset }
+	);
 
-    cards.forEach( ( card ) => observer.observe( card ) );
+	cards.forEach( ( card ) => observer.observe( card ) );
 }
 
 /**
@@ -114,23 +120,23 @@ export function initEntranceAnimations( wrapper ) {
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
 export function applyStaggerDelays( wrapper ) {
-    if ( wrapper.dataset.staggerEnabled !== '1' ) return;
+	if ( wrapper.dataset.staggerEnabled !== '1' ) return;
 
-    let rawDelay = wrapper.dataset.staggerDelay;
-    let staggerMs;
-    try {
-        const parsed = JSON.parse( rawDelay );
-        staggerMs = resolveResponsive( parsed, 100 );
-    } catch ( e ) {
-        staggerMs = parseInt( rawDelay ) || 100;
-    }
+	let rawDelay = wrapper.dataset.staggerDelay;
+	let staggerMs;
+	try {
+		const parsed = JSON.parse( rawDelay );
+		staggerMs = resolveResponsive( parsed, 100 );
+	} catch ( e ) {
+		staggerMs = parseInt( rawDelay ) || 100;
+	}
 
-    const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
+	const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
 
-    cards.forEach( ( card, index ) => {
-        const current = parseFloat( card.style.animationDelay ) || 0;
-        card.style.animationDelay = ( current + index * staggerMs ) + 'ms';
-    } );
+	cards.forEach( ( card, index ) => {
+		const current = parseFloat( card.style.animationDelay ) || 0;
+		card.style.animationDelay = current + index * staggerMs + 'ms';
+	} );
 }
 
 /**
@@ -141,60 +147,72 @@ export function applyStaggerDelays( wrapper ) {
  * @param {HTMLElement} wrapper  The block wrapper element.
  */
 export function initCardTilt( wrapper ) {
-    const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
-    if ( ! cards.length ) return;
+	const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
+	if ( ! cards.length ) return;
 
-    function getTiltSettings() {
-        let maxAngle, perspective, scale, speed;
-        try {
-            maxAngle    = resolveResponsive( JSON.parse( wrapper.dataset.tiltMax ),         12 );
-            perspective = resolveResponsive( JSON.parse( wrapper.dataset.tiltPerspective ), 800 );
-            scale       = resolveResponsive( JSON.parse( wrapper.dataset.tiltScale ),       1.02 );
-            speed       = resolveResponsive( JSON.parse( wrapper.dataset.tiltSpeed ),       400 );
-        } catch ( e ) {
-            maxAngle    = parseFloat( wrapper.dataset.tiltMax )         || 12;
-            perspective = parseFloat( wrapper.dataset.tiltPerspective ) || 800;
-            scale       = parseFloat( wrapper.dataset.tiltScale )       || 1.02;
-            speed       = parseInt(   wrapper.dataset.tiltSpeed )       || 400;
-        }
-        return { maxAngle, perspective, scale, speed };
-    }
+	function getTiltSettings() {
+		let maxAngle, perspective, scale, speed;
+		try {
+			maxAngle = resolveResponsive(
+				JSON.parse( wrapper.dataset.tiltMax ),
+				12
+			);
+			perspective = resolveResponsive(
+				JSON.parse( wrapper.dataset.tiltPerspective ),
+				800
+			);
+			scale = resolveResponsive(
+				JSON.parse( wrapper.dataset.tiltScale ),
+				1.02
+			);
+			speed = resolveResponsive(
+				JSON.parse( wrapper.dataset.tiltSpeed ),
+				400
+			);
+		} catch ( e ) {
+			maxAngle = parseFloat( wrapper.dataset.tiltMax ) || 12;
+			perspective = parseFloat( wrapper.dataset.tiltPerspective ) || 800;
+			scale = parseFloat( wrapper.dataset.tiltScale ) || 1.02;
+			speed = parseInt( wrapper.dataset.tiltSpeed ) || 400;
+		}
+		return { maxAngle, perspective, scale, speed };
+	}
 
-    cards.forEach( ( card ) => {
-        card.style.transformStyle = 'preserve-3d';
-        card.style.willChange     = 'transform';
+	cards.forEach( ( card ) => {
+		card.style.transformStyle = 'preserve-3d';
+		card.style.willChange = 'transform';
 
-        let rect = null;
+		let rect = null;
 
-        const updateRect = () => {
-            rect = card.getBoundingClientRect();
-        };
+		const updateRect = () => {
+			rect = card.getBoundingClientRect();
+		};
 
-        card.addEventListener( 'mouseenter', updateRect );
-        window.addEventListener( 'resize', updateRect );
+		card.addEventListener( 'mouseenter', updateRect );
+		window.addEventListener( 'resize', updateRect );
 
-        card.addEventListener( 'mousemove', ( e ) => {
-            const { maxAngle, perspective, scale, speed } = getTiltSettings();
-            card.style.transition = `transform ${ speed }ms ease`;
+		card.addEventListener( 'mousemove', ( e ) => {
+			const { maxAngle, perspective, scale, speed } = getTiltSettings();
+			card.style.transition = `transform ${ speed }ms ease`;
 
-            if ( ! rect ) {
-                rect = card.getBoundingClientRect();
-            }
-            const x       = e.clientX - rect.left;
-            const y       = e.clientY - rect.top;
-            const centerX = rect.width  / 2;
-            const centerY = rect.height / 2;
+			if ( ! rect ) {
+				rect = card.getBoundingClientRect();
+			}
+			const x = e.clientX - rect.left;
+			const y = e.clientY - rect.top;
+			const centerX = rect.width / 2;
+			const centerY = rect.height / 2;
 
-            const rotateX = ( ( y - centerY ) / centerY ) * -maxAngle;
-            const rotateY = ( ( x - centerX ) / centerX ) *  maxAngle;
+			const rotateX = ( ( y - centerY ) / centerY ) * -maxAngle;
+			const rotateY = ( ( x - centerX ) / centerX ) * maxAngle;
 
-            card.style.transform = `perspective(${ perspective }px) rotateX(${ rotateX }deg) rotateY(${ rotateY }deg) scale3d(${ scale },${ scale },${ scale })`;
-        } );
+			card.style.transform = `perspective(${ perspective }px) rotateX(${ rotateX }deg) rotateY(${ rotateY }deg) scale3d(${ scale },${ scale },${ scale })`;
+		} );
 
-        card.addEventListener( 'mouseleave', () => {
-            const { perspective, speed } = getTiltSettings();
-            card.style.transition = `transform ${ speed }ms ease`;
-            card.style.transform  = `perspective(${ perspective }px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
-        } );
-    } );
+		card.addEventListener( 'mouseleave', () => {
+			const { perspective, speed } = getTiltSettings();
+			card.style.transition = `transform ${ speed }ms ease`;
+			card.style.transform = `perspective(${ perspective }px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;
+		} );
+	} );
 }
