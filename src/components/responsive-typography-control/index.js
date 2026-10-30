@@ -164,7 +164,7 @@ const ResponsiveTypographyControl = ( {
 			color: '#1e1e1e',
 			transition: 'all 0.2s ease',
 			'&:hover': {
-				color: '#3858e9',
+				color: '#007cba',
 			},
 
 			svg: {
@@ -181,7 +181,7 @@ const ResponsiveTypographyControl = ( {
 			padding: 0,
 			margin: 0,
 			height: '32px',
-			lineHeight: 'normal',
+			lineHeight: 1,
 			outline: 'none',
 			boxShadow: 'none',
 			'&:focus': {
@@ -193,7 +193,7 @@ const ResponsiveTypographyControl = ( {
 		singleValue: ( base ) => ( {
 			...base,
 			color: '#1e1e1e',
-			lineHeight: 'normal',
+			lineHeight: 1,
 		} ),
 
 		menu: ( base ) => ( {
@@ -210,28 +210,21 @@ const ResponsiveTypographyControl = ( {
 			...base,
 			paddingTop: 0,
 			paddingBottom: 0,
-			maxHeight: '150px',
+			borderRadius: '4px',
+			border: 'none',
+			maxHeight: '200px',
 			overflowY: 'auto',
-			'&::-webkit-scrollbar': {
-				width: '4px',
-			},
-			'&::-webkit-scrollbar-thumb': {
-				background: '#007cba',
-				borderRadius: '4px',
-			},
-			'&::-webkit-scrollbar-track': {
-				background: '#f1f1f1',
-			},
+			scrollbarWidth: 'thin',
 		} ),
 
 		option: ( base, state ) => ( {
 			...base,
 			backgroundColor: state.isSelected
-				? '#3858e9'
+				? '#f0f0f0'
 				: state.isFocused
 				? '#f0f0f0'
 				: '#fff',
-			color: state.isFocused ? '#3858e9' : '#1e1e1e',
+			color: state.isFocused ? '#007cba' : '#1e1e1e',
 			fontSize: '12px',
 			fontWeight: 400,
 			textTransform: 'capitalize',

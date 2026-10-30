@@ -69,10 +69,6 @@ const BackgroundControl = ( {
 
 	isBackgroundImage = true,
 	isHover = true,
-
-	backgroundTypeLabel = __( 'Background Type', 'gslider-blocks' ),
-	normalClassicColorLabel = __( 'Color', 'gslider-blocks' ),
-	hoverClassicColorLabel = __( 'Background Color', 'gslider-blocks' ),
 } ) => {
 	const BACKGROUND_TYPES = [
 		{ label: __( 'Classic', 'gslider-blocks' ), value: 'classic' },
@@ -83,10 +79,10 @@ const BackgroundControl = ( {
 		<>
 			<BaseControl>
 				<BaseControl.VisualLabel>
-					{ backgroundTypeLabel }
+					{ __( 'Background Type', 'gslider-blocks' ) }
 				</BaseControl.VisualLabel>
 				<ButtonGroup
-					aria-label={ backgroundTypeLabel }
+					aria-label={ __( 'Background Type', 'gslider-blocks' ) }
 					className="gslider-setting-switcher-panel-btn"
 				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
@@ -110,7 +106,7 @@ const BackgroundControl = ( {
 			{ normalBackgroundType === 'classic' && (
 				<>
 					<ColorControl
-						label={ normalClassicColorLabel }
+						label={ __( 'Color', 'gslider-blocks' ) }
 						color={ normalClassicColor }
 						onChangeColor={ ( value ) =>
 							setNormalClassicColor( value )
@@ -195,10 +191,10 @@ const BackgroundControl = ( {
 		<>
 			<BaseControl>
 				<BaseControl.VisualLabel>
-					{ backgroundTypeLabel }
+					{ __( 'Background Type', 'gslider-blocks' ) }
 				</BaseControl.VisualLabel>
 				<ButtonGroup
-					aria-label={ backgroundTypeLabel }
+					aria-label={ __( 'Background Type', 'gslider-blocks' ) }
 					className="gslider-setting-switcher-panel-btn"
 				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
@@ -222,7 +218,7 @@ const BackgroundControl = ( {
 			{ hoverBackgroundType === 'classic' && (
 				<>
 					<ColorControl
-						label={ hoverClassicColorLabel }
+						label={ __( 'Background Color', 'gslider-blocks' ) }
 						color={ hoverClassicColor }
 						onChangeColor={ ( value ) =>
 							setHoverClassicColor( value )

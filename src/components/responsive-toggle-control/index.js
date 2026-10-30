@@ -12,28 +12,16 @@ const ResponsiveToggleControl = ( {
 	className = '',
 } ) => {
 	const handleToggleChange = ( newVal ) => {
-		let updatedValue = toggleValue ? { ...toggleValue } : {};
-
-		if ( deviceType === 'Desktop' ) {
-			updatedValue = {
-				Desktop: newVal,
-				Tablet: newVal,
-				Mobile: newVal,
-			};
-		} else if ( deviceType === 'Tablet' ) {
-			updatedValue = {
-				...updatedValue,
-				Tablet: newVal,
-				Mobile: newVal,
-			};
-		} else {
-			updatedValue = {
-				...updatedValue,
-				Mobile: newVal,
-			};
-		}
+		const updatedValue = {
+			...toggleValue,
+			[ deviceType ]: newVal,
+		};
 
 		setToggleValue( updatedValue );
+
+		setAttributes( {
+			toggleValue: updatedValue,
+		} );
 	};
 
 	return (
@@ -41,6 +29,7 @@ const ResponsiveToggleControl = ( {
 			className={ `gslider-responsive-toggle-control-wrapper ${ className }` }
 		>
 			<ToggleControl
+				// label={`${label} (${deviceType})`}
 				checked={ toggleValue?.[ deviceType ] ?? false }
 				onChange={ handleToggleChange }
 				className="gslider-responsive-toggle-control"
