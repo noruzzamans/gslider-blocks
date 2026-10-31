@@ -619,6 +619,7 @@ class DashboardTest {
 
 		$enqueued_scripts    = [];
 		$script_translations = [];
+		$GLOBALS['wp_scripts_obj'] = new WP_Scripts();
 		$current_caps['manage_options'] = true;
 		$dashboard->enqueue_dashboard_assets( 'toplevel_page_gslider-blocks' );
 
