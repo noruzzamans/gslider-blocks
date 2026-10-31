@@ -244,6 +244,13 @@ if ( ! function_exists( 'wp_enqueue_script' ) ) {
 			'ver'       => $ver,
 			'in_footer' => $in_footer,
 		];
+		// Mirror core: enqueueing a script with a source registers it first.
+		if ( '' !== $src ) {
+			$scripts = wp_scripts();
+			if ( ! isset( $scripts->registered[ $handle ] ) ) {
+				$scripts->registered[ $handle ] = new _WP_Dependency( $handle, $src, $deps, $ver, $in_footer ? [ 'in_footer' => true ] : false );
+			}
+		}
 	}
 }
 
@@ -258,14 +265,15 @@ if ( ! function_exists( 'wp_localize_script' ) ) {
 if ( ! function_exists( 'wp_set_script_translations' ) ) {
 	function wp_set_script_translations( $handle, $domain = 'default', $path = '' ) {
 		global $script_translations;
+		$scripts = wp_scripts();
+		// Mirror core: WP_Scripts::set_translations() returns false for an unregistered handle.
+		if ( ! isset( $scripts->registered[ $handle ] ) ) {
+			return false;
+		}
 		$script_translations[ $handle ] = [
 			'domain' => $domain,
 			'path'   => $path,
 		];
-		$scripts = wp_scripts();
-		if ( ! isset( $scripts->registered[ $handle ] ) ) {
-			$scripts->registered[ $handle ] = new _WP_Dependency( $handle, '' );
-		}
 		$scripts->registered[ $handle ]->textdomain = $domain;
 		return true;
 	}
