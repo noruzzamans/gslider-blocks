@@ -18,6 +18,10 @@ concurrency:
   group: wporg-deploy
   cancel-in-progress: false
 
+# Default read-only workflow token; write access is scoped only to the deploy job
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Build, Verify & Deploy Plugin
