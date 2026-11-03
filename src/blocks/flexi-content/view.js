@@ -4,6 +4,204 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	// Counter keeps gallery names unique when sliders are added later
 	let lightboxCount = 0;
 
+	// Privacy friendly players, the ID pattern blocks unsafe values in the iframe src
+	const EMBED_VIDEOS = {
+		youtube: {
+			idPattern: /^[\w-]{11}$/,
+			getSrc: ( id ) =>
+				`https://www.youtube-nocookie.com/embed/${ id }?enablejsapi=1&autoplay=1&rel=0`,
+			title: 'YouTube video player',
+			origin: 'https://www.youtube-nocookie.com',
+			pauseMessage: { event: 'command', func: 'pauseVideo', args: '' },
+		},
+		vimeo: {
+			// Unlisted videos keep their privacy hash as "id/hash"
+			idPattern: /^\d+(\/[\da-f]+)?$/,
+			getSrc: ( id ) => {
+				const [ videoId, hash ] = id.split( '/' );
+				return `https://player.vimeo.com/video/${ videoId }?${
+					hash ? `h=${ hash }&` : ''
+				}dnt=1&autoplay=1`;
+			},
+			title: 'Vimeo video player',
+			origin: 'https://player.vimeo.com',
+			pauseMessage: { method: 'pause' },
+		},
+	};
+
+	/**
+	 * Pause the embed and uploaded videos on slides that left the view, players load only after a play click.
+	 * Videos of nested sliders pause too, their slide is moving away.
+	 *
+	 * @param {Object} swiper - Swiper instance of this slider.
+	 * @return {boolean} True when a started video is still in view.
+	 */
+	const pauseEmbedVideos = ( swiper ) => {
+		const visibleCount = swiper.slidesPerViewDynamic();
+		let hasVisibleVideo = false;
+
+		swiper.slides.forEach( ( slide, index ) => {
+			// Carousel mode shows more than one slide, keep those playing
+			if (
+				index >= swiper.activeIndex &&
+				index < swiper.activeIndex + visibleCount
+			) {
+				// Uploaded videos count only while playing, their element is always there
+				if (
+					slide.querySelector( '.gslider-embed-video iframe' ) ||
+					[
+						...slide.querySelectorAll(
+							'.gslider-embed-video video'
+						),
+					].some( ( video ) => ! video.paused )
+				) {
+					hasVisibleVideo = true;
+				}
+				return;
+			}
+
+			slide
+				.querySelectorAll( '.gslider-embed-video video' )
+				.forEach( ( video ) => video.pause() );
+
+			slide
+				.querySelectorAll( '.gslider-embed-video iframe' )
+				.forEach( ( iframe ) => {
+					// Player can not get commands before load, so cancel it and show the play button again
+					if ( ! iframe.dataset.loaded ) {
+						iframe.previousElementSibling.hidden = false;
+						iframe.remove();
+						return;
+					}
+
+					const embed =
+						EMBED_VIDEOS[ iframe.parentElement.dataset.embedType ];
+					iframe.contentWindow?.postMessage(
+						JSON.stringify( embed.pauseMessage ),
+						embed.origin
+					);
+				} );
+		} );
+
+		return hasVisibleVideo;
+	};
+
+	/**
+	 * Pause the videos that left the view, then start the autoplay a play click stopped when no video is left in view.
+	 *
+	 * @param {Object} swiper - Swiper instance of this slider.
+	 */
+	const syncEmbedVideos = ( swiper ) => {
+		const hasVisibleVideo = pauseEmbedVideos( swiper );
+
+		if ( ! swiper.el.dataset.embedAutoplayStopped || hasVisibleVideo ) {
+			return;
+		}
+
+		// start() ignores pause on hover, so wait until the mouse leaves, touch has no real hover.
+		// A paused autoplay would be resumed by the Swiper resize timeout.
+		if (
+			swiper.params.autoplay.pauseOnMouseEnter &&
+			swiper.el.matches( ':hover' ) &&
+			window.matchMedia( '(hover: hover)' ).matches
+		) {
+			swiper.el.addEventListener(
+				'pointerleave',
+				() => syncEmbedVideos( swiper ),
+				{ once: true }
+			);
+			return;
+		}
+
+		delete swiper.el.dataset.embedAutoplayStopped;
+		swiper.autoplay.start();
+	};
+
+	/**
+	 * Stop autoplay of this slider and any parent slider, so none slides away from the playing video.
+	 *
+	 * @param {HTMLElement} element - Video box element inside the slide.
+	 */
+	const stopSliderAutoplay = ( element ) => {
+		for (
+			let swiperElement = element.closest( '.swiper' );
+			swiperElement;
+			swiperElement = swiperElement.parentElement.closest( '.swiper' )
+		) {
+			if ( swiperElement.swiper?.autoplay?.running ) {
+				swiperElement.swiper.autoplay.stop();
+				swiperElement.dataset.embedAutoplayStopped = 'true';
+			}
+		}
+	};
+
+	const UPLOADED_VIDEO_SELECTOR =
+		'.gslider-flexi-content-wrapper .gslider-embed-video video';
+
+	// Media events do not bubble, so listen in the capture phase
+	document.addEventListener(
+		'play',
+		( event ) => {
+			if ( event.target.matches?.( UPLOADED_VIDEO_SELECTOR ) ) {
+				stopSliderAutoplay( event.target );
+			}
+		},
+		true
+	);
+
+	// A paused video no longer needs the stopped autoplay, pause also fires before ended
+	document.addEventListener(
+		'pause',
+		( event ) => {
+			if ( ! event.target.matches?.( UPLOADED_VIDEO_SELECTOR ) ) {
+				return;
+			}
+
+			for (
+				let swiperElement = event.target.closest( '.swiper' );
+				swiperElement;
+				swiperElement = swiperElement.parentElement.closest( '.swiper' )
+			) {
+				if ( swiperElement.swiper ) {
+					syncEmbedVideos( swiperElement.swiper );
+				}
+			}
+		},
+		true
+	);
+
+	// Delegated, so it also works for sliders added later
+	document.addEventListener( 'click', ( event ) => {
+		const button = event.target.closest(
+			'.gslider-flexi-content-wrapper .gslider-embed-video-play'
+		);
+		// Swiper prevents the click that ends a drag
+		if ( ! button || event.defaultPrevented ) {
+			return;
+		}
+
+		const { embedType, embedId } = button.parentElement.dataset;
+		const embed = EMBED_VIDEOS[ embedType ];
+		if ( ! embed || ! embed.idPattern.test( embedId ) ) {
+			return;
+		}
+
+		const iframe = document.createElement( 'iframe' );
+		iframe.src = embed.getSrc( embedId );
+		iframe.title = embed.title;
+		iframe.allow =
+			'autoplay; encrypted-media; fullscreen; picture-in-picture';
+		iframe.allowFullscreen = true;
+		iframe.addEventListener( 'load', () => {
+			iframe.dataset.loaded = 'true';
+		} );
+		stopSliderAutoplay( button );
+		// Keep the button hidden, it comes back when loading is cancelled
+		button.hidden = true;
+		button.after( iframe );
+		iframe.focus();
+	} );
+
 	/**
 	 * Get the largest image source from srcset, fallback to src.
 	 * Lazy load plugins keep the real sources in data-src and data-srcset.
@@ -209,6 +407,13 @@ document.addEventListener( 'DOMContentLoaded', () => {
 							settings.navigation.prevEl = prevEl;
 						}
 					}
+
+					settings.on = {
+						...settings.on,
+						slideChange: syncEmbedVideos,
+						// A responsive change can hide a slide without a slide change
+						breakpoint: syncEmbedVideos,
+					};
 
 					// Initialize Swiper with parsed settings
 					new Swiper( swiperElement, settings );

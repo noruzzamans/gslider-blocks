@@ -280,6 +280,12 @@ export const OBJECT_FIT_OPTIONS = [
 	{ label: __( 'Scale-down', 'gslider-blocks' ), value: 'scale-down' },
 ];
 
+export const EMBED_VIDEO_TYPE = [
+	{ label: __( 'YouTube', 'gslider-blocks' ), value: 'youtube' },
+	{ label: __( 'Vimeo', 'gslider-blocks' ), value: 'vimeo' },
+	{ label: __( 'Upload', 'gslider-blocks' ), value: 'upload' },
+];
+
 export const GOOGLE_FONTS = async () => {
 	const pluginUrl = window.GSliderBlocksData?.pluginUrl || '';
 	const res = await fetch(

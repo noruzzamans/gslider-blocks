@@ -1,11 +1,37 @@
-/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps, import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import { useEffect, memo } from '@wordpress/element';
-import { PanelBody } from '@wordpress/components';
+import { PanelBody, Button } from '@wordpress/components';
+import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import InspectorControl from '@Components/inspector-controls';
 import BackgroundControl from '@Components/background-control';
+import SwitcherControl from '@Components/switcher-control';
+import InputControls from '@Components/input-control';
+import { EMBED_VIDEO_TYPE } from '@Constants';
 import { useDeviceType } from '@Utils/displayType';
 import './editor.scss';
+
+/** Only a strict ID match is stored, so the ID is safe to put in an embed URL later */
+/** The provider host must start the URL, so a provider name inside another URL does not match */
+const VIDEO_ID_PATTERNS = {
+	youtube:
+		/^(?:(?:https?:)?\/\/)?(?:[\w-]+\.)*(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})(?![\w-])/i,
+	/** A showcase, album, channel or group name is not the video ID, an unlisted video keeps its hash as id/hash */
+	vimeo: /^(?:(?:https?:)?\/\/)?(?:[\w-]+\.)*vimeo\.com\/(?:(?:showcase|album|channels|groups)\/[^/?#]+\/|(?!(?:showcase|album|channels|groups)\/|\d+\/)[^/?#]+\/)*(\d+(?:\/[\da-f]+)?)(?:[/?#]|$)/i,
+};
+
+const getVideoId = ( type, url ) => {
+	const value = ( url || '' ).trim();
+	const id = value.match( VIDEO_ID_PATTERNS[ type ] )?.[ 1 ] || '';
+	// Unlisted player links keep the hash in ?h= instead of the path
+	const hash =
+		type === 'vimeo' &&
+		! id.includes( '/' ) &&
+		value.match( /[?&]h=([\da-f]+)/i )?.[ 1 ];
+	const videoId = id && hash ? `${ id }/${ hash }` : id;
+	// Vimeo hashes are lowercase hex, the frontend only accepts that form
+	return type === 'vimeo' ? videoId.toLowerCase() : videoId;
+};
 
 const Inspector = ( { attributes, setAttributes } ) => {
 	const {
@@ -36,6 +62,14 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		sliderItemHoverBackgroundImageRepeat,
 		sliderItemHoverBackgroundImageSize,
 		/** End slider Item Background */
+
+		/** Start Embed Video */
+		embedVideoType,
+		embedVideoUrl,
+		embedVideoId,
+		embedVideoMediaId,
+		embedVideoMediaUrl,
+		/** End Embed Video */
 	} = attributes;
 
 	/** Get Current Device Type */
@@ -46,18 +80,101 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		setAttributes( { deviceType: currentDeviceType } );
 	}, [ currentDeviceType ] );
 
+	/** Keep the stored video ID in sync with the URL and provider */
+	const handleVideoUrlChange = ( value ) => {
+		setAttributes( {
+			embedVideoUrl: value,
+			embedVideoId: getVideoId( embedVideoType, value ),
+		} );
+	};
+
 	/**
 	 * Inspector General Controls
 	 */
 	const generalControls = (
 		<>
-			<PanelBody title={ __( 'General', 'gslider-blocks' ) } initialOpen>
-				<p>
-					{ __(
-						'No settings available. Move to Style Tab',
-						'gslider-blocks'
-					) }
-				</p>
+			<PanelBody title={ __( 'Video', 'gslider-blocks' ) } initialOpen>
+				<SwitcherControl
+					label={ __( 'Embed Provider', 'gslider-blocks' ) }
+					options={ EMBED_VIDEO_TYPE }
+					value={ embedVideoType }
+					onChange={ ( value ) =>
+						setAttributes( {
+							embedVideoType: value,
+							embedVideoId: getVideoId( value, embedVideoUrl ),
+						} )
+					}
+				/>
+				{ embedVideoType === 'upload' ? (
+					<MediaUploadCheck>
+						<MediaUpload
+							allowedTypes={ [ 'video' ] }
+							value={ embedVideoMediaId }
+							onSelect={ ( media ) =>
+								setAttributes( {
+									embedVideoMediaId: media.id,
+									embedVideoMediaUrl: media.url,
+								} )
+							}
+							render={ ( { open } ) => (
+								<>
+									{ embedVideoMediaUrl && (
+										<p>
+											{ embedVideoMediaUrl
+												.split( '/' )
+												.pop() }
+										</p>
+									) }
+									<Button
+										variant="secondary"
+										onClick={ open }
+									>
+										{ embedVideoMediaUrl
+											? __(
+													'Replace Video',
+													'gslider-blocks'
+											  )
+											: __(
+													'Select Video',
+													'gslider-blocks'
+											  ) }
+									</Button>
+									{ embedVideoMediaUrl && (
+										<Button
+											variant="link"
+											isDestructive
+											onClick={ () =>
+												setAttributes( {
+													embedVideoMediaId: 0,
+													embedVideoMediaUrl: '',
+												} )
+											}
+										>
+											{ __(
+												'Remove Video',
+												'gslider-blocks'
+											) }
+										</Button>
+									) }
+								</>
+							) }
+						/>
+					</MediaUploadCheck>
+				) : (
+					<InputControls
+						label={ __( 'Video URL', 'gslider-blocks' ) }
+						value={ embedVideoUrl }
+						onChangeValue={ handleVideoUrlChange }
+						helpText={
+							embedVideoUrl && ! embedVideoId
+								? __(
+										'Could not find a video ID in this URL.',
+										'gslider-blocks'
+								  )
+								: ''
+						}
+					/>
+				) }
 			</PanelBody>
 		</>
 	);
@@ -233,7 +350,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 	return (
 		<>
 			<InspectorControl
-				generalControls={ null }
+				generalControls={ generalControls }
 				styleControls={ styleControls }
 				advancedControls={ null }
 			/>
