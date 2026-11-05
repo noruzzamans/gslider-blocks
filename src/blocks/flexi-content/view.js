@@ -283,6 +283,76 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			} );
 	};
 
+	// Child combinators keep the layers of sliders nested in a slide out.
+	// Swiper still moves every marked element inside a slide, so a nested slider with parallax on also moves with the outer one.
+	const PARALLAX_LAYER_SELECTOR =
+		':scope > .swiper-wrapper > .swiper-slide > .gslider-content-wrapper';
+
+	/**
+	 * Mark the slide content layers for the Swiper Parallax module.
+	 * Skipped for reduced motion, Parallax moves nothing without marked layers.
+	 *
+	 * @param {HTMLElement} swiperElement - Swiper element of this slider.
+	 * @param {Object}      settings      - Parsed Swiper settings.
+	 */
+	const initializeParallax = ( swiperElement, settings ) => {
+		const motionQuery = window.matchMedia(
+			'(prefers-reduced-motion: reduce)'
+		);
+		if ( motionQuery.matches ) {
+			return;
+		}
+
+		const layers = [];
+		swiperElement
+			.querySelectorAll( PARALLAX_LAYER_SELECTOR )
+			.forEach( ( wrapper ) => {
+				// Wrapper and inner content move at different speeds over the slide background
+				wrapper.setAttribute( 'data-swiper-parallax', '-25%' );
+				layers.push( wrapper );
+
+				const inner = wrapper.querySelector(
+					':scope > .gslider-content-inner-wrapper'
+				);
+				if ( inner ) {
+					inner.setAttribute( 'data-swiper-parallax', '-100' );
+					layers.push( inner );
+				}
+			} );
+
+		settings.on = {
+			...settings.on,
+			breakpoint( swiper ) {
+				if ( swiper.params.parallax.enabled ) {
+					// Place the layers again for the current position, Parallax handles init itself
+					if ( swiper.initialized ) {
+						swiper.setTranslate( swiper.translate );
+					}
+					return;
+				}
+
+				// Parallax stops updating when turned off, clear the last position
+				layers.forEach( ( layer ) => {
+					layer.style.transform = '';
+					layer.style.transitionDuration = '';
+				} );
+			},
+		};
+
+		// Stop the layers when reduced motion turns on after page load.
+		// One way on purpose, parallax comes back on the next page load.
+		motionQuery.addEventListener( 'change', ( event ) => {
+			if ( ! event.matches ) {
+				return;
+			}
+			layers.forEach( ( layer ) => {
+				layer.removeAttribute( 'data-swiper-parallax' );
+				layer.style.transform = '';
+				layer.style.transitionDuration = '';
+			} );
+		} );
+	};
+
 	/**
 	 * Add a bubble that follows the mouse over the slider.
 	 * Click on the left half goes to the previous slide, right half to the next one.
@@ -509,6 +579,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						if ( prevEl ) {
 							settings.navigation.prevEl = prevEl;
 						}
+					}
+
+					if ( settings.parallax?.enabled ) {
+						initializeParallax( swiperElement, settings );
 					}
 
 					const hasMarquee = Object.values( BREAKPOINT_DEVICES ).some(

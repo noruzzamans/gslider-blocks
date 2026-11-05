@@ -186,6 +186,14 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  enableParallax: {
+    type: "object",
+    default: {
+      Desktop: false,
+      Tablet: false,
+      Mobile: false
+    }
+  },
   mousewheelControl: {
     type: "boolean",
     default: false
@@ -2204,6 +2212,7 @@ function Save({ attributes: attributes2 }) {
     direction,
     carouselEffect,
     slideEffect,
+    enableParallax,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -2290,6 +2299,12 @@ function Save({ attributes: attributes2 }) {
     Desktop: !!showPagination?.Desktop
   };
   const anyPaginationEnabled = paginationEnabled.Mobile || paginationEnabled.Tablet || paginationEnabled.Desktop;
+  const parallaxEnabled = {
+    Mobile: !!enableParallax?.Mobile,
+    Tablet: !!enableParallax?.Tablet,
+    Desktop: !!enableParallax?.Desktop
+  };
+  const anyParallaxEnabled = parallaxEnabled.Mobile || parallaxEnabled.Tablet || parallaxEnabled.Desktop;
   const showAutoplayProgress = autoplay && (enableAutoplayProgress?.Desktop || enableAutoplayProgress?.Tablet || enableAutoplayProgress?.Mobile);
   const anyTopDivider = enableTopDivider?.Desktop || enableTopDivider?.Tablet || enableTopDivider?.Mobile;
   const anyBottomDivider = enableBottomDivider?.Desktop || enableBottomDivider?.Tablet || enableBottomDivider?.Mobile;
@@ -2308,7 +2323,10 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Mobile ? marqueeSpeed?.Mobile || 5e3 : speed?.Mobile || 800,
         autoplay: getBreakpointAutoplay("Mobile"),
         navigation: { enabled: navigationEnabled.Mobile },
-        pagination: { enabled: paginationEnabled.Mobile }
+        pagination: { enabled: paginationEnabled.Mobile },
+        ...anyParallaxEnabled && {
+          parallax: { enabled: parallaxEnabled.Mobile }
+        }
       },
       768: {
         ...sliderType === "carousel" && {
@@ -2318,7 +2336,10 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Tablet ? marqueeSpeed?.Tablet || 5e3 : speed?.Tablet || 800,
         autoplay: getBreakpointAutoplay("Tablet"),
         navigation: { enabled: navigationEnabled.Tablet },
-        pagination: { enabled: paginationEnabled.Tablet }
+        pagination: { enabled: paginationEnabled.Tablet },
+        ...anyParallaxEnabled && {
+          parallax: { enabled: parallaxEnabled.Tablet }
+        }
       },
       1025: {
         ...sliderType === "carousel" && {
@@ -2328,7 +2349,10 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Desktop ? marqueeSpeed?.Desktop || 5e3 : speed?.Desktop || 800,
         autoplay: getBreakpointAutoplay("Desktop"),
         navigation: { enabled: navigationEnabled.Desktop },
-        pagination: { enabled: paginationEnabled.Desktop }
+        pagination: { enabled: paginationEnabled.Desktop },
+        ...anyParallaxEnabled && {
+          parallax: { enabled: parallaxEnabled.Desktop }
+        }
       }
     },
     ...direction === "vertical" && { direction: "vertical" },
@@ -2362,6 +2386,11 @@ function Save({ attributes: attributes2 }) {
       type: paginationType,
       dynamicBullets: paginationType === "bullets" ? dynamicBullets : false,
       clickable: true
+    },
+    // Only saved when enabled, so markup of existing blocks stays the same.
+    // On at init so Swiper tracks slide progress, breakpoints turn it off per device.
+    ...anyParallaxEnabled && {
+      parallax: { enabled: true }
     },
     // Creative effect settings if needed
     ...slideEffect === "creative" && {
