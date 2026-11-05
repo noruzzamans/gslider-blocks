@@ -7,7 +7,7 @@
   "slideField": "",
   "presets": [],
   "allowedEffects": {},
-  "totalAttributes": 23,
+  "totalAttributes": 29,
   "slideItemSchema": {
     "type": "childBlock",
     "name": "gslider-blocks/flexi-content-item",
@@ -166,6 +166,30 @@
         "Tablet": "cover",
         "Mobile": "cover"
       }
+    },
+    "backgroundVideoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundVideoId": {
+      "type": "number",
+      "default": 0
+    },
+    "backgroundVideoType": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundVideoPoster": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundVideoLoop": {
+      "type": "boolean",
+      "default": true
+    },
+    "backgroundVideoMuted": {
+      "type": "boolean",
+      "default": true
     }
   }
 }
