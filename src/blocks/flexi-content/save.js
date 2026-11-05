@@ -266,10 +266,6 @@ export default function Save( { attributes } ) {
 			clickable: true,
 		},
 
-		observer: true,
-		observeParents: true,
-		resizeObserver: true,
-
 		// Creative effect settings if needed
 		...( slideEffect === 'creative' && {
 			creativeEffect: {

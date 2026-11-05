@@ -441,14 +441,14 @@ class BlockParserTest {
 	 */
 	public function test_swiper_dynamic_observers(): void {
 		$flexi = $this->normalize( [], 'gslider-blocks/flexi-content' );
-		$this->assert_true( true === $flexi['swiperConfig']['observer'], 'flexi swiperConfig enables observer' );
-		$this->assert_true( true === $flexi['swiperConfig']['observeParents'], 'flexi swiperConfig enables observeParents' );
-		$this->assert_true( true === $flexi['swiperConfig']['resizeObserver'], 'flexi swiperConfig enables resizeObserver' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['observer'] ?? false ), 'flexi swiperConfig enables observer' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['observeParents'] ?? false ), 'flexi swiperConfig enables observeParents' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['resizeObserver'] ?? false ), 'flexi swiperConfig enables resizeObserver' );
 
 		$base = $this->normalize( [], 'gslider-blocks/base' );
-		$this->assert_true( true === $base['swiperConfig']['observer'], 'base swiperConfig enables observer' );
-		$this->assert_true( true === $base['swiperConfig']['observeParents'], 'base swiperConfig enables observeParents' );
-		$this->assert_true( true === $base['swiperConfig']['resizeObserver'], 'base swiperConfig enables resizeObserver' );
+		$this->assert_true( ! isset( $base['swiperConfig']['observer'] ), 'base swiperConfig does not include observer' );
+		$this->assert_true( ! isset( $base['swiperConfig']['observeParents'] ), 'base swiperConfig does not include observeParents' );
+		$this->assert_true( ! isset( $base['swiperConfig']['resizeObserver'] ), 'base swiperConfig does not include resizeObserver' );
 	}
 }
 

@@ -450,9 +450,6 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 					'dynamicBullets' => $dynamic_bullets,
 					'clickable'      => true,
 				],
-				'observer'       => true,
-				'observeParents' => true,
-				'resizeObserver' => true,
 			];
 
 			if ( $autoplay ) {
@@ -487,6 +484,12 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			// Vertical slides use the fixed height, autoHeight does not work with it.
 			if ( ! $is_vertical && isset( $attrs['layoutHeightSwitcher'] ) && 'adapt' === $attrs['layoutHeightSwitcher'] ) {
 				$config['autoHeight'] = true;
+			}
+
+			if ( 'gslider-blocks/flexi-content' === $block_name ) {
+				$config['observer']       = true;
+				$config['observeParents'] = true;
+				$config['resizeObserver'] = true;
 			}
 
 			return $config;
