@@ -450,6 +450,9 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 					'dynamicBullets' => $dynamic_bullets,
 					'clickable'      => true,
 				],
+				'observer'       => true,
+				'observeParents' => true,
+				'resizeObserver' => true,
 			];
 
 			if ( $autoplay ) {

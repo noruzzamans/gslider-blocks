@@ -10,6 +10,7 @@
  * 5. blockStyle CSS is strictly sanitized to prevent arbitrary code injection for REST consumers.
  * 6. Flexi Content slides keep their CSS in REST output (slides[].css and <style> in innerHtml).
  * 7. Flexi Content vertical direction reaches swiperConfig and turns off autoHeight.
+ * 8. Dynamic observers (observer, observeParents, resizeObserver) are passed in swiperConfig.
  *
  * @package GSlider\Tests\RestApi
  */
@@ -111,6 +112,7 @@ class BlockParserTest {
 		$this->test_css_sanitization();
 		$this->test_flexi_slide_css_in_rest_output();
 		$this->test_flexi_vertical_direction();
+		$this->test_swiper_dynamic_observers();
 
 		fwrite( STDOUT, "\nAll BlockParser tests passed successfully!\n" );
 	}
@@ -427,6 +429,26 @@ class BlockParserTest {
 		);
 		$this->assert_true( 'vertical' === $vertical['swiperConfig']['direction'], 'vertical flexi config sets direction' );
 		$this->assert_true( ! isset( $vertical['swiperConfig']['autoHeight'] ), 'vertical flexi config skips autoHeight' );
+	}
+
+	/**
+	 * Test 8: Swiper Dynamic Observers for Tabs and Modals.
+	 *
+	 * Verifies that observer, observeParents, and resizeObserver are enabled
+	 * in swiperConfig so sliders recalculate when unhidden in tabs/modals.
+	 *
+	 * @return void
+	 */
+	public function test_swiper_dynamic_observers(): void {
+		$flexi = $this->normalize( [], 'gslider-blocks/flexi-content' );
+		$this->assert_true( true === $flexi['swiperConfig']['observer'], 'flexi swiperConfig enables observer' );
+		$this->assert_true( true === $flexi['swiperConfig']['observeParents'], 'flexi swiperConfig enables observeParents' );
+		$this->assert_true( true === $flexi['swiperConfig']['resizeObserver'], 'flexi swiperConfig enables resizeObserver' );
+
+		$base = $this->normalize( [], 'gslider-blocks/base' );
+		$this->assert_true( true === $base['swiperConfig']['observer'], 'base swiperConfig enables observer' );
+		$this->assert_true( true === $base['swiperConfig']['observeParents'], 'base swiperConfig enables observeParents' );
+		$this->assert_true( true === $base['swiperConfig']['resizeObserver'], 'base swiperConfig enables resizeObserver' );
 	}
 }
 
