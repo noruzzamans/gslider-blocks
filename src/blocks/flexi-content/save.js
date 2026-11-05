@@ -15,6 +15,7 @@ export default function Save( { attributes } ) {
 		autoplayProgressPosition,
 		infiniteLoop,
 		allowTouchMove,
+		enableGrabCursor,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,
@@ -241,6 +242,9 @@ export default function Save( { attributes } ) {
 				  }
 				: false,
 		allowTouchMove,
+		...( enableGrabCursor && {
+			grabCursor: true,
+		} ),
 		mousewheel: mousewheelControl,
 
 		keyboard: keyboardNavigation
