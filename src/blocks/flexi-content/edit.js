@@ -38,6 +38,7 @@ export default function Edit( {
 		autoplayProgressPosition,
 		infiniteLoop,
 		allowTouchMove,
+		enableGrabCursor,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,
@@ -217,6 +218,9 @@ export default function Edit( {
 				? marqueeTransition
 				: speed?.[ deviceType ] || 800,
 			allowTouchMove,
+			...( enableGrabCursor && {
+				grabCursor: true,
+			} ),
 			mousewheel: mousewheelControl,
 			keyboard: keyboardNavigation
 				? {
@@ -456,6 +460,7 @@ export default function Edit( {
 		direction,
 		speed,
 		allowTouchMove,
+		enableGrabCursor,
 		mousewheelControl,
 		keyboardNavigation,
 		showNavigation,

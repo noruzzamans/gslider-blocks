@@ -52,6 +52,7 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			'dynamicBullets',
 			'infiniteLoop',
 			'allowTouchMove',
+			'enableGrabCursor',
 			'mousewheelControl',
 			'keyboardNavigation',
 			'pauseOnHover',
@@ -484,6 +485,10 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			// Vertical slides use the fixed height, autoHeight does not work with it.
 			if ( ! $is_vertical && isset( $attrs['layoutHeightSwitcher'] ) && 'adapt' === $attrs['layoutHeightSwitcher'] ) {
 				$config['autoHeight'] = true;
+			}
+
+			if ( ! empty( $attrs['enableGrabCursor'] ) ) {
+				$config['grabCursor'] = true;
 			}
 
 			return $config;
