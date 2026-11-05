@@ -81,6 +81,9 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		reverseDirection,
 		direction,
 		slideEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		carouselEffect,
 		mousewheelControl,
 		keyboardNavigation,
@@ -810,6 +813,13 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					onChange={ ( value ) =>
 						setAttributes( { infiniteLoop: value } )
 					}
+					{ ...( sliderType === 'slider' &&
+						slideEffect === 'cards' && {
+							help: __(
+								'In Cards effect, infinite loop smoothly rewinds when reaching the end.',
+								'gslider-blocks'
+							),
+						} ) }
 				/>
 				<ToggleControl
 					label={ __( 'Touch Swipe Control', 'gslider-blocks' ) }
@@ -1080,6 +1090,60 @@ const Inspector = ( { attributes, setAttributes } ) => {
 							setAttributes( { slideEffect: value } )
 						}
 					/>
+					{ slideEffect === 'cards' && (
+						<>
+							<ResponsiveRangeControl
+								min={ 0 }
+								max={ 15 }
+								label={ __(
+									'Per Slide Rotate (deg)',
+									'gslider-blocks'
+								) }
+								rangeValue={ cardsPerSlideRotate }
+								onChangeValue={ ( value ) =>
+									setAttributes( {
+										cardsPerSlideRotate: value,
+									} )
+								}
+								deviceType={ deviceType }
+								step={ 1 }
+								resetFallbackValue={ '2' }
+								isRangeUnit={ false }
+							/>
+							<ResponsiveRangeControl
+								min={ 2 }
+								max={ 30 }
+								label={ __(
+									'Per Slide Offset (%)',
+									'gslider-blocks'
+								) }
+								rangeValue={ cardsPerSlideOffset }
+								onChangeValue={ ( value ) =>
+									setAttributes( {
+										cardsPerSlideOffset: value,
+									} )
+								}
+								deviceType={ deviceType }
+								step={ 1 }
+								resetFallbackValue={ '8' }
+								isRangeUnit={ false }
+							/>
+							<ResponsiveToggleControl
+								label={ __(
+									'Slide Shadows',
+									'gslider-blocks'
+								) }
+								toggleValue={ cardsSlideShadows }
+								setToggleValue={ ( value ) =>
+									setAttributes( {
+										cardsSlideShadows: value,
+									} )
+								}
+								deviceType={ deviceType }
+								setAttributes={ setAttributes }
+							/>
+						</>
+					) }
 				</PanelBody>
 			) }
 

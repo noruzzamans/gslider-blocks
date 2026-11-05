@@ -182,6 +182,30 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  cardsPerSlideRotate: {
+    type: "object",
+    default: {
+      Desktop: 2,
+      Tablet: 2,
+      Mobile: 2
+    }
+  },
+  cardsPerSlideOffset: {
+    type: "object",
+    default: {
+      Desktop: 8,
+      Tablet: 8,
+      Mobile: 8
+    }
+  },
+  cardsSlideShadows: {
+    type: "object",
+    default: {
+      Desktop: true,
+      Tablet: true,
+      Mobile: true
+    }
+  },
   carouselEffect: {
     type: "string",
     default: "slide"
@@ -2204,6 +2228,9 @@ function Save({ attributes: attributes2 }) {
     direction,
     carouselEffect,
     slideEffect,
+    cardsPerSlideRotate,
+    cardsPerSlideOffset,
+    cardsSlideShadows,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -2295,6 +2322,17 @@ function Save({ attributes: attributes2 }) {
   const anyBottomDivider = enableBottomDivider?.Desktop || enableBottomDivider?.Tablet || enableBottomDivider?.Mobile;
   const lightboxDevices = ["Desktop", "Tablet", "Mobile"].filter((device) => enableSlideLightbox?.[device] === true).join(" ");
   const cursorFollowerDevices = ["Desktop", "Tablet", "Mobile"].filter((device) => enableCursorFollower?.[device] === true).join(" ");
+  const hasCardsEffect = sliderType === "slider" && slideEffect === "cards";
+  const anyCardsShadow = ["Desktop", "Tablet", "Mobile"].some(
+    (device) => cardsSlideShadows?.[device] !== false
+  );
+  const getCardsEffect = (device) => hasCardsEffect && {
+    cardsEffect: {
+      perSlideRotate: Number(cardsPerSlideRotate?.[device] ?? 2),
+      perSlideOffset: Number(cardsPerSlideOffset?.[device] ?? 8),
+      slideShadows: anyCardsShadow
+    }
+  };
   const swiperSettings = JSON.stringify({
     // Marquee needs the slide effect, other effects can not move in a line
     effect: anyMarqueeEnabled ? "slide" : sliderEffect,
@@ -2308,7 +2346,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Mobile ? marqueeSpeed?.Mobile || 5e3 : speed?.Mobile || 800,
         autoplay: getBreakpointAutoplay("Mobile"),
         navigation: { enabled: navigationEnabled.Mobile },
-        pagination: { enabled: paginationEnabled.Mobile }
+        pagination: { enabled: paginationEnabled.Mobile },
+        ...getCardsEffect("Mobile")
       },
       768: {
         ...sliderType === "carousel" && {
@@ -2318,7 +2357,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Tablet ? marqueeSpeed?.Tablet || 5e3 : speed?.Tablet || 800,
         autoplay: getBreakpointAutoplay("Tablet"),
         navigation: { enabled: navigationEnabled.Tablet },
-        pagination: { enabled: paginationEnabled.Tablet }
+        pagination: { enabled: paginationEnabled.Tablet },
+        ...getCardsEffect("Tablet")
       },
       1025: {
         ...sliderType === "carousel" && {
@@ -2328,7 +2368,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Desktop ? marqueeSpeed?.Desktop || 5e3 : speed?.Desktop || 800,
         autoplay: getBreakpointAutoplay("Desktop"),
         navigation: { enabled: navigationEnabled.Desktop },
-        pagination: { enabled: paginationEnabled.Desktop }
+        pagination: { enabled: paginationEnabled.Desktop },
+        ...getCardsEffect("Desktop")
       }
     },
     ...direction === "vertical" && { direction: "vertical" },
@@ -2337,7 +2378,8 @@ function Save({ attributes: attributes2 }) {
       autoHeight: true
     },
     // Common settings
-    loop: anyMarqueeEnabled || infiniteLoop,
+    loop: hasCardsEffect ? false : anyMarqueeEnabled || infiniteLoop,
+    ...hasCardsEffect && { rewind: infiniteLoop },
     autoplay: autoplay || anyMarqueeEnabled ? {
       pauseOnMouseEnter: anyMarqueeEnabled ? false : pauseOnHover,
       disableOnInteraction: false,
@@ -2712,6 +2754,7 @@ var getAutoplayProgressCss = (blockId, enabled, color, height) => {
 var generateFlexiContentStyle = (attributes2) => {
   const {
     blockId,
+    cardsSlideShadows,
     deviceType,
     blockStyle,
     sliderType,
@@ -3171,6 +3214,7 @@ var generateFlexiContentStyle = (attributes2) => {
   const globalMobileBackgroundHoverStyles = globalBackgroundStyleObjectToString(
     getGlobalBackgroundHoverStyles("Mobile")
   );
+  const getCardsShadowCss = (device) => sliderType === "slider" && slideEffect === "cards" ? `.${blockId} > .swiper > .swiper-wrapper > .swiper-slide > .swiper-slide-shadow-cards { display: ${cardsSlideShadows?.[device] === false ? "none" : "block"}; }` : "";
   const flexiContentCSS = `
         .${blockId}.gslider-flexi-content-wrapper {
             ${globalDesktopBackgroundNormalStyles}
@@ -3453,6 +3497,7 @@ var generateFlexiContentStyle = (attributes2) => {
         ` : ""}
 
 
+        ${getCardsShadowCss("Desktop")}
         ${hasCursorFollower ? `.${blockId}.gslider-flexi-content-wrapper > .swiper > .gslider-cursor-follower {
             ${cursorFollowerBg ? `background: ${cursorFollowerBg};` : ""}
             ${cursorFollowerColor ? `color: ${cursorFollowerColor};` : ""}
@@ -3663,6 +3708,7 @@ var generateFlexiContentStyle = (attributes2) => {
     )
   )}
             ` : ""}
+            ${getCardsShadowCss("Tablet")}
             ${getShapeDividerCss(blockId, "top", topDivider, "Tablet")}
             ${getShapeDividerCss(
     blockId,
@@ -3865,6 +3911,7 @@ var generateFlexiContentStyle = (attributes2) => {
     )
   )}
             ` : ""}
+            ${getCardsShadowCss("Mobile")}
             ${getShapeDividerCss(blockId, "top", topDivider, "Mobile")}
             ${getShapeDividerCss(
     blockId,

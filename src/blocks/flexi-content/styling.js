@@ -185,6 +185,7 @@ const getAutoplayProgressCss = ( blockId, enabled, color, height ) => {
 const generateFlexiContentStyle = ( attributes ) => {
 	const {
 		blockId,
+		cardsSlideShadows,
 		deviceType,
 		blockStyle,
 		sliderType,
@@ -732,6 +733,14 @@ const generateFlexiContentStyle = ( attributes ) => {
 		);
 
 	/** Start All Block Style */
+	// Swiper keeps card shadows once created, so hide them per device with CSS
+	const getCardsShadowCss = ( device ) =>
+		sliderType === 'slider' && slideEffect === 'cards'
+			? `.${ blockId } > .swiper > .swiper-wrapper > .swiper-slide > .swiper-slide-shadow-cards { display: ${
+					cardsSlideShadows?.[ device ] === false ? 'none' : 'block'
+			  }; }`
+			: '';
+
 	const flexiContentCSS = `
         .${ blockId }.gslider-flexi-content-wrapper {
             ${ globalDesktopBackgroundNormalStyles }
@@ -1429,6 +1438,7 @@ const generateFlexiContentStyle = ( attributes ) => {
 		}
 
 
+        ${ getCardsShadowCss( 'Desktop' ) }
         ${
 			hasCursorFollower
 				? `.${ blockId }.gslider-flexi-content-wrapper > .swiper > .gslider-cursor-follower {
@@ -1929,6 +1939,7 @@ const generateFlexiContentStyle = ( attributes ) => {
             `
 					: ''
 			}
+            ${ getCardsShadowCss( 'Tablet' ) }
             ${ getShapeDividerCss( blockId, 'top', topDivider, 'Tablet' ) }
             ${ getShapeDividerCss(
 				blockId,
@@ -2408,6 +2419,7 @@ const generateFlexiContentStyle = ( attributes ) => {
             `
 					: ''
 			}
+            ${ getCardsShadowCss( 'Mobile' ) }
             ${ getShapeDividerCss( blockId, 'top', topDivider, 'Mobile' ) }
             ${ getShapeDividerCss(
 				blockId,

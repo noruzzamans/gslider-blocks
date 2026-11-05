@@ -79,6 +79,14 @@
 		backface-visibility: visible !important;
 	}
 
+	// 3D slide effects (Cards, Creative) animate transform on each slide element.
+	// Keep transform and opacity in transition-property so item styles
+	// do not strip them.
+	> .swiper.swiper-cards > .swiper-wrapper > .swiper-slide,
+	> .swiper.swiper-creative > .swiper-wrapper > .swiper-slide {
+		transition-property: transform, opacity !important;
+	}
+
 	> .swiper > .gslider-cursor-follower {
 		position: absolute;
 		top: 0;

@@ -44,6 +44,9 @@ export default function Edit( {
 		direction,
 		carouselEffect,
 		slideEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -164,8 +167,17 @@ export default function Edit( {
 			paginationOutsideRef.current.innerHTML = '';
 		}
 
+		// Swiper keeps effect shadows after destroy, so clear them before switching effects
+		swiperContainerRef.current
+			.querySelectorAll(
+				':scope > .swiper-wrapper > .swiper-slide .swiper-slide-shadow'
+			)
+			.forEach( ( shadow ) => shadow.remove() );
+
 		const sliderEffect =
 			sliderType === 'carousel' ? carouselEffect : slideEffect;
+		const isCardsEffect =
+			sliderType === 'slider' && slideEffect === 'cards';
 
 		// Same as the frontend, the marquee does not move for users who ask for less motion
 		const reduceMotion =
@@ -203,7 +215,8 @@ export default function Edit( {
 				direction !== 'vertical' && {
 					autoHeight: true,
 				} ),
-			loop: anyMarqueeEnabled || infiniteLoop,
+			loop: isCardsEffect ? false : anyMarqueeEnabled || infiniteLoop,
+			...( isCardsEffect && { rewind: infiniteLoop } ),
 			autoplay: autoplay
 				? {
 						delay: autoplayDelay?.[ deviceType ] || 1000,
@@ -259,6 +272,18 @@ export default function Edit( {
 					},
 				},
 			} ),
+			...( sliderType === 'slider' &&
+				slideEffect === 'cards' && {
+					cardsEffect: {
+						perSlideRotate: Number(
+							cardsPerSlideRotate?.[ deviceType ] ?? 2
+						),
+						perSlideOffset: Number(
+							cardsPerSlideOffset?.[ deviceType ] ?? 8
+						),
+						slideShadows: cardsSlideShadows?.[ deviceType ] ?? true,
+					},
+				} ),
 		};
 
 		if ( marqueeEnabled ) {
@@ -447,6 +472,9 @@ export default function Edit( {
 		sliderType,
 		carouselEffect,
 		slideEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		carouselPerColumn,
 		carouselPerColumnGap,
 		infiniteLoop,
