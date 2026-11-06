@@ -235,6 +235,41 @@ export default function SortableItem( {
 										}
 										isImageSize={ false }
 									/>
+									<ImageControl
+										label={ __(
+											'Company Logo',
+											'gslider-blocks'
+										) }
+										imageUrl={ item.companyLogo?.url }
+										setImageUrl={ ( value ) =>
+											handleChangeItem(
+												item.id,
+												'companyLogo',
+												{ url: value }
+											)
+										}
+										imageAlt={ item.companyLogo?.alt }
+										setImageAlt={ ( value ) =>
+											handleChangeItem(
+												item.id,
+												'companyLogo',
+												{ alt: value }
+											)
+										}
+										imageID={ item.companyLogo?.id }
+										setImageID={ ( value ) =>
+											handleChangeItem(
+												item.id,
+												'companyLogo',
+												{ id: value }
+											)
+										}
+										isImageSize={ false }
+										helpText={ __(
+											'Set the logo alt text (company name) in the Media Library so screen readers can announce it.',
+											'gslider-blocks'
+										) }
+									/>
 
 									<SwitcherControl
 										label={ __(
