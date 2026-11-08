@@ -843,8 +843,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					setAttributes={ ( val ) => {
 						if ( val && val.toggleValue ) {
 							setAttributes( {
-								enableGrabCursor:
-									val.toggleValue[ deviceType ],
+								enableGrabCursor: val.toggleValue[ deviceType ],
 							} );
 						} else {
 							setAttributes( val );

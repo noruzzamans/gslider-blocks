@@ -162,6 +162,10 @@ var attributes = {
     type: "boolean",
     default: true
   },
+  enableGrabCursor: {
+    type: "boolean",
+    default: false
+  },
   allowTouchMove: {
     type: "boolean",
     default: true
@@ -2198,6 +2202,7 @@ function Save({ attributes: attributes2 }) {
     autoplayProgressPosition,
     infiniteLoop,
     allowTouchMove,
+    enableGrabCursor,
     pauseOnHover,
     stopOnLastSlide,
     reverseDirection,
@@ -2345,6 +2350,9 @@ function Save({ attributes: attributes2 }) {
       reverseDirection
     } : false,
     allowTouchMove,
+    ...enableGrabCursor && {
+      grabCursor: true
+    },
     mousewheel: mousewheelControl,
     keyboard: keyboardNavigation ? {
       enabled: true,
