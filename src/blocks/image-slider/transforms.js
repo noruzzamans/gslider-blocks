@@ -28,6 +28,22 @@ const isConvertibleImage = ( block ) =>
 	block?.name === 'core/image' && !! block?.attributes?.url;
 
 /**
+ * Check whether an inner `core/image` block uses WordPress Block Bindings.
+ *
+ * @param {Object} block Inner block inside `core/gallery`.
+ * @return {boolean} True when any image attribute is dynamically bound.
+ */
+const hasImageBindings = ( block ) => {
+	const bindings = block?.attributes?.metadata?.bindings;
+	return (
+		block?.name === 'core/image' &&
+		!! bindings &&
+		typeof bindings === 'object' &&
+		Object.keys( bindings ).length > 0
+	);
+};
+
+/**
  * Transform that converts a native core/gallery block into an Image Slider block.
  * Each gallery image becomes one slide entry.
  *
@@ -109,9 +125,10 @@ const transforms = {
 		{
 			type: 'block',
 			blocks: [ 'core/gallery' ],
-			// Dynamic galleries, empty galleries, or galleries without populated images have nothing to convert.
+			// Dynamic galleries, bound images, empty galleries, or galleries without populated images cannot be converted without losing data.
 			isMatch: ( { dynamicContent }, block ) =>
 				! dynamicContent &&
+				! block?.innerBlocks?.some( hasImageBindings ) &&
 				block?.innerBlocks?.some( isConvertibleImage ),
 			transform: toImageSlider,
 		},
