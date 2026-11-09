@@ -2,18 +2,20 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import { useSelect } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
 
+let mountSequence = 0;
+const clientMountOrder = new Map();
+
 /**
  * Resolve the nearest `core/block` synced pattern ancestor for a block client ID.
  *
  * @param {Object} editorSelectors Selectors from `core/block-editor`.
  * @param {string} targetClientId  Block client ID to inspect.
- * @return {Object|null} Synced pattern wrapper client ID and `ref`, or null.
+ * @return {Object|null} Synced pattern wrapper client ID, or null.
  */
 const getNearestSyncedPattern = ( editorSelectors, targetClientId ) => {
 	if (
 		typeof editorSelectors?.getBlockParents !== 'function' ||
-		typeof editorSelectors?.getBlockName !== 'function' ||
-		typeof editorSelectors?.getBlockAttributes !== 'function'
+		typeof editorSelectors?.getBlockName !== 'function'
 	) {
 		return null;
 	}
@@ -24,7 +26,6 @@ const getNearestSyncedPattern = ( editorSelectors, targetClientId ) => {
 		if ( editorSelectors.getBlockName( parentId ) === 'core/block' ) {
 			return {
 				clientId: parentId,
-				ref: editorSelectors.getBlockAttributes( parentId )?.ref,
 			};
 		}
 	}
@@ -35,17 +36,19 @@ const getNearestSyncedPattern = ( editorSelectors, targetClientId ) => {
 /**
  * Determine whether another active block owns `blockId` so this block must regenerate it.
  *
- * @param {Object} editorSelectors Selectors from `core/block-editor`.
- * @param {string} clientId        Current block's runtime client ID.
- * @param {string} blockId         Current persisted `blockId` attribute.
- * @param {string} blockPrefix     Prefix used for generated IDs (e.g. 'gslider').
+ * @param {Object}   editorSelectors Selectors from `core/block-editor`.
+ * @param {string}   clientId        Current block's runtime client ID.
+ * @param {string}   blockId         Current persisted `blockId` attribute.
+ * @param {string}   blockPrefix     Prefix used for generated IDs (e.g. 'gslider').
+ * @param {Function} [getMountOrder] Optional lookup returning numeric mount sequence for a client ID.
  * @return {boolean} True when `blockId` collides with another block and belongs elsewhere.
  */
 export const hasCollidingBlockId = (
 	editorSelectors,
 	clientId,
 	blockId,
-	blockPrefix
+	blockPrefix,
+	getMountOrder
 ) => {
 	if ( ! blockId || ! clientId || typeof clientId !== 'string' ) {
 		return false;
@@ -70,23 +73,22 @@ export const hasCollidingBlockId = (
 			return false;
 		}
 
-		if ( id === clientId || ! ownSyncedPattern ) {
-			return true;
+		// A block inside a Synced Pattern (core/block) only treats duplicates within
+		// the exact same wrapper as collisions so shared wp_block entities are never dirtied.
+		if ( ownSyncedPattern ) {
+			if ( id === clientId ) {
+				return true;
+			}
+			const candidateSyncedPattern = getNearestSyncedPattern(
+				editorSelectors,
+				id
+			);
+			return (
+				candidateSyncedPattern?.clientId === ownSyncedPattern.clientId
+			);
 		}
 
-		const candidateSyncedPattern = getNearestSyncedPattern(
-			editorSelectors,
-			id
-		);
-
-		// Two instances of the same synced pattern (core/block) share one underlying entity;
-		// ignoring sibling renders with the same `ref` prevents infinite ID ping-pong.
-		return ! (
-			candidateSyncedPattern &&
-			candidateSyncedPattern.clientId !== ownSyncedPattern.clientId &&
-			candidateSyncedPattern.ref !== undefined &&
-			candidateSyncedPattern.ref === ownSyncedPattern.ref
-		);
+		return true;
 	} );
 
 	if (
@@ -96,11 +98,36 @@ export const hasCollidingBlockId = (
 		return false;
 	}
 
-	// Keep the existing ID on the block whose clientId created it, or the first block in document order.
+	// Never reassign an ID from a Synced Pattern entity to a standalone block; the standalone copy regenerates.
+	if ( ! ownSyncedPattern ) {
+		const syncedOwnerId = matchingClientIds.find(
+			( id ) => getNearestSyncedPattern( editorSelectors, id ) !== null
+		);
+		if ( syncedOwnerId ) {
+			return syncedOwnerId !== clientId;
+		}
+	}
+
+	// Prefer the block whose clientId created the ID, then blocks mounted earlier (before paste), then document order.
 	const expectedForId = ( id ) => `${ blockPrefix }-${ id.slice( 0, 8 ) }`;
-	const ownerClientId =
-		matchingClientIds.find( ( id ) => blockId === expectedForId( id ) ) ||
-		matchingClientIds[ 0 ];
+	let ownerClientId = matchingClientIds.find(
+		( id ) => blockId === expectedForId( id )
+	);
+
+	if ( ! ownerClientId && typeof getMountOrder === 'function' ) {
+		let earliestOrder = Number.POSITIVE_INFINITY;
+		for ( const id of matchingClientIds ) {
+			const order = getMountOrder( id );
+			if ( typeof order === 'number' && order < earliestOrder ) {
+				earliestOrder = order;
+				ownerClientId = id;
+			}
+		}
+	}
+
+	if ( ! ownerClientId ) {
+		ownerClientId = matchingClientIds[ 0 ];
+	}
 
 	return ownerClientId !== clientId;
 };
@@ -134,13 +161,27 @@ const useBlockIdGenerator = ( {
 	// Track previous attributes to detect style changes
 	const prevAttributesRef = useRef( attributes );
 
+	// Record mount sequence so a copy pasted before an existing block is still recognized as newer
+	useEffect( () => {
+		if ( ! clientId || typeof clientId !== 'string' ) {
+			return undefined;
+		}
+		if ( ! clientMountOrder.has( clientId ) ) {
+			clientMountOrder.set( clientId, ++mountSequence );
+		}
+		return () => {
+			clientMountOrder.delete( clientId );
+		};
+	}, [ clientId ] );
+
 	const hasDuplicateBlockId = useSelect(
 		( select ) =>
 			hasCollidingBlockId(
 				select( blockEditorStore ),
 				clientId,
 				blockId,
-				blockPrefix
+				blockPrefix,
+				( id ) => clientMountOrder.get( id )
 			),
 		[ blockId, blockPrefix, clientId ]
 	);
