@@ -3,7 +3,7 @@ Contributors: noruzzaman
 Tags: slider, carousel, logo carousel, slideshow, gutenberg
 Requires at least: 6.3
 Tested up to: 7.1
-Stable tag: 1.2.0
+Stable tag: 1.2.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,11 +31,16 @@ Create stunning hero sliders with predefined content elements. Perfect for homep
 Build completely custom slides using any Gutenberg blocks. Ultimate flexibility for creative slider designs.
 
 * Use ANY WordPress blocks inside slides (images, text, buttons, galleries, etc.)
-* Full creative control with InnerBlocks support
+* Full creative control with InnerBlocks support and quick slide add/duplicate toolbar controls
 * Slide effects: Slide, Fade, Coverflow, Flip, and Creative in slider mode; Slide and Coverflow in carousel mode
-* Responsive height options (Fixed, Auto, Minimum height)
-* Loop, autoplay, and touch/swipe support
-* Keyboard and mousewheel navigation
+* Horizontal and Vertical slider directions with responsive height options (Fixed, Auto, Minimum height)
+* Continuous Marquee mode with per-device toggle, configurable scroll speed, and pause-on-hover behavior
+* Autoplay progress countdown bar with per-device visibility, top/bottom placement, height, and color controls
+* Top and bottom SVG shape dividers with 10 presets, color, height units, opacity, flip, and invert options
+* Interactive cursor follower navigation supporting icon, image, static text, and directional label modes
+* Optional per-device image lightbox (fsLightbox) for Image and Gallery blocks inside slides
+* Native Gutenberg block transforms from Core Cover, Group, and Gallery blocks directly into slides
+* Loop, autoplay, grab cursor, touch/swipe, keyboard, and mousewheel navigation
 
 **3. Logo Carousel Block**
 Display client logos, partner brands, or sponsor images in a beautiful, animated carousel.
@@ -43,6 +48,7 @@ Display client logos, partner brands, or sponsor images in a beautiful, animated
 * Easy logo management with drag & drop reordering
 * Hover effects: Grayscale-to-color, opacity, scale, and lift animations
 * Clickable logos with custom URLs and link settings
+* Block Transforms: Convert Core Gallery blocks directly into a Logo Carousel while preserving links, alt text, and captions
 * Tooltips and captions with full styling options
 * Responsive slides per view configuration
 * Lazy loading for optimized performance
@@ -50,9 +56,10 @@ Display client logos, partner brands, or sponsor images in a beautiful, animated
 **4. Image Slider Block**
 A versatile carousel for displaying images, brand assets, or partner logos with advanced interactive features.
 
-* Lightbox Support: View images in a stunning full-screen overlay
+* Lightbox Support: Responsive per-device toggle (Desktop, Tablet, Mobile) to view images in a full-screen overlay or open custom links when disabled
 * Custom Tooltips: Add descriptive hover text with complete styling control (typography, colors, position)
 * Clickable Images: Link each image to custom internal or external URLs
+* Block Transforms: Convert Core Gallery blocks directly into an Image Slider while keeping alt text, captions, and links
 * Caption Support: Display and style image captions for better context
 * Responsive Design: Fully customizable columns and spacing for Desktop, Tablet, and Mobile
 * Transitions: Slide and Coverflow effects powered by Swiper.js
@@ -73,7 +80,8 @@ Showcase customer testimonials, reviews, and feedback in a beautiful, interactiv
 
 * **Multiple Transition Effects:** Slide, Fade, Coverflow, Flip, and Creative (Base Slider, Flexi Content, and Testimonial in slider mode); Slide and Coverflow in carousel mode and for Image Slider and Logo Carousel
 * **Fully Responsive:** Separate settings for Desktop, Tablet, and Mobile
-* **Navigation Controls:** Customizable arrows (icons or images) and pagination (bullets, fraction, progressbar)
+* **Navigation Controls:** Customizable arrows (icons or images), pagination (bullets, fraction, progressbar), autoplay progress bar, and interactive cursor follower navigation
+* **Advanced Layouts & Transforms:** Continuous marquee ticker mode, vertical direction, SVG shape dividers, and one-click Core Gallery, Cover, and Group block transforms
 * **Performance Optimized:** Built with Swiper.js for smooth, hardware-accelerated animations
 * **Accessibility Ready:** Keyboard navigation, ARIA labels, and touch support
 * **Custom Styling:** Full control over colors, typography, spacing, borders, and shadows
@@ -133,8 +141,19 @@ To build and compile the production assets from source:
 GSlider Blocks is 100% open-source software! We warmly welcome community contributions, bug reports, and feedback:
 
 * GitHub Repository: https://github.com/noruzzamans/gslider-blocks
+* Contribution Guide: https://github.com/noruzzamans/gslider-blocks/blob/main/CONTRIBUTING.md
 * Browse Good First Issues: https://github.com/noruzzamans/gslider-blocks/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 * Interactive Component Storybook: https://noruzzamans.github.io/gslider-blocks/
+
+== AI Assistant & Developer Tooling ==
+
+GSlider Blocks provides an official, zero-cloud-cost Model Context Protocol (MCP) server for modern AI coding assistants (Claude Desktop, Cursor IDE, Antigravity, VS Code / Cline).
+
+Developers and designers can inspect block schemas, generate validated slider markup, and load starter design templates locally:
+
+* Official NPM Package: https://www.npmjs.com/package/@gslider/mcp-server
+* Instant NPX Runner: `npx -y @gslider/mcp-server`
+* MCP Developer Documentation: https://github.com/noruzzamans/gslider-blocks/tree/main/packages/mcp-server
 
 == Third-Party Libraries ==
 
@@ -175,6 +194,43 @@ This plugin may connect to or load resources from external third-party services 
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.2 – November 9, 2026 =
+* Flexi Content: Added continuous smooth marquee ticker mode with per-device toggle, configurable scroll speed, pause-on-hover behavior, and reduced-motion support.
+* Flexi Content: Added vertical slider direction with dedicated fixed height controls, top/bottom arrow alignment, and Y-axis creative transitions.
+* Flexi Content: Added customizable autoplay progress countdown line indicator with per-device visibility, top/bottom positioning, height, and color controls.
+* Flexi Content: Added interactive cursor follower navigation with icon, image, static text, and directional label modes plus full styling controls on the frontend.
+* Flexi Content: Added top and bottom SVG shape dividers with 10 presets and per-device visibility, height units, color, opacity, flip, and invert controls.
+* Flexi Content: Added optional per-device image lightbox (fsLightbox) for Image and Gallery blocks inside slides while preserving custom page links.
+* Flexi Content: Added desktop grab cursor toggle for drag navigation and toolbar controls to add or duplicate slides directly in the editor.
+* Block Transforms: Added native Gutenberg transforms from Core Gallery to Image Slider, Logo Carousel, and Flexi Content (excluding dynamic/bound galleries), plus Cover and Group multi-block transforms to Flexi Content.
+* Image Slider: Upgraded Lightbox control to a responsive per-device toggle (Desktop, Tablet, Mobile) and supported opening custom image links safely when lightbox is disabled.
+* Image Slider: Fixed normal and hover image wrapper background color output on the frontend.
+* Security: Enforced strict wrapper-scoped CSS selector validation in StyleGenerator so arbitrary or unscoped selectors cannot bypass block containment.
+* Style Engine: Emitted @media rules after Desktop CSS so Tablet and Mobile styles override Desktop properly, and honored Tablet/Mobile border-radius across all blocks.
+* Style Engine: Fixed invalid unlinked responsive spacing CSS declarations across viewports.
+* Block Fixes: Applied Global ID and Global Class cleanly once on outer slider wrappers, regenerated colliding blockId values immediately upon block or slide duplication, and guarded empty blockId pagination selectors.
+* Swiper & Patterns: Enabled Swiper dynamic observers for Flexi Content sliders inside tabs and modals, scoped Swiper CSS overrides per slider, and regenerated all bundled block patterns to match current markup.
+* Accessibility & i18n: Restored keyboard focus outlines in slider stylesheets per WCAG 2.4.7 and wrapped Gutenberg editor aria-label strings with i18n translations across all blocks.
+* Admin Dashboard: Made dashboard React views translatable with WP-CLI makepot support, achieved WCAG AA contrast compliance, fixed ARIA/keyboard/toast live-region accessibility, enabled retry handling, and added dynamic module counts.
+* Maintenance & QA: Expanded PSR-4 unit tests (SupportSVG, FontLoader), hardened WPCS test escaping and sanitization, cleaned up JSDoc tags and nested ternaries, and added the root GPLv2 LICENSE file.
+* Props: Heartfelt thanks to all community contributors who helped shape this release: @faisalahammad, @harryhawwy69, @Ptraaah, @Ankitavasudev, @barkya28, @pralav-25, @riteshyadav33302111-cell.
+
+= 1.2.1 – November 1, 2026 =
+* Performance: Optimized Largest Contentful Paint (LCP) with high-priority slide image preloading and deferred non-critical script execution.
+* Performance: Accelerated slider transitions with GPU-enforced CSS hardware acceleration and pre-initialized slide flex rows to eliminate Cumulative Layout Shift (CLS).
+* Security: Implemented strict Content Security Policy (CSP) nonce filters for inline styles and scripts, hardening compliance with enterprise security headers.
+* Accessibility: Restored visible keyboard focus rings on navigation arrows per WCAG 2.4.7 guidelines.
+* Accessibility: Added support for prefers-reduced-motion media queries and enabled keyboard focus tooltips on :focus-within.
+* Accessibility: Enhanced screen reader ARIA labels across pagination containers and sortable slider controls.
+* Swiper Engine: Fixed active slide desynchronization in infinite loop mode by switching from activeIndex to realIndex for duplicate slides.
+* Block Fixes: Corrected rating star gap units and desktop fallback handling in Testimonial Slider.
+* Block Fixes: Resolved tablet background hover styling in Logo Carousel and localized button placeholders in Base Slider.
+* Block Fixes: Restored core Additional CSS classes (customClassName) support on frontend wrapper in Image Slider and all blocks.
+* Admin & Architecture: Cleaned up obsolete dashboard endpoints and hardened REST API routing.
+* MCP AI Ecosystem: Officially published @gslider/mcp-server on NPM with zero-install npx support, model context protocol tools, and GitHub Actions trusted publishing.
+* Maintenance: Cleaned up unused imports, dead variables, and refined code documentation across block components.
+* Props: Heartfelt thanks to all community contributors and WordPress.org forum reporters who helped shape this release: @huzaifaalmesbah, @hmbashar, @Nethsara14, @Pushkar-Shahi, @rejaulalomkhan, @Zhiyilang, @blank-0007, @p00jitha, @Aaqibhafeezkhan, @Sinkleberg, @dbdefault, @ect2000, @irfat-ifti, @madhavidayma21, @mahender9390, @tu-lasizzzz, @devmuhib, @ateliercommodore, @jrevillini.
 
 = 1.2.0 – October 19, 2026 =
 * Storybook Design System: Integrated 23 isolated Gutenberg UI controls with live interactive explorer (https://noruzzamans.github.io/gslider-blocks/).

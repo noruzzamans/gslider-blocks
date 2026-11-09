@@ -1,13 +1,69 @@
-/* eslint-disable no-unused-vars, no-nested-ternary, jsdoc/require-param, jsdoc/check-tag-names */
+/* eslint-disable no-unused-vars, jsdoc/require-param */
 /**
  * Image Slider Block - Style Generation
  * Returns Dynamic Generated CSS
  */
 
+const resolveGradient = ( customEnabled, customValue, gradient, classic ) => {
+	if ( customEnabled && customValue ) {
+		return customValue;
+	}
+	if ( gradient ) {
+		return gradient;
+	}
+	return classic;
+};
+
+const getPaginationPositionCss = (
+	paginationType,
+	progressbarPosition,
+	progressbarUnits,
+	dotsPosition,
+	dotsUnits,
+	device
+) => {
+	if ( paginationType === 'progressbar' ) {
+		return progressbarPosition[ device ]
+			? `top: ${ progressbarPosition[ device ] }${ progressbarUnits[ device ] } !important;`
+			: '';
+	}
+	return dotsPosition[ device ]
+		? `bottom: ${ dotsPosition[ device ] }${ dotsUnits[ device ] } !important;`
+		: '';
+};
+
+const getResponsiveOutsideOffset = ( offsetObj, unitObj, devices ) => {
+	for ( const device of devices ) {
+		if ( offsetObj?.[ device ] ) {
+			return `${ offsetObj[ device ] }${ unitObj?.[ device ] || 'px' }`;
+		}
+	}
+	return '30px';
+};
+
+const getHasPaginationCss = (
+	blockId,
+	showPagination,
+	device,
+	fallbackDevices,
+	offset
+) => {
+	const rule = ( marginBottom ) =>
+		`.${ blockId }.gslider-image-slider-wrapper.has-pagination { margin-bottom: ${ marginBottom }; }`;
+
+	if ( showPagination?.[ device ] ) {
+		return rule( offset );
+	}
+	if ( fallbackDevices.some( ( d ) => showPagination?.[ d ] ) ) {
+		return rule( '0' );
+	}
+	return '';
+};
+
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
- * @returns {string} CSS string
+ * @return {string} CSS string
  */
 const generateImageSliderStyle = ( attributes ) => {
 	const {
@@ -708,6 +764,72 @@ const generateImageSliderStyle = ( attributes ) => {
 			getGlobalBackgroundHoverStyles( 'Mobile' )
 		);
 
+	/**
+	 * Get image background normal styles
+	 */
+	const getImageBackgroundNormalStyles = () => {
+		const bgType = imageNormalBackgroundType;
+		const bgColor = imageNormalClassicColor;
+		const bgGradient = imageNormalGradientColor;
+		const customGradient = imageNormalCustomGradientInputValue;
+		const customGradientEnabled = imageNormalCustomGradientSwitcher;
+
+		if ( bgType === 'gradient' ) {
+			if ( customGradientEnabled && customGradient ) {
+				return { background: customGradient };
+			} else if ( bgGradient ) {
+				return { background: bgGradient };
+			} else if ( bgColor ) {
+				return { background: bgColor };
+			}
+			return {};
+		}
+
+		return bgColor ? { background: bgColor } : {};
+	};
+
+	/**
+	 * Get image background hover styles
+	 */
+	const getImageBackgroundHoverStyles = () => {
+		const bgType = imageHoverBackgroundType;
+		const bgColor = imageHoverClassicColor;
+		const bgGradient = imageHoverGradientColor;
+		const customGradient = imageHoverCustomGradientInputValue;
+		const customGradientEnabled = imageHoverCustomGradientSwitcher;
+
+		if ( bgType === 'gradient' ) {
+			if ( customGradientEnabled && customGradient ) {
+				return { background: customGradient };
+			} else if ( bgGradient ) {
+				return { background: bgGradient };
+			} else if ( bgColor ) {
+				return { background: bgColor };
+			}
+			return {};
+		}
+
+		return bgColor ? { background: bgColor } : {};
+	};
+
+	/**
+	 * Convert object to string
+	 */
+	const imageBackgroundStyleObjectToString = ( styleObj ) =>
+		Object.entries( styleObj )
+			.map( ( [ key, value ] ) => `${ key }: ${ value };` )
+			.join( ' ' );
+
+	/**
+	 * Get image background styles
+	 */
+	const imageBackgroundNormalStyles = imageBackgroundStyleObjectToString(
+		getImageBackgroundNormalStyles()
+	);
+	const imageBackgroundHoverStyles = imageBackgroundStyleObjectToString(
+		getImageBackgroundHoverStyles()
+	);
+
 	/** Start All Block Style */
 	const imageSliderCSS = `
         .${ blockId }.gslider-image-slider-wrapper {
@@ -802,8 +924,10 @@ const generateImageSliderStyle = ( attributes ) => {
             align-items: center;
             justify-content: ${ verticalAlign.Desktop || 'center' };
             transition: background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+            ${ imageBackgroundNormalStyles }
         }
         .${ blockId }.gslider-image-slider-wrapper .gslider-image-slider-content-wrapper:hover {
+            ${ imageBackgroundHoverStyles }
             ${
 				imageBorderHoverColor
 					? `border-color: ${ imageBorderHoverColor };`
@@ -920,14 +1044,12 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				imageCaptionNormalBackgroundType === 'gradient'
 					? `  
-                background: ${
-					imageCaptionNormalCustomGradientSwitcher &&
-					imageCaptionNormalCustomGradientInputValue
-						? imageCaptionNormalCustomGradientInputValue
-						: imageCaptionNormalGradientColor
-						? imageCaptionNormalGradientColor
-						: imageCaptionNormalClassicColor
-				};
+                background: ${ resolveGradient(
+					imageCaptionNormalCustomGradientSwitcher,
+					imageCaptionNormalCustomGradientInputValue,
+					imageCaptionNormalGradientColor,
+					imageCaptionNormalClassicColor
+				) };
             `
 					: `
                 ${
@@ -970,14 +1092,12 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				imageCaptionHoverBackgroundType === 'gradient'
 					? `  
-                background: ${
-					imageCaptionHoverCustomGradientSwitcher &&
-					imageCaptionHoverCustomGradientInputValue
-						? imageCaptionHoverCustomGradientInputValue
-						: imageCaptionHoverGradientColor
-						? imageCaptionHoverGradientColor
-						: imageCaptionHoverClassicColor
-				};
+                background: ${ resolveGradient(
+					imageCaptionHoverCustomGradientSwitcher,
+					imageCaptionHoverCustomGradientInputValue,
+					imageCaptionHoverGradientColor,
+					imageCaptionHoverClassicColor
+				) };
             `
 					: `
                 ${
@@ -1271,14 +1391,12 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				navigationArrowNormalBackgroundType === 'gradient'
 					? `  
-                background: ${
-					navigationArrowNormalCustomGradientSwitcher &&
-					navigationArrowNormalCustomGradientInputValue
-						? navigationArrowNormalCustomGradientInputValue
-						: navigationArrowNormalGradientColor
-						? navigationArrowNormalGradientColor
-						: navigationArrowNormalClassicColor
-				};
+                background: ${ resolveGradient(
+					navigationArrowNormalCustomGradientSwitcher,
+					navigationArrowNormalCustomGradientInputValue,
+					navigationArrowNormalGradientColor,
+					navigationArrowNormalClassicColor
+				) };
             `
 					: `
                 ${
@@ -1335,14 +1453,12 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				navigationArrowHoverBackgroundType === 'gradient'
 					? `
-                background: ${
-					navigationArrowHoverCustomGradientSwitcher &&
-					navigationArrowHoverCustomGradientInputValue
-						? navigationArrowHoverCustomGradientInputValue
-						: navigationArrowHoverGradientColor
-						? navigationArrowHoverGradientColor
-						: navigationArrowHoverClassicColor
-				};
+                background: ${ resolveGradient(
+					navigationArrowHoverCustomGradientSwitcher,
+					navigationArrowHoverCustomGradientInputValue,
+					navigationArrowHoverGradientColor,
+					navigationArrowHoverClassicColor
+				) };
             `
 					: `
                 ${
@@ -1412,15 +1528,14 @@ const generateImageSliderStyle = ( attributes ) => {
         }
 
         .${ blockId } .swiper-pagination {
-            ${
-				paginationType === 'progressbar'
-					? paginationProgressbarPosition.Desktop
-						? `top: ${ paginationProgressbarPosition.Desktop }${ paginationProgressbarPositionUnits.Desktop } !important;`
-						: ''
-					: paginationDotsPosition.Desktop
-					? `bottom: ${ paginationDotsPosition.Desktop }${ paginationDotsPositionUnits.Desktop } !important;`
-					: ''
-			}
+            ${ getPaginationPositionCss(
+				paginationType,
+				paginationProgressbarPosition,
+				paginationProgressbarPositionUnits,
+				paginationDotsPosition,
+				paginationDotsPositionUnits,
+				'Desktop'
+			) }
             ${
 				paginationDotsDesktopMarginCssStyle
 					? `margin: ${ paginationDotsDesktopMarginCssStyle };`
@@ -1663,7 +1778,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusTabletCssStyle
-						? `border-radius: ${ globalBorderRadiusTabletCssStyle };`
+						? `border-radius: ${ globalBorderRadiusTabletCssStyle } !important;`
 						: ''
 				}
                 ${
@@ -1694,7 +1809,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					imageBorderRadiusTabletCssStyle
-						? `border-radius: ${ imageBorderRadiusTabletCssStyle };`
+						? `border-radius: ${ imageBorderRadiusTabletCssStyle } !important;`
 						: ''
 				}
                 display: flex;
@@ -2038,15 +2153,14 @@ const generateImageSliderStyle = ( attributes ) => {
             }
 
             .${ blockId } .swiper-pagination {
-                ${
-					paginationType === 'progressbar'
-						? paginationProgressbarPosition.Tablet
-							? `top: ${ paginationProgressbarPosition.Tablet }${ paginationProgressbarPositionUnits.Tablet } !important;`
-							: ''
-						: paginationDotsPosition.Tablet
-						? `bottom: ${ paginationDotsPosition.Tablet }${ paginationDotsPositionUnits.Tablet } !important;`
-						: ''
-				}
+                ${ getPaginationPositionCss(
+					paginationType,
+					paginationProgressbarPosition,
+					paginationProgressbarPositionUnits,
+					paginationDotsPosition,
+					paginationDotsPositionUnits,
+					'Tablet'
+				) }
                 ${
 					paginationDotsTabletMarginCssStyle
 						? `margin: ${ paginationDotsTabletMarginCssStyle };`
@@ -2142,18 +2256,11 @@ const generateImageSliderStyle = ( attributes ) => {
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-bullets.swiper-pagination-horizontal,
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-custom,
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-fraction {
-                    bottom: -${
-						paginationOutsideOffset?.Tablet
-							? `${ paginationOutsideOffset.Tablet }${
-									paginationOutsideOffsetUnits?.Tablet || 'px'
-							  }`
-							: paginationOutsideOffset?.Desktop
-							? `${ paginationOutsideOffset.Desktop }${
-									paginationOutsideOffsetUnits?.Desktop ||
-									'px'
-							  }`
-							: '30px'
-					} !important;
+                    bottom: -${ getResponsiveOutsideOffset(
+						paginationOutsideOffset,
+						paginationOutsideOffsetUnits,
+						[ 'Tablet', 'Desktop' ]
+					) } !important;
                 }
             `
 					: ''
@@ -2162,33 +2269,17 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				paginationPositionType === 'outside'
 					? `
-                ${
-					showPagination?.Tablet
-						? `
-                    .${ blockId }.gslider-image-slider-wrapper.has-pagination {
-                        margin-bottom: ${
-							paginationOutsideOffset?.Tablet
-								? `${ paginationOutsideOffset.Tablet }${
-										paginationOutsideOffsetUnits?.Tablet ||
-										'px'
-								  }`
-								: paginationOutsideOffset?.Desktop
-								? `${ paginationOutsideOffset.Desktop }${
-										paginationOutsideOffsetUnits?.Desktop ||
-										'px'
-								  }`
-								: '30px'
-						};
-                    }
-                `
-						: showPagination?.Desktop
-						? `
-                    .${ blockId }.gslider-image-slider-wrapper.has-pagination {
-                        margin-bottom: 0;
-                    }
-                `
-						: ''
-				}
+                ${ getHasPaginationCss(
+					blockId,
+					showPagination,
+					'Tablet',
+					[ 'Desktop' ],
+					getResponsiveOutsideOffset(
+						paginationOutsideOffset,
+						paginationOutsideOffsetUnits,
+						[ 'Tablet', 'Desktop' ]
+					)
+				) }
             `
 					: ''
 			}
@@ -2215,7 +2306,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusMobileCssStyle
-						? `border-radius: ${ globalBorderRadiusMobileCssStyle };`
+						? `border-radius: ${ globalBorderRadiusMobileCssStyle } !important;`
 						: ''
 				}
                 ${
@@ -2246,7 +2337,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					imageBorderRadiusMobileCssStyle
-						? `border-radius: ${ imageBorderRadiusMobileCssStyle };`
+						? `border-radius: ${ imageBorderRadiusMobileCssStyle } !important;`
 						: ''
 				}
                 display: flex;
@@ -2589,15 +2680,14 @@ const generateImageSliderStyle = ( attributes ) => {
             }
 
             .${ blockId } .swiper-pagination {
-                ${
-					paginationType === 'progressbar'
-						? paginationProgressbarPosition.Mobile
-							? `top: ${ paginationProgressbarPosition.Mobile }${ paginationProgressbarPositionUnits.Mobile } !important;`
-							: ''
-						: paginationDotsPosition.Mobile
-						? `bottom: ${ paginationDotsPosition.Mobile }${ paginationDotsPositionUnits.Mobile } !important;`
-						: ''
-				}
+                ${ getPaginationPositionCss(
+					paginationType,
+					paginationProgressbarPosition,
+					paginationProgressbarPositionUnits,
+					paginationDotsPosition,
+					paginationDotsPositionUnits,
+					'Mobile'
+				) }
                 ${
 					paginationDotsMobileMarginCssStyle
 						? `margin: ${ paginationDotsMobileMarginCssStyle };`
@@ -2693,22 +2783,11 @@ const generateImageSliderStyle = ( attributes ) => {
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-bullets.swiper-pagination-horizontal,
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-custom,
                 .${ blockId }.gslider-image-slider-wrapper .swiper-pagination-fraction {
-                    bottom: -${
-						paginationOutsideOffset?.Mobile
-							? `${ paginationOutsideOffset.Mobile }${
-									paginationOutsideOffsetUnits?.Mobile || 'px'
-							  }`
-							: paginationOutsideOffset?.Tablet
-							? `${ paginationOutsideOffset.Tablet }${
-									paginationOutsideOffsetUnits?.Tablet || 'px'
-							  }`
-							: paginationOutsideOffset?.Desktop
-							? `${ paginationOutsideOffset.Desktop }${
-									paginationOutsideOffsetUnits?.Desktop ||
-									'px'
-							  }`
-							: '30px'
-					} !important;
+                    bottom: -${ getResponsiveOutsideOffset(
+						paginationOutsideOffset,
+						paginationOutsideOffsetUnits,
+						[ 'Mobile', 'Tablet', 'Desktop' ]
+					) } !important;
                 }
             `
 					: ''
@@ -2717,38 +2796,17 @@ const generateImageSliderStyle = ( attributes ) => {
             ${
 				paginationPositionType === 'outside'
 					? `
-                ${
-					showPagination?.Mobile
-						? `
-                    .${ blockId }.gslider-image-slider-wrapper.has-pagination {
-                        margin-bottom: ${
-							paginationOutsideOffset?.Mobile
-								? `${ paginationOutsideOffset.Mobile }${
-										paginationOutsideOffsetUnits?.Mobile ||
-										'px'
-								  }`
-								: paginationOutsideOffset?.Tablet
-								? `${ paginationOutsideOffset.Tablet }${
-										paginationOutsideOffsetUnits?.Tablet ||
-										'px'
-								  }`
-								: paginationOutsideOffset?.Desktop
-								? `${ paginationOutsideOffset.Desktop }${
-										paginationOutsideOffsetUnits?.Desktop ||
-										'px'
-								  }`
-								: '30px'
-						};
-                    }
-                `
-						: showPagination?.Desktop || showPagination?.Tablet
-						? `
-                    .${ blockId }.gslider-image-slider-wrapper.has-pagination {
-                        margin-bottom: 0;
-                    }
-                `
-						: ''
-				}
+                ${ getHasPaginationCss(
+					blockId,
+					showPagination,
+					'Mobile',
+					[ 'Desktop', 'Tablet' ],
+					getResponsiveOutsideOffset(
+						paginationOutsideOffset,
+						paginationOutsideOffsetUnits,
+						[ 'Mobile', 'Tablet', 'Desktop' ]
+					)
+				) }
             `
 					: ''
 			}

@@ -50,6 +50,8 @@ export default function Save( { attributes } ) {
 		enableLazyLoad,
 	} = attributes;
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	const blockProps = useBlockProps.save( {
 		className: `gslider-logo-carousel-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
 			showPagination?.Desktop ||
@@ -57,7 +59,8 @@ export default function Save( { attributes } ) {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
+		...( globalID ? { id: globalID } : {} ),
 	} );
 
 	const captionEnabled = {
@@ -163,7 +166,10 @@ export default function Save( { attributes } ) {
 
 		pagination: {
 			enabled: anyPaginationEnabled,
-			el: `.${ blockId } .swiper-pagination-logo-carousel`,
+			// Patterns keep blockId empty, so fall back to an unscoped selector.
+			el: blockId
+				? `.${ blockId } .swiper-pagination-logo-carousel`
+				: '.swiper-pagination-logo-carousel',
 			type: paginationType,
 			dynamicBullets:
 				paginationType === 'bullets' ? dynamicBullets : false,
@@ -177,10 +183,7 @@ export default function Save( { attributes } ) {
 				<div className="swiper-wrapper">
 					{ logos.map( ( item ) => (
 						<div key={ item.id } className={ `swiper-slide` }>
-							<div
-								className={ `gslider-logo-carousel-content-wrapper ${ globalClass }` }
-								{ ...( globalID && { id: globalID } ) }
-							>
+							<div className="gslider-logo-carousel-content-wrapper">
 								<div
 									className="gslider-logo-item"
 									data-hover-effect={ logoLinkHoverEffect }
@@ -388,7 +391,9 @@ export default function Save( { attributes } ) {
 			{ anyPaginationEnabled && paginationPositionType === 'outside' && (
 				<>
 					<div
-						className={ `swiper-pagination swiper-pagination-logo-carousel swiper-pagination-${ blockId }` }
+						className={ `swiper-pagination swiper-pagination-logo-carousel${
+							blockId ? ` swiper-pagination-${ blockId }` : ''
+						}` }
 						aria-label="Carousel pagination"
 					></div>
 				</>

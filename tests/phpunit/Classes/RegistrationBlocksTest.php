@@ -236,7 +236,7 @@ class RegistrationBlocksTest {
 		if ( null === $vendor_priority || null === $blocks_priority || $vendor_priority >= $blocks_priority ) {
 			$this->fail( 'register_vendor_scripts must run on init before register_blocks' );
 		}
-		echo "OK: Vendor scripts register on init:{$vendor_priority}, before blocks on init:{$blocks_priority}\n";
+		echo esc_html( "OK: Vendor scripts register on init:{$vendor_priority}, before blocks on init:{$blocks_priority}\n" );
 	}
 
 	/**
@@ -277,7 +277,7 @@ class RegistrationBlocksTest {
 				$this->fail( "Legacy handle gslider-{$slug}-view-script must not be registered" );
 			}
 
-			echo "OK: View script '{$handle}' has strategy => defer and Swiper in deps\n";
+			echo esc_html( "OK: View script '{$handle}' has strategy => defer and Swiper in deps\n" );
 		}
 	}
 
@@ -313,7 +313,7 @@ class RegistrationBlocksTest {
 
 		// Register block view script without Swiper script registered.
 		$handle = 'gslider-blocks-test-mock-view-script';
-		wp_register_script( $handle, 'mock-view.js', [ 'dummy-dep' ] );
+		wp_register_script( $handle, 'mock-view.js', [ 'dummy-dep' ], '1.0.0', true );
 
 		// Simulate RegistrationBlocks logic via reflection.
 		$instance = RegistrationBlocks::getInstance();

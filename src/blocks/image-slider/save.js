@@ -51,6 +51,8 @@ export default function Save( { attributes } ) {
 		enableLazyLoad,
 	} = attributes;
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	const blockProps = useBlockProps.save( {
 		className: `gslider-image-slider-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
 			showPagination?.Desktop ||
@@ -58,7 +60,8 @@ export default function Save( { attributes } ) {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
+		...( globalID ? { id: globalID } : {} ),
 	} );
 
 	const captionEnabled = {
@@ -90,6 +93,17 @@ export default function Save( { attributes } ) {
 		paginationEnabled.Mobile ||
 		paginationEnabled.Tablet ||
 		paginationEnabled.Desktop;
+
+	// Only output the attribute when enabled, so markup of existing blocks stays the same
+	const lightboxDevices = [ 'Desktop', 'Tablet', 'Mobile' ]
+		.filter( ( device ) => enableLightbox?.[ device ] === true )
+		.join( ' ' );
+
+	// Save custom links only when some devices have the lightbox off, so view.js can open them there
+	const linkOnLightboxOff =
+		enableimageLinks &&
+		lightboxDevices &&
+		lightboxDevices !== 'Desktop Tablet Mobile';
 
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
@@ -164,7 +178,10 @@ export default function Save( { attributes } ) {
 
 		pagination: {
 			enabled: anyPaginationEnabled,
-			el: `.${ blockId } .swiper-pagination-image-slider`,
+			// Patterns keep blockId empty, so fall back to an unscoped selector.
+			el: blockId
+				? `.${ blockId } .swiper-pagination-image-slider`
+				: '.swiper-pagination-image-slider',
 			type: paginationType,
 			dynamicBullets:
 				paginationType === 'bullets' ? dynamicBullets : false,
@@ -173,25 +190,37 @@ export default function Save( { attributes } ) {
 	} );
 
 	return (
-		<div { ...blockProps } data-swiper-settings={ swiperSettings }>
+		<div
+			{ ...blockProps }
+			data-swiper-settings={ swiperSettings }
+			{ ...( lightboxDevices && {
+				'data-slide-lightbox': lightboxDevices,
+			} ) }
+		>
 			<div className="swiper" role="region" aria-label="Image Slider">
 				<div className="swiper-wrapper">
 					{ images.map( ( item ) => (
 						<div key={ item.id } className={ `swiper-slide` }>
-							<div
-								className={ `gslider-image-slider-content-wrapper ${ globalClass }` }
-								{ ...( globalID && { id: globalID } ) }
-							>
+							<div className="gslider-image-slider-content-wrapper">
 								<div
 									className="gslider-image-item"
 									data-hover-effect={ imageLinkHoverEffect }
 								>
-									{ enableLightbox ? (
+									{ lightboxDevices ? (
 										<a
 											href={ item.url }
 											data-fslightbox={ blockId }
 											data-caption={ item.caption }
 											className="gslider-image-link"
+											{ ...( linkOnLightboxOff &&
+												item.link && {
+													'data-image-link':
+														item.link,
+													'data-image-link-target':
+														imageLinkTarget,
+													'data-image-link-rel':
+														imageLinkRel,
+												} ) }
 										>
 											<img
 												src={ item.url }
@@ -419,7 +448,9 @@ export default function Save( { attributes } ) {
 			{ anyPaginationEnabled && paginationPositionType === 'outside' && (
 				<>
 					<div
-						className={ `swiper-pagination swiper-pagination-image-slider swiper-pagination-${ blockId }` }
+						className={ `swiper-pagination swiper-pagination-image-slider${
+							blockId ? ` swiper-pagination-${ blockId }` : ''
+						}` }
 						aria-label="Carousel pagination"
 					></div>
 				</>

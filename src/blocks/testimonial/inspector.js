@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, jsdoc/require-param, react-hooks/exhaustive-deps, import/no-unresolved, no-nested-ternary */
+/* eslint-disable no-unused-vars, jsdoc/require-param, react-hooks/exhaustive-deps, import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import {
 	useState,
@@ -814,9 +814,30 @@ const Inspector = ( {
 	}, [] );
 
 	/** Format Spacing */
+	const formatSpacingSide = ( value, unit ) =>
+		value === '' || value === undefined || value === null
+			? '0'
+			: `${ value }${ unit }`;
+
 	const spacingFormat = ( spacing, units ) => {
-		return spacing.top || spacing.right || spacing.bottom || spacing.left
-			? `${ spacing.top }${ units } ${ spacing.right }${ units } ${ spacing.bottom }${ units } ${ spacing.left }${ units }`
+		const hasValue = ( v ) => v !== '' && v !== undefined && v !== null;
+		const hasAny =
+			hasValue( spacing?.top ) ||
+			hasValue( spacing?.right ) ||
+			hasValue( spacing?.bottom ) ||
+			hasValue( spacing?.left );
+
+		return hasAny
+			? `${ formatSpacingSide(
+					spacing.top,
+					units
+			  ) } ${ formatSpacingSide(
+					spacing.right,
+					units
+			  ) } ${ formatSpacingSide(
+					spacing.bottom,
+					units
+			  ) } ${ formatSpacingSide( spacing.left, units ) }`
 			: '';
 	};
 
@@ -1153,11 +1174,11 @@ const Inspector = ( {
 						units={ layoutHeightUnits }
 						resetFallbackValue={ {
 							px:
-								deviceType === 'Desktop'
-									? '420'
-									: deviceType === 'Tablet'
-									? '340'
-									: '260',
+								{
+									Desktop: '420',
+									Tablet: '340',
+									Mobile: '260',
+								}[ deviceType ] || '260',
 							'%': '50',
 							vh: '50',
 							vw: '50',
@@ -2201,41 +2222,29 @@ const Inspector = ( {
 						units={ authorImageSizeUnits }
 						resetFallbackValue={ {
 							px:
-								deviceType === 'Desktop'
-									? '80'
-									: deviceType === 'Tablet'
-									? '64'
-									: '56',
+								{ Desktop: '80', Tablet: '64', Mobile: '56' }[
+									deviceType
+								] || '56',
 							'%':
-								deviceType === 'Desktop'
-									? '5'
-									: deviceType === 'Tablet'
-									? '4'
-									: '3.5',
+								{ Desktop: '5', Tablet: '4', Mobile: '3.5' }[
+									deviceType
+								] || '3.5',
 							vh:
-								deviceType === 'Desktop'
-									? '5'
-									: deviceType === 'Tablet'
-									? '4'
-									: '3.5',
+								{ Desktop: '5', Tablet: '4', Mobile: '3.5' }[
+									deviceType
+								] || '3.5',
 							vw:
-								deviceType === 'Desktop'
-									? '5'
-									: deviceType === 'Tablet'
-									? '4'
-									: '3.5',
+								{ Desktop: '5', Tablet: '4', Mobile: '3.5' }[
+									deviceType
+								] || '3.5',
 							em:
-								deviceType === 'Desktop'
-									? '5'
-									: deviceType === 'Tablet'
-									? '4'
-									: '3.5',
+								{ Desktop: '5', Tablet: '4', Mobile: '3.5' }[
+									deviceType
+								] || '3.5',
 							rem:
-								deviceType === 'Desktop'
-									? '5'
-									: deviceType === 'Tablet'
-									? '4'
-									: '3.5',
+								{ Desktop: '5', Tablet: '4', Mobile: '3.5' }[
+									deviceType
+								] || '3.5',
 						} }
 						unitBounds={ {
 							px: { min: 0, max: 500, step: 1 },

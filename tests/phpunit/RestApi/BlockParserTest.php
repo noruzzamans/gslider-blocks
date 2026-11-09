@@ -9,6 +9,9 @@
  * 4. Image, Logo, Testimonial, and Flexi-Content slide structures are parsed with appropriate fields.
  * 5. blockStyle CSS is strictly sanitized to prevent arbitrary code injection for REST consumers.
  * 6. Flexi Content slides keep their CSS in REST output (slides[].css and <style> in innerHtml).
+ * 7. Flexi Content vertical direction reaches swiperConfig and turns off autoHeight.
+ * 8. Dynamic observers (observer, observeParents, resizeObserver) are passed in swiperConfig.
+ * 9. Flexi Content grabCursor propagates only when enableGrabCursor and allowTouchMove are enabled.
  *
  * @package GSlider\Tests\RestApi
  */
@@ -17,7 +20,7 @@ require_once dirname( __DIR__ ) . '/bootstrap.php';
 
 if ( ! function_exists( 'sanitize_text_field' ) ) {
 	function sanitize_text_field( $text ) {
-		return is_string( $text ) ? trim( strip_tags( $text ) ) : $text;
+		return is_string( $text ) ? trim( wp_strip_all_tags( $text ) ) : $text;
 	}
 }
 
@@ -53,7 +56,10 @@ set_error_handler(
 	}
 );
 
+require_once ABSPATH . 'includes/Interfaces/Registrable.php';
+require_once ABSPATH . 'includes/Traits/SingletonTrait.php';
 require_once ABSPATH . 'includes/Utils/CssSanitizer.php';
+require_once ABSPATH . 'includes/Classes/StyleGenerator.php';
 require_once ABSPATH . 'includes/RestApi/BlockParser.php';
 
 use GSlider\RestApi\BlockParser;
@@ -109,6 +115,9 @@ class BlockParserTest {
 		$this->test_block_types_normalization();
 		$this->test_css_sanitization();
 		$this->test_flexi_slide_css_in_rest_output();
+		$this->test_flexi_vertical_direction();
+		$this->test_swiper_dynamic_observers();
+		$this->test_flexi_grab_cursor();
 
 		fwrite( STDOUT, "\nAll BlockParser tests passed successfully!\n" );
 	}
@@ -350,11 +359,30 @@ class BlockParserTest {
 		$styled = $this->normalize(
 			[
 				'blockId'    => 'gslider-base',
-				'blockStyle' => '.x{color:red}@import url(https://evil.example/a.css);</style><script>alert(1)</script>',
+				'blockStyle' => '.gslider-base{color:red}@import url(https://evil.example/a.css);</style><script>alert(1)</script>',
 			],
 			'gslider-blocks/base'
 		);
-		$this->assert_true( '.x{color:red}' === $styled['css'] && $styled['css'] === $styled['attrs']['blockStyle'], 'REST css and attrs.blockStyle are sanitized' );
+		$this->assert_true( false !== strpos( $styled['css'], 'color:red' ) && $styled['css'] === $styled['attrs']['blockStyle'], 'REST css and attrs.blockStyle are sanitized' );
+		$this->assert_true( false === strpos( strtolower( $styled['css'] ), '@import' ), 'REST css still strips @import' );
+
+		$unscoped = $this->normalize(
+			[
+				'blockId'    => 'gslider-base',
+				'blockStyle' => '.x{color:red}',
+			],
+			'gslider-blocks/base'
+		);
+		$this->assert_true( '' === $unscoped['css'] && '' === $unscoped['attrs']['blockStyle'], 'REST css drops selectors that do not start at the block root' );
+
+		$empty_id = $this->normalize(
+			[
+				'blockId'    => '',
+				'blockStyle' => 'body { color: red; }',
+			],
+			'gslider-blocks/base'
+		);
+		$this->assert_true( '' === $empty_id['css'], 'REST css is empty when blockId is invalid' );
 	}
 
 	/**
@@ -381,15 +409,15 @@ class BlockParserTest {
 					[
 						'blockName'   => 'gslider-blocks/flexi-content-item',
 						'attrs'       => [
-							'blockId'    => 'slide-a',
-							'blockStyle' => '.slide-a{color:#abcdef}',
+							'blockId'    => 'gslider-flexi-item-a',
+							'blockStyle' => '.gslider-flexi-item-a{color:#abcdef}',
 						],
 						'innerBlocks' => [
 							[
 								'blockName'   => 'gslider-blocks/flexi-content-item',
 								'attrs'       => [
-									'blockId'    => 'slide-a-inner',
-									'blockStyle' => '.slide-a-inner{margin:1px}',
+									'blockId'    => 'gslider-flexi-item-b',
+									'blockStyle' => '.gslider-flexi-item-b{margin:1px}',
 								],
 								'innerBlocks' => [],
 							],
@@ -402,8 +430,99 @@ class BlockParserTest {
 		$is_rest_mock = false;
 
 		$slide = $flexi['slides'][0];
-		$this->assert_true( false !== strpos( $slide['css'], '.slide-a{color:#abcdef}' ) && false !== strpos( $slide['css'], '.slide-a-inner{margin:1px}' ), 'flexi slides[].css carries own and nested CSS' );
-		$this->assert_true( false !== strpos( $slide['innerHtml'], '<style id="gslider-style-slide-a">' ), 'flexi innerHtml keeps its <style> during REST requests' );
+		$this->assert_true( false !== strpos( $slide['css'], '.gslider-flexi-item-a{color:#abcdef}' ) && false !== strpos( $slide['css'], '.gslider-flexi-item-b{margin:1px}' ), 'flexi slides[].css carries own and nested CSS' );
+		$this->assert_true( false !== strpos( $slide['innerHtml'], '<style id="gslider-style-gslider-flexi-item-a">' ), 'flexi innerHtml keeps its <style> during REST requests' );
+	}
+
+	/**
+	 * Test 7: Flexi Content Vertical Direction.
+	 *
+	 * @return void
+	 */
+	public function test_flexi_vertical_direction(): void {
+		$horizontal = $this->normalize( [ 'layoutHeightSwitcher' => 'adapt' ], 'gslider-blocks/flexi-content' );
+		$this->assert_true( ! isset( $horizontal['swiperConfig']['direction'] ), 'default flexi config has no direction key' );
+		$this->assert_true( true === $horizontal['swiperConfig']['autoHeight'], 'horizontal adapt height keeps autoHeight' );
+
+		$vertical = $this->normalize(
+			[
+				'direction'            => 'vertical',
+				'layoutHeightSwitcher' => 'adapt',
+			],
+			'gslider-blocks/flexi-content'
+		);
+		$this->assert_true( 'vertical' === $vertical['swiperConfig']['direction'], 'vertical flexi config sets direction' );
+		$this->assert_true( ! isset( $vertical['swiperConfig']['autoHeight'] ), 'vertical flexi config skips autoHeight' );
+	}
+
+	/**
+	 * Test 8: Swiper Dynamic Observers for Tabs and Modals.
+	 *
+	 * Verifies that observer, observeParents, and resizeObserver are enabled
+	 * in swiperConfig so sliders recalculate when unhidden in tabs/modals.
+	 *
+	 * @return void
+	 */
+	public function test_swiper_dynamic_observers(): void {
+		$flexi = $this->normalize( [], 'gslider-blocks/flexi-content' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['observer'] ?? false ), 'flexi swiperConfig enables observer' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['observeParents'] ?? false ), 'flexi swiperConfig enables observeParents' );
+		$this->assert_true( true === ( $flexi['swiperConfig']['resizeObserver'] ?? false ), 'flexi swiperConfig enables resizeObserver' );
+
+		$base = $this->normalize( [], 'gslider-blocks/base' );
+		$this->assert_true( ! isset( $base['swiperConfig']['observer'] ), 'base swiperConfig does not include observer' );
+		$this->assert_true( ! isset( $base['swiperConfig']['observeParents'] ), 'base swiperConfig does not include observeParents' );
+		$this->assert_true( ! isset( $base['swiperConfig']['resizeObserver'] ), 'base swiperConfig does not include resizeObserver' );
+	}
+
+	/**
+	 * Test 9: Flexi Content grabCursor gating and breakpoint propagation.
+	 *
+	 * Verifies that grabCursor is emitted only when both enableGrabCursor
+	 * and allowTouchMove are enabled, and stays set across all breakpoints.
+	 *
+	 * @return void
+	 */
+	public function test_flexi_grab_cursor(): void {
+		$default = $this->normalize( [], 'gslider-blocks/flexi-content' );
+		$this->assert_true( ! array_key_exists( 'grabCursor', $default['swiperConfig'] ), 'default flexi config omits grabCursor' );
+		foreach ( [ 0, 768, 1025 ] as $breakpoint ) {
+			$this->assert_true(
+				! array_key_exists( 'grabCursor', $default['swiperConfig']['breakpoints'][ $breakpoint ] ),
+				"default flexi breakpoint {$breakpoint} omits grabCursor"
+			);
+		}
+
+		$enabled = $this->normalize(
+			[
+				'enableGrabCursor' => true,
+				'allowTouchMove'   => true,
+			],
+			'gslider-blocks/flexi-content'
+		);
+		$this->assert_true( true === ( $enabled['swiperConfig']['grabCursor'] ?? null ), 'flexi config enables top-level grabCursor when allowTouchMove is true' );
+		foreach ( [ 0, 768, 1025 ] as $breakpoint ) {
+			$this->assert_true(
+				true === ( $enabled['swiperConfig']['breakpoints'][ $breakpoint ]['grabCursor'] ?? null ),
+				"flexi breakpoint {$breakpoint} keeps grabCursor enabled"
+			);
+		}
+
+		$touch_disabled = $this->normalize(
+			[
+				'enableGrabCursor' => true,
+				'allowTouchMove'   => false,
+			],
+			'gslider-blocks/flexi-content'
+		);
+		$this->assert_true( false === $touch_disabled['swiperConfig']['allowTouchMove'], 'allowTouchMove stays false in swiperConfig' );
+		$this->assert_true( ! array_key_exists( 'grabCursor', $touch_disabled['swiperConfig'] ), 'flexi config omits grabCursor when allowTouchMove is false' );
+		foreach ( [ 0, 768, 1025 ] as $breakpoint ) {
+			$this->assert_true(
+				! array_key_exists( 'grabCursor', $touch_disabled['swiperConfig']['breakpoints'][ $breakpoint ] ),
+				"flexi breakpoint {$breakpoint} omits grabCursor when allowTouchMove is false"
+			);
+		}
 	}
 }
 

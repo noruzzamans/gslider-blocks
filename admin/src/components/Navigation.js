@@ -7,13 +7,18 @@
  */
 
 import { useRef } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { OverviewTabIcon, BlocksTabIcon } from '../icons';
 
 /**
- * Tab items definition with modular icon components.
+ * Returns the tab items definition with modular icon components.
+ *
+ * Evaluated lazily at render time so the `__()` label lookups run after
+ * WordPress has injected the script translations locale data.
+ *
+ * @return {Array} Tab items.
  */
-const TABS = [
+const getTabs = () => [
 	{
 		id: 'overview',
 		label: __( 'Overview', 'gslider-blocks' ),
@@ -42,6 +47,7 @@ const Navigation = ( {
 	activeBlocksCount = null,
 } ) => {
 	const tabRefs = useRef( {} );
+	const tabs = getTabs();
 
 	/**
 	 * Handles arrow key navigation across tabs.
@@ -50,7 +56,7 @@ const Navigation = ( {
 	 * @param {number}        index Current tab index.
 	 */
 	const handleKeyDown = ( event, index ) => {
-		const count = TABS.length;
+		const count = tabs.length;
 		let nextIndex = null;
 
 		switch ( event.key ) {
@@ -71,7 +77,7 @@ const Navigation = ( {
 		}
 
 		event.preventDefault();
-		const nextTab = TABS[ nextIndex ];
+		const nextTab = tabs[ nextIndex ];
 		if ( nextTab ) {
 			setActiveTab( nextTab.id );
 			if ( tabRefs.current[ nextTab.id ] ) {
@@ -90,7 +96,7 @@ const Navigation = ( {
 				role="tablist"
 				aria-orientation="horizontal"
 			>
-				{ TABS.map( ( tab, index ) => {
+				{ tabs.map( ( tab, index ) => {
 					const isActive = activeTab === tab.id;
 					const badgeCount =
 						tab.hasBadge && typeof activeBlocksCount === 'number'
@@ -106,7 +112,11 @@ const Navigation = ( {
 							role="tab"
 							id={ `gslider-tab-${ tab.id }` }
 							aria-selected={ isActive }
-							aria-controls={ `gslider-tabpanel-${ tab.id }` }
+							aria-controls={
+								isActive
+									? `gslider-tabpanel-${ tab.id }`
+									: undefined
+							}
 							tabIndex={ isActive ? 0 : -1 }
 							className={ `gslider-dashboard-tab ${
 								isActive ? 'is-active' : ''
@@ -122,9 +132,26 @@ const Navigation = ( {
 								{ tab.label }
 							</span>
 							{ badgeCount !== null && (
-								<span className="gslider-dashboard-tab-badge">
-									{ badgeCount }
-								</span>
+								<>
+									<span
+										className="gslider-dashboard-tab-badge"
+										aria-hidden="true"
+									>
+										{ badgeCount }
+									</span>
+									<span className="screen-reader-text">
+										{ sprintf(
+											/* translators: %d: number of active blocks */
+											_n(
+												'%d active block',
+												'%d active blocks',
+												badgeCount,
+												'gslider-blocks'
+											),
+											badgeCount
+										) }
+									</span>
+								</>
 							) }
 						</button>
 					);

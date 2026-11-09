@@ -1,17 +1,21 @@
 /* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import { __ } from '@wordpress/i18n';
+import { createBlock } from '@wordpress/blocks';
 import {
 	useBlockProps,
 	BlockControls,
 	useInnerBlocksProps,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
 import Inspector from './inspector';
 import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generateFlexiContentStyle from './styling';
+import { renderShapeDivider } from '@Constants/shapeDividers';
 
 const ALLOWED_BLOCKS = [ 'gslider-blocks/flexi-content-item' ];
 
@@ -31,17 +35,24 @@ export default function Edit( {
 		speed,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
+		autoplayProgressPosition,
 		infiniteLoop,
 		allowTouchMove,
+		enableGrabCursor,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,
+		direction,
 		carouselEffect,
 		slideEffect,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
 		dynamicBullets,
+		enableContinuousMarquee,
+		marqueeSpeed,
+		marqueePauseOnHover,
 
 		showNavigation,
 		showPagination,
@@ -64,7 +75,21 @@ export default function Edit( {
 		navigationArrowsIconRightImageAlt,
 
 		layoutHeightSwitcher,
+
+		enableTopDivider,
+		topDividerShape,
+		enableBottomDivider,
+		bottomDividerShape,
 	} = attributes;
+
+	const marqueeEnabled = !! enableContinuousMarquee?.[ deviceType ];
+	const marqueePause =
+		marqueeEnabled && marqueePauseOnHover?.[ deviceType ] !== false;
+	// Effect and loop are shared by all devices on the frontend
+	const anyMarqueeEnabled =
+		!! enableContinuousMarquee?.Desktop ||
+		!! enableContinuousMarquee?.Tablet ||
+		!! enableContinuousMarquee?.Mobile;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
 	useBlockIdGenerator( {
@@ -85,6 +110,8 @@ export default function Edit( {
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	// Block props for container
 	const blockProps = useBlockProps( {
 		className: `gslider-flexi-content-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -93,12 +120,15 @@ export default function Edit( {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
+		}${ marqueeEnabled ? ' gslider-marquee-mode' : '' }${
+			trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : ''
 		}`,
 	} );
 
 	// Local state management for swiper instance is replaced by useRef
 	const swiperContainerRef = useRef( null );
 	const swiperInstanceRef = useRef( null );
+	const autoplayProgressFillRef = useRef( null );
 
 	// Ref for panel settings focus management
 	const panelRef = useRef( null );
@@ -109,6 +139,58 @@ export default function Edit( {
 	const nextRef = useRef( null );
 	const paginationInsideRef = useRef( null );
 	const paginationOutsideRef = useRef( null );
+
+	const { insertBlock, duplicateBlocks } = useDispatch( blockEditorStore );
+
+	// Slide list + selection, so Swiper rebuilds and Duplicate targets the visible child.
+	const { slideCount, innerBlockClientIds, selectedInnerClientId } =
+		useSelect(
+			( select ) => {
+				const {
+					getBlockCount,
+					getBlockOrder,
+					getSelectedBlockClientId,
+				} = select( blockEditorStore );
+				const order = getBlockOrder( clientId );
+				const selected = getSelectedBlockClientId();
+
+				return {
+					slideCount: getBlockCount( clientId ),
+					innerBlockClientIds: order,
+					selectedInnerClientId: order.includes( selected )
+						? selected
+						: null,
+				};
+			},
+			[ clientId ]
+		);
+
+	const handleAddSlide = () => {
+		insertBlock(
+			createBlock( 'gslider-blocks/flexi-content-item' ),
+			innerBlockClientIds.length,
+			clientId
+		);
+	};
+
+	const handleDuplicateSlide = () => {
+		let targetId = selectedInnerClientId;
+
+		if ( ! targetId && innerBlockClientIds.length ) {
+			const swiper = swiperInstanceRef.current;
+			const index =
+				swiper && ! swiper.destroyed
+					? swiper.realIndex
+					: innerBlockClientIds.length - 1;
+			targetId =
+				innerBlockClientIds[ index ] ||
+				innerBlockClientIds[ innerBlockClientIds.length - 1 ];
+		}
+
+		if ( targetId ) {
+			duplicateBlocks( [ targetId ] );
+		}
+	};
 
 	/**
 	 * Vanilla JS Swiper initialization
@@ -134,31 +216,51 @@ export default function Edit( {
 			paginationOutsideRef.current.innerHTML = '';
 		}
 
+		const sliderEffect =
+			sliderType === 'carousel' ? carouselEffect : slideEffect;
+
+		// Same as the frontend, the marquee does not move for users who ask for less motion
+		const reduceMotion =
+			marqueeEnabled &&
+			window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
+		const marqueeTransition = reduceMotion
+			? 0
+			: marqueeSpeed?.[ deviceType ] || 5000;
+
+		const isGrabCursor = Boolean( enableGrabCursor && allowTouchMove );
+
 		// Build Swiper settings
 		const swiperSettings = {
-			effect: sliderType === 'carousel' ? carouselEffect : slideEffect,
+			// Marquee needs the slide effect, other effects can not move in a line
+			effect: anyMarqueeEnabled ? 'slide' : sliderEffect,
 			...( sliderType === 'carousel' && {
 				breakpoints: {
 					0: {
 						slidesPerView: carouselPerColumn?.[ deviceType ] || 1,
 						spaceBetween: carouselPerColumnGap?.[ deviceType ] || 0,
+						...( isGrabCursor && { grabCursor: true } ),
 					},
 					768: {
 						slidesPerView: carouselPerColumn?.[ deviceType ] || 2,
 						spaceBetween:
 							carouselPerColumnGap?.[ deviceType ] ?? 20,
+						...( isGrabCursor && { grabCursor: true } ),
 					},
 					1025: {
 						slidesPerView: carouselPerColumn?.[ deviceType ] || 2,
 						spaceBetween:
 							carouselPerColumnGap?.[ deviceType ] ?? 20,
+						...( isGrabCursor && { grabCursor: true } ),
 					},
 				},
 			} ),
-			...( layoutHeightSwitcher === 'adapt' && {
-				autoHeight: true,
-			} ),
-			loop: infiniteLoop,
+			...( direction === 'vertical' && { direction: 'vertical' } ),
+			// Vertical slides use the fixed height, autoHeight does not work with it
+			...( layoutHeightSwitcher === 'adapt' &&
+				direction !== 'vertical' && {
+					autoHeight: true,
+				} ),
+			loop: anyMarqueeEnabled || infiniteLoop,
 			autoplay: autoplay
 				? {
 						delay: autoplayDelay?.[ deviceType ] || 1000,
@@ -168,8 +270,13 @@ export default function Edit( {
 						reverseDirection,
 				  }
 				: false,
-			speed: speed?.[ deviceType ] || 800,
+			speed: marqueeEnabled
+				? marqueeTransition
+				: speed?.[ deviceType ] || 800,
 			allowTouchMove,
+			...( isGrabCursor && {
+				grabCursor: true,
+			} ),
 			mousewheel: mousewheelControl,
 			keyboard: keyboardNavigation
 				? {
@@ -198,13 +305,31 @@ export default function Edit( {
 						clickable: true,
 				  }
 				: false,
+			observer: true,
+			observeParents: true,
+			resizeObserver: true,
 			...( slideEffect === 'creative' && {
 				creativeEffect: {
 					prev: { shadow: true, translate: [ 0, 0, -400 ] },
-					next: { translate: [ '100%', 0, 0 ] },
+					next: {
+						translate:
+							direction === 'vertical'
+								? [ 0, '100%', 0 ]
+								: [ '100%', 0, 0 ],
+					},
 				},
 			} ),
 		};
+
+		if ( marqueeEnabled ) {
+			swiperSettings.autoplay = reduceMotion
+				? false
+				: {
+						delay: 0,
+						disableOnInteraction: false,
+						reverseDirection,
+				  };
+		}
 
 		// Initialize new Swiper instance
 		swiperInstanceRef.current = new window.Swiper(
@@ -212,8 +337,166 @@ export default function Edit( {
 			swiperSettings
 		);
 
+		if ( autoplayProgressFillRef.current ) {
+			swiperInstanceRef.current.on(
+				'autoplayTimeLeft',
+				( swiper, timeLeft, progress ) => {
+					if ( autoplayProgressFillRef.current ) {
+						autoplayProgressFillRef.current.style.transform = `scaleX(${
+							1 - progress
+						})`;
+					}
+				}
+			);
+		}
+
+		let cleanupMarqueeHover = null;
+
+		if ( marqueeEnabled && marqueePause ) {
+			const swiper = swiperInstanceRef.current;
+			const sliderContainer =
+				swiperContainerRef.current?.parentElement ||
+				swiperContainerRef.current;
+			let frozen = null;
+			let onResumeEnd = null;
+
+			const getSign = () =>
+				swiper.isHorizontal() && swiper.rtlTranslate ? -1 : 1;
+
+			const getCurrentTranslate = () => {
+				const matrix = new ( window.DOMMatrix ||
+					window.WebKitCSSMatrix )(
+					window.getComputedStyle( swiper.wrapperEl ).transform
+				);
+				return (
+					( swiper.isHorizontal() ? matrix.m41 : matrix.m42 ) *
+					getSign()
+				);
+			};
+
+			const cancelResume = () => {
+				if ( ! onResumeEnd ) {
+					return;
+				}
+				swiper.wrapperEl.removeEventListener(
+					'transitionend',
+					onResumeEnd
+				);
+				onResumeEnd = null;
+				const current = getCurrentTranslate();
+				swiper.setTransition( 0 );
+				swiper.setTranslate( current );
+			};
+
+			const startAutoplay = () => {
+				if ( ! swiper.destroyed && swiper.params.autoplay ) {
+					swiper.autoplay.start();
+				}
+			};
+
+			const handlePointerEnter = ( event ) => {
+				if (
+					event.pointerType !== 'mouse' ||
+					! ( swiper.autoplay?.running || onResumeEnd )
+				) {
+					return;
+				}
+
+				const target = swiper.translate * getSign();
+				cancelResume();
+				const current = getCurrentTranslate();
+				const step =
+					Math.abs(
+						swiper.slidesGrid[ 1 ] - swiper.slidesGrid[ 0 ]
+					) || swiper.width;
+
+				swiper.autoplay?.stop();
+				swiper.setTransition( 0 );
+				swiper.setTranslate( current );
+				swiper.animating = false;
+				frozen = {
+					target,
+					remaining:
+						Math.min( 1, Math.abs( target - current ) / step ) *
+						swiper.params.speed,
+				};
+			};
+
+			const handleSlideChange = () => {
+				if ( frozen ) {
+					frozen = {
+						target: swiper.translate * getSign(),
+						remaining: 0,
+					};
+				}
+			};
+
+			const handlePointerLeave = () => {
+				if ( ! frozen ) {
+					return;
+				}
+
+				const { target, remaining } = frozen;
+				frozen = null;
+
+				if ( remaining < 1 ) {
+					swiper.setTranslate( target );
+					if ( ! swiper.animating ) {
+						startAutoplay();
+						return;
+					}
+				}
+
+				onResumeEnd = ( event ) => {
+					if ( event.target !== swiper.wrapperEl ) {
+						return;
+					}
+					swiper.wrapperEl.removeEventListener(
+						'transitionend',
+						onResumeEnd
+					);
+					onResumeEnd = null;
+					startAutoplay();
+				};
+				swiper.wrapperEl.addEventListener(
+					'transitionend',
+					onResumeEnd
+				);
+				if ( remaining >= 1 ) {
+					swiper.setTransition( remaining );
+					swiper.setTranslate( target );
+				}
+			};
+
+			sliderContainer.addEventListener(
+				'pointerenter',
+				handlePointerEnter
+			);
+			sliderContainer.addEventListener(
+				'pointerleave',
+				handlePointerLeave
+			);
+			swiper.on( 'slideChangeTransitionStart', handleSlideChange );
+
+			cleanupMarqueeHover = () => {
+				cancelResume();
+				sliderContainer.removeEventListener(
+					'pointerenter',
+					handlePointerEnter
+				);
+				sliderContainer.removeEventListener(
+					'pointerleave',
+					handlePointerLeave
+				);
+				swiper.off( 'slideChangeTransitionStart', handleSlideChange );
+			};
+		}
+
 		// Cleanup on unmount or before re-initialization
 		return () => {
+			if ( cleanupMarqueeHover ) {
+				cleanupMarqueeHover();
+			}
 			if ( swiperInstanceRef.current ) {
 				swiperInstanceRef.current.destroy( true, true );
 				swiperInstanceRef.current = null;
@@ -229,11 +512,14 @@ export default function Edit( {
 		infiniteLoop,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,
+		direction,
 		speed,
 		allowTouchMove,
+		enableGrabCursor,
 		mousewheelControl,
 		keyboardNavigation,
 		showNavigation,
@@ -247,6 +533,11 @@ export default function Edit( {
 		navigationArrowsIconLeft,
 		navigationArrowsIconRight,
 		layoutHeightSwitcher,
+		marqueeEnabled,
+		anyMarqueeEnabled,
+		marqueeSpeed,
+		marqueePause,
+		slideCount,
 	] );
 
 	const getSliderTemplate = [
@@ -276,13 +567,47 @@ export default function Edit( {
 				/>
 			) }
 
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarButton
+						icon="plus"
+						label={ __( 'Add New Slide', 'gslider-blocks' ) }
+						onClick={ handleAddSlide }
+					/>
+					<ToolbarButton
+						icon="admin-page"
+						label={ __(
+							'Duplicate Current Slide',
+							'gslider-blocks'
+						) }
+						onClick={ handleDuplicateSlide }
+					/>
+				</ToolbarGroup>
+			</BlockControls>
+
 			<div { ...blockProps }>
 				<div
-					className={ `swiper ${ globalClass }` }
+					className="swiper"
 					ref={ swiperContainerRef }
 					{ ...( globalID && { id: globalID } ) }
 				>
 					<div { ...innerBlocksProps } />
+
+					{ autoplay && enableAutoplayProgress?.[ deviceType ] && (
+						<div
+							className={ `gslider-autoplay-progress ${ autoplayProgressPosition }` }
+							aria-hidden="true"
+						>
+							<div
+								ref={ autoplayProgressFillRef }
+								className="gslider-autoplay-progress-fill"
+							></div>
+						</div>
+					) }
+					{ enableTopDivider?.[ deviceType ] &&
+						renderShapeDivider( 'top', topDividerShape ) }
+					{ enableBottomDivider?.[ deviceType ] &&
+						renderShapeDivider( 'bottom', bottomDividerShape ) }
 
 					{ showNavigation?.[ deviceType ] &&
 						! navigationArrowsIconSwitcher &&
@@ -296,14 +621,20 @@ export default function Edit( {
 										className="swiper-button-prev"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Previous slide"
+										aria-label={ __(
+											'Previous slide',
+											'gslider-blocks'
+										) }
 									></div>
 									<div
 										ref={ nextRef }
 										className="swiper-button-next"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Next slide"
+										aria-label={ __(
+											'Next slide',
+											'gslider-blocks'
+										) }
 									></div>
 								</div>
 							</>
@@ -320,7 +651,10 @@ export default function Edit( {
 									ref={ prevRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconLeftAlign ===
 										'image' &&
@@ -342,7 +676,10 @@ export default function Edit( {
 									ref={ nextRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconRightAlign ===
 										'image' &&
@@ -381,14 +718,20 @@ export default function Edit( {
 									className="swiper-button-prev"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								></div>
 								<div
 									ref={ nextRef }
 									className="swiper-button-next"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								></div>
 							</div>
 						</>
@@ -405,7 +748,10 @@ export default function Edit( {
 								ref={ prevRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Previous slide"
+								aria-label={ __(
+									'Previous slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconLeftAlign === 'image' &&
 								navigationArrowsIconLeftImageUrl ? (
@@ -422,7 +768,10 @@ export default function Edit( {
 								ref={ nextRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Next slide"
+								aria-label={ __(
+									'Next slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconRightAlign === 'image' &&
 								navigationArrowsIconRightImageUrl ? (
@@ -445,7 +794,7 @@ export default function Edit( {
 				<div
 					className={ `swiper-pagination swiper-pagination-flexi-content swiper-pagination-${ blockId }` }
 					ref={ paginationOutsideRef }
-					aria-label="Slider pagination"
+					aria-label={ __( 'Slider pagination', 'gslider-blocks' ) }
 				></div>
 			</div>
 			<style>{ blockStyle }</style>

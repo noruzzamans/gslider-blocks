@@ -12,7 +12,6 @@
 namespace GSlider\RestApi;
 
 use GSlider\Classes\StyleGenerator;
-use GSlider\Utils\CssSanitizer;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -52,11 +51,13 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			'dynamicBullets',
 			'infiniteLoop',
 			'allowTouchMove',
+			'enableGrabCursor',
 			'mousewheelControl',
 			'keyboardNavigation',
 			'pauseOnHover',
 			'stopOnLastSlide',
 			'reverseDirection',
+			'direction',
 			'layoutHeightSwitcher',
 		];
 
@@ -409,7 +410,9 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 				'Tablet'  => $pagi_tablet,
 				'Desktop' => $pagi_desktop,
 			];
-			$breakpoints    = [];
+			$allow_touch_move = ! isset( $attrs['allowTouchMove'] ) || ! empty( $attrs['allowTouchMove'] );
+			$grab_cursor      = ! empty( $attrs['enableGrabCursor'] ) && $allow_touch_move;
+			$breakpoints      = [];
 
 			foreach ( $devices as $width => $device ) {
 				$breakpoint = [
@@ -418,6 +421,10 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 					'navigation' => [ 'enabled' => $nav_by_device[ $device ] ],
 					'pagination' => [ 'enabled' => $pagi_by_device[ $device ] ],
 				];
+
+				if ( $grab_cursor ) {
+					$breakpoint['grabCursor'] = true;
+				}
 
 				if ( $is_carousel ) {
 					$breakpoint = [
@@ -432,7 +439,7 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			$config = [
 				'effect'         => $effect,
 				'loop'           => ! empty( $attrs['infiniteLoop'] ),
-				'allowTouchMove' => ! isset( $attrs['allowTouchMove'] ) || ! empty( $attrs['allowTouchMove'] ),
+				'allowTouchMove' => $allow_touch_move,
 				'mousewheel'     => ! empty( $attrs['mousewheelControl'] ),
 				'keyboard'       => ! empty( $attrs['keyboardNavigation'] ) ? [
 					'enabled'        => true,
@@ -462,6 +469,8 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 				$config['autoplay'] = false;
 			}
 
+			$is_vertical = 'vertical' === ( $attrs['direction'] ?? 'horizontal' );
+
 			if ( $uses_slider_type && 'creative' === $slide_effect ) {
 				$config['creativeEffect'] = [
 					'prev' => [
@@ -469,13 +478,28 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 						'translate' => [ 0, 0, -400 ],
 					],
 					'next' => [
-						'translate' => [ '100%', 0, 0 ],
+						'translate' => $is_vertical ? [ 0, '100%', 0 ] : [ '100%', 0, 0 ],
 					],
 				];
 			}
 
-			if ( isset( $attrs['layoutHeightSwitcher'] ) && 'adapt' === $attrs['layoutHeightSwitcher'] ) {
+			if ( $is_vertical ) {
+				$config['direction'] = 'vertical';
+			}
+
+			// Vertical slides use the fixed height, autoHeight does not work with it.
+			if ( ! $is_vertical && isset( $attrs['layoutHeightSwitcher'] ) && 'adapt' === $attrs['layoutHeightSwitcher'] ) {
 				$config['autoHeight'] = true;
+			}
+
+			if ( 'gslider-blocks/flexi-content' === $block_name ) {
+				$config['observer']       = true;
+				$config['observeParents'] = true;
+				$config['resizeObserver'] = true;
+			}
+
+			if ( $grab_cursor ) {
+				$config['grabCursor'] = true;
 			}
 
 			return $config;
@@ -521,17 +545,27 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 		/**
 		 * Extracts the pre-generated blockStyle CSS string from attributes.
 		 *
+		 * Applies the same block-ID validation and selector scoping as
+		 * StyleGenerator so the REST `css` field cannot carry unscoped rules.
+		 *
 		 * @since 1.1.9
 		 *
 		 * @param array $attrs Block attributes.
-		 * @return string Sanitized CSS stylesheet string.
+		 * @return string Sanitized, scoped CSS stylesheet string.
 		 */
 		public static function extract_block_styles( array $attrs ): string {
-			if ( ! empty( $attrs['blockStyle'] ) && is_string( $attrs['blockStyle'] ) ) {
-				return CssSanitizer::sanitize( $attrs['blockStyle'] );
+			if ( empty( $attrs['blockStyle'] ) || ! is_string( $attrs['blockStyle'] ) ) {
+				return '';
 			}
 
-			return '';
+			$raw_id   = isset( $attrs['blockId'] ) && is_string( $attrs['blockId'] ) ? $attrs['blockId'] : '';
+			$block_id = sanitize_key( $raw_id );
+
+			if ( ! StyleGenerator::is_valid_block_id( $block_id ) ) {
+				return '';
+			}
+
+			return StyleGenerator::getInstance()->sanitize_css( $attrs['blockStyle'], $block_id );
 		}
 
 		/**

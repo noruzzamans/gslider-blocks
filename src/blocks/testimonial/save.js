@@ -64,6 +64,8 @@ export default function Save( { attributes } ) {
 
 	const normalizedContentOrder = normalizeContentOrder( contentOrder );
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	const blockProps = useBlockProps.save( {
 		className: `gslider-testimonial-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
 			showPagination?.Desktop ||
@@ -71,7 +73,8 @@ export default function Save( { attributes } ) {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
+		...( globalID ? { id: globalID } : {} ),
 	} );
 
 	const navigationEnabled = {
@@ -172,7 +175,10 @@ export default function Save( { attributes } ) {
 
 		pagination: {
 			enabled: anyPaginationEnabled,
-			el: `.${ blockId } .swiper-pagination-testimonial-slider`,
+			// Patterns keep blockId empty, so fall back to an unscoped selector.
+			el: blockId
+				? `.${ blockId } .swiper-pagination-testimonial-slider`
+				: '.swiper-pagination-testimonial-slider',
 			type: paginationType,
 			dynamicBullets:
 				paginationType === 'bullets' ? dynamicBullets : false,
@@ -460,8 +466,7 @@ export default function Save( { attributes } ) {
 								}` }
 							>
 								<div
-									className={ `gslider-content-wrapper ${ item.id } ${ globalClass }` }
-									{ ...( globalID && { id: globalID } ) }
+									className={ `gslider-content-wrapper ${ item.id }` }
 								>
 									<div className="gslider-content-inner-wrapper">
 										{ normalizedContentOrder.map(
@@ -625,7 +630,9 @@ export default function Save( { attributes } ) {
 			{ anyPaginationEnabled && paginationPositionType === 'outside' && (
 				<>
 					<div
-						className={ `swiper-pagination swiper-pagination-testimonial-slider swiper-pagination-${ blockId }` }
+						className={ `swiper-pagination swiper-pagination-testimonial-slider${
+							blockId ? ` swiper-pagination-${ blockId }` : ''
+						}` }
 						aria-label="Carousel pagination"
 					></div>
 				</>
