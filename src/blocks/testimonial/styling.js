@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, no-nested-ternary, jsdoc/require-param, jsdoc/check-tag-names */
+/* eslint-disable no-unused-vars, no-nested-ternary, jsdoc/require-param */
 /**
  * Base Slider Block - Style Generation
  * Returns Dynamic Generated CSS
@@ -7,7 +7,7 @@
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
- * @returns {string} CSS string
+ * @return {string} CSS string
  */
 const generateBaseSliderStyle = ( attributes ) => {
 	const {
@@ -2388,7 +2388,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusTabletCssStyle
-						? `border-radius: ${ globalBorderRadiusTabletCssStyle };`
+						? `border-radius: ${ globalBorderRadiusTabletCssStyle } !important;`
 						: ''
 				}
                 ${
@@ -3246,7 +3246,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusMobileCssStyle
-						? `border-radius: ${ globalBorderRadiusMobileCssStyle };`
+						? `border-radius: ${ globalBorderRadiusMobileCssStyle } !important;`
 						: ''
 				}
                 ${

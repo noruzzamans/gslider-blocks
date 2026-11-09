@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars, react-hooks/exhaustive-deps */
 import { __ } from '@wordpress/i18n';
+import { createBlock } from '@wordpress/blocks';
 import {
 	useBlockProps,
 	BlockControls,
@@ -7,7 +8,7 @@ import {
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
@@ -109,6 +110,8 @@ export default function Edit( {
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	// Block props for container
 	const blockProps = useBlockProps( {
 		className: `gslider-flexi-content-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -117,7 +120,9 @@ export default function Edit( {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}${ marqueeEnabled ? ' gslider-marquee-mode' : '' }`,
+		}${ marqueeEnabled ? ' gslider-marquee-mode' : '' }${
+			trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : ''
+		}`,
 	} );
 
 	// Local state management for swiper instance is replaced by useRef
@@ -135,11 +140,57 @@ export default function Edit( {
 	const paginationInsideRef = useRef( null );
 	const paginationOutsideRef = useRef( null );
 
-	// Slide count, so Swiper is rebuilt when a slide is added, duplicated or removed.
-	const slideCount = useSelect(
-		( select ) => select( blockEditorStore ).getBlockCount( clientId ),
-		[ clientId ]
-	);
+	const { insertBlock, duplicateBlocks } = useDispatch( blockEditorStore );
+
+	// Slide list + selection, so Swiper rebuilds and Duplicate targets the visible child.
+	const { slideCount, innerBlockClientIds, selectedInnerClientId } =
+		useSelect(
+			( select ) => {
+				const {
+					getBlockCount,
+					getBlockOrder,
+					getSelectedBlockClientId,
+				} = select( blockEditorStore );
+				const order = getBlockOrder( clientId );
+				const selected = getSelectedBlockClientId();
+
+				return {
+					slideCount: getBlockCount( clientId ),
+					innerBlockClientIds: order,
+					selectedInnerClientId: order.includes( selected )
+						? selected
+						: null,
+				};
+			},
+			[ clientId ]
+		);
+
+	const handleAddSlide = () => {
+		insertBlock(
+			createBlock( 'gslider-blocks/flexi-content-item' ),
+			innerBlockClientIds.length,
+			clientId
+		);
+	};
+
+	const handleDuplicateSlide = () => {
+		let targetId = selectedInnerClientId;
+
+		if ( ! targetId && innerBlockClientIds.length ) {
+			const swiper = swiperInstanceRef.current;
+			const index =
+				swiper && ! swiper.destroyed
+					? swiper.realIndex
+					: innerBlockClientIds.length - 1;
+			targetId =
+				innerBlockClientIds[ index ] ||
+				innerBlockClientIds[ innerBlockClientIds.length - 1 ];
+		}
+
+		if ( targetId ) {
+			duplicateBlocks( [ targetId ] );
+		}
+	};
 
 	/**
 	 * Vanilla JS Swiper initialization
@@ -511,9 +562,27 @@ export default function Edit( {
 				/>
 			) }
 
+			<BlockControls>
+				<ToolbarGroup>
+					<ToolbarButton
+						icon="plus"
+						label={ __( 'Add New Slide', 'gslider-blocks' ) }
+						onClick={ handleAddSlide }
+					/>
+					<ToolbarButton
+						icon="admin-page"
+						label={ __(
+							'Duplicate Current Slide',
+							'gslider-blocks'
+						) }
+						onClick={ handleDuplicateSlide }
+					/>
+				</ToolbarGroup>
+			</BlockControls>
+
 			<div { ...blockProps }>
 				<div
-					className={ `swiper ${ globalClass }` }
+					className="swiper"
 					ref={ swiperContainerRef }
 					{ ...( globalID && { id: globalID } ) }
 				>
@@ -547,14 +616,20 @@ export default function Edit( {
 										className="swiper-button-prev"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Previous slide"
+										aria-label={ __(
+											'Previous slide',
+											'gslider-blocks'
+										) }
 									></div>
 									<div
 										ref={ nextRef }
 										className="swiper-button-next"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Next slide"
+										aria-label={ __(
+											'Next slide',
+											'gslider-blocks'
+										) }
 									></div>
 								</div>
 							</>
@@ -571,7 +646,10 @@ export default function Edit( {
 									ref={ prevRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconLeftAlign ===
 										'image' &&
@@ -593,7 +671,10 @@ export default function Edit( {
 									ref={ nextRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconRightAlign ===
 										'image' &&
@@ -632,14 +713,20 @@ export default function Edit( {
 									className="swiper-button-prev"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								></div>
 								<div
 									ref={ nextRef }
 									className="swiper-button-next"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								></div>
 							</div>
 						</>
@@ -656,7 +743,10 @@ export default function Edit( {
 								ref={ prevRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Previous slide"
+								aria-label={ __(
+									'Previous slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconLeftAlign === 'image' &&
 								navigationArrowsIconLeftImageUrl ? (
@@ -673,7 +763,10 @@ export default function Edit( {
 								ref={ nextRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Next slide"
+								aria-label={ __(
+									'Next slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconRightAlign === 'image' &&
 								navigationArrowsIconRightImageUrl ? (
@@ -696,7 +789,7 @@ export default function Edit( {
 				<div
 					className={ `swiper-pagination swiper-pagination-flexi-content swiper-pagination-${ blockId }` }
 					ref={ paginationOutsideRef }
-					aria-label="Slider pagination"
+					aria-label={ __( 'Slider pagination', 'gslider-blocks' ) }
 				></div>
 			</div>
 			<style>{ blockStyle }</style>

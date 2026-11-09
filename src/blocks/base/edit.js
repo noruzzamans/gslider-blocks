@@ -96,6 +96,8 @@ export default function Edit( {
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	// Block props for container
 	const blockProps = useBlockProps( {
 		className: `gslider-base-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -104,7 +106,7 @@ export default function Edit( {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
 	} );
 
 	// Local state management for slider items and active slide index
@@ -539,13 +541,16 @@ export default function Edit( {
 			{ renderSliderToolbarControls() }
 
 			<div { ...blockProps }>
-				<div className="swiper" ref={ swiperContainerRef }>
+				<div
+					className="swiper"
+					ref={ swiperContainerRef }
+					{ ...( globalID && { id: globalID } ) }
+				>
 					<div className="swiper-wrapper">
 						{ sliderItemList.map( ( item, index ) => (
 							<div className="swiper-slide" key={ item.id }>
 								<div
-									className={ `gslider-content-wrapper ${ item.id } ${ globalClass }` }
-									{ ...( globalID && { id: globalID } ) }
+									className={ `gslider-content-wrapper ${ item.id }` }
 									ref={ panelRef }
 								>
 									<div className="gslider-content-inner-wrapper">
@@ -798,14 +803,20 @@ export default function Edit( {
 										className="swiper-button-prev"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Previous slide"
+										aria-label={ __(
+											'Previous slide',
+											'gslider-blocks'
+										) }
 									></div>
 									<div
 										ref={ nextRef }
 										className="swiper-button-next"
 										role="button"
 										tabIndex={ 0 }
-										aria-label="Next slide"
+										aria-label={ __(
+											'Next slide',
+											'gslider-blocks'
+										) }
 									></div>
 								</div>
 							</>
@@ -822,7 +833,10 @@ export default function Edit( {
 									ref={ prevRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconLeftAlign ===
 										'image' &&
@@ -844,7 +858,10 @@ export default function Edit( {
 									ref={ nextRef }
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								>
 									{ navigationArrowsIconRightAlign ===
 										'image' &&
@@ -868,7 +885,10 @@ export default function Edit( {
 					<div
 						className="swiper-pagination swiper-pagination-base-slider"
 						ref={ paginationInsideRef }
-						aria-label="Carousel pagination"
+						aria-label={ __(
+							'Carousel pagination',
+							'gslider-blocks'
+						) }
 					></div>
 				</div>
 
@@ -884,14 +904,20 @@ export default function Edit( {
 									className="swiper-button-prev"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Previous slide"
+									aria-label={ __(
+										'Previous slide',
+										'gslider-blocks'
+									) }
 								></div>
 								<div
 									ref={ nextRef }
 									className="swiper-button-next"
 									role="button"
 									tabIndex={ 0 }
-									aria-label="Next slide"
+									aria-label={ __(
+										'Next slide',
+										'gslider-blocks'
+									) }
 								></div>
 							</div>
 						</>
@@ -908,7 +934,10 @@ export default function Edit( {
 								ref={ prevRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Previous slide"
+								aria-label={ __(
+									'Previous slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconLeftAlign === 'image' &&
 								navigationArrowsIconLeftImageUrl ? (
@@ -925,7 +954,10 @@ export default function Edit( {
 								ref={ nextRef }
 								role="button"
 								tabIndex={ 0 }
-								aria-label="Next slide"
+								aria-label={ __(
+									'Next slide',
+									'gslider-blocks'
+								) }
 							>
 								{ navigationArrowsIconRightAlign === 'image' &&
 								navigationArrowsIconRightImageUrl ? (
@@ -948,7 +980,7 @@ export default function Edit( {
 				<div
 					className={ `swiper-pagination swiper-pagination-base-slider swiper-pagination-${ blockId }` }
 					ref={ paginationOutsideRef }
-					aria-label="Slider pagination"
+					aria-label={ __( 'Slider pagination', 'gslider-blocks' ) }
 				></div>
 			</div>
 			<style>{ blockStyle }</style>

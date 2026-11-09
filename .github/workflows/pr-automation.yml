@@ -354,9 +354,11 @@ jobs:
       - name: Add Contributor to All-Contributors
         env:
           AUTHOR: ${{ github.event.pull_request.user.login }}
+          PRIVATE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Processing contributor @${AUTHOR}..."
           npx --yes all-contributors-cli add "${AUTHOR}" code
+          node scripts/sort-contributors.js
           npx --yes all-contributors-cli generate
 
       - name: Commit and Push if Changed
