@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-tag-names */
+/* eslint-disable no-unused-vars, jsdoc/require-param */
 /**
  * Image Slider Block - Style Generation
  * Returns Dynamic Generated CSS
@@ -63,7 +63,7 @@ const getHasPaginationCss = (
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
- * @returns {string} CSS string
+ * @return {string} CSS string
  */
 const generateImageSliderStyle = ( attributes ) => {
 	const {
@@ -1710,7 +1710,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusTabletCssStyle
-						? `border-radius: ${ globalBorderRadiusTabletCssStyle };`
+						? `border-radius: ${ globalBorderRadiusTabletCssStyle } !important;`
 						: ''
 				}
                 ${
@@ -1741,7 +1741,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					imageBorderRadiusTabletCssStyle
-						? `border-radius: ${ imageBorderRadiusTabletCssStyle };`
+						? `border-radius: ${ imageBorderRadiusTabletCssStyle } !important;`
 						: ''
 				}
                 display: flex;
@@ -2238,7 +2238,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					globalBorderRadiusMobileCssStyle
-						? `border-radius: ${ globalBorderRadiusMobileCssStyle };`
+						? `border-radius: ${ globalBorderRadiusMobileCssStyle } !important;`
 						: ''
 				}
                 ${
@@ -2269,7 +2269,7 @@ const generateImageSliderStyle = ( attributes ) => {
 				}  
                 ${
 					imageBorderRadiusMobileCssStyle
-						? `border-radius: ${ imageBorderRadiusMobileCssStyle };`
+						? `border-radius: ${ imageBorderRadiusMobileCssStyle } !important;`
 						: ''
 				}
                 display: flex;

@@ -5,7 +5,7 @@
  * Verifies that:
  * 1. StyleGenerator implements Registrable interface and SingletonTrait.
  * 2. register() hooks into WordPress 'render_block', 'wp_footer', and 'wp_enqueue_scripts'.
- * 3. Dynamic styles are sanitized and scoped strictly to block IDs.
+ * 3. Dynamic styles are sanitized and scoped strictly to block IDs (#318: selectors must start at the block class).
  * 4. Duplicate <style> tags are prevented for identical block IDs in the same request (#312).
  * 5. <style> tags are completely excluded from RSS feeds (#312).
  * 6. Generic REST responses get no <style>, but the plugin's headless render keeps it,
@@ -51,6 +51,9 @@ class StyleGeneratorTest {
 		$this->test_plugin_services_contains_class();
 		$this->test_register_hooks();
 		$this->test_css_scoping_and_sanitization();
+		$this->test_css_scope_anchor_and_block_id_validation();
+		$this->test_invalid_block_id_skips_style_output();
+		$this->test_sanitize_css_emits_desktop_before_media_queries();
 		$this->test_dynamic_css_deduplication();
 		$this->test_feed_exclusion();
 		$this->test_rest_request_exclusion();
@@ -188,6 +191,231 @@ class StyleGeneratorTest {
 			exit( 1 );
 		}
 		echo "OK: Unscoped CSS selectors are strictly dropped\n";
+	}
+
+	/**
+	 * Verify selectors must start at the block class and block IDs must be valid (#318).
+	 *
+	 * @return void
+	 */
+	public function test_css_scope_anchor_and_block_id_validation(): void {
+		$generator = StyleGenerator::getInstance();
+		$block_id  = 'gslider-abc';
+		$root      = '.' . $block_id;
+
+		$kept = $generator->sanitize_css(
+			"{$root} { color: #111111; } {$root}.gslider-wrapper { margin: 0; } {$root} .swiper-slide > .inner { padding: 8px; }",
+			$block_id
+		);
+		if ( false === strpos( $kept, 'color:#111111' ) || false === strpos( $kept, 'margin:0' ) || false === strpos( $kept, 'padding:8px' ) ) {
+			fwrite( STDERR, "FAIL: Legitimate generated selectors were stripped: $kept\n" );
+			exit( 1 );
+		}
+		echo "OK: Compound, descendant, and child selectors at the block root are kept\n";
+
+		$media = $generator->sanitize_css(
+			"@media (max-width: 767px) { html:has({$root}) body { color: #ff0000; } {$root} { padding: 4px; } }",
+			$block_id
+		);
+		if ( false !== strpos( $media, 'html' ) || false === strpos( $media, 'padding:4px' ) ) {
+			fwrite( STDERR, "FAIL: Media-query scope filter failed: $media\n" );
+			exit( 1 );
+		}
+		echo "OK: Unscoped selectors inside @media are dropped; rooted rules remain\n";
+
+		$dropped = [
+			"html:has({$root}) body { background: #000000; }",
+			"body:not({$root}) { display: none; }",
+			"{$root}:is(body, html) { color: #ff0000; }",
+			"{$root} ~ header { opacity: 0; }",
+			"{$root} + * { position: static; }",
+			".{$block_id}def { color: #ff0000; }",
+		];
+		foreach ( $dropped as $css ) {
+			$clean = $generator->sanitize_css( $css, $block_id );
+			if ( '' !== $clean ) {
+				fwrite( STDERR, "FAIL: Selector that does not stay inside the block was kept ($css) => $clean\n" );
+				exit( 1 );
+			}
+		}
+		echo "OK: :has()/:not()/:is(), sibling combinators, and prefix collisions are dropped\n";
+
+		if ( ! StyleGenerator::is_valid_block_id( 'gslider-test-block' ) ||
+			! StyleGenerator::is_valid_block_id( 'gslider-flexi-content-item-a1b2c3d4' ) ) {
+			fwrite( STDERR, "FAIL: Editor-format block IDs were rejected\n" );
+			exit( 1 );
+		}
+		if ( StyleGenerator::is_valid_block_id( '' ) ||
+			StyleGenerator::is_valid_block_id( 'g' ) ||
+			StyleGenerator::is_valid_block_id( 'slide-a' ) ) {
+			fwrite( STDERR, "FAIL: Invalid block IDs were accepted\n" );
+			exit( 1 );
+		}
+
+		if ( '' !== $generator->sanitize_css( "{$root} { color: #111111; }", '' ) ||
+			'' !== $generator->sanitize_css( 'body { color: #111111; }', 'g' ) ) {
+			fwrite( STDERR, "FAIL: sanitize_css emitted CSS for an invalid block ID\n" );
+			exit( 1 );
+		}
+		echo "OK: Empty, short, and non-gslider block IDs produce no CSS\n";
+	}
+
+	/**
+	 * Verify collect_and_render_dynamic_styles skips output when blockId is invalid (#318).
+	 *
+	 * @return void
+	 */
+	public function test_invalid_block_id_skips_style_output(): void {
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+
+		$empty = $generator->collect_and_render_dynamic_styles(
+			'<div>Slider</div>',
+			[
+				'blockName' => 'gslider-blocks/image-slider',
+				'attrs'     => [
+					'blockId'    => '',
+					'blockStyle' => 'body { color: #ff0000; }',
+				],
+			]
+		);
+		if ( false !== strpos( $empty, '<style' ) ) {
+			fwrite( STDERR, "FAIL: Empty blockId still printed a style tag: $empty\n" );
+			exit( 1 );
+		}
+
+		$short = $generator->collect_and_render_dynamic_styles(
+			'<div>Slider</div>',
+			[
+				'blockName' => 'gslider-blocks/image-slider',
+				'attrs'     => [
+					'blockId'    => 'ab',
+					'blockStyle' => '.ab { color: #ff0000; }',
+				],
+			]
+		);
+		if ( false !== strpos( $short, '<style' ) ) {
+			fwrite( STDERR, "FAIL: Short blockId still printed a style tag: $short\n" );
+			exit( 1 );
+		}
+		echo "OK: Invalid blockId skips style output\n";
+	}
+
+	/**
+	 * Verify sanitize_css() emits desktop rules before @media breakpoints (#709).
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_css_emits_desktop_before_media_queries(): void {
+		$generator = StyleGenerator::getInstance();
+		$block_id  = 'gslider-b0d690d4';
+
+		$raw_css = ".{$block_id}.gslider-base-wrapper { border-radius: 30px 30px 30px 30px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 16px; padding: 12px 24px 12px 24px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 500px; } "
+			. '@media only screen and (max-width: 1024px) { '
+			. 'body { background: #ff0000; } '
+			. ".{$block_id}.gslider-base-wrapper { border-radius: 10px 10px 10px 10px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 15px; padding: 10px 20px 10px 20px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 400px; } "
+			. '} '
+			. '@media only screen and (max-width: 767px) { '
+			. ".{$block_id}.gslider-base-wrapper { border-radius: 0px 0px 0px 0px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 14px; padding: 8px 16px 8px 16px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 300px; } "
+			. '} '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #ededed; } "
+			. '@media only screen and (max-width: 1024px) { '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #cccccc; } "
+			. '} '
+			. '@media only screen and (max-width: 767px) { '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #aaaaaa; } "
+			. '}';
+
+		$clean = $generator->sanitize_css( $raw_css, $block_id );
+
+		if ( false !== strpos( $clean, 'body' ) ) {
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected unscoped 'body' selector inside @media to be dropped (expected: false, actual pos: %d). Output: %s\n",
+					strpos( $clean, 'body' ),
+					$clean
+				)
+			);
+			exit( 1 );
+		}
+
+		$pos_desktop_radius = strpos( $clean, '30px 30px 30px 30px !important' );
+		$pos_desktop_btn    = strpos( $clean, 'font-size:16px' );
+		$pos_desktop_item   = strpos( $clean, 'background:#ededed' );
+		$pos_tablet_media   = strpos( $clean, 'max-width:1024px' );
+		$pos_tablet_radius  = strpos( $clean, '10px 10px 10px 10px !important' );
+		$pos_tablet_btn     = strpos( $clean, 'font-size:15px' );
+		$pos_mobile_media   = strpos( $clean, 'max-width:767px' );
+		$pos_mobile_radius  = strpos( $clean, '0px 0px 0px 0px !important' );
+		$pos_mobile_btn     = strpos( $clean, 'font-size:14px' );
+
+		if (
+			false === $pos_desktop_radius ||
+			false === $pos_desktop_btn ||
+			false === $pos_desktop_item ||
+			false === $pos_tablet_media ||
+			false === $pos_tablet_radius ||
+			false === $pos_tablet_btn ||
+			false === $pos_mobile_media ||
+			false === $pos_mobile_radius ||
+			false === $pos_mobile_btn
+		) {
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected all responsive selectors to be present (expected: non-false offsets; actual desktop_radius=%s, desktop_btn=%s, desktop_item=%s, tablet_media=%s, tablet_radius=%s, tablet_btn=%s, mobile_media=%s, mobile_radius=%s, mobile_btn=%s). Output: %s\n",
+					var_export( $pos_desktop_radius, true ),
+					var_export( $pos_desktop_btn, true ),
+					var_export( $pos_desktop_item, true ),
+					var_export( $pos_tablet_media, true ),
+					var_export( $pos_tablet_radius, true ),
+					var_export( $pos_tablet_btn, true ),
+					var_export( $pos_mobile_media, true ),
+					var_export( $pos_mobile_radius, true ),
+					var_export( $pos_mobile_btn, true ),
+					$clean
+				)
+			);
+			exit( 1 );
+		}
+
+		if (
+			! ( $pos_desktop_radius < $pos_tablet_media ) ||
+			! ( $pos_desktop_btn < $pos_tablet_media ) ||
+			! ( $pos_desktop_item < $pos_tablet_media ) ||
+			! ( $pos_tablet_media < $pos_tablet_radius ) ||
+			! ( $pos_tablet_radius < $pos_mobile_media ) ||
+			! ( $pos_tablet_btn < $pos_mobile_media ) ||
+			! ( $pos_mobile_media < $pos_mobile_radius ) ||
+			! ( $pos_mobile_media < $pos_mobile_btn )
+		) {
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected cascade order desktop (radius/btn/item) < tablet_media < tablet (radius/btn) < mobile_media < mobile (radius/btn); actual positions desktop_radius=%d, desktop_btn=%d, desktop_item=%d, tablet_media=%d, tablet_radius=%d, tablet_btn=%d, mobile_media=%d, mobile_radius=%d, mobile_btn=%d. Output: %s\n",
+					$pos_desktop_radius,
+					$pos_desktop_btn,
+					$pos_desktop_item,
+					$pos_tablet_media,
+					$pos_tablet_radius,
+					$pos_tablet_btn,
+					$pos_mobile_media,
+					$pos_mobile_radius,
+					$pos_mobile_btn,
+					$clean
+				)
+			);
+			exit( 1 );
+		}
+
+		echo "OK: sanitize_css() preserves Desktop -> Tablet -> Mobile CSS cascade order\n";
 	}
 
 	/**
