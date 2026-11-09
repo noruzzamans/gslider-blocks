@@ -3696,6 +3696,32 @@ var generateImageSliderStyle = (attributes2) => {
   const globalMobileBackgroundHoverStyles = globalBackgroundStyleObjectToString(
     getGlobalBackgroundHoverStyles("Mobile")
   );
+  const getImageBackgroundStyles = (bgType, bgColor, bgGradient, customGradientEnabled, customGradient) => {
+    if (bgType === "gradient") {
+      const resolved = resolveGradient(
+        customGradientEnabled,
+        customGradient,
+        bgGradient,
+        bgColor
+      );
+      return resolved ? `background: ${resolved};` : "";
+    }
+    return bgColor ? `background: ${bgColor};` : "";
+  };
+  const imageNormalBackgroundStyles = getImageBackgroundStyles(
+    imageNormalBackgroundType,
+    imageNormalClassicColor,
+    imageNormalGradientColor,
+    imageNormalCustomGradientSwitcher,
+    imageNormalCustomGradientInputValue
+  );
+  const imageHoverBackgroundStyles = getImageBackgroundStyles(
+    imageHoverBackgroundType,
+    imageHoverClassicColor,
+    imageHoverGradientColor,
+    imageHoverCustomGradientSwitcher,
+    imageHoverCustomGradientInputValue
+  );
   const imageSliderCSS = `
         .${blockId}.gslider-image-slider-wrapper {
             ${globalDesktopBackgroundNormalStyles}
@@ -3735,8 +3761,10 @@ var generateImageSliderStyle = (attributes2) => {
             align-items: center;
             justify-content: ${verticalAlign.Desktop || "center"};
             transition: background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+            ${imageNormalBackgroundStyles}
         }
         .${blockId}.gslider-image-slider-wrapper .gslider-image-slider-content-wrapper:hover {
+            ${imageHoverBackgroundStyles}
             ${imageBorderHoverColor ? `border-color: ${imageBorderHoverColor};` : ""}
             ${imageBoxShadowHoverCssValue ? `box-shadow: ${imageBoxShadowHoverCssValue} !important;` : ""}
         }

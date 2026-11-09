@@ -764,6 +764,52 @@ const generateImageSliderStyle = ( attributes ) => {
 			getGlobalBackgroundHoverStyles( 'Mobile' )
 		);
 
+	/**
+	 * Build image wrapper background declaration (classic or gradient).
+	 *
+	 * @param {string}  bgType                Background type ('classic' or 'gradient').
+	 * @param {string}  bgColor               Classic background color.
+	 * @param {?string} bgGradient            Preset gradient value.
+	 * @param {boolean} customGradientEnabled Whether custom gradient is enabled.
+	 * @param {string}  customGradient        Custom gradient CSS value.
+	 * @return {string} CSS background declaration or empty string.
+	 */
+	const getImageBackgroundStyles = (
+		bgType,
+		bgColor,
+		bgGradient,
+		customGradientEnabled,
+		customGradient
+	) => {
+		if ( bgType === 'gradient' ) {
+			const resolved = resolveGradient(
+				customGradientEnabled,
+				customGradient,
+				bgGradient,
+				bgColor
+			);
+			return resolved ? `background: ${ resolved };` : '';
+		}
+
+		return bgColor ? `background: ${ bgColor };` : '';
+	};
+
+	const imageNormalBackgroundStyles = getImageBackgroundStyles(
+		imageNormalBackgroundType,
+		imageNormalClassicColor,
+		imageNormalGradientColor,
+		imageNormalCustomGradientSwitcher,
+		imageNormalCustomGradientInputValue
+	);
+
+	const imageHoverBackgroundStyles = getImageBackgroundStyles(
+		imageHoverBackgroundType,
+		imageHoverClassicColor,
+		imageHoverGradientColor,
+		imageHoverCustomGradientSwitcher,
+		imageHoverCustomGradientInputValue
+	);
+
 	/** Start All Block Style */
 	const imageSliderCSS = `
         .${ blockId }.gslider-image-slider-wrapper {
@@ -858,8 +904,10 @@ const generateImageSliderStyle = ( attributes ) => {
             align-items: center;
             justify-content: ${ verticalAlign.Desktop || 'center' };
             transition: background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+            ${ imageNormalBackgroundStyles }
         }
         .${ blockId }.gslider-image-slider-wrapper .gslider-image-slider-content-wrapper:hover {
+            ${ imageHoverBackgroundStyles }
             ${
 				imageBorderHoverColor
 					? `border-color: ${ imageBorderHoverColor };`
