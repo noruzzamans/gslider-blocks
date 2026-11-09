@@ -51,6 +51,8 @@ export default function Save( { attributes } ) {
 		enableLazyLoad,
 	} = attributes;
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	const blockProps = useBlockProps.save( {
 		className: `gslider-image-slider-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
 			showPagination?.Desktop ||
@@ -58,7 +60,7 @@ export default function Save( { attributes } ) {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
 		...( globalID ? { id: globalID } : {} ),
 	} );
 
@@ -199,9 +201,7 @@ export default function Save( { attributes } ) {
 				<div className="swiper-wrapper">
 					{ images.map( ( item ) => (
 						<div key={ item.id } className={ `swiper-slide` }>
-							<div
-								className={ `gslider-image-slider-content-wrapper ${ globalClass }` }
-							>
+							<div className="gslider-image-slider-content-wrapper">
 								<div
 									className="gslider-image-item"
 									data-hover-effect={ imageLinkHoverEffect }

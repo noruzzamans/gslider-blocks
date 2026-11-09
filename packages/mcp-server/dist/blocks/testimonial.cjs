@@ -4154,8 +4154,9 @@ function Save({ attributes: attributes2 }) {
     contentOrder
   } = attributes2;
   const normalizedContentOrder = normalizeContentOrder(contentOrder);
+  const trimmedGlobalClass = globalClass?.trim();
   const blockProps = import_block_editor.useBlockProps.save({
-    className: `gslider-testimonial-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}`,
+    className: `gslider-testimonial-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}${trimmedGlobalClass ? ` ${trimmedGlobalClass}` : ""}`,
     ...globalID ? { id: globalID } : {}
   });
   const navigationEnabled = {
@@ -4494,7 +4495,7 @@ function Save({ attributes: attributes2 }) {
             children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
               "div",
               {
-                className: `gslider-content-wrapper ${item.id} ${globalClass}`,
+                className: `gslider-content-wrapper ${item.id}`,
                 children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-content-inner-wrapper", children: normalizedContentOrder.map(
                   (groupKey) => renderGroupMap[groupKey] || null
                 ) })
@@ -8972,7 +8973,6 @@ var v1_2_1 = {
 };
 var v1_2_1_globalid = {
   attributes: attributes_default,
-  isEligible: (attributes2) => typeof attributes2.globalID === "string" && "" !== attributes2.globalID,
   supports: {
     html: false,
     anchor: false,

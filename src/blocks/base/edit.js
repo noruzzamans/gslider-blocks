@@ -96,6 +96,8 @@ export default function Edit( {
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	// Block props for container
 	const blockProps = useBlockProps( {
 		className: `gslider-base-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -104,7 +106,7 @@ export default function Edit( {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
 	} );
 
 	// Local state management for slider items and active slide index
@@ -548,7 +550,7 @@ export default function Edit( {
 						{ sliderItemList.map( ( item, index ) => (
 							<div className="swiper-slide" key={ item.id }>
 								<div
-									className={ `gslider-content-wrapper ${ item.id } ${ globalClass }` }
+									className={ `gslider-content-wrapper ${ item.id }` }
 									ref={ panelRef }
 								>
 									<div className="gslider-content-inner-wrapper">

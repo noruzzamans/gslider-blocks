@@ -2266,13 +2266,10 @@ const v1_2_1 = {
 };
 
 /**
- * Snapshot of save() before Global ID moved from each slide onto the wrapper.
- * Only posts that saved a Global ID produce different markup.
+ * Snapshot of save() before Global ID and Global Class moved from each slide onto the wrapper.
  */
 const v1_2_1_globalid = {
 	attributes,
-	isEligible: ( attributes ) =>
-		typeof attributes.globalID === 'string' && '' !== attributes.globalID,
 	supports: {
 		html: false,
 		anchor: false,

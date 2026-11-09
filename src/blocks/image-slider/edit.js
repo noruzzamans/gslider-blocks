@@ -119,6 +119,8 @@ export default function Edit( {
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	/** Block props for container */
 	const blockProps = useBlockProps( {
 		className: `gslider-image-slider-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -127,7 +129,7 @@ export default function Edit( {
 			showPagination?.Mobile
 				? 'has-pagination'
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
 	} );
 
 	const onSelectFromPlaceholder = ( selection ) => {
@@ -446,7 +448,7 @@ export default function Edit( {
 							{ images.map( ( item, index ) => (
 								<div className="swiper-slide" key={ item.id }>
 									<div
-										className={ `gslider-image-slider-content-wrapper ${ globalClass }` }
+										className="gslider-image-slider-content-wrapper"
 										ref={ panelRef }
 									>
 										<div

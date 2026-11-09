@@ -2814,8 +2814,9 @@ function Save({ attributes: attributes2 }) {
     logoLinkHoverEffect,
     enableLazyLoad
   } = attributes2;
+  const trimmedGlobalClass = globalClass?.trim();
   const blockProps = import_block_editor.useBlockProps.save({
-    className: `gslider-logo-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}`,
+    className: `gslider-logo-carousel-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}${trimmedGlobalClass ? ` ${trimmedGlobalClass}` : ""}`,
     ...globalID ? { id: globalID } : {}
   });
   const captionEnabled = {
@@ -2902,56 +2903,50 @@ function Save({ attributes: attributes2 }) {
   });
   return /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { ...blockProps, "data-swiper-settings": swiperSettings, children: [
     /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "swiper", role: "region", "aria-label": "Logo Carousel", children: [
-      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: logos.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: `swiper-slide`, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-        "div",
-        {
-          className: `gslider-logo-carousel-content-wrapper ${globalClass}`,
-          children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-              "div",
-              {
-                className: "gslider-logo-item",
-                "data-hover-effect": logoLinkHoverEffect,
-                children: [
-                  enableLogoLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "a",
-                    {
-                      href: item.link,
-                      target: logoLinkTarget,
-                      rel: logoLinkRel,
-                      className: "gslider-logo-link",
-                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        "img",
-                        {
-                          src: item.url,
-                          alt: item.alt || `Logo ${logos.indexOf(item) + 1}`,
-                          loading: enableLazyLoad ? "lazy" : void 0
-                        }
-                      )
-                    }
-                  ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+      /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: logos.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: `swiper-slide`, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "gslider-logo-carousel-content-wrapper", children: [
+        /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+          "div",
+          {
+            className: "gslider-logo-item",
+            "data-hover-effect": logoLinkHoverEffect,
+            children: [
+              enableLogoLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                "a",
+                {
+                  href: item.link,
+                  target: logoLinkTarget,
+                  rel: logoLinkRel,
+                  className: "gslider-logo-link",
+                  children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                     "img",
                     {
                       src: item.url,
                       alt: item.alt || `Logo ${logos.indexOf(item) + 1}`,
                       loading: enableLazyLoad ? "lazy" : void 0
                     }
-                  ),
-                  showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-logo-tooltip", children: item.tooltipText })
-                ]
-              }
-            ),
-            anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-              "div",
-              {
-                className: "gslider-logo-carousel-caption",
-                "aria-live": "polite",
-                children: item.caption
-              }
-            ) : null
-          ]
-        }
-      ) }, item.id)) }),
+                  )
+                }
+              ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                "img",
+                {
+                  src: item.url,
+                  alt: item.alt || `Logo ${logos.indexOf(item) + 1}`,
+                  loading: enableLazyLoad ? "lazy" : void 0
+                }
+              ),
+              showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-logo-tooltip", children: item.tooltipText })
+            ]
+          }
+        ),
+        anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+          "div",
+          {
+            className: "gslider-logo-carousel-caption",
+            "aria-live": "polite",
+            children: item.caption
+          }
+        ) : null
+      ] }) }, item.id)) }),
       anyNavigationEnabled && !navigationArrowsIconSwitcher && navigationArrowPositionType === "inside" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
         "div",
         {
@@ -6435,7 +6430,6 @@ var v1_2_1 = {
 };
 var v1_2_1_globalid = {
   attributes: attributes_default,
-  isEligible: (attributes2) => typeof attributes2.globalID === "string" && "" !== attributes2.globalID,
   supports: {
     html: false,
     anchor: false,

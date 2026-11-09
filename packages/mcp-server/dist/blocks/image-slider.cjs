@@ -2747,8 +2747,9 @@ function Save({ attributes: attributes2 }) {
     imageLinkHoverEffect,
     enableLazyLoad
   } = attributes2;
+  const trimmedGlobalClass = globalClass?.trim();
   const blockProps = import_block_editor.useBlockProps.save({
-    className: `gslider-image-slider-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}`,
+    className: `gslider-image-slider-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}${trimmedGlobalClass ? ` ${trimmedGlobalClass}` : ""}`,
     ...globalID ? { id: globalID } : {}
   });
   const captionEnabled = {
@@ -2845,57 +2846,42 @@ function Save({ attributes: attributes2 }) {
       },
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "swiper", role: "region", "aria-label": "Image Slider", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: images.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: `swiper-slide`, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-            "div",
-            {
-              className: `gslider-image-slider-content-wrapper ${globalClass}`,
-              children: [
-                /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-                  "div",
-                  {
-                    className: "gslider-image-item",
-                    "data-hover-effect": imageLinkHoverEffect,
-                    children: [
-                      lightboxDevices ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        "a",
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: images.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: `swiper-slide`, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "gslider-image-slider-content-wrapper", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+              "div",
+              {
+                className: "gslider-image-item",
+                "data-hover-effect": imageLinkHoverEffect,
+                children: [
+                  lightboxDevices ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                    "a",
+                    {
+                      href: item.url,
+                      "data-fslightbox": blockId,
+                      "data-caption": item.caption,
+                      className: "gslider-image-link",
+                      ...linkOnLightboxOff && item.link && {
+                        "data-image-link": item.link,
+                        "data-image-link-target": imageLinkTarget,
+                        "data-image-link-rel": imageLinkRel
+                      },
+                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                        "img",
                         {
-                          href: item.url,
-                          "data-fslightbox": blockId,
-                          "data-caption": item.caption,
-                          className: "gslider-image-link",
-                          ...linkOnLightboxOff && item.link && {
-                            "data-image-link": item.link,
-                            "data-image-link-target": imageLinkTarget,
-                            "data-image-link-rel": imageLinkRel
-                          },
-                          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                            "img",
-                            {
-                              src: item.url,
-                              alt: item.alt || `image ${images.indexOf(item) + 1}`,
-                              loading: enableLazyLoad ? "lazy" : void 0
-                            }
-                          )
+                          src: item.url,
+                          alt: item.alt || `image ${images.indexOf(item) + 1}`,
+                          loading: enableLazyLoad ? "lazy" : void 0
                         }
-                      ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: enableimageLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        "a",
-                        {
-                          href: item.link,
-                          target: imageLinkTarget,
-                          rel: imageLinkRel,
-                          className: "gslider-image-link",
-                          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                            "img",
-                            {
-                              src: item.url,
-                              alt: item.alt || `image ${images.indexOf(
-                                item
-                              ) + 1}`,
-                              loading: enableLazyLoad ? "lazy" : void 0
-                            }
-                          )
-                        }
-                      ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                      )
+                    }
+                  ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: enableimageLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                    "a",
+                    {
+                      href: item.link,
+                      target: imageLinkTarget,
+                      rel: imageLinkRel,
+                      className: "gslider-image-link",
+                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                         "img",
                         {
                           src: item.url,
@@ -2904,22 +2890,31 @@ function Save({ attributes: attributes2 }) {
                           ) + 1}`,
                           loading: enableLazyLoad ? "lazy" : void 0
                         }
-                      ) }),
-                      showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-image-tooltip", children: item.tooltipText })
-                    ]
-                  }
-                ),
-                anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                  "div",
-                  {
-                    className: "gslider-image-slider-caption",
-                    "aria-live": "polite",
-                    children: item.caption
-                  }
-                ) : null
-              ]
-            }
-          ) }, item.id)) }),
+                      )
+                    }
+                  ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                    "img",
+                    {
+                      src: item.url,
+                      alt: item.alt || `image ${images.indexOf(
+                        item
+                      ) + 1}`,
+                      loading: enableLazyLoad ? "lazy" : void 0
+                    }
+                  ) }),
+                  showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-image-tooltip", children: item.tooltipText })
+                ]
+              }
+            ),
+            anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+              "div",
+              {
+                className: "gslider-image-slider-caption",
+                "aria-live": "polite",
+                children: item.caption
+              }
+            ) : null
+          ] }) }, item.id)) }),
           anyNavigationEnabled && !navigationArrowsIconSwitcher && navigationArrowPositionType === "inside" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
             "div",
             {
@@ -6389,7 +6384,6 @@ var v1_2_1 = {
 };
 var v1_2_1_globalid = {
   attributes: attributes_default,
-  isEligible: (attributes2) => typeof attributes2.globalID === "string" && "" !== attributes2.globalID,
   supports: {
     html: false,
     anchor: false,

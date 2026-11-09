@@ -3680,8 +3680,9 @@ function Save({ attributes: attributes2 }) {
     navigationArrowsIconRightImageAlt,
     layoutHeightSwitcher
   } = attributes2;
+  const trimmedGlobalClass = globalClass?.trim();
   const blockProps = import_block_editor.useBlockProps.save({
-    className: `gslider-base-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}`,
+    className: `gslider-base-wrapper ${blockId} ${navigationArrowPositionType} ${navigationArrowPosition} ${showPagination?.Desktop || showPagination?.Tablet || showPagination?.Mobile ? "has-pagination" : ""}${trimmedGlobalClass ? ` ${trimmedGlobalClass}` : ""}`,
     ...globalID ? { id: globalID } : {}
   });
   const navigationEnabled = {
@@ -3785,7 +3786,7 @@ function Save({ attributes: attributes2 }) {
           children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
             "div",
             {
-              className: `gslider-content-wrapper ${item.id} ${globalClass}`,
+              className: `gslider-content-wrapper ${item.id}`,
               children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-content-inner-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-list-item", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "gslider-list-content", children: [
                 showSubTitle && item.subTitle && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-subtitle-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                   import_block_editor.RichText.Content,
@@ -10284,7 +10285,6 @@ var v1_2_1 = {
 };
 var v1_2_1_globalid = {
   attributes: attributes_default,
-  isEligible: (attributes2) => typeof attributes2.globalID === "string" && "" !== attributes2.globalID,
   supports: {
     html: false,
     anchor: false,
