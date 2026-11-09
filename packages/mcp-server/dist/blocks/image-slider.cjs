@@ -3696,31 +3696,48 @@ var generateImageSliderStyle = (attributes2) => {
   const globalMobileBackgroundHoverStyles = globalBackgroundStyleObjectToString(
     getGlobalBackgroundHoverStyles("Mobile")
   );
-  const getImageBackgroundStyles = (bgType, bgColor, bgGradient, customGradientEnabled, customGradient) => {
+  const getImageBackgroundNormalStyles = () => {
+    const bgType = imageNormalBackgroundType;
+    const bgColor = imageNormalClassicColor;
+    const bgGradient = imageNormalGradientColor;
+    const customGradient = imageNormalCustomGradientInputValue;
+    const customGradientEnabled = imageNormalCustomGradientSwitcher;
     if (bgType === "gradient") {
-      const resolved = resolveGradient(
-        customGradientEnabled,
-        customGradient,
-        bgGradient,
-        bgColor
-      );
-      return resolved ? `background: ${resolved};` : "";
+      if (customGradientEnabled && customGradient) {
+        return { background: customGradient };
+      } else if (bgGradient) {
+        return { background: bgGradient };
+      } else if (bgColor) {
+        return { background: bgColor };
+      }
+      return {};
     }
-    return bgColor ? `background: ${bgColor};` : "";
+    return bgColor ? { background: bgColor } : {};
   };
-  const imageNormalBackgroundStyles = getImageBackgroundStyles(
-    imageNormalBackgroundType,
-    imageNormalClassicColor,
-    imageNormalGradientColor,
-    imageNormalCustomGradientSwitcher,
-    imageNormalCustomGradientInputValue
+  const getImageBackgroundHoverStyles = () => {
+    const bgType = imageHoverBackgroundType;
+    const bgColor = imageHoverClassicColor;
+    const bgGradient = imageHoverGradientColor;
+    const customGradient = imageHoverCustomGradientInputValue;
+    const customGradientEnabled = imageHoverCustomGradientSwitcher;
+    if (bgType === "gradient") {
+      if (customGradientEnabled && customGradient) {
+        return { background: customGradient };
+      } else if (bgGradient) {
+        return { background: bgGradient };
+      } else if (bgColor) {
+        return { background: bgColor };
+      }
+      return {};
+    }
+    return bgColor ? { background: bgColor } : {};
+  };
+  const imageBackgroundStyleObjectToString = (styleObj) => Object.entries(styleObj).map(([key, value]) => `${key}: ${value};`).join(" ");
+  const imageBackgroundNormalStyles = imageBackgroundStyleObjectToString(
+    getImageBackgroundNormalStyles()
   );
-  const imageHoverBackgroundStyles = getImageBackgroundStyles(
-    imageHoverBackgroundType,
-    imageHoverClassicColor,
-    imageHoverGradientColor,
-    imageHoverCustomGradientSwitcher,
-    imageHoverCustomGradientInputValue
+  const imageBackgroundHoverStyles = imageBackgroundStyleObjectToString(
+    getImageBackgroundHoverStyles()
   );
   const imageSliderCSS = `
         .${blockId}.gslider-image-slider-wrapper {
@@ -3761,10 +3778,10 @@ var generateImageSliderStyle = (attributes2) => {
             align-items: center;
             justify-content: ${verticalAlign.Desktop || "center"};
             transition: background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out;
-            ${imageNormalBackgroundStyles}
+            ${imageBackgroundNormalStyles}
         }
         .${blockId}.gslider-image-slider-wrapper .gslider-image-slider-content-wrapper:hover {
-            ${imageHoverBackgroundStyles}
+            ${imageBackgroundHoverStyles}
             ${imageBorderHoverColor ? `border-color: ${imageBorderHoverColor};` : ""}
             ${imageBoxShadowHoverCssValue ? `box-shadow: ${imageBoxShadowHoverCssValue} !important;` : ""}
         }
