@@ -181,6 +181,8 @@ export default function Save( { attributes } ) {
 		.filter( ( device ) => enableCursorFollower?.[ device ] === true )
 		.join( ' ' );
 
+	const isGrabCursor = Boolean( enableGrabCursor && allowTouchMove );
+
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
 		// Marquee needs the slide effect, other effects can not move in a line
@@ -199,6 +201,7 @@ export default function Save( { attributes } ) {
 				autoplay: getBreakpointAutoplay( 'Mobile' ),
 				navigation: { enabled: navigationEnabled.Mobile },
 				pagination: { enabled: paginationEnabled.Mobile },
+				...( isGrabCursor && { grabCursor: true } ),
 			},
 			768: {
 				...( sliderType === 'carousel' && {
@@ -211,6 +214,7 @@ export default function Save( { attributes } ) {
 				autoplay: getBreakpointAutoplay( 'Tablet' ),
 				navigation: { enabled: navigationEnabled.Tablet },
 				pagination: { enabled: paginationEnabled.Tablet },
+				...( isGrabCursor && { grabCursor: true } ),
 			},
 			1025: {
 				...( sliderType === 'carousel' && {
@@ -223,6 +227,7 @@ export default function Save( { attributes } ) {
 				autoplay: getBreakpointAutoplay( 'Desktop' ),
 				navigation: { enabled: navigationEnabled.Desktop },
 				pagination: { enabled: paginationEnabled.Desktop },
+				...( isGrabCursor && { grabCursor: true } ),
 			},
 		},
 
@@ -247,7 +252,7 @@ export default function Save( { attributes } ) {
 				  }
 				: false,
 		allowTouchMove,
-		...( enableGrabCursor && {
+		...( isGrabCursor && {
 			grabCursor: true,
 		} ),
 		mousewheel: mousewheelControl,

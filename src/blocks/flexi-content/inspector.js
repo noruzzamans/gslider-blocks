@@ -840,36 +840,23 @@ const Inspector = ( { attributes, setAttributes } ) => {
 						setAttributes( { allowTouchMove: value } )
 					}
 				/>
-				<ResponsiveToggleControl
+				<ToggleControl
 					label={ __( 'Grab Cursor', 'gslider-blocks' ) }
-					help={ __(
-						'Displays a grab hand cursor on desktop to indicate the slider is draggable.',
-						'gslider-blocks'
-					) }
+					help={
+						allowTouchMove
+							? __(
+									'Displays a grab hand cursor on desktop to indicate the slider is draggable.',
+									'gslider-blocks'
+							  )
+							: __(
+									'Enable Touch Swipe Control to use the grab cursor.',
+									'gslider-blocks'
+							  )
+					}
 					checked={ enableGrabCursor }
 					onChange={ ( value ) =>
 						setAttributes( { enableGrabCursor: value } )
 					}
-					toggleValue={ {
-						Desktop: enableGrabCursor,
-						Tablet: enableGrabCursor,
-						Mobile: enableGrabCursor,
-					} }
-					setToggleValue={ ( val ) =>
-						setAttributes( {
-							enableGrabCursor: val[ deviceType ],
-						} )
-					}
-					deviceType={ deviceType }
-					setAttributes={ ( val ) => {
-						if ( val && val.toggleValue ) {
-							setAttributes( {
-								enableGrabCursor: val.toggleValue[ deviceType ],
-							} );
-						} else {
-							setAttributes( val );
-						}
-					} }
 				/>
 				<ToggleControl
 					label={ __( 'Pause on Hover', 'gslider-blocks' ) }

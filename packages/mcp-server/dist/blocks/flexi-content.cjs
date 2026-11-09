@@ -2302,6 +2302,7 @@ function Save({ attributes: attributes2 }) {
   const anyBottomDivider = enableBottomDivider?.Desktop || enableBottomDivider?.Tablet || enableBottomDivider?.Mobile;
   const lightboxDevices = ["Desktop", "Tablet", "Mobile"].filter((device) => enableSlideLightbox?.[device] === true).join(" ");
   const cursorFollowerDevices = ["Desktop", "Tablet", "Mobile"].filter((device) => enableCursorFollower?.[device] === true).join(" ");
+  const isGrabCursor = Boolean(enableGrabCursor && allowTouchMove);
   const swiperSettings = JSON.stringify({
     // Marquee needs the slide effect, other effects can not move in a line
     effect: anyMarqueeEnabled ? "slide" : sliderEffect,
@@ -2315,7 +2316,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Mobile ? marqueeSpeed?.Mobile || 5e3 : speed?.Mobile || 800,
         autoplay: getBreakpointAutoplay("Mobile"),
         navigation: { enabled: navigationEnabled.Mobile },
-        pagination: { enabled: paginationEnabled.Mobile }
+        pagination: { enabled: paginationEnabled.Mobile },
+        ...isGrabCursor && { grabCursor: true }
       },
       768: {
         ...sliderType === "carousel" && {
@@ -2325,7 +2327,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Tablet ? marqueeSpeed?.Tablet || 5e3 : speed?.Tablet || 800,
         autoplay: getBreakpointAutoplay("Tablet"),
         navigation: { enabled: navigationEnabled.Tablet },
-        pagination: { enabled: paginationEnabled.Tablet }
+        pagination: { enabled: paginationEnabled.Tablet },
+        ...isGrabCursor && { grabCursor: true }
       },
       1025: {
         ...sliderType === "carousel" && {
@@ -2335,7 +2338,8 @@ function Save({ attributes: attributes2 }) {
         speed: marqueeEnabled.Desktop ? marqueeSpeed?.Desktop || 5e3 : speed?.Desktop || 800,
         autoplay: getBreakpointAutoplay("Desktop"),
         navigation: { enabled: navigationEnabled.Desktop },
-        pagination: { enabled: paginationEnabled.Desktop }
+        pagination: { enabled: paginationEnabled.Desktop },
+        ...isGrabCursor && { grabCursor: true }
       }
     },
     ...direction === "vertical" && { direction: "vertical" },
@@ -2352,7 +2356,7 @@ function Save({ attributes: attributes2 }) {
       reverseDirection
     } : false,
     allowTouchMove,
-    ...enableGrabCursor && {
+    ...isGrabCursor && {
       grabCursor: true
     },
     mousewheel: mousewheelControl,
