@@ -335,7 +335,14 @@ class StyleGeneratorTest {
 		$clean = $generator->sanitize_css( $raw_css, $block_id );
 
 		if ( false !== strpos( $clean, 'body' ) ) {
-			fwrite( STDERR, "FAIL: Unscoped @media selector was kept: $clean\n" );
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected unscoped 'body' selector inside @media to be dropped (expected: false, actual pos: %d). Output: %s\n",
+					strpos( $clean, 'body' ),
+					$clean
+				)
+			);
 			exit( 1 );
 		}
 
@@ -360,7 +367,22 @@ class StyleGeneratorTest {
 			false === $pos_mobile_radius ||
 			false === $pos_mobile_btn
 		) {
-			fwrite( STDERR, "FAIL: Expected responsive rules missing from sanitized output: $clean\n" );
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected all responsive selectors to be present (expected: non-false offsets; actual desktop_radius=%s, desktop_btn=%s, desktop_item=%s, tablet_media=%s, tablet_radius=%s, tablet_btn=%s, mobile_media=%s, mobile_radius=%s, mobile_btn=%s). Output: %s\n",
+					var_export( $pos_desktop_radius, true ),
+					var_export( $pos_desktop_btn, true ),
+					var_export( $pos_desktop_item, true ),
+					var_export( $pos_tablet_media, true ),
+					var_export( $pos_tablet_radius, true ),
+					var_export( $pos_tablet_btn, true ),
+					var_export( $pos_mobile_media, true ),
+					var_export( $pos_mobile_radius, true ),
+					var_export( $pos_mobile_btn, true ),
+					$clean
+				)
+			);
 			exit( 1 );
 		}
 
@@ -374,7 +396,22 @@ class StyleGeneratorTest {
 			! ( $pos_mobile_media < $pos_mobile_radius ) ||
 			! ( $pos_mobile_media < $pos_mobile_btn )
 		) {
-			fwrite( STDERR, "FAIL: Desktop rules must precede Tablet @media, which must precede Mobile @media: $clean\n" );
+			fwrite(
+				STDERR,
+				sprintf(
+					"FAIL: Expected cascade order desktop (radius/btn/item) < tablet_media < tablet (radius/btn) < mobile_media < mobile (radius/btn); actual positions desktop_radius=%d, desktop_btn=%d, desktop_item=%d, tablet_media=%d, tablet_radius=%d, tablet_btn=%d, mobile_media=%d, mobile_radius=%d, mobile_btn=%d. Output: %s\n",
+					$pos_desktop_radius,
+					$pos_desktop_btn,
+					$pos_desktop_item,
+					$pos_tablet_media,
+					$pos_tablet_radius,
+					$pos_tablet_btn,
+					$pos_mobile_media,
+					$pos_mobile_radius,
+					$pos_mobile_btn,
+					$clean
+				)
+			);
 			exit( 1 );
 		}
 
