@@ -1,10 +1,117 @@
+import { store as blockEditorStore } from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
 import { useEffect, useRef } from '@wordpress/element';
+
+/**
+ * Resolve the nearest `core/block` synced pattern ancestor for a block client ID.
+ *
+ * @param {Object} editorSelectors Selectors from `core/block-editor`.
+ * @param {string} targetClientId  Block client ID to inspect.
+ * @return {Object|null} Synced pattern wrapper client ID and `ref`, or null.
+ */
+const getNearestSyncedPattern = ( editorSelectors, targetClientId ) => {
+	if (
+		typeof editorSelectors?.getBlockParents !== 'function' ||
+		typeof editorSelectors?.getBlockName !== 'function' ||
+		typeof editorSelectors?.getBlockAttributes !== 'function'
+	) {
+		return null;
+	}
+
+	const parents = editorSelectors.getBlockParents( targetClientId ) || [];
+	for ( let i = parents.length - 1; i >= 0; i-- ) {
+		const parentId = parents[ i ];
+		if ( editorSelectors.getBlockName( parentId ) === 'core/block' ) {
+			return {
+				clientId: parentId,
+				ref: editorSelectors.getBlockAttributes( parentId )?.ref,
+			};
+		}
+	}
+
+	return null;
+};
+
+/**
+ * Determine whether another active block owns `blockId` so this block must regenerate it.
+ *
+ * @param {Object} editorSelectors Selectors from `core/block-editor`.
+ * @param {string} clientId        Current block's runtime client ID.
+ * @param {string} blockId         Current persisted `blockId` attribute.
+ * @param {string} blockPrefix     Prefix used for generated IDs (e.g. 'gslider').
+ * @return {boolean} True when `blockId` collides with another block and belongs elsewhere.
+ */
+export const hasCollidingBlockId = (
+	editorSelectors,
+	clientId,
+	blockId,
+	blockPrefix
+) => {
+	if ( ! blockId || ! clientId || typeof clientId !== 'string' ) {
+		return false;
+	}
+
+	if (
+		! editorSelectors ||
+		typeof editorSelectors.getClientIdsWithDescendants !== 'function' ||
+		typeof editorSelectors.getBlockAttributes !== 'function'
+	) {
+		return false;
+	}
+
+	const ownSyncedPattern = getNearestSyncedPattern(
+		editorSelectors,
+		clientId
+	);
+	const allClientIds = editorSelectors.getClientIdsWithDescendants() || [];
+
+	const matchingClientIds = allClientIds.filter( ( id ) => {
+		if ( editorSelectors.getBlockAttributes( id )?.blockId !== blockId ) {
+			return false;
+		}
+
+		if ( id === clientId || ! ownSyncedPattern ) {
+			return true;
+		}
+
+		const candidateSyncedPattern = getNearestSyncedPattern(
+			editorSelectors,
+			id
+		);
+
+		// Two instances of the same synced pattern (core/block) share one underlying entity;
+		// ignoring sibling renders with the same `ref` prevents infinite ID ping-pong.
+		return ! (
+			candidateSyncedPattern &&
+			candidateSyncedPattern.clientId !== ownSyncedPattern.clientId &&
+			candidateSyncedPattern.ref !== undefined &&
+			candidateSyncedPattern.ref === ownSyncedPattern.ref
+		);
+	} );
+
+	if (
+		matchingClientIds.length <= 1 ||
+		! matchingClientIds.includes( clientId )
+	) {
+		return false;
+	}
+
+	// Keep the existing ID on the block whose clientId created it, or the first block in document order.
+	const expectedForId = ( id ) => `${ blockPrefix }-${ id.slice( 0, 8 ) }`;
+	const ownerClientId =
+		matchingClientIds.find( ( id ) => blockId === expectedForId( id ) ) ||
+		matchingClientIds[ 0 ];
+
+	return ownerClientId !== clientId;
+};
 
 /**
  * Custom hook to handle duplicate block detection and ID regeneration.
  *
- * When a block is duplicated, it keeps the original blockId. This hook detects
- * when a duplicated block's style changes and generates a new unique blockId.
+ * When a block is duplicated or copy-pasted and collides with an existing block's
+ * `blockId` in the editor, this hook immediately generates a new unique `blockId`
+ * for the duplicate while preserving existing blocks on normal post reloads. It also
+ * falls back to regenerating on style changes when no colliding original remains.
  *
  * @param {Object}   params
  * @param {string}   params.clientId      - Block's unique client ID
@@ -27,6 +134,17 @@ const useBlockIdGenerator = ( {
 	// Track previous attributes to detect style changes
 	const prevAttributesRef = useRef( attributes );
 
+	const hasDuplicateBlockId = useSelect(
+		( select ) =>
+			hasCollidingBlockId(
+				select( blockEditorStore ),
+				clientId,
+				blockId,
+				blockPrefix
+			),
+		[ blockId, blockPrefix, clientId ]
+	);
+
 	useEffect( () => {
 		if ( clientId && typeof clientId === 'string' ) {
 			const expectedIdPrefix = `${ blockPrefix }-${ clientId.slice(
@@ -34,8 +152,11 @@ const useBlockIdGenerator = ( {
 				8
 			) }`;
 
-			// Case 1: Brand new block with no ID
-			if ( ! blockId ) {
+			// Case 1: Brand new block with no ID, or a duplicate colliding with another block on the canvas
+			if (
+				! blockId ||
+				( hasDuplicateBlockId && blockId !== expectedIdPrefix )
+			) {
 				setAttributes( {
 					blockId: expectedIdPrefix,
 				} );
@@ -43,8 +164,8 @@ const useBlockIdGenerator = ( {
 				return;
 			}
 
-			// Case 2: Duplicated block - blockId doesn't match current clientId
-			// This means the block was copied from another block
+			// Case 2: Standalone copied block (original removed or pasted across posts)
+			// Wait until this block's own attributes change while selected before changing its saved ID
 			const isDuplicate = blockId !== expectedIdPrefix;
 
 			if ( isDuplicate && isSelected ) {
@@ -88,6 +209,7 @@ const useBlockIdGenerator = ( {
 		attributes,
 		setAttributes,
 		excludeKeys,
+		hasDuplicateBlockId,
 	] );
 };
 
