@@ -53,6 +53,7 @@ class StyleGeneratorTest {
 		$this->test_css_scoping_and_sanitization();
 		$this->test_css_scope_anchor_and_block_id_validation();
 		$this->test_invalid_block_id_skips_style_output();
+		$this->test_sanitize_css_emits_desktop_before_media_queries();
 		$this->test_dynamic_css_deduplication();
 		$this->test_feed_exclusion();
 		$this->test_rest_request_exclusion();
@@ -298,6 +299,86 @@ class StyleGeneratorTest {
 			exit( 1 );
 		}
 		echo "OK: Invalid blockId skips style output\n";
+	}
+
+	/**
+	 * Verify sanitize_css() emits desktop rules before @media breakpoints (#709).
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_css_emits_desktop_before_media_queries(): void {
+		$generator = StyleGenerator::getInstance();
+		$block_id  = 'gslider-b0d690d4';
+
+		$raw_css = ".{$block_id}.gslider-base-wrapper { border-radius: 30px 30px 30px 30px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 16px; padding: 12px 24px 12px 24px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 500px; } "
+			. '@media only screen and (max-width: 1024px) { '
+			. 'body { background: #ff0000; } '
+			. ".{$block_id}.gslider-base-wrapper { border-radius: 10px 10px 10px 10px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 15px; padding: 10px 20px 10px 20px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 400px; } "
+			. '} '
+			. '@media only screen and (max-width: 767px) { '
+			. ".{$block_id}.gslider-base-wrapper { border-radius: 0px 0px 0px 0px !important; } "
+			. ".{$block_id} .gslider-btn.primary-btn { font-size: 14px; padding: 8px 16px 8px 16px; } "
+			. ".{$block_id} .swiper-wrapper { min-height: 300px; } "
+			. '} '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #ededed; } "
+			. '@media only screen and (max-width: 1024px) { '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #cccccc; } "
+			. '} '
+			. '@media only screen and (max-width: 767px) { '
+			. ".{$block_id} .gslider-content-wrapper.item-1 { background: #aaaaaa; } "
+			. '}';
+
+		$clean = $generator->sanitize_css( $raw_css, $block_id );
+
+		if ( false !== strpos( $clean, 'body' ) ) {
+			fwrite( STDERR, "FAIL: Unscoped @media selector was kept: $clean\n" );
+			exit( 1 );
+		}
+
+		$pos_desktop_radius = strpos( $clean, '30px 30px 30px 30px !important' );
+		$pos_desktop_btn    = strpos( $clean, 'font-size:16px' );
+		$pos_desktop_item   = strpos( $clean, 'background:#ededed' );
+		$pos_tablet_media   = strpos( $clean, 'max-width:1024px' );
+		$pos_tablet_radius  = strpos( $clean, '10px 10px 10px 10px !important' );
+		$pos_tablet_btn     = strpos( $clean, 'font-size:15px' );
+		$pos_mobile_media   = strpos( $clean, 'max-width:767px' );
+		$pos_mobile_radius  = strpos( $clean, '0px 0px 0px 0px !important' );
+		$pos_mobile_btn     = strpos( $clean, 'font-size:14px' );
+
+		if (
+			false === $pos_desktop_radius ||
+			false === $pos_desktop_btn ||
+			false === $pos_desktop_item ||
+			false === $pos_tablet_media ||
+			false === $pos_tablet_radius ||
+			false === $pos_tablet_btn ||
+			false === $pos_mobile_media ||
+			false === $pos_mobile_radius ||
+			false === $pos_mobile_btn
+		) {
+			fwrite( STDERR, "FAIL: Expected responsive rules missing from sanitized output: $clean\n" );
+			exit( 1 );
+		}
+
+		if (
+			! ( $pos_desktop_radius < $pos_tablet_media ) ||
+			! ( $pos_desktop_btn < $pos_tablet_media ) ||
+			! ( $pos_desktop_item < $pos_tablet_media ) ||
+			! ( $pos_tablet_media < $pos_tablet_radius ) ||
+			! ( $pos_tablet_radius < $pos_mobile_media ) ||
+			! ( $pos_tablet_btn < $pos_mobile_media ) ||
+			! ( $pos_mobile_media < $pos_mobile_radius ) ||
+			! ( $pos_mobile_media < $pos_mobile_btn )
+		) {
+			fwrite( STDERR, "FAIL: Desktop rules must precede Tablet @media, which must precede Mobile @media: $clean\n" );
+			exit( 1 );
+		}
+
+		echo "OK: sanitize_css() preserves Desktop -> Tablet -> Mobile CSS cascade order\n";
 	}
 
 	/**
