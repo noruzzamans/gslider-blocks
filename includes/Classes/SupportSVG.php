@@ -34,6 +34,136 @@ if ( ! class_exists( SupportSVG::class, false ) ) {
         use SingletonTrait;
 
         /**
+         * Strict geometric SVG allowlist (lowercase keys for wp_kses).
+         *
+         * @since 1.2.3
+         *
+         * @var array<string, array<string, bool>>
+         */
+        private const INLINE_SVG_ALLOWED_TAGS = [
+            'svg'      => [
+                'class'               => true,
+                'id'                  => true,
+                'aria-hidden'         => true,
+                'aria-labelledby'     => true,
+                'role'                => true,
+                'focusable'           => true,
+                'xmlns'               => true,
+                'width'               => true,
+                'height'              => true,
+                'viewbox'             => true,
+                'preserveaspectratio' => true,
+                'fill'                => true,
+                'stroke'              => true,
+                'stroke-width'        => true,
+                'stroke-linecap'      => true,
+                'stroke-linejoin'     => true,
+            ],
+            'g'        => [
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'transform'    => true,
+                'opacity'      => true,
+                'clip-path'    => true,
+            ],
+            'path'     => [
+                'd'                 => true,
+                'id'                => true,
+                'class'             => true,
+                'fill'              => true,
+                'fill-rule'         => true,
+                'clip-rule'         => true,
+                'fill-opacity'      => true,
+                'stroke'            => true,
+                'stroke-width'      => true,
+                'stroke-linecap'    => true,
+                'stroke-linejoin'   => true,
+                'stroke-miterlimit' => true,
+                'stroke-opacity'    => true,
+                'opacity'           => true,
+                'transform'         => true,
+            ],
+            'circle'   => [
+                'cx'           => true,
+                'cy'           => true,
+                'r'            => true,
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'fill-opacity' => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'opacity'      => true,
+                'transform'    => true,
+            ],
+            'ellipse'  => [
+                'cx'           => true,
+                'cy'           => true,
+                'rx'           => true,
+                'ry'           => true,
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'opacity'      => true,
+                'transform'    => true,
+            ],
+            'rect'     => [
+                'x'            => true,
+                'y'            => true,
+                'width'        => true,
+                'height'       => true,
+                'rx'           => true,
+                'ry'           => true,
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'opacity'      => true,
+                'transform'    => true,
+            ],
+            'polygon'  => [
+                'points'       => true,
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'fill-rule'    => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'opacity'      => true,
+                'transform'    => true,
+            ],
+            'polyline' => [
+                'points'       => true,
+                'id'           => true,
+                'class'        => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+                'opacity'      => true,
+                'transform'    => true,
+            ],
+            'line'     => [
+                'x1'             => true,
+                'y1'             => true,
+                'x2'             => true,
+                'y2'             => true,
+                'id'             => true,
+                'class'          => true,
+                'stroke'         => true,
+                'stroke-width'   => true,
+                'stroke-linecap' => true,
+                'opacity'        => true,
+                'transform'      => true,
+            ],
+        ];
+
+        /**
          * WordPress filesystem instance.
          *
          * @since 1.0.0
@@ -270,131 +400,7 @@ if ( ! class_exists( SupportSVG::class, false ) ) {
                 return '';
             }
 
-            // Strict geometric SVG allowlist (all tag and attribute keys must be lowercase for wp_kses).
-            $allowed_tags = [
-                'svg'      => [
-                    'class'               => true,
-                    'id'                  => true,
-                    'aria-hidden'         => true,
-                    'aria-labelledby'     => true,
-                    'role'                => true,
-                    'focusable'           => true,
-                    'xmlns'               => true,
-                    'width'               => true,
-                    'height'              => true,
-                    'viewbox'             => true,
-                    'preserveaspectratio' => true,
-                    'fill'                => true,
-                    'stroke'              => true,
-                    'stroke-width'        => true,
-                    'stroke-linecap'      => true,
-                    'stroke-linejoin'     => true,
-                ],
-                'g'        => [
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'transform'    => true,
-                    'opacity'      => true,
-                    'clip-path'    => true,
-                ],
-                'path'     => [
-                    'd'                 => true,
-                    'id'                => true,
-                    'class'             => true,
-                    'fill'              => true,
-                    'fill-rule'         => true,
-                    'clip-rule'         => true,
-                    'fill-opacity'      => true,
-                    'stroke'            => true,
-                    'stroke-width'      => true,
-                    'stroke-linecap'    => true,
-                    'stroke-linejoin'   => true,
-                    'stroke-miterlimit' => true,
-                    'stroke-opacity'    => true,
-                    'opacity'           => true,
-                    'transform'         => true,
-                ],
-                'circle'   => [
-                    'cx'           => true,
-                    'cy'           => true,
-                    'r'            => true,
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'fill-opacity' => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'opacity'      => true,
-                    'transform'    => true,
-                ],
-                'ellipse'  => [
-                    'cx'           => true,
-                    'cy'           => true,
-                    'rx'           => true,
-                    'ry'           => true,
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'opacity'      => true,
-                    'transform'    => true,
-                ],
-                'rect'     => [
-                    'x'            => true,
-                    'y'            => true,
-                    'width'        => true,
-                    'height'       => true,
-                    'rx'           => true,
-                    'ry'           => true,
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'opacity'      => true,
-                    'transform'    => true,
-                ],
-                'polygon'  => [
-                    'points'       => true,
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'fill-rule'    => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'opacity'      => true,
-                    'transform'    => true,
-                ],
-                'polyline' => [
-                    'points'       => true,
-                    'id'           => true,
-                    'class'        => true,
-                    'fill'         => true,
-                    'stroke'       => true,
-                    'stroke-width' => true,
-                    'opacity'      => true,
-                    'transform'    => true,
-                ],
-                'line'     => [
-                    'x1'             => true,
-                    'y1'             => true,
-                    'x2'             => true,
-                    'y2'             => true,
-                    'id'             => true,
-                    'class'          => true,
-                    'stroke'         => true,
-                    'stroke-width'   => true,
-                    'stroke-linecap' => true,
-                    'opacity'        => true,
-                    'transform'      => true,
-                ],
-            ];
-
-            $sanitized = trim( (string) wp_kses( $clean_svg, $allowed_tags ) );
+            $sanitized = trim( (string) wp_kses( $clean_svg, self::INLINE_SVG_ALLOWED_TAGS ) );
             if ( '' === $sanitized || 1 !== preg_match( '/^<svg(?=[\s>])/i', $sanitized ) ) {
                 return '';
             }
@@ -426,7 +432,7 @@ if ( ! class_exists( SupportSVG::class, false ) ) {
                     );
                     $decoded    = html_entity_decode( is_string( $normalized ) ? $normalized : $raw_value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
                     $compact    = strtolower( (string) preg_replace( '/[\s\x00-\x1F\x7F-\x9F]+/', '', $decoded ) );
-                    if ( 1 === preg_match( '/(?:^|url\()(?:javascript|vbscript|data):/', $compact ) ) {
+                    if ( 1 === preg_match( '/(?:^|url\([\'"]?)(?:javascript|vbscript|data):/', $compact ) ) {
                         return '';
                     }
                     return $matches[0];

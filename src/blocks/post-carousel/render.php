@@ -52,15 +52,8 @@ $block_id            = isset( $attributes['blockId'] ) ? sanitize_html_class( $a
 $global_id           = isset( $attributes['globalID'] ) ? sanitize_html_class( $attributes['globalID'] ) : '';
 $global_class        = isset( $attributes['globalClass'] ) ? sanitize_html_class( $attributes['globalClass'] ) : '';
 $enable_lazy_load    = ! empty( $attributes['enableLazyLoad'] );
-$allowed_html_tags   = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span' );
-$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) && is_string( $attributes['postTitleHtmlTag'] ) ? strtolower( sanitize_key( $attributes['postTitleHtmlTag'] ) ) : 'h3';
-if ( ! in_array( $post_title_html_tag, $allowed_html_tags, true ) ) {
-    $post_title_html_tag = 'h3';
-}
-$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) && is_string( $attributes['postExcerptHtmlTag'] ) ? strtolower( sanitize_key( $attributes['postExcerptHtmlTag'] ) ) : 'p';
-if ( ! in_array( $post_excerpt_html_tag, $allowed_html_tags, true ) ) {
-    $post_excerpt_html_tag = 'p';
-}
+$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) ? sanitize_key( $attributes['postTitleHtmlTag'] ) : 'h3';
+$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) ? sanitize_key( $attributes['postExcerptHtmlTag'] ) : 'p';
 
 // Excerpt Settings
 $enable_post_excerpt_limit = ! empty( $attributes['enablePostExcerptLimit'] );
@@ -252,7 +245,17 @@ $exclude_current_post  = ! empty( $attributes['excludeCurrentPost'] );
 $use_related_posts_query = ! empty( $attributes['useRelatedPostsQuery'] );
 $related_posts_taxonomy  = isset( $attributes['relatedPostsTaxonomy'] ) ? sanitize_text_field( $attributes['relatedPostsTaxonomy'] ) : 'category';
 
-// Validate post type, query bounds, sort order, and meta operator
+// Validate dynamic HTML tags, post type, query bounds, sort order, and meta operator
+$allowed_html_tags   = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span' );
+$post_title_html_tag = isset( $attributes['postTitleHtmlTag'] ) && is_string( $attributes['postTitleHtmlTag'] ) ? strtolower( sanitize_key( $attributes['postTitleHtmlTag'] ) ) : 'h3';
+if ( ! in_array( $post_title_html_tag, $allowed_html_tags, true ) ) {
+    $post_title_html_tag = 'h3';
+}
+$post_excerpt_html_tag = isset( $attributes['postExcerptHtmlTag'] ) && is_string( $attributes['postExcerptHtmlTag'] ) ? strtolower( sanitize_key( $attributes['postExcerptHtmlTag'] ) ) : 'p';
+if ( ! in_array( $post_excerpt_html_tag, $allowed_html_tags, true ) ) {
+    $post_excerpt_html_tag = 'p';
+}
+
 $post_type = sanitize_key( $post_type );
 if ( '' === $post_type || ! post_type_exists( $post_type ) || ! is_post_type_viewable( $post_type ) ) {
     $post_type = 'post';
@@ -264,6 +267,9 @@ $offset         = max( 0, min( 100, $offset ) );
 $allowed_orderby = array( 'date', 'title', 'name', 'id', 'ID', 'author', 'modified', 'relevance', 'rand', 'comment_count', 'menu_order', 'meta_value', 'meta_value_num' );
 if ( ! in_array( $orderby, $allowed_orderby, true ) ) {
     $orderby = 'date';
+}
+if ( 'id' === $orderby ) {
+    $orderby = 'ID';
 }
 if ( in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) && ( '' === $meta_key || $use_related_posts_query ) ) {
     $orderby = 'date';
@@ -549,7 +555,10 @@ $taxonomy_allowed_html = array(
     ),
 );
 
-$has_read_more_svg_icon   = $read_more_button_icon_switcher && 'icon' === $read_more_button_icon_type && '' !== \GSlider\Classes\SupportSVG::sanitize_inline_svg( $read_more_button_icon_html );
+$read_more_svg_icon_html  = ( $read_more_button_icon_switcher && 'icon' === $read_more_button_icon_type )
+    ? \GSlider\Classes\SupportSVG::sanitize_inline_svg( $read_more_button_icon_html )
+    : '';
+$has_read_more_svg_icon   = '' !== $read_more_svg_icon_html;
 $has_read_more_image_icon = $read_more_button_icon_switcher && 'image' === $read_more_button_icon_type && ! empty( $read_more_button_icon_img_url );
 
 ?>
@@ -786,13 +795,13 @@ $has_read_more_image_icon = $read_more_button_icon_switcher && 'image' === $read
                                         <div class="gslider-post-carousel-readmore">
                                             <a class="gslider-post-carousel-readmore-btn" href="<?php echo esc_url( $read_more_url ); ?>"<?php if ( $read_more_button_target_link ) : ?> target="_blank"<?php endif; ?><?php if ( ! empty( $rel_items ) ) : ?> rel="<?php echo esc_attr( implode( ' ', $rel_items ) ); ?>"<?php endif; ?>>
                                                 <?php if ( $has_read_more_svg_icon && 'left' === $read_more_button_icon_position ) : ?>
-                                                    <span class="gslider-readmore-icon-wrap"><?php echo \GSlider\Classes\SupportSVG::sanitize_inline_svg( $read_more_button_icon_html ); ?></span>
+                                                    <span class="gslider-readmore-icon-wrap"><?php echo $read_more_svg_icon_html; ?></span>
                                                 <?php elseif ( $has_read_more_image_icon && 'left' === $read_more_button_icon_position ) : ?>
                                                     <span class="gslider-readmore-icon-wrap"><img src="<?php echo esc_url( $read_more_button_icon_img_url ); ?>" alt="<?php echo esc_attr( $read_more_button_icon_img_alt ); ?>" /></span>
                                                 <?php endif; ?>
                                                 <span class="gslider-readmore-text"><?php echo esc_html( $read_more_button_text ); ?></span>
                                                 <?php if ( $has_read_more_svg_icon && 'right' === $read_more_button_icon_position ) : ?>
-                                                    <span class="gslider-readmore-icon-wrap"><?php echo \GSlider\Classes\SupportSVG::sanitize_inline_svg( $read_more_button_icon_html ); ?></span>
+                                                    <span class="gslider-readmore-icon-wrap"><?php echo $read_more_svg_icon_html; ?></span>
                                                 <?php elseif ( $has_read_more_image_icon && 'right' === $read_more_button_icon_position ) : ?>
                                                     <span class="gslider-readmore-icon-wrap"><img src="<?php echo esc_url( $read_more_button_icon_img_url ); ?>" alt="<?php echo esc_attr( $read_more_button_icon_img_alt ); ?>" /></span>
                                                 <?php endif; ?>

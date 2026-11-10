@@ -270,13 +270,7 @@ if ( ! function_exists( 'wp_kses' ) ) {
 					continue;
 				}
 
-				$attr_value = $attribute->nodeValue;
-				$decoded    = html_entity_decode( $attr_value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
-				$cleaned    = strtolower( (string) preg_replace( '/[\s\x00-\x1F\x7F-\x9F]+/', '', $decoded ) );
-				if ( false !== strpos( $cleaned, 'javascript:' ) || false !== strpos( $cleaned, 'vbscript:' ) || false !== strpos( $cleaned, 'data:' ) ) {
-					continue;
-				}
-
+				$attr_value = (string) $attribute->nodeValue;
 				$clean_element->setAttribute( $attr_lower, $attr_value );
 			}
 
@@ -370,6 +364,8 @@ class SupportSVGTest {
 		$this->test_sanitize_inline_svg_strips_dangerous_subtrees_and_declarations();
 		$this->test_sanitize_inline_svg_strips_disallowed_svg_tags_and_event_handlers();
 		$this->test_sanitize_inline_svg_returns_empty_when_no_svg_remains();
+		$this->test_sanitize_inline_svg_strips_encoded_and_quoted_protocol_uris();
+		$this->test_sanitize_inline_svg_fails_closed_after_max_nested_passes();
 
 		echo "\nAll SupportSVG unit tests passed successfully!\n";
 	}
@@ -707,6 +703,43 @@ class SupportSVGTest {
 		foreach ( $payloads as $payload ) {
 			$this->assert_same( '', SupportSVG::sanitize_inline_svg( $payload ), 'sanitize_inline_svg() returns empty string when no valid <svg> remains' );
 		}
+	}
+
+	/**
+	 * Test 14: sanitize_inline_svg() strips entity-encoded and quoted url() protocol URIs via production regex callback while preserving safe url(#id).
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_inline_svg_strips_encoded_and_quoted_protocol_uris(): void {
+		$payload = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+			. '<g clip-path=\'url("data:text/html,xss")\'>'
+			. '<path d="M0 0h24" fill="&#106;avascript:alert(1)" stroke="url(\'javascript:alert(2)\')"/>'
+			. '<rect x="0" y="0" width="10" height="10" fill="url(#gslider-safe-grad)"/>'
+			. '</g>'
+			. '</svg>';
+
+		$clean = SupportSVG::sanitize_inline_svg( $payload );
+
+		$this->assert_true( 0 === stripos( $clean, '<svg' ), 'sanitize_inline_svg() keeps <svg> wrapper when stripping unsafe attribute values' );
+		$this->assert_true( false !== stripos( $clean, 'fill="url(#gslider-safe-grad)"' ), 'sanitize_inline_svg() preserves safe internal fragment url(#...)' );
+		$this->assert_true( false === stripos( $clean, 'javascript:' ), 'sanitize_inline_svg() removes entity-encoded and quoted url() javascript: URIs' );
+		$this->assert_true( false === stripos( $clean, 'data:' ), 'sanitize_inline_svg() removes double-quoted url() data: URIs' );
+	}
+
+	/**
+	 * Test 15: sanitize_inline_svg() fails closed returning empty string when 11 nested dangerous tags do not stabilize within 10 passes.
+	 *
+	 * @return void
+	 */
+	public function test_sanitize_inline_svg_fails_closed_after_max_nested_passes(): void {
+		$nested_script = '<script>alert(1)</script>';
+		for ( $i = 0; $i < 11; $i++ ) {
+			$nested_script = '<scr' . $nested_script . 'ipt>alert(1)</script>';
+		}
+
+		$payload = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' . $nested_script . '<path d="M2 12h20"/></svg>';
+
+		$this->assert_same( '', SupportSVG::sanitize_inline_svg( $payload ), 'sanitize_inline_svg() fails closed when nested dangerous tags exceed 10 passes' );
 	}
 }
 

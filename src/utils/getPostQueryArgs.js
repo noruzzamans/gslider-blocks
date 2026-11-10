@@ -4,6 +4,7 @@ const ALLOWED_ORDER_BY = [
 	'title',
 	'name',
 	'id',
+	'ID',
 	'author',
 	'modified',
 	'relevance',
@@ -85,6 +86,11 @@ export const getPostQueryArgs = (
 
 	// Initial base query
 	let safeOrderBy = ALLOWED_ORDER_BY.includes( orderBy ) ? orderBy : 'date';
+	if ( safeOrderBy === 'name' ) {
+		safeOrderBy = 'slug';
+	} else if ( safeOrderBy === 'ID' ) {
+		safeOrderBy = 'id';
+	}
 	if (
 		[ 'meta_value', 'meta_value_num' ].includes( safeOrderBy ) &&
 		( ! metaKey || useRelatedPostsQuery )
