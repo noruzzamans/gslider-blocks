@@ -58,6 +58,7 @@
       "Tablet": 16,
       "Mobile": 14
     },
-    "readMoreButtonText": "Read Article"
+    "readMoreButtonText": "Read Article",
+    "enableLazyLoad": true
   }
 }
