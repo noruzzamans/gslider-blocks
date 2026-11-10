@@ -6,6 +6,7 @@ import {
 	initCardTilt,
 	applyReducedMotionSwiperSettings,
 	registerReducedMotionSwiper,
+	onReducedMotionChange,
 } from '@Utils/animation-utils';
 
 document.addEventListener( 'DOMContentLoaded', () => {
@@ -79,7 +80,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 								},
 							};
 
-							new Swiper( mainSliderElement, newsroomSettings );
+							const mainSwiper = new Swiper(
+								mainSliderElement,
+								newsroomSettings
+							);
 
 							queueElement.addEventListener( 'keydown', ( e ) => {
 								const item = e.target.closest(
@@ -90,7 +94,31 @@ document.addEventListener( 'DOMContentLoaded', () => {
 									( e.key === 'Enter' || e.key === ' ' )
 								) {
 									e.preventDefault();
-									item.click();
+									const index =
+										parseInt(
+											item.dataset.slideIndex,
+											10
+										) || 0;
+									if ( mainSwiper.params?.loop ) {
+										mainSwiper.slideToLoop( index );
+									} else {
+										mainSwiper.slideTo( index );
+									}
+								}
+							} );
+
+							onReducedMotionChange( ( reduceMotion ) => {
+								if ( ! mainSliderElement.isConnected ) {
+									return;
+								}
+								if ( reduceMotion ) {
+									if (
+										mainSwiper.autoplay &&
+										mainSwiper.autoplay.running
+									) {
+										mainSwiper.autoplay.stop();
+									}
+									mainSwiper.params.speed = 0;
 								}
 							} );
 						}
