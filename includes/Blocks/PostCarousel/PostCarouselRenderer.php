@@ -176,13 +176,13 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
             ?>
 <div <?php echo $wrapper_attributes; ?>>
     <div class="<?php echo esc_attr( $main_swiper_class ); ?>" role="region" aria-label="<?php echo esc_attr( $main_aria_label ); ?>">
-        <?php if ( ! empty( $context['show_autoplay_progress'] ) && 'top' === $context['autoplay_progress_position'] ) : ?>
+        <?php if ( ! $is_marquee && ! empty( $context['show_autoplay_progress'] ) && 'top' === $context['autoplay_progress_position'] ) : ?>
             <div class="gslider-autoplay-progress position-top" aria-hidden="true"><span class="gslider-autoplay-progress-fill"></span></div>
         <?php endif; ?>
         <div class="swiper-wrapper">
             <?php echo $slides_html; ?>
         </div>
-        <?php if ( ! empty( $context['show_autoplay_progress'] ) && 'bottom' === $context['autoplay_progress_position'] ) : ?>
+        <?php if ( ! $is_marquee && ! empty( $context['show_autoplay_progress'] ) && 'bottom' === $context['autoplay_progress_position'] ) : ?>
             <div class="gslider-autoplay-progress position-bottom" aria-hidden="true"><span class="gslider-autoplay-progress-fill"></span></div>
         <?php endif; ?>
         <?php if ( '' !== $nav_inside ) : ?>

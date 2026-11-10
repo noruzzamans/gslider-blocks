@@ -1842,15 +1842,17 @@ class PostCarouselRendererTest {
 
 		// 1. Marquee Ticker mode Swiper settings & HTML output
 		$marquee_attrs = array(
-			'blockId'             => 'gslider-test-marquee',
-			'carouselMode'        => 'marquee',
-			'marqueeSpeed'        => 7500,
-			'marqueePauseOnHover' => false,
+			'blockId'              => 'gslider-test-marquee',
+			'carouselMode'         => 'marquee',
+			'marqueeSpeed'         => 7500,
+			'marqueePauseOnHover'  => false,
+			'showAutoplayProgress' => true,
 		);
 		$marquee_html = PostCarouselRenderer::render( $marquee_attrs );
 		$this->assert_true( false !== strpos( $marquee_html, 'is-mode-marquee' ), 'Marquee mode emits is-mode-marquee wrapper class' );
 		$this->assert_true( false === strpos( $marquee_html, 'swiper-button-prev' ), 'Marquee mode renders zero navigation buttons' );
 		$this->assert_true( false === strpos( $marquee_html, 'swiper-pagination' ), 'Marquee mode renders zero pagination' );
+		$this->assert_true( false === strpos( $marquee_html, 'gslider-autoplay-progress' ), 'Marquee mode omits autoplay progress line even if showAutoplayProgress is true' );
 
 		preg_match( '/data-swiper-settings="([^"]+)"/', $marquee_html, $marquee_match );
 		$this->assert_true( ! empty( $marquee_match[1] ), 'Marquee render includes serialized data-swiper-settings' );

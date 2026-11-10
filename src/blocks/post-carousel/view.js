@@ -85,6 +85,22 @@ document.addEventListener( 'DOMContentLoaded', () => {
 								newsroomSettings
 							);
 
+							// Bind Autoplay Countdown Progress Line for Newsroom layout
+							const newsroomProgressFill =
+								sliderContainer.querySelector(
+									'.gslider-autoplay-progress-fill'
+								);
+							if ( newsroomProgressFill ) {
+								mainSwiper.on(
+									'autoplayTimeLeft',
+									( s, time, progress ) => {
+										newsroomProgressFill.style.transform = `scaleX(${
+											1 - progress
+										})`;
+									}
+								);
+							}
+
 							queueElement.addEventListener( 'keydown', ( e ) => {
 								const item = e.target.closest(
 									'.gslider-newsroom-queue-item'

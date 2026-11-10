@@ -115,7 +115,7 @@ const CarouselSettingsPanel = ( {
 					<RangeControl
 						label={ __( 'Marquee Speed (ms)', 'gslider-blocks' ) }
 						value={ marqueeSpeed ?? 6000 }
-						min={ 1000 }
+						min={ 500 }
 						max={ 30000 }
 						step={ 500 }
 						onChange={ ( value ) =>
@@ -363,11 +363,12 @@ const CarouselSettingsPanel = ( {
 										color={
 											autoplayProgressColor || '#007cba'
 										}
-										onChange={ ( value ) =>
+										onChangeColor={ ( value ) =>
 											setAttributes( {
 												autoplayProgressColor: value,
 											} )
 										}
+										defaultColor="#007cba"
 									/>
 									<RangeControl
 										label={ __(
@@ -376,7 +377,7 @@ const CarouselSettingsPanel = ( {
 										) }
 										value={ autoplayProgressHeight ?? 4 }
 										min={ 1 }
-										max={ 20 }
+										max={ 30 }
 										step={ 1 }
 										onChange={ ( value ) =>
 											setAttributes( {
