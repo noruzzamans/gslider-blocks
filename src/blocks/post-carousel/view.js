@@ -36,11 +36,48 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					applyReducedMotionSwiperSettings( settings );
 					registerReducedMotionSwiper( sliderContainer, Swiper );
 
-					// Initialize Swiper with parsed settings
-					new Swiper(
-						sliderContainer.querySelector( '.swiper' ),
-						settings
-					);
+					if (
+						sliderContainer.classList.contains(
+							'is-layout-newsroom'
+						)
+					) {
+						const queueElement = sliderContainer.querySelector(
+							'.gslider-newsroom-queue'
+						);
+						const mainSliderElement = sliderContainer.querySelector(
+							'.gslider-newsroom-main'
+						);
+
+						if ( mainSliderElement && queueElement ) {
+							const isDesktop = window.innerWidth > 767;
+							const thumbsSwiper = new Swiper( queueElement, {
+								slidesPerView: isDesktop ? 4 : 'auto',
+								direction: isDesktop
+									? 'vertical'
+									: 'horizontal',
+								watchSlidesProgress: true,
+								spaceBetween: 12,
+								slideToClickedSlide: true,
+							} );
+
+							const newsroomSettings = {
+								...settings,
+								slidesPerView: 1,
+								watchSlidesProgress: true,
+								thumbs: {
+									swiper: thumbsSwiper,
+								},
+							};
+
+							new Swiper( mainSliderElement, newsroomSettings );
+						}
+					} else {
+						// Initialize Swiper with parsed settings
+						new Swiper(
+							sliderContainer.querySelector( '.swiper' ),
+							settings
+						);
+					}
 				}
 			} catch ( error ) {
 				delete sliderContainer.dataset.swiperInitialized;
