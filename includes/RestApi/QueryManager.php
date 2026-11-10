@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! class_exists( 'QueryManager' ) ) {
+if ( ! class_exists( QueryManager::class, false ) ) {
 
     /**
      * Handles extension of REST API endpoints for advanced query support.
@@ -104,28 +104,55 @@ if ( ! class_exists( 'QueryManager' ) ) {
          * @return array Modified WP_Query arguments.
          */
         public function apply_custom_query_params( $args, $request ) {
-            // Apply custom orderby parameters
-            $orderby = $request->get_param( 'orderby' );
+            $original_orderby = isset( $args['orderby'] ) ? $args['orderby'] : null;
+            $orderby          = $request->get_param( 'orderby' );
+            $meta_key         = $request->get_param( 'meta_key' );
+            $meta_value       = $request->get_param( 'meta_value' );
+            $meta_compare     = $request->get_param( 'meta_compare' );
+
+            // Apply custom orderby parameters.
             if ( in_array( $orderby, [ 'rand', 'comment_count', 'meta_value', 'meta_value_num', 'menu_order' ], true ) ) {
-                $args['orderby'] = $orderby;
+                $is_meta_orderby = in_array( $orderby, [ 'meta_value', 'meta_value_num' ], true );
+                if ( ! $is_meta_orderby || ( current_user_can( 'edit_posts' ) && ! empty( $meta_key ) ) ) {
+                    $args['orderby'] = $orderby;
+                }
             }
 
-            // Apply custom meta query parameters
-            $meta_key     = $request->get_param( 'meta_key' );
-            $meta_value   = $request->get_param( 'meta_value' );
-            $meta_compare = $request->get_param( 'meta_compare' );
-
+            // Apply custom meta query parameters for authorized users on non-protected meta keys.
             if ( ! empty( $meta_key ) ) {
-                $meta_query = [
-                    'key'     => sanitize_text_field( $meta_key ),
-                    'compare' => ! empty( $meta_compare ) ? sanitize_text_field( $meta_compare ) : '=',
-                ];
+                $meta_key = is_scalar( $meta_key ) ? sanitize_text_field( (string) $meta_key ) : '';
 
-                if ( isset( $meta_value ) && ! in_array( $meta_compare, [ 'EXISTS', 'NOT EXISTS' ], true ) ) {
-                    $meta_query['value'] = sanitize_text_field( $meta_value );
+                if ( '' === $meta_key || ! current_user_can( 'edit_posts' ) || is_protected_meta( $meta_key, 'post' ) ) {
+                    if ( in_array( $orderby, [ 'meta_value', 'meta_value_num' ], true ) ) {
+                        if ( null === $original_orderby ) {
+                            unset( $args['orderby'] );
+                        } else {
+                            $args['orderby'] = $original_orderby;
+                        }
+                    }
+
+                    return $args;
                 }
 
-                $args['meta_query'] = [ $meta_query ];
+                $allowed_compares = [ '=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'EXISTS', 'NOT EXISTS' ];
+                $meta_compare     = is_scalar( $meta_compare ) ? strtoupper( sanitize_text_field( (string) $meta_compare ) ) : '';
+                if ( ! in_array( $meta_compare, $allowed_compares, true ) ) {
+                    $meta_compare = '=';
+                }
+
+                $meta_query = [
+                    'key'     => $meta_key,
+                    'compare' => $meta_compare,
+                ];
+
+                if ( null !== $meta_value && is_scalar( $meta_value ) && ! in_array( $meta_compare, [ 'EXISTS', 'NOT EXISTS' ], true ) ) {
+                    $meta_query['value'] = sanitize_text_field( (string) $meta_value );
+                }
+
+                if ( ! isset( $args['meta_query'] ) || ! is_array( $args['meta_query'] ) ) {
+                    $args['meta_query'] = [];
+                }
+                $args['meta_query'][] = $meta_query;
             }
 
             return $args;
