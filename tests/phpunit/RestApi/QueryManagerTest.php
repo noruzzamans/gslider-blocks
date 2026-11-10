@@ -240,7 +240,20 @@ class QueryManagerTest {
 		$this->assert_same( 'title', $preserved['orderby'], 'Unauthenticated caller does not alter existing orderby' );
 		$this->assert_same( $existing_meta, $preserved['meta_query'], 'Unauthenticated caller leaves pre-existing meta_query untouched' );
 
-		// Case D: Non-meta orderby (rand) remains permitted even if meta_key is rejected.
+		// Case D: Pre-populated meta_value / meta_value_num in $args falls back to 'date' for unauthorized callers.
+		$prep_value_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value' ], $request );
+		$this->assert_same( 'date', $prep_value_result['orderby'] ?? null, 'Unauthenticated caller with pre-populated orderby=meta_value falls back to date' );
+		$this->assert_true( ! in_array( $prep_value_result['orderby'] ?? null, [ 'meta_value', 'meta_value_num' ], true ), 'Pre-populated orderby=meta_value does not remain meta ordering' );
+		$this->assert_true( ! isset( $prep_value_result['meta_query'] ), 'Unauthenticated caller with pre-populated orderby=meta_value gets no meta_query added' );
+
+		$prep_num_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value_num' ], $num_request );
+		$this->assert_same( 'date', $prep_num_result['orderby'] ?? null, 'Unauthenticated caller with pre-populated orderby=meta_value_num falls back to date' );
+		$this->assert_true( ! isset( $prep_num_result['meta_query'] ), 'Unauthenticated caller with pre-populated orderby=meta_value_num gets no meta_query added' );
+
+		$prep_only_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value' ], new WP_REST_Request( [] ) );
+		$this->assert_same( 'date', $prep_only_result['orderby'] ?? null, 'Pre-populated orderby=meta_value without request meta_key falls back to date for unauthorized caller' );
+
+		// Case E: Non-meta orderby (rand) remains permitted even if meta_key is rejected.
 		$rand_request = new WP_REST_Request(
 			[
 				'orderby'  => 'rand',
@@ -250,6 +263,10 @@ class QueryManagerTest {
 		$rand_result  = $manager->apply_custom_query_params( [ 'orderby' => 'date' ], $rand_request );
 		$this->assert_same( 'rand', $rand_result['orderby'], 'Non-meta orderby=rand remains allowed for unauthenticated caller' );
 		$this->assert_true( ! isset( $rand_result['meta_query'] ), 'Unauthenticated caller with orderby=rand still gets no meta_query added' );
+
+		// Case F: Request orderby=rand overrides pre-populated meta_value even when meta_key is rejected.
+		$rand_override_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value' ], $rand_request );
+		$this->assert_same( 'rand', $rand_override_result['orderby'], 'Allowed non-meta orderby=rand is not reverted to date when meta_key is rejected' );
 	}
 
 	/**
@@ -309,6 +326,9 @@ class QueryManagerTest {
 		);
 		$missing_key_result  = $manager->apply_custom_query_params( [ 'orderby' => 'date' ], $missing_key_request );
 		$this->assert_same( 'date', $missing_key_result['orderby'] ?? null, 'Authorized caller with orderby=meta_value and missing meta_key keeps original orderby' );
+
+		$prep_missing_key_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value' ], $missing_key_request );
+		$this->assert_same( 'date', $prep_missing_key_result['orderby'] ?? null, 'Authorized caller with pre-populated orderby=meta_value and missing meta_key falls back to date' );
 	}
 
 	/**
@@ -344,6 +364,11 @@ class QueryManagerTest {
 
 			$this->assert_same( 'date', $result['orderby'] ?? null, "Protected key '{$protected_key}' restores previous orderby" );
 			$this->assert_same( $existing, $result['meta_query'] ?? null, "Protected key '{$protected_key}' leaves pre-existing meta_query untouched" );
+
+			// With pre-existing orderby=meta_value, falls back to 'date'.
+			$prep_protected_result = $manager->apply_custom_query_params( [ 'orderby' => 'meta_value' ], $request );
+			$this->assert_same( 'date', $prep_protected_result['orderby'] ?? null, "Protected key '{$protected_key}' with pre-populated orderby=meta_value falls back to date" );
+			$this->assert_true( ! in_array( $prep_protected_result['orderby'] ?? null, [ 'meta_value', 'meta_value_num' ], true ), "Protected key '{$protected_key}' does not preserve meta ordering" );
 
 			// Without pre-existing orderby (original was null).
 			$no_orderby_request = new WP_REST_Request(

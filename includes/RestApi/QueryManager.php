@@ -104,31 +104,31 @@ if ( ! class_exists( QueryManager::class, false ) ) {
          * @return array Modified WP_Query arguments.
          */
         public function apply_custom_query_params( $args, $request ) {
-            $original_orderby = isset( $args['orderby'] ) ? $args['orderby'] : null;
-            $orderby          = $request->get_param( 'orderby' );
-            $meta_key         = $request->get_param( 'meta_key' );
-            $meta_value       = $request->get_param( 'meta_value' );
-            $meta_compare     = $request->get_param( 'meta_compare' );
+            $orderby         = $request->get_param( 'orderby' );
+            $raw_meta_key    = $request->get_param( 'meta_key' );
+            $meta_key        = is_scalar( $raw_meta_key ) ? sanitize_text_field( (string) $raw_meta_key ) : '';
+            $meta_value      = $request->get_param( 'meta_value' );
+            $meta_compare    = $request->get_param( 'meta_compare' );
+            $can_edit_posts  = current_user_can( 'edit_posts' );
+            $meta_order_keys = [ 'meta_value', 'meta_value_num' ];
 
             // Apply custom orderby parameters.
             if ( in_array( $orderby, [ 'rand', 'comment_count', 'meta_value', 'meta_value_num', 'menu_order' ], true ) ) {
-                $is_meta_orderby = in_array( $orderby, [ 'meta_value', 'meta_value_num' ], true );
-                if ( ! $is_meta_orderby || ( current_user_can( 'edit_posts' ) && ! empty( $meta_key ) ) ) {
+                $is_meta_orderby = in_array( $orderby, $meta_order_keys, true );
+                if ( ! $is_meta_orderby || ( $can_edit_posts && '' !== $meta_key && ! is_protected_meta( $meta_key, 'post' ) ) ) {
                     $args['orderby'] = $orderby;
+                } elseif ( isset( $args['orderby'] ) && in_array( $args['orderby'], $meta_order_keys, true ) ) {
+                    $args['orderby'] = 'date';
                 }
+            } elseif ( isset( $args['orderby'] ) && in_array( $args['orderby'], $meta_order_keys, true ) && ( ! $can_edit_posts || '' === $meta_key || is_protected_meta( $meta_key, 'post' ) ) ) {
+                $args['orderby'] = 'date';
             }
 
             // Apply custom meta query parameters for authorized users on non-protected meta keys.
-            if ( ! empty( $meta_key ) ) {
-                $meta_key = is_scalar( $meta_key ) ? sanitize_text_field( (string) $meta_key ) : '';
-
-                if ( '' === $meta_key || ! current_user_can( 'edit_posts' ) || is_protected_meta( $meta_key, 'post' ) ) {
-                    if ( in_array( $orderby, [ 'meta_value', 'meta_value_num' ], true ) ) {
-                        if ( null === $original_orderby ) {
-                            unset( $args['orderby'] );
-                        } else {
-                            $args['orderby'] = $original_orderby;
-                        }
+            if ( ! empty( $raw_meta_key ) ) {
+                if ( '' === $meta_key || ! $can_edit_posts || is_protected_meta( $meta_key, 'post' ) ) {
+                    if ( isset( $args['orderby'] ) && in_array( $args['orderby'], $meta_order_keys, true ) ) {
+                        $args['orderby'] = 'date';
                     }
 
                     return $args;
