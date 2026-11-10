@@ -122,11 +122,12 @@ export const buildCardDesktop = ( attributes ) => {
 	);
 	const defaultScrim =
 		'linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%)';
-	const safeOverlayScrim =
-		typeof overlayGradientScrim === 'string' &&
-		overlayGradientScrim.trim() !== ''
+	const strippedScrim =
+		typeof overlayGradientScrim === 'string'
 			? overlayGradientScrim.replace( /[;{}<>]/g, '' ).trim()
-			: defaultScrim;
+			: '';
+	const safeOverlayScrim =
+		strippedScrim !== '' ? strippedScrim : defaultScrim;
 	const normalBg = buildPostCardBackgroundStyles( attributes, 'Normal' );
 	const hoverBg = buildPostCardBackgroundStyles( attributes, 'Hover' );
 	const duration = cardHoverAnimationDuration?.Desktop || 300;

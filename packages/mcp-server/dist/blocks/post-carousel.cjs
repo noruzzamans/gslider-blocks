@@ -6144,7 +6144,8 @@ var buildCardDesktop = (attributes2) => {
     Math.max(40, parseInt(overlayScrimHeight, 10) || 75)
   );
   const defaultScrim = "linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%)";
-  const safeOverlayScrim = typeof overlayGradientScrim === "string" && overlayGradientScrim.trim() !== "" ? overlayGradientScrim.replace(/[;{}<>]/g, "").trim() : defaultScrim;
+  const strippedScrim = typeof overlayGradientScrim === "string" ? overlayGradientScrim.replace(/[;{}<>]/g, "").trim() : "";
+  const safeOverlayScrim = strippedScrim !== "" ? strippedScrim : defaultScrim;
   const normalBg = buildPostCardBackgroundStyles(attributes2, "Normal");
   const hoverBg = buildPostCardBackgroundStyles(attributes2, "Hover");
   const duration = cardHoverAnimationDuration?.Desktop || 300;

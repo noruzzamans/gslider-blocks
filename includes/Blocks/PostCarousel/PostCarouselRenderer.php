@@ -45,7 +45,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
          *
          * @var string[]
          */
-        private const ALLOWED_LAYOUT_MODES = array( 'classic', 'overlay', 'horizontal', 'hero', 'newsroom', 'timeline' );
+        private const ALLOWED_LAYOUT_MODES = array( 'classic', 'overlay', 'horizontal' );
 
         /**
          * Allowlisted horizontal media column positions.

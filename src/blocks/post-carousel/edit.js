@@ -1266,6 +1266,23 @@ export default function Edit( {
 															</div>
 														);
 													} else if (
+														activeLayoutMode !==
+														'classic'
+													) {
+														bodyAndThumb = (
+															<>
+																{ thumbnailEl }
+																<div className="gslider-post-carousel-body">
+																	{
+																		beforeThumb
+																	}
+																	{
+																		afterThumb
+																	}
+																</div>
+															</>
+														);
+													} else if (
 														afterThumb.length ===
 															0 &&
 														beforeThumb.length > 0

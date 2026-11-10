@@ -1326,7 +1326,7 @@ class PostCarouselRendererTest {
 		$this->assert_same( 30, $horiz_ctx_low['horizontal_media_width'], 'horizontalMediaWidth clamps to minimum 30' );
 		$this->assert_same( 60, $horiz_ctx_high['horizontal_media_width'], 'horizontalMediaWidth clamps to maximum 60' );
 
-		// 4. Invalid layout mode, media position, and preset style fall back safely.
+		// 4. Invalid or unsupported layout mode, media position, and preset style fall back safely.
 		$invalid_html = PostCarouselRenderer::render(
 			array(
 				'blockId'                 => 'gslider-wave4-invalid',
@@ -1336,6 +1336,14 @@ class PostCarouselRendererTest {
 			)
 		);
 		$this->assert_true( false !== strpos( $invalid_html, 'is-layout-classic is-preset-badpreset' ), 'Invalid postLayoutMode falls back to classic and presetStyle is sanitized' );
+
+		$future_mode_html = PostCarouselRenderer::render(
+			array(
+				'blockId'        => 'gslider-wave4-hero-unreleased',
+				'postLayoutMode' => 'hero',
+			)
+		);
+		$this->assert_true( false !== strpos( $future_mode_html, 'is-layout-classic' ) && false === strpos( $future_mode_html, 'is-layout-hero' ), 'Unsupported future postLayoutMode hero falls back to classic until implemented' );
 
 		// 5. Non-classic layout modes keep all text chunks inside .gslider-post-carousel-body even when contentOrder puts elements before thumbnail.
 		$this->reset_state();
