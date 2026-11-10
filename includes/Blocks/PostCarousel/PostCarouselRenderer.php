@@ -640,12 +640,15 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
             $nav_enabled_data        = $context['navigation_enabled_data'];
             $pagination_enabled_data = $context['pagination_enabled_data'];
             $block_id                = $context['block_id'];
+            $is_spotlight            = ! empty( $context['enable_spotlight'] );
 
             $swiper_config = array(
                 'effect'         => $carousel_effect,
                 'breakpoints'    => array(
                     0    => array(
-                        'slidesPerView' => isset( $carousel_per_column['Mobile'] ) ? round( max( 1.0, (float) $carousel_per_column['Mobile'] ), 2 ) : 1.0,
+                        'slidesPerView' => isset( $carousel_per_column['Mobile'] )
+                            ? ( $is_spotlight ? round( max( 1.0, (float) $carousel_per_column['Mobile'] ), 2 ) : (int) $carousel_per_column['Mobile'] )
+                            : ( $is_spotlight ? 1.0 : 1 ),
                         'spaceBetween'  => isset( $carousel_per_column_gap['Mobile'] ) ? (int) $carousel_per_column_gap['Mobile'] : 0,
                         'speed'         => isset( $speed['Mobile'] ) ? (int) $speed['Mobile'] : 800,
                         'autoplay'      => $autoplay ? array( 'delay' => isset( $autoplay_delay['Mobile'] ) ? (int) $autoplay_delay['Mobile'] : 1000 ) : false,
@@ -653,7 +656,9 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                         'pagination'    => array( 'enabled' => $pagination_enabled_data['Mobile'] ),
                     ),
                     768  => array(
-                        'slidesPerView' => isset( $carousel_per_column['Tablet'] ) ? round( max( 1.0, (float) $carousel_per_column['Tablet'] ), 2 ) : 2.0,
+                        'slidesPerView' => isset( $carousel_per_column['Tablet'] )
+                            ? ( $is_spotlight ? round( max( 1.0, (float) $carousel_per_column['Tablet'] ), 2 ) : (int) $carousel_per_column['Tablet'] )
+                            : ( $is_spotlight ? 2.0 : 2 ),
                         'spaceBetween'  => isset( $carousel_per_column_gap['Tablet'] ) ? (int) $carousel_per_column_gap['Tablet'] : 20,
                         'speed'         => isset( $speed['Tablet'] ) ? (int) $speed['Tablet'] : 800,
                         'autoplay'      => $autoplay ? array( 'delay' => isset( $autoplay_delay['Tablet'] ) ? (int) $autoplay_delay['Tablet'] : 1000 ) : false,
@@ -661,7 +666,9 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                         'pagination'    => array( 'enabled' => $pagination_enabled_data['Tablet'] ),
                     ),
                     1025 => array(
-                        'slidesPerView' => isset( $carousel_per_column['Desktop'] ) ? round( max( 1.0, (float) $carousel_per_column['Desktop'] ), 2 ) : 3.0,
+                        'slidesPerView' => isset( $carousel_per_column['Desktop'] )
+                            ? ( $is_spotlight ? round( max( 1.0, (float) $carousel_per_column['Desktop'] ), 2 ) : (int) $carousel_per_column['Desktop'] )
+                            : ( $is_spotlight ? 3.0 : 3 ),
                         'spaceBetween'  => isset( $carousel_per_column_gap['Desktop'] ) ? (int) $carousel_per_column_gap['Desktop'] : 20,
                         'speed'         => isset( $speed['Desktop'] ) ? (int) $speed['Desktop'] : 800,
                         'autoplay'      => $autoplay ? array( 'delay' => isset( $autoplay_delay['Desktop'] ) ? (int) $autoplay_delay['Desktop'] : 1000 ) : false,

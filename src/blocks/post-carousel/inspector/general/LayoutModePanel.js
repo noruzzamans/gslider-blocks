@@ -464,6 +464,7 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 
 			{ ( postLayoutMode !== 'hero' || enableSpotlight ) && (
 				<ToggleControl
+					__nextHasNoMarginBottom
 					label={ __( 'Spotlight Focus Stage', 'gslider-blocks' ) }
 					help={ __(
 						'Emphasize the centered slide while scaling and dimming neighbor slides.',

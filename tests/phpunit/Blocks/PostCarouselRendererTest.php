@@ -809,6 +809,7 @@ class PostCarouselRendererTest {
 		$this->test_thin_render_php_delegates_to_post_carousel_renderer();
 		$this->test_wave3_card_body_equal_height_fallback_and_clickable_card();
 		$this->test_wave4_core_layout_presets_and_horizontal_overlay_modes();
+		$this->test_wave5a_hero_minimal_spotlight_presets_and_swiper_settings();
 
 		echo "\nAll PostCarouselRenderer unit tests passed successfully!\n";
 	}
@@ -1375,7 +1376,7 @@ class PostCarouselRendererTest {
 				'heroContentAlignment' => 'center',
 			)
 		);
-		$this->assert_true( false !== strpos( $hero_html, 'is-layout-hero is-preset-cinematic-hero hero-align-center' ), 'Hero mode emits is-layout-hero, is-preset-cinematic-hero, and hero-align-center wrapper classes' );
+		$this->assert_true( false !== strpos( $hero_html, 'is-layout-hero is-preset-cinematic-hero' ) && false !== strpos( $hero_html, 'hero-align-center' ), 'Hero mode emits is-layout-hero, is-preset-cinematic-hero, and hero-align-center wrapper classes' );
 		$this->assert_true( false === strpos( $hero_html, 'is-spotlight' ), 'Hero preset without spotlight omits is-spotlight wrapper class' );
 
 		$invalid_hero_align_html = PostCarouselRenderer::render(
@@ -1441,7 +1442,7 @@ class PostCarouselRendererTest {
 
 		preg_match( '/data-swiper-settings="([^"]+)"/', $spotlight_html, $swiper_match );
 		$this->assert_true( ! empty( $swiper_match[1] ), 'Spotlight render includes serialized data-swiper-settings JSON' );
-		$decoded_swiper = json_decode( html_entity_decode( $swiper_match[1], ENT_QUOTES, 'UTF-8' ), true );
+		$decoded_swiper = json_decode( html_entity_decode( $swiper_match[1] ?? '', ENT_QUOTES, 'UTF-8' ), true );
 		$this->assert_same( true, $decoded_swiper['centeredSlides'] ?? null, 'Spotlight sets centeredSlides=true in Swiper settings' );
 		$this->assert_same( 1.6, $decoded_swiper['breakpoints'][1025]['slidesPerView'] ?? null, 'Spotlight preserves float Desktop slidesPerView 1.6' );
 		$this->assert_same( 1.3, $decoded_swiper['breakpoints'][768]['slidesPerView'] ?? null, 'Spotlight preserves float Tablet slidesPerView 1.3' );
