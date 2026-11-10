@@ -11,6 +11,8 @@
 
 namespace GSlider\RestApi;
 
+use GSlider\Blocks\PostCarousel\CardMarkupBuilder;
+use GSlider\Blocks\PostCarousel\PostCarouselRenderer;
 use GSlider\Classes\StyleGenerator;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -59,6 +61,8 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			'reverseDirection',
 			'direction',
 			'layoutHeightSwitcher',
+			'enableCardTilt',
+			'cardHoverAnimation',
 		];
 
 		/**
@@ -223,6 +227,10 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 
 				case 'gslider-blocks/flexi-content':
 					$slides = self::normalize_flexi_content( $inner_blocks );
+					break;
+
+				case 'gslider-blocks/post-carousel':
+					$slides = self::normalize_post_carousel( $attrs );
 					break;
 
 				default:
@@ -459,8 +467,14 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			];
 
 			if ( $autoplay ) {
+				$pause_on_hover = ! empty( $attrs['pauseOnHover'] );
+				if ( 'gslider-blocks/post-carousel' === $block_name ) {
+					$card_hover     = isset( $attrs['cardHoverAnimation'] ) && is_string( $attrs['cardHoverAnimation'] ) ? $attrs['cardHoverAnimation'] : 'none';
+					$pause_on_hover = $pause_on_hover || ! empty( $attrs['enableCardTilt'] ) || 'none' !== $card_hover;
+				}
+
 				$config['autoplay'] = [
-					'pauseOnMouseEnter'    => ! empty( $attrs['pauseOnHover'] ),
+					'pauseOnMouseEnter'    => $pause_on_hover,
 					'disableOnInteraction' => false,
 					'stopOnLastSlide'      => ! empty( $attrs['stopOnLastSlide'] ),
 					'reverseDirection'     => ! empty( $attrs['reverseDirection'] ),
@@ -761,6 +775,186 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			}
 
 			return $slides;
+		}
+
+		/**
+		 * Normalizes Post Carousel slides by executing the configured WP_Query.
+		 *
+		 * Delegates query sanitization and excerpt resolution to PostCarouselRenderer
+		 * and CardMarkupBuilder while returning structured JSON-safe post objects
+		 * for headless frontends. Returns an empty list if WP_Query is unavailable.
+		 *
+		 * @since 1.2.3
+		 *
+		 * @param array $attrs Block attributes merged with defaults.
+		 * @return array Normalized array of post slide objects.
+		 */
+		public static function normalize_post_carousel( array $attrs ): array {
+			if (
+				! class_exists( '\WP_Query' ) ||
+				! class_exists( PostCarouselRenderer::class ) ||
+				! function_exists( 'post_type_exists' ) ||
+				! function_exists( 'is_post_type_viewable' )
+			) {
+				return [];
+			}
+
+			$query_options = PostCarouselRenderer::parse_query_options( $attrs );
+			$query_args    = PostCarouselRenderer::build_query_args( $query_options );
+			$context       = PostCarouselRenderer::build_render_context( $attrs );
+			$posts_query   = new \WP_Query( $query_args );
+
+			// Enforce the 1-30 cap even when WP_Query prepends sticky posts beyond posts_per_page.
+			$posts_per_page = (int) $query_options['posts_per_page'];
+			if ( is_array( $posts_query->posts ) && count( $posts_query->posts ) > $posts_per_page ) {
+				$posts_query->posts      = array_slice( $posts_query->posts, 0, $posts_per_page );
+				$posts_query->post_count = count( $posts_query->posts );
+			}
+
+			if ( ! $posts_query->have_posts() ) {
+				if ( function_exists( 'wp_reset_postdata' ) ) {
+					wp_reset_postdata();
+				}
+				return [];
+			}
+
+			$can_build_excerpt = class_exists( CardMarkupBuilder::class )
+				&& function_exists( 'has_excerpt' )
+				&& function_exists( 'get_the_excerpt' )
+				&& function_exists( 'get_the_content' )
+				&& function_exists( 'strip_shortcodes' )
+				&& function_exists( 'wp_trim_words' );
+
+			$slides = [];
+
+			while ( $posts_query->have_posts() ) {
+				$posts_query->the_post();
+				$post_id = function_exists( 'get_the_ID' ) ? (int) get_the_ID() : 0;
+				if ( $post_id <= 0 ) {
+					continue;
+				}
+
+				$title = function_exists( 'get_the_title' )
+					? sanitize_text_field( (string) get_the_title( $post_id ) )
+					: '';
+
+				if ( $can_build_excerpt ) {
+					$excerpt = sanitize_text_field( CardMarkupBuilder::build_excerpt( $post_id, $context ) );
+				} elseif ( function_exists( 'get_the_excerpt' ) ) {
+					$excerpt = sanitize_text_field( (string) get_the_excerpt( $post_id ) );
+				} else {
+					$excerpt = '';
+				}
+
+				$link = function_exists( 'get_permalink' )
+					? esc_url_raw( (string) get_permalink( $post_id ) )
+					: '';
+
+				$date = function_exists( 'get_the_date' )
+					? sanitize_text_field( (string) get_the_date( '', $post_id ) )
+					: '';
+
+				$featured_image = null;
+				if ( function_exists( 'has_post_thumbnail' ) && has_post_thumbnail( $post_id ) ) {
+					$thumb_id  = function_exists( 'get_post_thumbnail_id' ) ? (int) get_post_thumbnail_id( $post_id ) : 0;
+					$thumb_url = '';
+					if ( function_exists( 'get_the_post_thumbnail_url' ) ) {
+						$thumb_url = (string) get_the_post_thumbnail_url( $post_id, 'medium_large' );
+					} elseif ( $thumb_id > 0 && function_exists( 'wp_get_attachment_image_src' ) ) {
+						$thumb_src = wp_get_attachment_image_src( $thumb_id, 'medium_large' );
+						$thumb_url = is_array( $thumb_src ) && ! empty( $thumb_src[0] ) ? (string) $thumb_src[0] : '';
+					}
+
+					$thumb_alt = '';
+					if ( $thumb_id > 0 && function_exists( 'get_post_meta' ) ) {
+						$thumb_alt = (string) get_post_meta( $thumb_id, '_wp_attachment_image_alt', true );
+					}
+
+					if ( '' !== $thumb_url ) {
+						$featured_image = [
+							'id'  => $thumb_id,
+							'url' => esc_url_raw( $thumb_url ),
+							'alt' => sanitize_text_field( '' !== $thumb_alt ? $thumb_alt : $title ),
+						];
+					}
+				}
+
+				$author_id   = function_exists( 'get_the_author_meta' ) ? (int) get_the_author_meta( 'ID' ) : 0;
+				$author_name = function_exists( 'get_the_author' ) ? sanitize_text_field( (string) get_the_author() ) : '';
+				$avatar_raw  = ( $author_id > 0 && function_exists( 'get_avatar_url' ) ) ? get_avatar_url( $author_id, [ 'size' => 96 ] ) : '';
+				$author      = [
+					'id'     => $author_id,
+					'name'   => $author_name,
+					'avatar' => is_string( $avatar_raw ) && '' !== $avatar_raw ? esc_url_raw( $avatar_raw ) : '',
+				];
+
+				$categories = function_exists( 'get_the_category' )
+					? self::normalize_post_terms( get_the_category( $post_id ), 'category' )
+					: [];
+				$tags       = function_exists( 'get_the_tags' )
+					? self::normalize_post_terms( get_the_tags( $post_id ), 'post_tag' )
+					: [];
+
+				$slides[] = [
+					'id'            => $post_id,
+					'title'         => $title,
+					'excerpt'       => $excerpt,
+					'link'          => $link,
+					'date'          => $date,
+					'featuredImage' => $featured_image,
+					'author'        => $author,
+					'categories'    => $categories,
+					'tags'          => $tags,
+				];
+			}
+
+			if ( function_exists( 'wp_reset_postdata' ) ) {
+				wp_reset_postdata();
+			}
+
+			return $slides;
+		}
+
+		/**
+		 * Normalizes taxonomy term objects for a queried Post Carousel slide.
+		 *
+		 * @since 1.2.3
+		 *
+		 * @param mixed  $terms    Raw term list returned by WordPress taxonomy APIs.
+		 * @param string $taxonomy Taxonomy slug ('category' or 'post_tag').
+		 * @return array Normalized taxonomy term arrays.
+		 */
+		private static function normalize_post_terms( $terms, string $taxonomy ): array {
+			if ( ! is_array( $terms ) || empty( $terms ) ) {
+				return [];
+			}
+
+			$normalized = [];
+			foreach ( $terms as $term ) {
+				if ( ! is_object( $term ) || ! isset( $term->term_id, $term->name ) ) {
+					continue;
+				}
+
+				$term_id  = (int) $term->term_id;
+				$raw_slug = isset( $term->slug ) ? (string) $term->slug : (string) $term->name;
+				$slug     = function_exists( 'sanitize_title' ) ? sanitize_title( $raw_slug ) : sanitize_key( $raw_slug );
+				$link     = '';
+
+				if ( 'category' === $taxonomy && function_exists( 'get_category_link' ) ) {
+					$link = (string) get_category_link( $term_id );
+				} elseif ( 'post_tag' === $taxonomy && function_exists( 'get_tag_link' ) ) {
+					$link = (string) get_tag_link( $term_id );
+				}
+
+				$normalized[] = [
+					'id'   => $term_id,
+					'name' => sanitize_text_field( (string) $term->name ),
+					'slug' => $slug,
+					'link' => esc_url_raw( $link ),
+				];
+			}
+
+			return $normalized;
 		}
 
 		/**

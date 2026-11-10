@@ -311,7 +311,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
          * @param array $attributes Raw block attributes.
          * @return array<string, mixed> Sanitized query options map.
          */
-        private static function parse_query_options( array $attributes ): array {
+        public static function parse_query_options( array $attributes ): array {
             $default_bool_map = array(
                 'Desktop' => true,
                 'Tablet'  => true,
@@ -404,7 +404,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
          * @param array $options Normalized query options from `parse_query_options()`.
          * @return array<string, mixed> Arguments ready for `WP_Query`.
          */
-        private static function build_query_args( array $options ): array {
+        public static function build_query_args( array $options ): array {
             if ( ! empty( $options['use_related_posts_query'] ) ) {
                 return self::build_related_query_args( $options );
             }
@@ -733,7 +733,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
          * @param array $attributes Raw block attributes.
          * @return array<string, mixed> Normalized rendering context.
          */
-        private static function build_render_context( array $attributes ): array {
+        public static function build_render_context( array $attributes ): array {
             $default_show = array(
                 'Desktop' => true,
                 'Tablet'  => true,
