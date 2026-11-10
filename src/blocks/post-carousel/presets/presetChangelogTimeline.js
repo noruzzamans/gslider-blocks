@@ -110,9 +110,15 @@ export const changelogTimelineStyles = {
 		bottom: '16',
 		left: '0',
 	},
-	readMoreButtonType: 'btn-flat',
+	readMoreButtonWidth: 'auto',
 	readMoreButtonColor: '#007cba',
 	readMoreButtonColorHover: '#005a87',
+	readMoreButtonIconColor: '#007cba',
+	readMoreButtonIconColorHover: '#005a87',
+	readMoreButtonNormalBackgroundType: 'classic',
+	readMoreButtonNormalClassicColor: 'transparent',
+	readMoreButtonHoverBackgroundType: 'classic',
+	readMoreButtonHoverClassicColor: 'transparent',
 };
 
 const ChangelogTimelinePreview = () => (
