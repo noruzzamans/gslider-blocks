@@ -123,7 +123,7 @@ const Select2Control = ({
             ...base,
             backgroundColor:
                 state.isSelected || state.isFocused ? '#f0f0f0' : '#fff',
-            color: state.isFocused ? '#007cba' : '#1e1e1e',
+            color: state.isFocused ? '#006ba1' : '#1e1e1e',
             fontSize: '12px',
             fontWeight: 400,
             lineHeight: 1.3,

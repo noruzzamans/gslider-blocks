@@ -330,7 +330,9 @@ const QuerySettingsPanel = ({
                         });
                     })
                     .catch(() => {
-                        // Ignore REST hydration failures so the editor remains responsive.
+                        chunk.forEach((id) => {
+                            hydratedTermKeysRef.current.delete(`${taxSlug}:${id}`);
+                        });
                     });
             }
         });
@@ -411,7 +413,9 @@ const QuerySettingsPanel = ({
                     });
                 })
                 .catch(() => {
-                    // Ignore REST hydration failures so the editor remains responsive.
+                    chunk.forEach((id) => {
+                        hydratedAuthorIdsRef.current.delete(id);
+                    });
                 });
         }
     }, [useRelatedPostsQuery, authorsLoaded, allAuthors, authors, extraAuthors]);
@@ -421,9 +425,7 @@ const QuerySettingsPanel = ({
      * filtering out non-viewable types and the 'attachment' (media) type.
      */
     const postTypeOptions = useMemo(() => {
-        if (!postTypes) {
-            return [];
-        }
+        if (!postTypes) return [];
         return postTypes
             .filter((type) => type.viewable && type.slug !== 'attachment')
             .map((type) => ({ value: type.slug, label: type.name }));
@@ -1046,7 +1048,7 @@ const QuerySettingsPanel = ({
 
     /**
      * Generate a localized label for the terms dropdown depending on inclusion/exclusion setting.
-     *
+     * 
      * @param {string} filterType   Filter behavior ('include' or 'exclude').
      * @param {string} taxonomyName The human-readable name of the taxonomy (e.g. Category).
      * @returns {string} The formatted localized label.
@@ -1089,7 +1091,7 @@ const QuerySettingsPanel = ({
                         <ToggleControl
                             label={__('Related Posts Mode', 'gslider-blocks')}
                             checked={!!useRelatedPostsQuery}
-                            onChange={(isChecked) => setAttributes({ useRelatedPostsQuery: isChecked })}
+                            onChange={(value) => setAttributes({ useRelatedPostsQuery: value })}
                             help={__('Automatically fetch posts related to the current post by category or tag.', 'gslider-blocks')}
                         />
                         {!!useRelatedPostsQuery && (
@@ -1107,7 +1109,7 @@ const QuerySettingsPanel = ({
                                         { label: __('Categories', 'gslider-blocks'), value: 'category' },
                                         { label: __('Tags', 'gslider-blocks'), value: 'post_tag' },
                                         { label: __('Categories & Tags', 'gslider-blocks'), value: 'both' },
-                                    ].find((opt) => opt.value === relatedPostsTaxonomy) || { label: __('Categories', 'gslider-blocks'), value: 'category' }}
+                                    ].find(opt => opt.value === relatedPostsTaxonomy) || { label: __('Categories', 'gslider-blocks'), value: 'category' }}
                                     onChange={(option) => setAttributes({ relatedPostsTaxonomy: option.value })}
                                     className="gslider-query-select2-control"
                                     classNamePrefix="gslider-select2"
@@ -1143,8 +1145,8 @@ const QuerySettingsPanel = ({
                                 label={taxonomy.name}
                                 options={INCLUDE_EXCLUDE_OPTIONS}
                                 value={filterType}
-                                onChange={(nextFilterType) =>
-                                    handleTaxonomyFilterTypeChange(taxonomy.slug, nextFilterType)
+                                onChange={(value) =>
+                                    handleTaxonomyFilterTypeChange(taxonomy.slug, value)
                                 }
                             />
 
@@ -1183,8 +1185,8 @@ const QuerySettingsPanel = ({
                             label={__('Author', 'gslider-blocks')}
                             options={INCLUDE_EXCLUDE_OPTIONS}
                             value={authorFilterType || 'include'}
-                            onChange={(nextFilterType) =>
-                                setAttributes({ authorFilterType: nextFilterType })
+                            onChange={(value) =>
+                                setAttributes({ authorFilterType: value })
                             }
                         />
 
@@ -1249,7 +1251,7 @@ const QuerySettingsPanel = ({
                 <ResponsiveRangeControl
                     label={panelTitle === __('Query Settings', 'gslider-blocks') ? __('Posts Count', 'gslider-blocks') : __('Post Per Page', 'gslider-blocks')}
                     rangeValue={postsPerPage}
-                    onChangeValue={(nextVal) => setAttributes({ postsPerPage: nextVal })}
+                    onChangeValue={(value) => setAttributes({ postsPerPage: value })}
                     deviceType={deviceType}
                     min={1}
                     max={maxPosts}
@@ -1263,7 +1265,7 @@ const QuerySettingsPanel = ({
                     <ResponsiveRangeControl
                         label={__('Offset', 'gslider-blocks')}
                         rangeValue={offset}
-                        onChangeValue={(nextVal) => setAttributes({ offset: nextVal })}
+                        onChangeValue={(value) => setAttributes({ offset: value })}
                         deviceType={deviceType}
                         min={0}
                         max={100}
@@ -1399,8 +1401,8 @@ const QuerySettingsPanel = ({
                     <ToggleControl
                         label={__('Exclude Current Post', 'gslider-blocks')}
                         checked={excludeCurrentPost}
-                        onChange={(isChecked) =>
-                            setAttributes({ excludeCurrentPost: isChecked })
+                        onChange={(value) =>
+                            setAttributes({ excludeCurrentPost: value })
                         }
                         help={__('Prevent the current post from showing up.', 'gslider-blocks')}
                     />
