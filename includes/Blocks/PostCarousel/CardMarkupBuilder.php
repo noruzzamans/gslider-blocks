@@ -38,8 +38,9 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 'class' => true,
             ),
             'span' => array(
-                'class'      => true,
-                'aria-label' => true,
+                'class'       => true,
+                'aria-label'  => true,
+                'aria-hidden' => true,
             ),
             'a'    => array(
                 'href' => true,
@@ -208,7 +209,7 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                         <span class="gslider-category-item"><a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>"><?php echo esc_html( $cat->name ); ?></a></span>
                     <?php endforeach; ?>
                     <?php if ( $cat_overflow > 0 ) : ?>
-                        <span class="gslider-category-item is-more-badge" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: Number of remaining categories. */ _n( '%d more category', '%d more categories', $cat_overflow, 'gslider-blocks' ), $cat_overflow ) ); ?>">+<?php echo esc_html( (string) $cat_overflow ); ?></span>
+                        <span class="gslider-category-item is-more-badge"><span class="screen-reader-text"><?php echo esc_html( sprintf( /* translators: %d: Number of remaining categories. */ _n( '%d more category', '%d more categories', $cat_overflow, 'gslider-blocks' ), $cat_overflow ) ); ?></span><span aria-hidden="true">+<?php echo esc_html( (string) $cat_overflow ); ?></span></span>
                     <?php endif; ?>
                 </div>
                 <?php
@@ -226,7 +227,7 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                             <span class="gslider-tag-item"><a href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>"><?php echo esc_html( $tag->name ); ?></a></span>
                         <?php endforeach; ?>
                         <?php if ( $tag_overflow > 0 ) : ?>
-                            <span class="gslider-tag-item is-more-badge" aria-label="<?php echo esc_attr( sprintf( /* translators: %d: Number of remaining tags. */ _n( '%d more tag', '%d more tags', $tag_overflow, 'gslider-blocks' ), $tag_overflow ) ); ?>">+<?php echo esc_html( (string) $tag_overflow ); ?></span>
+                            <span class="gslider-tag-item is-more-badge"><span class="screen-reader-text"><?php echo esc_html( sprintf( /* translators: %d: Number of remaining tags. */ _n( '%d more tag', '%d more tags', $tag_overflow, 'gslider-blocks' ), $tag_overflow ) ); ?></span><span aria-hidden="true">+<?php echo esc_html( (string) $tag_overflow ); ?></span></span>
                         <?php endif; ?>
                     </div>
                     <?php
@@ -485,7 +486,7 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 $date_format = isset( $context['date_format'] ) ? (string) $context['date_format'] : 'default';
                 if ( 'relative' === $date_format ) {
                     $post_time = (int) get_post_time( 'U', true, $post_id );
-                    $now       = (int) current_time( 'timestamp' );
+                    $now       = (int) current_time( 'timestamp', true );
                     $formatted = sprintf(
                         /* translators: %s: Human-readable relative time difference. */
                         __( '%s ago', 'gslider-blocks' ),

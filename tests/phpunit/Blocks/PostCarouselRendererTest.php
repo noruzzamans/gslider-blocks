@@ -1805,7 +1805,7 @@ class PostCarouselRendererTest {
 		$this->assert_true( false !== strpos( $capped_html, 'Design</a>' ), 'Second category badge renders within cap' );
 		$this->assert_true( false === strpos( $capped_html, 'News</a>' ), 'Third category badge is truncated by taxonomyMaxCount' );
 		$this->assert_true( false === strpos( $capped_html, 'Tutorials</a>' ), 'Fourth category badge is truncated by taxonomyMaxCount' );
-		$this->assert_true( false !== strpos( $capped_html, '<span class="gslider-category-item is-more-badge" aria-label="2 more categories">+2</span>' ), '+2 overflow badge renders with accessible aria-label' );
+		$this->assert_true( false !== strpos( $capped_html, '<span class="gslider-category-item is-more-badge"><span class="screen-reader-text">2 more categories</span><span aria-hidden="true">+2</span></span>' ), '+2 overflow badge renders with accessible screen-reader-text and aria-hidden badge' );
 
 		// 5. Context Clamping & Validation
 		$ctx_clamped = PostCarouselRenderer::build_render_context(

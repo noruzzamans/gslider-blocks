@@ -853,20 +853,22 @@ export default function Edit( {
 														)
 													) }
 													{ catOverflow > 0 && (
-														<span
-															className="gslider-category-item is-more-badge"
-															aria-label={ sprintf(
-																/* translators: %d: Number of remaining categories. */
-																_n(
-																	'%d more category',
-																	'%d more categories',
-																	catOverflow,
-																	'gslider-blocks'
-																),
-																catOverflow
-															) }
-														>
-															+{ catOverflow }
+														<span className="gslider-category-item is-more-badge">
+															<span className="screen-reader-text">
+																{ sprintf(
+																	/* translators: %d: Number of remaining categories. */
+																	_n(
+																		'%d more category',
+																		'%d more categories',
+																		catOverflow,
+																		'gslider-blocks'
+																	),
+																	catOverflow
+																) }
+															</span>
+															<span aria-hidden="true">
+																+{ catOverflow }
+															</span>
 														</span>
 													) }
 												</div>
@@ -887,20 +889,22 @@ export default function Edit( {
 														)
 													) }
 													{ tagOverflow > 0 && (
-														<span
-															className="gslider-tag-item is-more-badge"
-															aria-label={ sprintf(
-																/* translators: %d: Number of remaining tags. */
-																_n(
-																	'%d more tag',
-																	'%d more tags',
-																	tagOverflow,
-																	'gslider-blocks'
-																),
-																tagOverflow
-															) }
-														>
-															+{ tagOverflow }
+														<span className="gslider-tag-item is-more-badge">
+															<span className="screen-reader-text">
+																{ sprintf(
+																	/* translators: %d: Number of remaining tags. */
+																	_n(
+																		'%d more tag',
+																		'%d more tags',
+																		tagOverflow,
+																		'gslider-blocks'
+																	),
+																	tagOverflow
+																) }
+															</span>
+															<span aria-hidden="true">
+																+{ tagOverflow }
+															</span>
 														</span>
 													) }
 												</div>
@@ -1322,11 +1326,15 @@ export default function Edit( {
 																	if (
 																		canShowDate
 																	) {
+																		const rawDate =
+																			post.date_gmt
+																				? `${ post.date_gmt }Z`
+																				: post.date;
 																		const dateText =
 																			dateFormat ===
 																			'relative'
 																				? getRelativeDate(
-																						post.date
+																						rawDate
 																				  )
 																				: formattedDate;
 																		metaItems.push(

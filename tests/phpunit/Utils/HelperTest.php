@@ -92,6 +92,7 @@ class HelperTest {
 		$this->test_class_exists();
 		$this->test_build_date_query_site_timezone_and_ranges();
 		$this->test_build_meta_query();
+		$this->test_calculate_reading_time();
 
 		echo "\nAll Helper unit tests passed successfully!\n";
 	}
@@ -263,8 +264,6 @@ class HelperTest {
 			Helper::build_meta_query( 'stock', '', '!=' ),
 			"build_meta_query() omits empty string '' meta_value"
 		);
-
-		$this->test_calculate_reading_time();
 	}
 
 	/**
@@ -298,6 +297,18 @@ class HelperTest {
 		// 1000 Chinese characters (repeating 测试中文阅读时间 = 8 chars * 125 = 1000 chars) -> 2 minutes.
 		$cjk_text = str_repeat( '测试中文阅读时间', 125 );
 		$this->assert_same( 2, Helper::calculate_reading_time( $cjk_text ), 'calculate_reading_time() calculates CJK text at 500 chars/min' );
+
+		// Japanese Hiragana & Katakana (repeating ひらがなカタカナ = 8 chars * 125 = 1000 chars) -> 2 minutes.
+		$japanese_text = str_repeat( 'ひらがなカタカナ', 125 );
+		$this->assert_same( 2, Helper::calculate_reading_time( $japanese_text ), 'calculate_reading_time() calculates Japanese Kana at 500 chars/min' );
+
+		// Korean Hangul (repeating 한국어텍스트안녕 = 8 chars * 125 = 1000 chars) -> 2 minutes.
+		$korean_text = str_repeat( '한국어텍스트안녕', 125 );
+		$this->assert_same( 2, Helper::calculate_reading_time( $korean_text ), 'calculate_reading_time() calculates Korean Hangul at 500 chars/min' );
+
+		// Mixed Latin + CJK: 200 English words + 500 Japanese characters (1 min + 1 min = 2 mins).
+		$mixed_text = str_repeat( 'word ', 200 ) . str_repeat( 'ひらがなカタカナ', 63 ); // 63 * 8 = 504 chars (~1.008 min) + 200 words (1.0 min) = ~2.008 min -> ceil = 3.
+		$this->assert_same( 3, Helper::calculate_reading_time( $mixed_text ), 'calculate_reading_time() calculates mixed Latin and CJK text proportionally' );
 	}
 }
 

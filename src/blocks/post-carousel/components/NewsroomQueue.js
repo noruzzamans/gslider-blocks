@@ -4,6 +4,7 @@ import {
 	getFeaturedImageUrl,
 	getFormattedDate,
 	decodeHtmlEntities,
+	calculateReadingTime,
 } from '@Utils/postHelpers';
 
 /**
@@ -14,13 +15,11 @@ import {
  */
 const getReadingTime = ( post ) => {
 	const rawContent = post?.content?.rendered || '';
-	const cleanText = rawContent.replace( /<[^>]*>/g, '' ).trim();
-	if ( ! cleanText ) {
+	if ( ! rawContent ) {
 		return getFormattedDate( post ) || '';
 	}
 
-	const words = cleanText.split( /\s+/ ).filter( Boolean ).length;
-	const minutes = Math.max( 1, Math.ceil( words / 200 ) );
+	const minutes = calculateReadingTime( rawContent );
 
 	return sprintf(
 		/* translators: %d: Estimated reading time in minutes. */

@@ -2,17 +2,8 @@
 import { __ } from '@wordpress/i18n';
 import { PanelBody } from '@wordpress/components';
 import { TEXT_ALIGN } from '@Constants';
-import SelectControls from '@Components/select-controls';
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import ResponsiveRangeControl from '@Components/responsive-range-control';
-
-const TAXONOMY_MAX_OPTIONS = [
-	{ label: '1', value: 1 },
-	{ label: '2', value: 2 },
-	{ label: '3', value: 3 },
-	{ label: '4', value: 4 },
-	{ label: '5', value: 5 },
-];
 import {
 	spacingKeys,
 	BoundTypographyControl,
@@ -51,17 +42,6 @@ const TaxonomyStylePanel = ( {
 
 	return (
 		<PanelBody title={ title } opened={ isOpen } onToggle={ onToggle }>
-			<SelectControls
-				label={ __( 'Max Badges to Display', 'gslider-blocks' ) }
-				value={ attributes.taxonomyMaxCount ?? 2 }
-				options={ TAXONOMY_MAX_OPTIONS }
-				onChange={ ( value ) =>
-					setAttributes( {
-						taxonomyMaxCount: parseInt( value, 10 ),
-					} )
-				}
-			/>
-
 			<BoundTypographyControl
 				prefix={ prefix }
 				deviceType={ deviceType }

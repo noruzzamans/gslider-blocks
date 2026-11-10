@@ -258,18 +258,22 @@ export const calculateReadingTime = ( content, wordsPerMinute = 200 ) => {
 	if ( ! plainText ) {
 		return 1;
 	}
-	// Multi-byte character counting for CJK scripts (Chinese, Japanese, Korean)
-	const cjkPattern = /[\u4e00-\u9fa5]/;
-	if ( cjkPattern.test( plainText ) ) {
-		const charCount = plainText.replace( /\s+/g, '' ).length;
-		const cjkWpm = 500;
-		return Math.max( 1, Math.ceil( charCount / Math.max( 1, cjkWpm ) ) );
-	}
-	const words = plainText.split( /\s+/ ).filter( Boolean );
-	return Math.max(
-		1,
-		Math.ceil( words.length / Math.max( 1, wordsPerMinute ) )
-	);
+	// Multi-byte character counting for CJK scripts (Chinese Hanzi/Kanji, Japanese Kana, Korean Hangul)
+	const cjkPattern =
+		/[\u4e00-\u9fa5\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]/g;
+	const cjkMatches = plainText.match( cjkPattern );
+	const cjkCharCount = cjkMatches ? cjkMatches.length : 0;
+
+	const nonCjkText = plainText.replace( cjkPattern, ' ' );
+	const words = nonCjkText.split( /\s+/ ).filter( Boolean );
+	const wordCount = words.length;
+
+	const cjkWpm = 500;
+	const cjkTime = cjkCharCount / cjkWpm;
+	const latinTime = wordCount / Math.max( 1, wordsPerMinute );
+	const totalTime = cjkTime + latinTime;
+
+	return Math.max( 1, Math.ceil( totalTime ) );
 };
 
 /**
@@ -332,7 +336,7 @@ export const getRelativeDate = ( dateString ) => {
 			diffInMonths
 		);
 	}
-	const diffInYears = Math.floor( diffInDays / 365 );
+	const diffInYears = Math.max( 1, Math.floor( diffInDays / 365 ) );
 	return sprintf(
 		/* translators: %d: Number of years */
 		_n( '%d year ago', '%d years ago', diffInYears, 'gslider-blocks' ),
@@ -349,6 +353,9 @@ export const getRelativeDate = ( dateString ) => {
 export const getCommentCount = ( post ) => {
 	if ( typeof post?.comments_count === 'number' ) {
 		return post.comments_count;
+	}
+	if ( typeof post?.comment_count === 'number' ) {
+		return post.comment_count;
 	}
 	if (
 		post?._embedded &&

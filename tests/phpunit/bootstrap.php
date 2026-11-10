@@ -904,7 +904,7 @@ if ( ! function_exists( 'parse_blocks' ) ) {
 }
 
 if ( ! function_exists( 'current_time' ) ) {
-	function current_time( $type ) {
+	function current_time( $type, $gmt = 0 ) {
 		if ( 'timestamp' === $type || 'U' === $type ) {
 			return 1792087200;
 		}

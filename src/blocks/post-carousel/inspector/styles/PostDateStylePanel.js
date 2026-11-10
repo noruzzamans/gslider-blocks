@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import { PanelBody } from '@wordpress/components';
-import SelectControls from '@Components/select-controls';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
 import {
 	spacingKeys,
@@ -9,14 +8,6 @@ import {
 	BoundColorSwitcherControl,
 	BoundSpacingControl,
 } from '../sharedControls';
-
-const DATE_FORMAT_OPTIONS = [
-	{ label: __( 'Standard Date', 'gslider-blocks' ), value: 'default' },
-	{
-		label: __( 'Relative Time (e.g. 2 hours ago)', 'gslider-blocks' ),
-		value: 'relative',
-	},
-];
 
 /**
  * Style inspector panel for post publish date visibility, typography, colors, and spacing.
@@ -55,15 +46,6 @@ const PostDateStylePanel = ( {
 			/>
 			{ ( showMetaDate?.[ deviceType ] ?? true ) && (
 				<>
-					<SelectControls
-						label={ __( 'Date Format', 'gslider-blocks' ) }
-						options={ DATE_FORMAT_OPTIONS }
-						value={ attributes.dateFormat || 'default' }
-						onChange={ ( value ) =>
-							setAttributes( { dateFormat: value } )
-						}
-					/>
-
 					<BoundTypographyControl
 						prefix="postDate"
 						deviceType={ deviceType }
