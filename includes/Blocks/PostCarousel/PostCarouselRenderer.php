@@ -697,6 +697,10 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                 $wrapper_classes[] = 'has-pagination';
             }
 
+            if ( ! empty( $context['equal_height'] ) ) {
+                $wrapper_classes[] = 'has-equal-height';
+            }
+
             $wrapper_data = array(
                 'class'                => implode( ' ', array_filter( $wrapper_classes ) ),
                 'data-swiper-settings' => wp_json_encode( $swiper_settings ),
@@ -779,7 +783,12 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                 'block_id'                               => isset( $attributes['blockId'] ) ? sanitize_html_class( (string) $attributes['blockId'] ) : '',
                 'global_id'                              => isset( $attributes['globalID'] ) ? sanitize_html_class( (string) $attributes['globalID'] ) : '',
                 'global_class'                           => self::sanitize_global_classes( $attributes['globalClass'] ?? '' ),
+                'equal_height'                           => isset( $attributes['equalHeight'] ) ? (bool) $attributes['equalHeight'] : true,
+                'enable_card_clickable_link'             => ! empty( $attributes['enableCardClickableLink'] ),
                 'enable_lazy_load'                       => ! empty( $attributes['enableLazyLoad'] ),
+                'enable_fallback_thumbnail'              => isset( $attributes['enableFallbackThumbnail'] ) ? (bool) $attributes['enableFallbackThumbnail'] : true,
+                'fallback_thumbnail_url'                 => isset( $attributes['fallbackThumbnailUrl'] ) ? esc_url_raw( (string) $attributes['fallbackThumbnailUrl'] ) : '',
+                'fallback_thumbnail_id'                  => isset( $attributes['fallbackThumbnailId'] ) ? max( 0, intval( $attributes['fallbackThumbnailId'] ) ) : 0,
                 'post_title_html_tag'                    => self::validate_html_tag( $attributes['postTitleHtmlTag'] ?? 'h3', 'h3' ),
                 'post_excerpt_html_tag'                  => self::validate_html_tag( $attributes['postExcerptHtmlTag'] ?? 'p', 'p' ),
                 'enable_post_excerpt_limit'              => ! empty( $attributes['enablePostExcerptLimit'] ),
