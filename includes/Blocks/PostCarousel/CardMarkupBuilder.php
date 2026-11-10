@@ -130,8 +130,16 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 }
             }
 
+            $layout_mode = $context['post_layout_mode'] ?? 'classic';
+
             if ( '' === $thumbnail_html ) {
                 $elements_html = '            <div class="gslider-post-carousel-body">' . "\n"
+                    . $after_thumb_html
+                    . '            </div>' . "\n";
+            } elseif ( 'classic' !== $layout_mode ) {
+                $elements_html = $thumbnail_html
+                    . '            <div class="gslider-post-carousel-body">' . "\n"
+                    . $before_thumb_html
                     . $after_thumb_html
                     . '            </div>' . "\n";
             } elseif ( '' === $after_thumb_html && '' !== $before_thumb_html ) {

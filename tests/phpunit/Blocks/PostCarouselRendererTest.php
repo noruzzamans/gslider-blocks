@@ -1336,6 +1336,18 @@ class PostCarouselRendererTest {
 			)
 		);
 		$this->assert_true( false !== strpos( $invalid_html, 'is-layout-classic is-preset-badpreset' ), 'Invalid postLayoutMode falls back to classic and presetStyle is sanitized' );
+
+		// 5. Non-classic layout modes keep all text chunks inside .gslider-post-carousel-body even when contentOrder puts elements before thumbnail.
+		$this->reset_state();
+		$horiz_reordered_html = PostCarouselRenderer::render(
+			array(
+				'blockId'        => 'gslider-wave4-horiz-order',
+				'postLayoutMode' => 'horizontal',
+				'contentOrder'   => array( 'title', 'thumbnail', 'excerpt', 'meta', 'categories', 'readmore' ),
+			)
+		);
+		$this->assert_true( 2 === substr_count( $horiz_reordered_html, 'class="gslider-post-carousel-body"' ), 'Horizontal layout with title-before-thumbnail still renders one .gslider-post-carousel-body per card' );
+		$this->assert_true( strpos( $horiz_reordered_html, 'class="gslider-post-carousel-image"' ) < strpos( $horiz_reordered_html, 'class="gslider-post-carousel-body"' ), 'Horizontal layout renders thumbnail container before .gslider-post-carousel-body regardless of contentOrder' );
 	}
 }
 

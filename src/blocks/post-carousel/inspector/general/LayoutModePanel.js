@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { PanelBody } from '@wordpress/components';
 import PresetSelector from '@Components/preset-selector';
 import SwitcherControl from '@Components/switcher-control';
@@ -60,6 +60,52 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 	} = attributes;
 
 	const [ isCustomScrim, setIsCustomScrim ] = useState( false );
+	const [ scrimHeightDraft, setScrimHeightDraft ] = useState(
+		String( overlayScrimHeight )
+	);
+	const [ mediaWidthDraft, setMediaWidthDraft ] = useState(
+		String( horizontalMediaWidth )
+	);
+
+	useEffect( () => {
+		setScrimHeightDraft( String( overlayScrimHeight ) );
+	}, [ overlayScrimHeight ] );
+
+	useEffect( () => {
+		setMediaWidthDraft( String( horizontalMediaWidth ) );
+	}, [ horizontalMediaWidth ] );
+
+	const handleScrimHeightChange = ( raw ) => {
+		setScrimHeightDraft( raw );
+		const parsed = parseInt( raw, 10 );
+		if ( ! Number.isNaN( parsed ) && parsed >= 40 && parsed <= 100 ) {
+			setAttributes( { overlayScrimHeight: parsed } );
+		}
+	};
+
+	const commitScrimHeight = () => {
+		const clamped = clampNumber( scrimHeightDraft, 40, 100, 75 );
+		setScrimHeightDraft( String( clamped ) );
+		if ( clamped !== overlayScrimHeight ) {
+			setAttributes( { overlayScrimHeight: clamped } );
+		}
+	};
+
+	const handleMediaWidthChange = ( raw ) => {
+		setMediaWidthDraft( raw );
+		const parsed = parseInt( raw, 10 );
+		if ( ! Number.isNaN( parsed ) && parsed >= 30 && parsed <= 60 ) {
+			setAttributes( { horizontalMediaWidth: parsed } );
+		}
+	};
+
+	const commitMediaWidth = () => {
+		const clamped = clampNumber( mediaWidthDraft, 30, 60, 45 );
+		setMediaWidthDraft( String( clamped ) );
+		if ( clamped !== horizontalMediaWidth ) {
+			setAttributes( { horizontalMediaWidth: clamped } );
+		}
+	};
 
 	return (
 		<PanelBody
@@ -114,24 +160,17 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 						}
 					/>
 
-					<InputControls
-						label={ __( 'Scrim Height (%)', 'gslider-blocks' ) }
-						value={ String( overlayScrimHeight ) }
-						onChangeValue={ ( value ) =>
-							setAttributes( {
-								overlayScrimHeight: clampNumber(
-									value,
-									40,
-									100,
-									75
-								),
-							} )
-						}
-						helpText={ __(
-							'Gradient scrim minimum height percentage (40–100%).',
-							'gslider-blocks'
-						) }
-					/>
+					<div onBlur={ commitScrimHeight }>
+						<InputControls
+							label={ __( 'Scrim Height (%)', 'gslider-blocks' ) }
+							value={ scrimHeightDraft }
+							onChangeValue={ handleScrimHeightChange }
+							helpText={ __(
+								'Gradient scrim minimum height percentage (40–100%).',
+								'gslider-blocks'
+							) }
+						/>
+					</div>
 				</>
 			) }
 
@@ -146,27 +185,20 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 						}
 					/>
 
-					<InputControls
-						label={ __(
-							'Media Column Width (%)',
-							'gslider-blocks'
-						) }
-						value={ String( horizontalMediaWidth ) }
-						onChangeValue={ ( value ) =>
-							setAttributes( {
-								horizontalMediaWidth: clampNumber(
-									value,
-									30,
-									60,
-									45
-								),
-							} )
-						}
-						helpText={ __(
-							'Image column width percentage on desktop/tablet (30–60%).',
-							'gslider-blocks'
-						) }
-					/>
+					<div onBlur={ commitMediaWidth }>
+						<InputControls
+							label={ __(
+								'Media Column Width (%)',
+								'gslider-blocks'
+							) }
+							value={ mediaWidthDraft }
+							onChangeValue={ handleMediaWidthChange }
+							helpText={ __(
+								'Image column width percentage on desktop/tablet (30–60%).',
+								'gslider-blocks'
+							) }
+						/>
+					</div>
 				</>
 			) }
 		</PanelBody>

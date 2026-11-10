@@ -19,8 +19,6 @@
 		display: grid;
 		grid-template-columns: var(--gslider-media-width, 45%) 1fr;
 		align-items: stretch;
-		border: 1px solid #e2e8f0;
-		border-radius: 12px;
 		overflow: hidden;
 
 		&.has-no-image {
