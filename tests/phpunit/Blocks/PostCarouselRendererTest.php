@@ -908,6 +908,7 @@ class PostCarouselRendererTest {
 		$this->test_wave4_core_layout_presets_and_horizontal_overlay_modes();
 		$this->test_wave5a_hero_minimal_spotlight_presets_and_swiper_settings();
 		$this->test_wave5b_newsroom_stage_preset_and_queue_rendering();
+		$this->test_wave5c_timeline_rail_preset_rendering();
 
 		echo "\nAll PostCarouselRenderer unit tests passed successfully!\n";
 	}
@@ -1649,6 +1650,77 @@ class PostCarouselRendererTest {
 		);
 		$this->assert_same( 80, $ctx_bounds_high['newsroom_main_width'], 'newsroomMainWidth clamps to maximum 80%' );
 		$this->assert_same( 'left', $ctx_bounds_high['newsroom_queue_position'], 'newsroomQueuePosition preserves valid left' );
+	}
+
+	/**
+	 * Test 12: Chronological Timeline Rail preset (`changelog-timeline`), continuous horizontal stems, dot and date node header.
+	 *
+	 * @return void
+	 */
+	public function test_wave5c_timeline_rail_preset_rendering(): void {
+		$this->reset_state();
+
+		$timeline_html = PostCarouselRenderer::render(
+			array(
+				'blockId'              => 'gslider-timeline-test',
+				'postLayoutMode'       => 'timeline',
+				'presetStyle'          => 'changelog-timeline',
+				'timelineDatePosition' => 'above',
+			)
+		);
+
+		// 1. Wrapper classes
+		$this->assert_true( false !== strpos( $timeline_html, 'is-layout-timeline is-preset-changelog-timeline' ), 'Timeline layout emits is-layout-timeline and is-preset-changelog-timeline wrapper classes' );
+
+		// 2. Card class
+		$this->assert_true( false !== strpos( $timeline_html, 'is-timeline-card' ), 'Timeline card article carries is-timeline-card class' );
+
+		// 3. Timeline node DOM elements
+		$this->assert_true( false !== strpos( $timeline_html, 'class="gslider-timeline-node date-position-above"' ), 'Timeline node contains date-position-above by default' );
+		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-stem"></div>' ), 'Timeline node renders connector stem' );
+		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-dot">' ), 'Timeline node renders milestone dot' );
+		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-dot-inner"></div>' ), 'Timeline dot contains inner element' );
+		$this->assert_true( false !== strpos( $timeline_html, '<time class="gslider-timeline-date"' ), 'Timeline node renders date element' );
+
+		// 4. Date position below test
+		$timeline_below_html = PostCarouselRenderer::render(
+			array(
+				'blockId'              => 'gslider-timeline-below',
+				'postLayoutMode'       => 'timeline',
+				'presetStyle'          => 'changelog-timeline',
+				'timelineDatePosition' => 'below',
+			)
+		);
+		$this->assert_true( false !== strpos( $timeline_below_html, 'class="gslider-timeline-node date-position-below"' ), 'Timeline node with date position below emits date-position-below class' );
+
+		// 5. Clamping and validation: timeline_stem_thickness [1, 10], timeline_dot_size [8, 48], timeline_date_position ['above', 'below']
+		$ctx_bounds_low = PostCarouselRenderer::build_render_context(
+			array(
+				'postLayoutMode'        => 'timeline',
+				'timelineStemThickness' => 0,
+				'timelineDotSize'       => 4,
+				'timelineDatePosition'  => 'invalid_pos',
+				'timelineStemColor'     => '#abc',
+				'timelineDotColor'      => 'not-a-color',
+			)
+		);
+		$this->assert_same( 1, $ctx_bounds_low['timeline_stem_thickness'], 'timelineStemThickness clamps to minimum 1px' );
+		$this->assert_same( 8, $ctx_bounds_low['timeline_dot_size'], 'timelineDotSize clamps to minimum 8px' );
+		$this->assert_same( 'above', $ctx_bounds_low['timeline_date_position'], 'Disallowed timelineDatePosition falls back to above' );
+		$this->assert_same( '#abc', $ctx_bounds_low['timeline_stem_color'], 'timelineStemColor preserves valid hex' );
+		$this->assert_same( '#007cba', $ctx_bounds_low['timeline_dot_color'], 'Invalid timelineDotColor falls back to default #007cba' );
+
+		$ctx_bounds_high = PostCarouselRenderer::build_render_context(
+			array(
+				'postLayoutMode'        => 'timeline',
+				'timelineStemThickness' => 50,
+				'timelineDotSize'       => 100,
+				'timelineDatePosition'  => 'below',
+			)
+		);
+		$this->assert_same( 10, $ctx_bounds_high['timeline_stem_thickness'], 'timelineStemThickness clamps to maximum 10px' );
+		$this->assert_same( 48, $ctx_bounds_high['timeline_dot_size'], 'timelineDotSize clamps to maximum 48px' );
+		$this->assert_same( 'below', $ctx_bounds_high['timeline_date_position'], 'Valid timelineDatePosition preserves below' );
 	}
 }
 
