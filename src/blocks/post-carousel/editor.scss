@@ -355,3 +355,14 @@
 	min-width: 22px;
 	line-height: 1;
 }
+
+/* Reduced Motion Support for Skeleton Shimmers */
+@media (prefers-reduced-motion: reduce) {
+
+	.gslider-skeleton-item,
+	.gslider-skeleton-pulse {
+		animation: none !important;
+		background-image: none !important;
+		background-color: #f1f5f9 !important;
+	}
+}

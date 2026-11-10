@@ -841,10 +841,44 @@ export default function Edit( {
 		if ( ! preset ) {
 			return;
 		}
-		setAttributes( {
-			presetStyle: presetSlug,
-			...( preset.styles || {} ),
+
+		const sides = [ 'top', 'right', 'bottom', 'left' ];
+		const merged = { ...attributes, ...( preset.styles || {} ) };
+		const updates = { presetStyle: presetSlug, ...( preset.styles || {} ) };
+
+		Object.entries( preset.styles || {} ).forEach( ( [ key, value ] ) => {
+			const deviceMatch = key.match( /(Desktop|Tablet|Mobile)$/ );
+			if ( ! deviceMatch ) {
+				return;
+			}
+			const device = deviceMatch[ 1 ];
+			if (
+				! value ||
+				typeof value !== 'object' ||
+				Array.isArray( value ) ||
+				! sides.every( ( s ) => s in value )
+			) {
+				return;
+			}
+			const units =
+				merged?.[ `${ key.replace( device, '' ) }Units` ]?.[ device ] ||
+				'px';
+			const fmt = ( v ) =>
+				v === '' || v === undefined || v === null
+					? '0'
+					: `${ v }${ units }`;
+			const hasAny = sides.some(
+				( s ) =>
+					value[ s ] !== '' &&
+					value[ s ] !== undefined &&
+					value[ s ] !== null
+			);
+			updates[ `${ key }CssStyle` ] = hasAny
+				? sides.map( ( s ) => fmt( value[ s ] ) ).join( ' ' )
+				: '';
 		} );
+
+		setAttributes( updates );
 	};
 
 	const rawPostsPerPage = attributes?.postsPerPage;
@@ -887,7 +921,14 @@ export default function Edit( {
 			( attributes?.dateRange && attributes.dateRange !== 'any' ) ||
 			( attributes?.taxonomyQuery &&
 				typeof attributes.taxonomyQuery === 'object' &&
-				Object.keys( attributes.taxonomyQuery ).length > 0 )
+				Object.keys( attributes.taxonomyQuery ).length > 0 ) ||
+			( typeof attributes?.offset === 'object' &&
+				( Number( attributes.offset?.Desktop ) > 0 ||
+					Number( attributes.offset?.Tablet ) > 0 ||
+					Number( attributes.offset?.Mobile ) > 0 ) ) ||
+			attributes?.excludeCurrentPost === true ||
+			attributes?.useRelatedPostsQuery === true ||
+			( attributes?.postType && attributes.postType !== 'post' )
 	);
 
 	const handleResetFilters = () => {
@@ -901,8 +942,19 @@ export default function Edit( {
 			metaValue: '',
 			dateRange: 'any',
 			taxonomyQuery: {},
+			offset: { Desktop: 0, Tablet: 0, Mobile: 0 },
+			excludeCurrentPost: false,
+			useRelatedPostsQuery: false,
+			postType: 'post',
 		} );
 	};
+
+	const currentHeroHeight =
+		deviceType === 'Mobile'
+			? attributes?.heroHeightMobile ?? 340
+			: deviceType === 'Tablet'
+			? attributes?.heroHeightTablet ?? 420
+			: attributes?.heroHeightDesktop ?? 520;
 
 	return (
 		<>
@@ -925,7 +977,12 @@ export default function Edit( {
 					/>
 					<span
 						className="gslider-toolbar-post-count-label"
-						aria-label={ __( 'Posts per page', 'gslider-blocks' ) }
+						role="status"
+						aria-label={ sprintf(
+							/* translators: %d: number of posts per page */
+							__( 'Posts count: %d', 'gslider-blocks' ),
+							currentPostCount
+						) }
 						title={ __( 'Posts per page', 'gslider-blocks' ) }
 					>
 						{ currentPostCount }
@@ -950,7 +1007,7 @@ export default function Edit( {
 						postLayoutMode={ activeLayoutMode }
 						columns={ skeletonColumns }
 						gap={ carouselPerColumnGap?.[ deviceType ] ?? 20 }
-						heroHeight={ attributes?.heroHeightDesktop ?? 520 }
+						heroHeight={ currentHeroHeight }
 						newsroomWidth={ newsroomMainWidth }
 					/>
 				) }
