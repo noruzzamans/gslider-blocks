@@ -597,7 +597,7 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 							const clamped = clampNumber(
 								timelineThicknessDraft,
 								1,
-								8,
+								10,
 								2
 							);
 							setTimelineThicknessDraft( String( clamped ) );
@@ -620,7 +620,7 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 								if (
 									! Number.isNaN( parsed ) &&
 									parsed >= 1 &&
-									parsed <= 8
+									parsed <= 10
 								) {
 									setAttributes( {
 										timelineStemThickness: parsed,
@@ -628,7 +628,7 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 								}
 							} }
 							helpText={ __(
-								'Horizontal rail stem line thickness (1–8px).',
+								'Horizontal rail stem line thickness (1–10px).',
 								'gslider-blocks'
 							) }
 						/>
@@ -638,8 +638,8 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 						onBlur={ () => {
 							const clamped = clampNumber(
 								timelineDotSizeDraft,
-								10,
-								32,
+								8,
+								48,
 								16
 							);
 							setTimelineDotSizeDraft( String( clamped ) );
@@ -661,8 +661,8 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 								const parsed = parseInt( raw, 10 );
 								if (
 									! Number.isNaN( parsed ) &&
-									parsed >= 10 &&
-									parsed <= 32
+									parsed >= 8 &&
+									parsed <= 48
 								) {
 									setAttributes( {
 										timelineDotSize: parsed,
@@ -670,7 +670,7 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 								}
 							} }
 							helpText={ __(
-								'Milestone circular node diameter (10–32px).',
+								'Milestone circular node diameter (8–48px).',
 								'gslider-blocks'
 							) }
 						/>
@@ -679,7 +679,8 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 					<ColorControl
 						label={ __( 'Stem Color', 'gslider-blocks' ) }
 						color={ timelineStemColor }
-						onChange={ ( value ) =>
+						defaultColor="#e2e8f0"
+						onChangeColor={ ( value ) =>
 							setAttributes( { timelineStemColor: value } )
 						}
 					/>
@@ -687,7 +688,8 @@ const LayoutModePanel = ( { attributes, setAttributes, isOpen, onToggle } ) => {
 					<ColorControl
 						label={ __( 'Milestone Dot Color', 'gslider-blocks' ) }
 						color={ timelineDotColor }
-						onChange={ ( value ) =>
+						defaultColor="#007cba"
+						onChangeColor={ ( value ) =>
 							setAttributes( { timelineDotColor: value } )
 						}
 					/>
