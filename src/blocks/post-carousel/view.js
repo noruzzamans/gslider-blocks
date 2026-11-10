@@ -14,6 +14,11 @@ document.addEventListener( 'DOMContentLoaded', () => {
 		);
 
 		sliders.forEach( ( sliderContainer ) => {
+			if ( sliderContainer.dataset.swiperInitialized === 'true' ) {
+				return;
+			}
+			sliderContainer.dataset.swiperInitialized = 'true';
+
 			try {
 				// Get the Swiper settings from the data attribute
 				const swiperSettings = sliderContainer.dataset.swiperSettings;
@@ -28,6 +33,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					);
 				}
 			} catch ( error ) {
+				delete sliderContainer.dataset.swiperInitialized;
 				console.error(
 					'Error initializing post carousel slider:',
 					error
@@ -43,11 +49,4 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 	// Initialize sliders on page load
 	initializeSliders();
-
-	// Re-initialize sliders when new blocks are added (useful for dynamic content)
-	if ( window.wp && window.wp.hooks ) {
-		window.wp.hooks.addAction( 'blocks.blockRendered', 'gslider', () => {
-			initializeSliders();
-		} );
-	}
 } );

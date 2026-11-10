@@ -4,6 +4,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { Placeholder } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
+import { useMergeRefs } from '@wordpress/compose';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
 import Inspector from './inspector';
@@ -181,6 +182,8 @@ export default function Edit( {
 	const hasEntranceAnimation =
 		cardEntranceAnimation && cardEntranceAnimation !== 'none';
 
+	const trimmedGlobalClass = globalClass?.trim();
+
 	/** Block props for container */
 	const blockProps = useBlockProps( {
 		className: `gslider-post-carousel-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
@@ -189,7 +192,8 @@ export default function Edit( {
 			cardHoverAnimation !== 'none'
 				? `gslider-card-hover-${ cardHoverAnimation }`
 				: ''
-		}`,
+		}${ trimmedGlobalClass ? ` ${ trimmedGlobalClass }` : '' }`,
+		...( globalID && { id: globalID } ),
 		'data-animation-settings': hasEntranceAnimation
 			? JSON.stringify( {
 					duration: {
@@ -220,6 +224,13 @@ export default function Edit( {
 						Mobile: cardStaggerDelay?.Mobile ?? 100,
 				  } )
 				: undefined,
+		'data-tilt-max': enableCardTilt
+			? JSON.stringify( {
+					Desktop: cardTiltMaxAngle?.Desktop ?? 12,
+					Tablet: cardTiltMaxAngle?.Tablet ?? 12,
+					Mobile: cardTiltMaxAngle?.Mobile ?? 12,
+			  } )
+			: undefined,
 		'data-tilt-perspective': enableCardTilt
 			? JSON.stringify( {
 					Desktop: cardTiltPerspective?.Desktop ?? 800,
@@ -291,6 +302,7 @@ export default function Edit( {
 	/** Ref for panel settings focus management */
 	const panelRef = useRef( null );
 	SwitchToBlockSettings( panelRef );
+	const mergedBlockRef = useMergeRefs( [ blockProps.ref, panelRef ] );
 
 	/** Refs for navigation buttons */
 	const prevRef = useRef( null );
@@ -410,12 +422,29 @@ export default function Edit( {
 			);
 			if ( wrapper ) {
 				if ( enableCardTilt ) {
-					wrapper.dataset.tiltMax = String( cardTiltMaxAngle );
-					wrapper.dataset.tiltPerspective =
-						String( cardTiltPerspective );
-					wrapper.dataset.tiltScale = String( cardTiltHoverScale );
-					wrapper.dataset.tiltSpeed = String(
-						cardTiltTransitionSpeed
+					const serializeTilt = ( val, fallback ) =>
+						typeof val === 'object' || val === undefined
+							? JSON.stringify( {
+									Desktop: val?.Desktop ?? fallback,
+									Tablet: val?.Tablet ?? fallback,
+									Mobile: val?.Mobile ?? fallback,
+							  } )
+							: String( val );
+					wrapper.dataset.tiltMax = serializeTilt(
+						cardTiltMaxAngle,
+						12
+					);
+					wrapper.dataset.tiltPerspective = serializeTilt(
+						cardTiltPerspective,
+						800
+					);
+					wrapper.dataset.tiltScale = serializeTilt(
+						cardTiltHoverScale,
+						1.02
+					);
+					wrapper.dataset.tiltSpeed = serializeTilt(
+						cardTiltTransitionSpeed,
+						400
 					);
 					initCardTilt( wrapper );
 				}
@@ -498,7 +527,7 @@ export default function Edit( {
 				setAttributes={ setAttributes }
 			/>
 
-			<div { ...blockProps }>
+			<div { ...blockProps } ref={ mergedBlockRef }>
 				{ ( isLoading || ! posts ) && (
 					<div className="gslider-post-carousel-loading-container">
 						<div
@@ -557,6 +586,10 @@ export default function Edit( {
 					>
 						<div className="swiper-wrapper">
 							{ posts.map( ( post ) => {
+								const postTitleText =
+									decodeHtmlEntities(
+										post?.title?.rendered
+									) || __( '(Untitled)', 'gslider-blocks' );
 								const featuredImageUrl =
 									getFeaturedImageUrl( post );
 								const categories = getPostCategories( post );
@@ -639,13 +672,7 @@ export default function Edit( {
 										className="swiper-slide"
 										key={ post.id }
 									>
-										<div
-											className={ `gslider-post-carousel-content-wrapper ${ globalClass }` }
-											{ ...( globalID && {
-												id: globalID,
-											} ) }
-											ref={ panelRef }
-										>
+										<div className="gslider-post-carousel-content-wrapper">
 											<article
 												className={ `gslider-post-carousel-card${
 													hasEntranceAnimation
@@ -672,11 +699,9 @@ export default function Edit( {
 																		src={
 																			featuredImageUrl
 																		}
-																		alt={ decodeHtmlEntities(
-																			post
-																				.title
-																				.rendered
-																		) }
+																		alt={
+																			postTitleText
+																		}
 																		loading={
 																			enableLazyLoad
 																				? 'lazy'
@@ -709,11 +734,7 @@ export default function Edit( {
 														]
 															? ( () => {
 																	const rawTitleText =
-																		decodeHtmlEntities(
-																			post
-																				.title
-																				.rendered
-																		);
+																		postTitleText;
 																	let trimmedTitle =
 																		rawTitleText;
 																	if (
