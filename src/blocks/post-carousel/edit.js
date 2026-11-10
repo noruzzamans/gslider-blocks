@@ -847,7 +847,7 @@ export default function Edit( {
 		const updates = { presetStyle: presetSlug, ...( preset.styles || {} ) };
 
 		Object.entries( preset.styles || {} ).forEach( ( [ key, value ] ) => {
-			const deviceMatch = key.match( /(Desktop|Tablet|Mobile)$/ );
+			const deviceMatch = key.match( /(Desktop|Tablet|Mobile)/ );
 			if ( ! deviceMatch ) {
 				return;
 			}
@@ -926,9 +926,7 @@ export default function Edit( {
 				( Number( attributes.offset?.Desktop ) > 0 ||
 					Number( attributes.offset?.Tablet ) > 0 ||
 					Number( attributes.offset?.Mobile ) > 0 ) ) ||
-			attributes?.excludeCurrentPost === true ||
-			attributes?.useRelatedPostsQuery === true ||
-			( attributes?.postType && attributes.postType !== 'post' )
+			attributes?.excludeCurrentPost === true
 	);
 
 	const handleResetFilters = () => {
@@ -944,8 +942,6 @@ export default function Edit( {
 			taxonomyQuery: {},
 			offset: { Desktop: 0, Tablet: 0, Mobile: 0 },
 			excludeCurrentPost: false,
-			useRelatedPostsQuery: false,
-			postType: 'post',
 		} );
 	};
 
