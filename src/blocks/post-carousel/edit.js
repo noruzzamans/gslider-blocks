@@ -27,6 +27,7 @@ import {
 	initEntranceAnimations,
 	applyStaggerDelays,
 	prefersReducedMotion,
+	onReducedMotionChange,
 } from '@Utils/animation-utils';
 
 export default function Edit( {
@@ -336,10 +337,8 @@ export default function Edit( {
 			paginationOutsideRef.current.innerHTML = '';
 		}
 
-		const reduceMotion = prefersReducedMotion();
-
-		// Build Swiper settings
-		const swiperSettings = {
+		// Build Swiper settings based on the current reduced-motion state
+		const createSwiperSettings = ( reduceMotion ) => ( {
 			effect: carouselEffect,
 			breakpoints: {
 				0: {
@@ -399,12 +398,38 @@ export default function Edit( {
 						clickable: true,
 				  }
 				: false,
-		};
+		} );
 
 		// Initialize new Swiper instance
 		swiperInstanceRef.current = new window.Swiper(
 			swiperContainerRef.current,
-			swiperSettings
+			createSwiperSettings( prefersReducedMotion() )
+		);
+
+		const unsubscribeReducedMotion = onReducedMotionChange(
+			( reduceMotion ) => {
+				if ( ! swiperContainerRef.current || ! window.Swiper ) {
+					return;
+				}
+				if ( swiperInstanceRef.current ) {
+					swiperInstanceRef.current.destroy( true, true );
+					swiperInstanceRef.current = null;
+				}
+				const duplicates = swiperContainerRef.current.querySelectorAll(
+					'.swiper-slide-duplicate'
+				);
+				duplicates.forEach( ( slide ) => slide.remove() );
+				if ( paginationInsideRef.current ) {
+					paginationInsideRef.current.innerHTML = '';
+				}
+				if ( paginationOutsideRef.current ) {
+					paginationOutsideRef.current.innerHTML = '';
+				}
+				swiperInstanceRef.current = new window.Swiper(
+					swiperContainerRef.current,
+					createSwiperSettings( reduceMotion )
+				);
+			}
 		);
 
 		// Initialize Card Tilt & Entrance Animations in editor
@@ -443,6 +468,7 @@ export default function Edit( {
 
 		// Cleanup on unmount or before re-initialization
 		return () => {
+			unsubscribeReducedMotion();
 			if ( swiperInstanceRef.current ) {
 				swiperInstanceRef.current.destroy( true, true );
 				swiperInstanceRef.current = null;

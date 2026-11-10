@@ -138,6 +138,11 @@
 		}
 	}
 
+	.gslider-post-carousel-image a:focus-visible {
+		outline-offset: -2px;
+		border-radius: inherit;
+	}
+
 	.gslider-post-carousel-card:hover .gslider-post-carousel-title a {
 		color: #000; /* hover:text-primary */
 	}

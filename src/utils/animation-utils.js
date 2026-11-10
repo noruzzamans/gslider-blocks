@@ -31,6 +31,146 @@ export function prefersReducedMotion() {
 }
 
 /**
+ * Subscribe to changes in the user's reduced-motion preference.
+ *
+ * @param {Function} callback Invoked with the updated reduced-motion boolean.
+ * @return {Function} Unsubscribe cleanup callback.
+ */
+export function onReducedMotionChange( callback ) {
+	if (
+		typeof window === 'undefined' ||
+		typeof window.matchMedia !== 'function' ||
+		typeof callback !== 'function'
+	) {
+		return () => {};
+	}
+
+	const mediaQuery = window.matchMedia( '(prefers-reduced-motion: reduce)' );
+	const handleChange = ( event ) => callback( Boolean( event.matches ) );
+
+	if ( typeof mediaQuery.addEventListener === 'function' ) {
+		mediaQuery.addEventListener( 'change', handleChange );
+		return () => mediaQuery.removeEventListener( 'change', handleChange );
+	}
+
+	if ( typeof mediaQuery.addListener === 'function' ) {
+		mediaQuery.addListener( handleChange );
+		return () => mediaQuery.removeListener( handleChange );
+	}
+
+	return () => {};
+}
+
+/**
+ * Apply reduced-motion overrides to a Swiper settings object before init.
+ *
+ * @param {Object} settings Mutable Swiper configuration object.
+ */
+export function applyReducedMotionSwiperSettings( settings ) {
+	if ( ! settings || ! prefersReducedMotion() ) {
+		return;
+	}
+
+	settings.autoplay = false;
+	settings.speed = 0;
+	if ( settings.breakpoints ) {
+		Object.values( settings.breakpoints ).forEach( ( bpSettings ) => {
+			bpSettings.autoplay = false;
+			bpSettings.speed = 0;
+		} );
+	}
+}
+
+const trackedReducedMotionSliders = new Map();
+let isReducedMotionListenerBound = false;
+
+/**
+ * Register a frontend carousel container so live prefers-reduced-motion changes
+ * stop or restore active Swiper instances without requiring a reload.
+ *
+ * @param {HTMLElement} sliderContainer Carousel wrapper element.
+ * @param {Function}    SwiperClass     Global Swiper constructor.
+ */
+export function registerReducedMotionSwiper( sliderContainer, SwiperClass ) {
+	if ( ! sliderContainer || ! SwiperClass ) {
+		return;
+	}
+
+	trackedReducedMotionSliders.set( sliderContainer, SwiperClass );
+
+	if ( isReducedMotionListenerBound ) {
+		return;
+	}
+
+	isReducedMotionListenerBound = true;
+	onReducedMotionChange( ( reduceMotion ) => {
+		trackedReducedMotionSliders.forEach( ( Ctor, container ) => {
+			if ( ! container.isConnected ) {
+				trackedReducedMotionSliders.delete( container );
+				return;
+			}
+
+			const swiperEl = container.querySelector( '.swiper' );
+			const swiper = swiperEl && swiperEl.swiper;
+			if ( ! swiper || swiper.destroyed ) {
+				return;
+			}
+
+			if ( reduceMotion ) {
+				if ( swiper.autoplay && swiper.autoplay.running ) {
+					swiper.autoplay.stop();
+				}
+				swiper.params.speed = 0;
+				if (
+					swiper.params.autoplay &&
+					typeof swiper.params.autoplay === 'object'
+				) {
+					swiper.params.autoplay = {
+						...swiper.params.autoplay,
+						enabled: false,
+					};
+				} else {
+					swiper.params.autoplay = false;
+				}
+				if ( swiper.params.breakpoints ) {
+					Object.values( swiper.params.breakpoints ).forEach(
+						( bpSettings ) => {
+							bpSettings.autoplay = false;
+							bpSettings.speed = 0;
+						}
+					);
+				}
+				swiper.update();
+				return;
+			}
+
+			const rawSettings = container.dataset.swiperSettings;
+			if ( ! rawSettings ) {
+				return;
+			}
+
+			try {
+				const restoredSettings = JSON.parse( rawSettings );
+				const activeIndex = swiper.params.loop
+					? swiper.realIndex
+					: swiper.activeIndex;
+				swiper.destroy( true, true );
+				const nextSwiper = new Ctor( swiperEl, restoredSettings );
+				if ( typeof activeIndex === 'number' && activeIndex > 0 ) {
+					if ( nextSwiper.params.loop ) {
+						nextSwiper.slideToLoop( activeIndex, 0, false );
+					} else {
+						nextSwiper.slideTo( activeIndex, 0, false );
+					}
+				}
+			} catch ( e ) {
+				// Ignore malformed serialized settings on dynamic media-query change.
+			}
+		} );
+	} );
+}
+
+/**
  * Get the current breakpoint key based on window width.
  * Matches WordPress editor breakpoints: Tablet ≤ 1024, Mobile ≤ 768.
  *
