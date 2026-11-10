@@ -78,6 +78,9 @@ export default function Edit( {
 		showMetaAvatar,
 		showMetaDate,
 		showTaxonomy,
+		postLayoutMode,
+		presetStyle,
+		horizontalMediaPosition,
 		equalHeight,
 		enableCardClickableLink,
 
@@ -199,12 +202,14 @@ export default function Edit( {
 		cardEntranceAnimation && cardEntranceAnimation !== 'none';
 
 	const trimmedGlobalClass = globalClass?.trim();
+	const activeLayoutMode = postLayoutMode || 'classic';
+	const activePresetStyle = presetStyle || 'classic-card';
 	const isEqualHeight = equalHeight ?? true;
 	const isCardClickable = Boolean( enableCardClickableLink );
 
 	/** Block props for container */
 	const blockProps = useBlockProps( {
-		className: `gslider-post-carousel-wrapper ${ blockId } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
+		className: `gslider-post-carousel-wrapper ${ blockId } is-layout-${ activeLayoutMode } is-preset-${ activePresetStyle } ${ navigationArrowPositionType } ${ navigationArrowPosition } ${
 			isEqualHeight ? 'has-equal-height ' : ''
 		}${ showPagination ? 'has-pagination' : '' } ${
 			cardHoverAnimation !== 'none'
@@ -817,6 +822,20 @@ export default function Edit( {
 												}${
 													isCardClickable
 														? ' is-clickable'
+														: ''
+												}${
+													activeLayoutMode ===
+													'horizontal'
+														? ` media-position-${
+																horizontalMediaPosition ===
+																'right'
+																	? 'right'
+																	: 'left'
+														  }${
+																! hasRenderedThumbnail
+																	? ' has-no-image'
+																	: ''
+														  }`
 														: ''
 												}${
 													hasEntranceAnimation

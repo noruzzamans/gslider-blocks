@@ -1,0 +1,16 @@
+/* Post Carousel - Classic Card Layout Archetype & Preset */
+
+.gslider-post-carousel-wrapper.is-layout-classic {
+
+	.gslider-post-carousel-card {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&.is-preset-classic-card {
+
+		.gslider-post-carousel-card {
+			border-radius: 12px;
+		}
+	}
+}

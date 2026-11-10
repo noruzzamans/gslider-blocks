@@ -74,6 +74,14 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
             $has_image                  = '' !== $thumbnail_html;
             $has_all_devices_title_link = ! empty( $context['all_title_enabled'] ) && ! empty( $context['enable_post_title_link'] );
 
+            if ( 'horizontal' === ( $context['post_layout_mode'] ?? 'classic' ) ) {
+                $media_pos      = 'right' === ( $context['horizontal_media_position'] ?? 'left' ) ? 'right' : 'left';
+                $article_class .= ' media-position-' . $media_pos;
+                if ( ! $has_image ) {
+                    $article_class .= ' has-no-image';
+                }
+            }
+
             $before_thumb_html = '';
             $after_thumb_html  = '';
             $seen_thumbnail    = ( '' === $thumbnail_html );
