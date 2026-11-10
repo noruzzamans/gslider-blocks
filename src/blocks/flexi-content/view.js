@@ -283,6 +283,47 @@ document.addEventListener( 'DOMContentLoaded', () => {
 			} );
 	};
 
+	// Reduced motion users get the poster, no autoplay
+	const reducedMotion = window.matchMedia(
+		'(prefers-reduced-motion: reduce)'
+	);
+
+	/**
+	 * Play the background videos of the visible slides and pause the others.
+	 *
+	 * @param {Object} swiper - Swiper instance.
+	 */
+	const syncSlideVideos = ( swiper ) => {
+		// Visible slides are next to each other in the DOM, loop mode too
+		const perView = Math.ceil( swiper.slidesPerViewDynamic() );
+
+		swiper.slides.forEach( ( slide, index ) => {
+			// Direct child only, videos of a nested slider belong to it
+			const video = slide.querySelector( ':scope > .gslider-video-bg' );
+			if ( ! video ) {
+				return;
+			}
+
+			if (
+				! reducedMotion.matches &&
+				index >= swiper.activeIndex &&
+				index < swiper.activeIndex + perView
+			) {
+				// A finished video without loop stays stopped while in view
+				if ( ! video.ended ) {
+					// Browsers block autoplay of unmuted videos, poster stays visible then
+					video.play().catch( () => {} );
+				}
+			} else {
+				video.pause();
+				// Start over the next time the slide comes into view
+				if ( video.ended ) {
+					video.currentTime = 0;
+				}
+			}
+		} );
+	};
+
 	/**
 	 * Add a bubble that follows the mouse over the slider.
 	 * Click on the left half goes to the previous slide, right half to the next one.
@@ -543,6 +584,17 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 					// Initialize Swiper with parsed settings
 					const swiper = new Swiper( swiperElement, settings );
+					syncSlideVideos( swiper );
+					// slideChange pauses the old video before the transition starts,
+					// resize runs after Swiper re-measures, covers a new slidesPerView
+					swiper.on(
+						'slideChange slideChangeTransitionEnd resize',
+						syncSlideVideos
+					);
+					// Pause or resume when the visitor changes the setting
+					reducedMotion.addEventListener( 'change', () =>
+						syncSlideVideos( swiper )
+					);
 
 					if ( sliderContainer.dataset.cursorFollower ) {
 						initializeCursorFollower(
