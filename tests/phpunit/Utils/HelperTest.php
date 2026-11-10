@@ -306,8 +306,8 @@ class HelperTest {
 		$korean_text = str_repeat( '한국어텍스트안녕', 125 );
 		$this->assert_same( 2, Helper::calculate_reading_time( $korean_text ), 'calculate_reading_time() calculates Korean Hangul at 500 chars/min' );
 
-		// Mixed Latin + CJK: 200 English words + 500 Japanese characters (1 min + 1 min = 2 mins).
-		$mixed_text = str_repeat( 'word ', 200 ) . str_repeat( 'ひらがなカタカナ', 63 ); // 63 * 8 = 504 chars (~1.008 min) + 200 words (1.0 min) = ~2.008 min -> ceil = 3.
+		// Mixed Latin + CJK: 200 English words (1.0 min) + 504 Japanese characters (~1.008 min) = ~2.008 min -> ceil = 3 mins.
+		$mixed_text = str_repeat( 'word ', 200 ) . str_repeat( 'ひらがなカタカナ', 63 );
 		$this->assert_same( 3, Helper::calculate_reading_time( $mixed_text ), 'calculate_reading_time() calculates mixed Latin and CJK text proportionally' );
 	}
 }

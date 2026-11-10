@@ -1903,6 +1903,7 @@ export default function Edit( {
 							posts={ posts }
 							queueRef={ queueContainerRef }
 							activeIndex={ activeQueueIndex }
+							showReadingTime={ showReadingTime }
 							onSelectIndex={ ( idx ) => {
 								if ( swiperInstanceRef.current ) {
 									if (

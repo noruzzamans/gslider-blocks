@@ -92,7 +92,7 @@ if ( ! class_exists( NewsroomBuilder::class, false ) ) {
                 $thumb_html = '<svg class="gslider-queue-placeholder-svg" viewBox="0 0 64 48" width="64" height="48" aria-hidden="true" focusable="false"><rect width="64" height="48" fill="#e2e8f0"/><circle cx="32" cy="24" r="8" fill="#94a3b8"/></svg>';
             }
 
-            $meta_text = self::get_reading_time( $post_id );
+            $meta_text = ! empty( $context['show_reading_time'] ) ? self::get_reading_time( $post_id ) : (string) get_the_date( '', $post_id );
 
             $output  = '            <div class="swiper-slide gslider-newsroom-queue-item' . esc_attr( $active_class ) . '" role="button" tabindex="0" data-slide-index="' . esc_attr( (string) $index ) . '">' . "\n";
             $output .= '                <div class="gslider-queue-active-indicator" aria-hidden="true"></div>' . "\n";
