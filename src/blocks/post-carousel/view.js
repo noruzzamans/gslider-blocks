@@ -7,6 +7,9 @@ import {
 } from '@Utils/animation-utils';
 
 document.addEventListener( 'DOMContentLoaded', () => {
+	/**
+	 * Initialize every Post Carousel instance on the page idempotently.
+	 */
 	const initializeSliders = () => {
 		// Select all post carousel containers
 		const sliders = document.querySelectorAll(

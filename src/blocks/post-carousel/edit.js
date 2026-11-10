@@ -29,6 +29,16 @@ import {
 	applyStaggerDelays,
 } from '@Utils/animation-utils';
 
+/**
+ * Post Carousel Gutenberg editor component.
+ *
+ * @param {Object}   props               Block editor component props.
+ * @param {Object}   props.attributes    Current block attributes.
+ * @param {Function} props.setAttributes Attribute setter callback.
+ * @param {string}   props.clientId      Unique block client ID.
+ * @param {boolean}  props.isSelected    Whether the block is selected in the editor.
+ * @return {Element} Rendered block editor element.
+ */
 export default function Edit( {
 	attributes,
 	setAttributes,
@@ -422,6 +432,13 @@ export default function Edit( {
 			);
 			if ( wrapper ) {
 				if ( enableCardTilt ) {
+					/**
+					 * Serialize responsive tilt configuration objects cleanly for data attributes.
+					 *
+					 * @param {Object|number|undefined} val      Tilt setting value or responsive map.
+					 * @param {number}                  fallback Fallback numeric value per breakpoint.
+					 * @return {string} Serialized tilt value or JSON string.
+					 */
 					const serializeTilt = ( val, fallback ) =>
 						typeof val === 'object' || val === undefined
 							? JSON.stringify( {
