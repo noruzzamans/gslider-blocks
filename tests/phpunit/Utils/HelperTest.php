@@ -263,6 +263,41 @@ class HelperTest {
 			Helper::build_meta_query( 'stock', '', '!=' ),
 			"build_meta_query() omits empty string '' meta_value"
 		);
+
+		$this->test_calculate_reading_time();
+	}
+
+	/**
+	 * Tests Helper::calculate_reading_time() for Latin, empty, and CJK text.
+	 *
+	 * @return void
+	 */
+	public function test_calculate_reading_time(): void {
+		// Empty and non-string inputs default to 1 minute minimum.
+		$this->assert_same( 1, Helper::calculate_reading_time( '' ), 'calculate_reading_time() returns 1 for empty string' );
+		$this->assert_same( 1, Helper::calculate_reading_time( null ), 'calculate_reading_time() returns 1 for null input' );
+		$this->assert_same( 1, Helper::calculate_reading_time( '   ' ), 'calculate_reading_time() returns 1 for whitespace-only input' );
+
+		// Short Latin text (< 200 words) returns 1 minute.
+		$short_text = str_repeat( 'word ', 50 );
+		$this->assert_same( 1, Helper::calculate_reading_time( $short_text ), 'calculate_reading_time() returns 1 for 50 words' );
+
+		// 400 words Latin at 200 wpm returns 2 minutes.
+		$medium_text = str_repeat( 'word ', 400 );
+		$this->assert_same( 2, Helper::calculate_reading_time( $medium_text ), 'calculate_reading_time() returns 2 for 400 words' );
+
+		// 401 words Latin returns 3 minutes (ceil).
+		$longer_text = str_repeat( 'word ', 401 );
+		$this->assert_same( 3, Helper::calculate_reading_time( $longer_text ), 'calculate_reading_time() returns 3 for 401 words' );
+
+		// HTML tags and shortcodes are stripped before calculating.
+		$html_text = '<p>' . str_repeat( 'word ', 400 ) . '</p>[shortcode foo="bar"]';
+		$this->assert_same( 2, Helper::calculate_reading_time( $html_text ), 'calculate_reading_time() strips HTML tags and shortcodes' );
+
+		// CJK multibyte characters at 500 characters per minute.
+		// 1000 Chinese characters (repeating 测试中文阅读时间 = 8 chars * 125 = 1000 chars) -> 2 minutes.
+		$cjk_text = str_repeat( '测试中文阅读时间', 125 );
+		$this->assert_same( 2, Helper::calculate_reading_time( $cjk_text ), 'calculate_reading_time() calculates CJK text at 500 chars/min' );
 	}
 }
 

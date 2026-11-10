@@ -216,5 +216,42 @@ if ( ! class_exists( Helper::class, false ) ) {
 
             return array_unique( $excluded_ids );
         }
+
+        /**
+         * Calculates multilingual estimated reading time in minutes.
+         *
+         * Strips shortcodes and tags, and applies multi-byte character counting
+         * at 500 chars/min for CJK scripts, and 200 words/min for Latin scripts.
+         *
+         * @since 1.2.3
+         *
+         * @param mixed $content          Post content string.
+         * @param int   $words_per_minute Reading speed in words per minute (default 200).
+         * @return int Estimated reading time in minutes (minimum 1).
+         */
+        public static function calculate_reading_time( $content, int $words_per_minute = 200 ): int {
+            if ( empty( $content ) || ! is_string( $content ) ) {
+                return 1;
+            }
+
+            $clean_content = strip_shortcodes( wp_strip_all_tags( $content ) );
+            $clean_content = trim( $clean_content );
+            if ( '' === $clean_content ) {
+                return 1;
+            }
+
+            // Multi-byte character counting for CJK scripts (Chinese, Japanese, Korean)
+            if ( preg_match( '/[\x{4e00}-\x{9fa5}]/u', $clean_content ) ) {
+                $char_count       = mb_strlen( (string) preg_replace( '/\s+/u', '', $clean_content ), 'UTF-8' );
+                $words_per_minute = 500; // Average reading characters per minute for CJK
+                $minutes          = (int) ceil( $char_count / max( 1, $words_per_minute ) );
+            } else {
+                $words      = preg_split( '/\s+/u', $clean_content, -1, PREG_SPLIT_NO_EMPTY );
+                $word_count = is_array( $words ) ? count( $words ) : 0;
+                $minutes    = (int) ceil( $word_count / max( 1, $words_per_minute ) );
+            }
+
+            return max( 1, $minutes );
+        }
     }
 }

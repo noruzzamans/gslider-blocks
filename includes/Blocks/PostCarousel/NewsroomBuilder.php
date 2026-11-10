@@ -11,6 +11,8 @@
 
 namespace GSlider\Blocks\PostCarousel;
 
+use GSlider\Utils\Helper;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -38,10 +40,7 @@ if ( ! class_exists( NewsroomBuilder::class, false ) ) {
                 return get_the_date( '', $post_id );
             }
 
-            $clean_text = wp_strip_all_tags( $content );
-            $words      = preg_split( '/\s+/u', trim( $clean_text ), -1, PREG_SPLIT_NO_EMPTY );
-            $word_count = is_array( $words ) ? count( $words ) : 0;
-            $minutes    = max( 1, (int) ceil( $word_count / 200 ) );
+            $minutes = Helper::calculate_reading_time( $content );
 
             return sprintf(
                 /* translators: %d: Estimated reading time in minutes. */
