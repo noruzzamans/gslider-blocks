@@ -149,22 +149,25 @@ export function registerReducedMotionSwiper( sliderContainer, SwiperClass ) {
 				return;
 			}
 
+			let restoredSettings;
 			try {
-				const restoredSettings = JSON.parse( rawSettings );
-				const activeIndex = swiper.params.loop
-					? swiper.realIndex
-					: swiper.activeIndex;
-				swiper.destroy( true, true );
-				const nextSwiper = new Ctor( swiperEl, restoredSettings );
-				if ( typeof activeIndex === 'number' && activeIndex > 0 ) {
-					if ( nextSwiper.params.loop ) {
-						nextSwiper.slideToLoop( activeIndex, 0, false );
-					} else {
-						nextSwiper.slideTo( activeIndex, 0, false );
-					}
-				}
+				restoredSettings = JSON.parse( rawSettings );
 			} catch ( e ) {
 				// Ignore malformed serialized settings on dynamic media-query change.
+				return;
+			}
+
+			const activeIndex = swiper.params.loop
+				? swiper.realIndex
+				: swiper.activeIndex;
+			swiper.destroy( true, true );
+			const nextSwiper = new Ctor( swiperEl, restoredSettings );
+			if ( typeof activeIndex === 'number' && activeIndex > 0 ) {
+				if ( nextSwiper.params.loop ) {
+					nextSwiper.slideToLoop( activeIndex, 0, false );
+				} else {
+					nextSwiper.slideTo( activeIndex, 0, false );
+				}
 			}
 		} );
 	} );
@@ -369,6 +372,10 @@ export function initCardTilt( wrapper ) {
 		window.addEventListener( 'resize', updateRect );
 
 		card.addEventListener( 'mousemove', ( e ) => {
+			if ( prefersReducedMotion() ) {
+				card.style.transform = '';
+				return;
+			}
 			const { maxAngle, perspective, scale, speed } = getTiltSettings();
 			card.style.transition = `transform ${ speed }ms ease`;
 
@@ -387,6 +394,10 @@ export function initCardTilt( wrapper ) {
 		} );
 
 		card.addEventListener( 'mouseleave', () => {
+			if ( prefersReducedMotion() ) {
+				card.style.transform = '';
+				return;
+			}
 			const { perspective, speed } = getTiltSettings();
 			card.style.transition = `transform ${ speed }ms ease`;
 			card.style.transform = `perspective(${ perspective }px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`;

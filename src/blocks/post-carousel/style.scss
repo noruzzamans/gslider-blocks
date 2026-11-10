@@ -138,7 +138,7 @@
 		}
 	}
 
-	.gslider-post-carousel-image a:focus-visible {
+	.gslider-post-carousel-image > a:focus-visible {
 		outline-offset: -2px;
 		border-radius: inherit;
 	}

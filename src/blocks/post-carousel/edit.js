@@ -315,27 +315,27 @@ export default function Edit( {
 			return;
 		}
 
-		// Destroy previous instance if exists
-		if ( swiperInstanceRef.current ) {
-			swiperInstanceRef.current.destroy( true, true );
-			swiperInstanceRef.current = null;
-		}
+		// Destroy existing Swiper instance and clear loop duplicates/pagination before init
+		const resetSwiper = () => {
+			if ( swiperInstanceRef.current ) {
+				swiperInstanceRef.current.destroy( true, true );
+				swiperInstanceRef.current = null;
+			}
+			if ( swiperContainerRef.current ) {
+				const duplicates = swiperContainerRef.current.querySelectorAll(
+					'.swiper-slide-duplicate'
+				);
+				duplicates.forEach( ( slide ) => slide.remove() );
+			}
+			if ( paginationInsideRef.current ) {
+				paginationInsideRef.current.innerHTML = '';
+			}
+			if ( paginationOutsideRef.current ) {
+				paginationOutsideRef.current.innerHTML = '';
+			}
+		};
 
-		// Clean up any Swiper loop duplicates from the DOM before re-initialization
-		if ( swiperContainerRef.current ) {
-			const duplicates = swiperContainerRef.current.querySelectorAll(
-				'.swiper-slide-duplicate'
-			);
-			duplicates.forEach( ( slide ) => slide.remove() );
-		}
-
-		// Clear both pagination elements to prevent stale bullets when switching position
-		if ( paginationInsideRef.current ) {
-			paginationInsideRef.current.innerHTML = '';
-		}
-		if ( paginationOutsideRef.current ) {
-			paginationOutsideRef.current.innerHTML = '';
-		}
+		resetSwiper();
 
 		// Build Swiper settings based on the current reduced-motion state
 		const createSwiperSettings = ( reduceMotion ) => ( {
@@ -411,24 +411,26 @@ export default function Edit( {
 				if ( ! swiperContainerRef.current || ! window.Swiper ) {
 					return;
 				}
-				if ( swiperInstanceRef.current ) {
-					swiperInstanceRef.current.destroy( true, true );
-					swiperInstanceRef.current = null;
+				const currentSwiper = swiperInstanceRef.current;
+				let activeIndex = 0;
+				if ( currentSwiper ) {
+					activeIndex = currentSwiper.params?.loop
+						? currentSwiper.realIndex
+						: currentSwiper.activeIndex;
 				}
-				const duplicates = swiperContainerRef.current.querySelectorAll(
-					'.swiper-slide-duplicate'
-				);
-				duplicates.forEach( ( slide ) => slide.remove() );
-				if ( paginationInsideRef.current ) {
-					paginationInsideRef.current.innerHTML = '';
-				}
-				if ( paginationOutsideRef.current ) {
-					paginationOutsideRef.current.innerHTML = '';
-				}
-				swiperInstanceRef.current = new window.Swiper(
+				resetSwiper();
+				const nextSwiper = new window.Swiper(
 					swiperContainerRef.current,
 					createSwiperSettings( reduceMotion )
 				);
+				swiperInstanceRef.current = nextSwiper;
+				if ( typeof activeIndex === 'number' && activeIndex > 0 ) {
+					if ( nextSwiper.params?.loop ) {
+						nextSwiper.slideToLoop( activeIndex, 0, false );
+					} else {
+						nextSwiper.slideTo( activeIndex, 0, false );
+					}
+				}
 			}
 		);
 
