@@ -2040,6 +2040,7 @@ class PostCarouselRendererTest {
 		$this->assert_same( 1, $decoded['itemListElement'][0]['position'] ?? null, 'First ListItem starts at 1-based position 1' );
 		$this->assert_same( 2, $decoded['itemListElement'][1]['position'] ?? null, 'Second ListItem advances to position 2' );
 		$this->assert_same( 'BlogPosting', $decoded['itemListElement'][0]['item']['@type'] ?? null, 'Item @type is BlogPosting' );
+		$this->assert_same( 'https://example.org/post-101/#gslider-blogposting', $decoded['itemListElement'][0]['item']['@id'] ?? null, 'First item @id uses #gslider-blogposting fragment' );
 		$this->assert_same( 'https://example.org/post-101/', $decoded['itemListElement'][0]['item']['url'] ?? null, 'First item url matches post permalink' );
 		$this->assert_same( 'Jane Author', $decoded['itemListElement'][0]['item']['author']['name'] ?? null, 'First item author uses post author display_name' );
 		$this->assert_same( 'John Editor', $decoded['itemListElement'][1]['item']['author']['name'] ?? null, 'Second item author resolves second post author' );

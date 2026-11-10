@@ -286,7 +286,7 @@ class SchemaBuilderTest {
 		$this->assert_same( 'ListItem', $first['@type'] ?? null, 'First item type is ListItem' );
 		$this->assert_same( 1, $first['position'] ?? null, 'First ListItem has position 1' );
 		$this->assert_same( 'BlogPosting', $first['item']['@type'] ?? null, 'Nested item is BlogPosting' );
-		$this->assert_same( 'https://example.org/blog/post-201/', $first['item']['@id'] ?? null, 'First @id matches post permalink' );
+		$this->assert_same( 'https://example.org/blog/post-201/#gslider-blogposting', $first['item']['@id'] ?? null, 'First @id uses #gslider-blogposting fragment to prevent WebPage node collision' );
 		$this->assert_same( 'https://example.org/blog/post-201/', $first['item']['url'] ?? null, 'First url matches post permalink' );
 		$this->assert_same( 'WordPress Block Patterns Guide', $first['item']['headline'] ?? null, 'First headline matches post title' );
 		$this->assert_same( '2026-11-01T10:00:00+00:00', $first['item']['datePublished'] ?? null, 'First datePublished uses ISO 8601' );
@@ -362,7 +362,7 @@ class SchemaBuilderTest {
 
 		$GLOBALS['gslider_schema_test_titles'][401]     = 'Tom &amp; Jerry&#8217;s &lt;script&gt;alert(1)&lt;/script&gt; Guide';
 		$GLOBALS['gslider_schema_test_authors'][20]    = 'Ada &amp; Grace';
-		$GLOBALS['gslider_schema_test_permalinks'][401] = 'https://example.org/?p=401&preview=true';
+		$GLOBALS['gslider_schema_test_permalinks'][401] = 'https://example.org/?p=401&preview=true#comments';
 		$GLOBALS['gslider_schema_test_thumbnails'][401] = 'javascript:alert(1)';
 
 		add_filter(
@@ -386,7 +386,8 @@ class SchemaBuilderTest {
 
 		$this->assert_same( 'Tom & Jerry’s  Guide', $item['headline'] ?? null, 'HTML entities decode cleanly and encoded tags strip without corrupting JSON' );
 		$this->assert_same( 'Ada & Grace', $item['author']['name'] ?? null, 'Author entities decode cleanly' );
-		$this->assert_same( 'https://example.org/?p=401&preview=true', $item['url'] ?? null, 'Permalink keeps unescaped query string &' );
+		$this->assert_same( 'https://example.org/?p=401&preview=true#comments', $item['url'] ?? null, 'Permalink keeps unescaped query string &' );
+		$this->assert_same( 'https://example.org/?p=401&preview=true#gslider-blogposting', $item['@id'] ?? null, '@id replaces any existing fragment with #gslider-blogposting' );
 		$this->assert_true( ! array_key_exists( 'image', $item ), 'Malicious javascript: thumbnail URL is rejected' );
 	}
 

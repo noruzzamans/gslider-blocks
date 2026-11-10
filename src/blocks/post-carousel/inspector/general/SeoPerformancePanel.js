@@ -26,7 +26,7 @@ const SeoPerformancePanel = ( {
 		<ToggleControl
 			__nextHasNoMarginBottom
 			label={ __(
-				'Enable Google Carousel Schema (JSON-LD)',
+				'Output ItemList Structured Data (JSON-LD)',
 				'gslider-blocks'
 			) }
 			help={ __(

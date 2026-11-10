@@ -94,7 +94,7 @@ if ( ! class_exists( SchemaBuilder::class, false ) ) {
 
 				$item = array(
 					'@type' => 'BlogPosting',
-					'@id'   => $url,
+					'@id'   => self::build_schema_id( $url ),
 					'url'   => $url,
 				);
 
@@ -237,6 +237,19 @@ if ( ! class_exists( SchemaBuilder::class, false ) ) {
 			}
 
 			return $clean;
+		}
+
+		/**
+		 * Appends a deterministic node fragment so BlogPosting @id never collides with WebPage @id.
+		 *
+		 * @since 1.2.3
+		 *
+		 * @param string $url Sanitized canonical post permalink.
+		 * @return string Fragment-scoped BlogPosting JSON-LD `@id`.
+		 */
+		private static function build_schema_id( string $url ): string {
+			$base = preg_replace( '/#.*$/', '', $url );
+			return ( is_string( $base ) && '' !== $base ? $base : $url ) . '#gslider-blogposting';
 		}
 	}
 }
