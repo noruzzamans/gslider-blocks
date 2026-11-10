@@ -126,10 +126,25 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						registerReducedMotionSwiper( sliderContainer, Swiper );
 
 						// Initialize Swiper with parsed settings
-						new Swiper(
+						const swiper = new Swiper(
 							sliderContainer.querySelector( '.swiper' ),
 							settings
 						);
+
+						// Bind Autoplay Countdown Progress Line
+						const progressFill = sliderContainer.querySelector(
+							'.gslider-autoplay-progress-fill'
+						);
+						if ( progressFill && swiper ) {
+							swiper.on(
+								'autoplayTimeLeft',
+								( s, time, progress ) => {
+									progressFill.style.transform = `scaleX(${
+										1 - progress
+									})`;
+								}
+							);
+						}
 					}
 				}
 			} catch ( error ) {
