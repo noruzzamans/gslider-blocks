@@ -84,12 +84,14 @@ export const changelogTimelineStyles = {
 		Tablet: '1.4',
 		Mobile: '1.4',
 	},
-	postTitleColor: '#0f172a',
-	postTitleMarginDesktop: {
+	postTitleNormalBackgroundType: 'classic',
+	postTitleNormalClassicColor: '#0f172a',
+	postTitleHoverClassicColor: '#007cba',
+	postTitleDesktopMargin: {
 		top: '8',
-		right: '',
+		right: '0',
 		bottom: '8',
-		left: '',
+		left: '0',
 	},
 	postExcerptFontSize: {
 		Desktop: '14',
@@ -102,15 +104,15 @@ export const changelogTimelineStyles = {
 		Tablet: '1.6',
 		Mobile: '1.6',
 	},
-	postExcerptMarginDesktop: {
-		top: '',
-		right: '',
+	postExcerptDesktopMargin: {
+		top: '0',
+		right: '0',
 		bottom: '16',
-		left: '',
+		left: '0',
 	},
 	readMoreButtonType: 'btn-flat',
-	readMoreButtonNormalTextColor: '#007cba',
-	readMoreButtonHoverTextColor: '#005a87',
+	readMoreButtonColor: '#007cba',
+	readMoreButtonColorHover: '#005a87',
 };
 
 const ChangelogTimelinePreview = () => (

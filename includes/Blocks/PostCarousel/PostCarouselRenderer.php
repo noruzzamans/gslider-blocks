@@ -313,6 +313,12 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
             if ( preg_match( '/^rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*(?:,\s*[\d.]+\s*)?\)$/i', $trimmed ) ) {
                 return $trimmed;
             }
+            if ( preg_match( '/^hsla?\(\s*[\d.]+\s*(?:deg|rad|turn)?\s*,\s*[\d.]+%\s*,\s*[\d.]+%\s*(?:,\s*[\d.]+%?\s*)?\)$/i', $trimmed ) ) {
+                return $trimmed;
+            }
+            if ( preg_match( '/^var\(--[a-zA-Z0-9_-]+\)$/', $trimmed ) ) {
+                return $trimmed;
+            }
             return $fallback;
         }
 

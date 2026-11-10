@@ -659,7 +659,10 @@ if ( ! function_exists( 'get_the_date' ) ) {
 	 * @return string Formatted date.
 	 */
 	function get_the_date( $format = '', $post = null ) {
-		unset( $format, $post );
+		if ( 'Y-m-d' === $format ) {
+			return '2026-11-10';
+		}
+		unset( $post );
 		return 'November 10, 2026';
 	}
 }
@@ -1680,7 +1683,7 @@ class PostCarouselRendererTest {
 		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-stem"></div>' ), 'Timeline node renders connector stem' );
 		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-dot">' ), 'Timeline node renders milestone dot' );
 		$this->assert_true( false !== strpos( $timeline_html, '<div class="gslider-timeline-dot-inner"></div>' ), 'Timeline dot contains inner element' );
-		$this->assert_true( false !== strpos( $timeline_html, '<time class="gslider-timeline-date"' ), 'Timeline node renders date element' );
+		$this->assert_true( false !== strpos( $timeline_html, '<time class="gslider-timeline-date" datetime="2026-11-10">' ), 'Timeline node renders date element with ISO datetime' );
 
 		// 4. Date position below test
 		$timeline_below_html = PostCarouselRenderer::render(
@@ -1709,6 +1712,16 @@ class PostCarouselRendererTest {
 		$this->assert_same( 'above', $ctx_bounds_low['timeline_date_position'], 'Disallowed timelineDatePosition falls back to above' );
 		$this->assert_same( '#abc', $ctx_bounds_low['timeline_stem_color'], 'timelineStemColor preserves valid hex' );
 		$this->assert_same( '#007cba', $ctx_bounds_low['timeline_dot_color'], 'Invalid timelineDotColor falls back to default #007cba' );
+
+		$ctx_colors = PostCarouselRenderer::build_render_context(
+			array(
+				'postLayoutMode'    => 'timeline',
+				'timelineStemColor' => 'rgba(255, 0, 0, 0.5)',
+				'timelineDotColor'  => 'var(--wp--preset--color--primary)',
+			)
+		);
+		$this->assert_same( 'rgba(255, 0, 0, 0.5)', $ctx_colors['timeline_stem_color'], 'timelineStemColor preserves valid rgba color' );
+		$this->assert_same( 'var(--wp--preset--color--primary)', $ctx_colors['timeline_dot_color'], 'timelineDotColor preserves valid CSS variable' );
 
 		$ctx_bounds_high = PostCarouselRenderer::build_render_context(
 			array(

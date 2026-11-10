@@ -154,14 +154,18 @@ export const buildCardDesktop = ( attributes ) => {
 		48,
 		Math.max( 8, parseInt( timelineDotSize, 10 ) || 16 )
 	);
-	const safeStemColor =
-		typeof timelineStemColor === 'string' && timelineStemColor.trim() !== ''
-			? timelineStemColor.replace( /[;{}<>]/g, '' ).trim()
-			: '#e2e8f0';
-	const safeDotColor =
-		typeof timelineDotColor === 'string' && timelineDotColor.trim() !== ''
-			? timelineDotColor.replace( /[;{}<>]/g, '' ).trim()
-			: '#007cba';
+	const sanitizeTimelineColor = ( val, fallback ) => {
+		if ( typeof val !== 'string' || val.trim() === '' ) {
+			return fallback;
+		}
+		const cleaned = val.trim();
+		if ( /[;{}<>"'\\]|url\(|expression\(/i.test( cleaned ) ) {
+			return fallback;
+		}
+		return cleaned;
+	};
+	const safeStemColor = sanitizeTimelineColor( timelineStemColor, '#e2e8f0' );
+	const safeDotColor = sanitizeTimelineColor( timelineDotColor, '#007cba' );
 	const rawSpotlightScale = parseFloat( spotlightScaleSide );
 	const safeSpotlightScale = Number(
 		Math.min(
