@@ -18,6 +18,19 @@
  */
 
 /**
+ * Check whether the user has requested reduced motion in system/browser settings.
+ *
+ * @return {boolean} True when prefers-reduced-motion: reduce matches.
+ */
+export function prefersReducedMotion() {
+	return (
+		typeof window !== 'undefined' &&
+		typeof window.matchMedia === 'function' &&
+		window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches
+	);
+}
+
+/**
  * Get the current breakpoint key based on window width.
  * Matches WordPress editor breakpoints: Tablet ≤ 1024, Mobile ≤ 768.
  *
@@ -74,6 +87,10 @@ function resolveResponsive( value, fallback ) {
  * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function initEntranceAnimations( wrapper ) {
+	if ( prefersReducedMotion() ) {
+		return;
+	}
+
 	const cards = wrapper.querySelectorAll( '.gslider-has-entrance-anim' );
 	if ( ! cards.length ) {
 		return;
@@ -132,7 +149,7 @@ export function initEntranceAnimations( wrapper ) {
  * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function applyStaggerDelays( wrapper ) {
-	if ( wrapper.dataset.staggerEnabled !== '1' ) {
+	if ( prefersReducedMotion() || wrapper.dataset.staggerEnabled !== '1' ) {
 		return;
 	}
 
@@ -161,6 +178,10 @@ export function applyStaggerDelays( wrapper ) {
  * @param {HTMLElement} wrapper The block wrapper element.
  */
 export function initCardTilt( wrapper ) {
+	if ( prefersReducedMotion() ) {
+		return;
+	}
+
 	const cards = wrapper.querySelectorAll( '.gslider-has-tilt' );
 	if ( ! cards.length ) {
 		return;

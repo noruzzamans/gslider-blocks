@@ -4,6 +4,7 @@ import {
 	initEntranceAnimations,
 	applyStaggerDelays,
 	initCardTilt,
+	prefersReducedMotion,
 } from '@Utils/animation-utils';
 
 document.addEventListener( 'DOMContentLoaded', () => {
@@ -20,6 +21,20 @@ document.addEventListener( 'DOMContentLoaded', () => {
 
 				if ( swiperSettings ) {
 					const settings = JSON.parse( swiperSettings );
+
+					// Disable autoplay and slide transition speed when reduced motion is requested
+					if ( prefersReducedMotion() ) {
+						settings.autoplay = false;
+						settings.speed = 0;
+						if ( settings.breakpoints ) {
+							Object.values( settings.breakpoints ).forEach(
+								( bpSettings ) => {
+									bpSettings.autoplay = false;
+									bpSettings.speed = 0;
+								}
+							);
+						}
+					}
 
 					// Initialize Swiper with parsed settings
 					new Swiper(

@@ -26,6 +26,7 @@ import {
 	initCardTilt,
 	initEntranceAnimations,
 	applyStaggerDelays,
+	prefersReducedMotion,
 } from '@Utils/animation-utils';
 
 export default function Edit( {
@@ -335,6 +336,8 @@ export default function Edit( {
 			paginationOutsideRef.current.innerHTML = '';
 		}
 
+		const reduceMotion = prefersReducedMotion();
+
 		// Build Swiper settings
 		const swiperSettings = {
 			effect: carouselEffect,
@@ -353,19 +356,20 @@ export default function Edit( {
 				},
 			},
 			loop: infiniteLoop,
-			autoplay: autoplay
-				? {
-						delay: autoplayDelay?.[ deviceType ] || 1000,
-						pauseOnMouseEnter:
-							pauseOnHover ||
-							enableCardTilt ||
-							cardHoverAnimation !== 'none',
-						disableOnInteraction: false,
-						stopOnLastSlide,
-						reverseDirection,
-				  }
-				: false,
-			speed: speed?.[ deviceType ] || 800,
+			autoplay:
+				! reduceMotion && autoplay
+					? {
+							delay: autoplayDelay?.[ deviceType ] || 1000,
+							pauseOnMouseEnter:
+								pauseOnHover ||
+								enableCardTilt ||
+								cardHoverAnimation !== 'none',
+							disableOnInteraction: false,
+							stopOnLastSlide,
+							reverseDirection,
+					  }
+					: false,
+			speed: reduceMotion ? 0 : speed?.[ deviceType ] || 800,
 			allowTouchMove,
 			mousewheel: mousewheelControl,
 			keyboard: keyboardNavigation
