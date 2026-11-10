@@ -488,9 +488,18 @@ export default function Edit( {
 				);
 				thumbsSwiperRef.current = thumbsSwiper;
 
+				const baseSettings = createSwiperSettings( reduceMotion );
 				const newsroomSettings = {
-					...createSwiperSettings( reduceMotion ),
+					...baseSettings,
 					slidesPerView: 1,
+					breakpoints: Object.fromEntries(
+						Object.entries( baseSettings.breakpoints || {} ).map(
+							( [ width, bp ] ) => [
+								width,
+								{ ...bp, slidesPerView: 1 },
+							]
+						)
+					),
 					watchSlidesProgress: true,
 					thumbs: {
 						swiper: thumbsSwiper,
@@ -520,6 +529,9 @@ export default function Edit( {
 		swiperInstanceRef.current = initSwiperInstance(
 			prefersReducedMotion()
 		);
+		if ( activeLayoutMode === 'newsroom' ) {
+			setActiveQueueIndex( 0 );
+		}
 
 		const unsubscribeReducedMotion = onReducedMotionChange(
 			( reduceMotion ) => {

@@ -118,6 +118,23 @@
 		}
 	}
 
+	> .gslider-navigation-default-icon-wrapper,
+	> .gslider-navigation-custom-icon-wrapper {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 10;
+
+		.swiper-button-prev,
+		.swiper-button-next {
+			pointer-events: auto;
+		}
+	}
+
+	> .swiper-pagination-post-carousel {
+		grid-column: 1 / -1;
+	}
+
 	@media (max-width: 767px) {
 		display: flex;
 		flex-direction: column;

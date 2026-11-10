@@ -39,7 +39,8 @@ if ( ! class_exists( NewsroomBuilder::class, false ) ) {
             }
 
             $clean_text = wp_strip_all_tags( $content );
-            $word_count = str_word_count( $clean_text );
+            $words      = preg_split( '/\s+/u', trim( $clean_text ), -1, PREG_SPLIT_NO_EMPTY );
+            $word_count = is_array( $words ) ? count( $words ) : 0;
             $minutes    = max( 1, (int) ceil( $word_count / 200 ) );
 
             return sprintf(

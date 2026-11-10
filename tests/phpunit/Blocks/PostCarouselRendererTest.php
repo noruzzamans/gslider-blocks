@@ -1598,6 +1598,10 @@ class PostCarouselRendererTest {
 		$this->assert_true( false !== strpos( $newsroom_html, 'class="gslider-queue-meta"' ), 'Queue item renders reading time or date meta' );
 		$this->assert_true( false !== strpos( $newsroom_html, 'min read' ), 'Reading time calculation estimates words into minute reading time' );
 
+		// Reading time with Unicode/accented words calculates cleanly.
+		$GLOBALS['gslider_test_render_posts'][0]->post_content = 'Café crème déjà vu un été à Paris';
+		$this->assert_same( '1 min read', NewsroomBuilder::get_reading_time( 101 ), 'Multibyte and accented words calculate reading time cleanly' );
+
 		// 2. Queue position left emits queue-position-left wrapper class.
 		$newsroom_left_html = PostCarouselRenderer::render(
 			array(

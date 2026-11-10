@@ -34,7 +34,6 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					// Disable autoplay and slide transition speed when reduced motion is requested,
 					// and sync live preference changes for active instances.
 					applyReducedMotionSwiperSettings( settings );
-					registerReducedMotionSwiper( sliderContainer, Swiper );
 
 					if (
 						sliderContainer.classList.contains(
@@ -49,20 +48,31 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						);
 
 						if ( mainSliderElement && queueElement ) {
-							const isDesktop = window.innerWidth > 767;
 							const thumbsSwiper = new Swiper( queueElement, {
-								slidesPerView: isDesktop ? 4 : 'auto',
-								direction: isDesktop
-									? 'vertical'
-									: 'horizontal',
-								watchSlidesProgress: true,
+								slidesPerView: 'auto',
+								direction: 'horizontal',
 								spaceBetween: 12,
+								watchSlidesProgress: true,
 								slideToClickedSlide: true,
+								breakpoints: {
+									768: {
+										direction: 'vertical',
+										slidesPerView: 4,
+									},
+								},
 							} );
 
 							const newsroomSettings = {
 								...settings,
 								slidesPerView: 1,
+								breakpoints: Object.fromEntries(
+									Object.entries(
+										settings.breakpoints || {}
+									).map( ( [ width, bp ] ) => [
+										width,
+										{ ...bp, slidesPerView: 1 },
+									] )
+								),
 								watchSlidesProgress: true,
 								thumbs: {
 									swiper: thumbsSwiper,
@@ -70,8 +80,23 @@ document.addEventListener( 'DOMContentLoaded', () => {
 							};
 
 							new Swiper( mainSliderElement, newsroomSettings );
+
+							queueElement.addEventListener( 'keydown', ( e ) => {
+								const item = e.target.closest(
+									'.gslider-newsroom-queue-item'
+								);
+								if (
+									item &&
+									( e.key === 'Enter' || e.key === ' ' )
+								) {
+									e.preventDefault();
+									item.click();
+								}
+							} );
 						}
 					} else {
+						registerReducedMotionSwiper( sliderContainer, Swiper );
+
 						// Initialize Swiper with parsed settings
 						new Swiper(
 							sliderContainer.querySelector( '.swiper' ),
