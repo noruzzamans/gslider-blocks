@@ -6086,8 +6086,8 @@ var buildGlobalDesktop = (attributes2) => {
         .${blockId}.gslider-post-carousel-wrapper {
             --gslider-autoplay-progress-color: ${attributes2.autoplayProgressColor || "#007cba"};
             --gslider-autoplay-progress-height: ${attributes2.autoplayProgressHeight || 4}px;
-            --gslider-desktop-grid-columns: ${attributes2.desktopGridColumns || 3};
-            --gslider-desktop-grid-gap: ${attributes2.desktopGridGap || 24}px;
+            --gslider-desktop-grid-columns: ${attributes2.desktopGridColumns ?? 3};
+            --gslider-desktop-grid-gap: ${attributes2.desktopGridGap ?? 24}px;
             ${bgNormal}
             ${globalMarginDesktopCssStyle ? `margin: ${globalMarginDesktopCssStyle};` : ""}
             ${globalPaddingDesktopCssStyle ? `padding: ${globalPaddingDesktopCssStyle};` : ""}

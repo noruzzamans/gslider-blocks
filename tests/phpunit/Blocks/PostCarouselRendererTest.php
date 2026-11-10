@@ -1850,6 +1850,7 @@ class PostCarouselRendererTest {
 		);
 		$marquee_html = PostCarouselRenderer::render( $marquee_attrs );
 		$this->assert_true( false !== strpos( $marquee_html, 'is-mode-marquee' ), 'Marquee mode emits is-mode-marquee wrapper class' );
+		$this->assert_true( false === strpos( $marquee_html, 'has-autoplay-progress' ), 'Marquee mode omits has-autoplay-progress wrapper class' );
 		$this->assert_true( false === strpos( $marquee_html, 'swiper-button-prev' ), 'Marquee mode renders zero navigation buttons' );
 		$this->assert_true( false === strpos( $marquee_html, 'swiper-pagination' ), 'Marquee mode renders zero pagination' );
 		$this->assert_true( false === strpos( $marquee_html, 'gslider-autoplay-progress' ), 'Marquee mode omits autoplay progress line even if showAutoplayProgress is true' );

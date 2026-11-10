@@ -851,7 +851,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                 $context['global_class'],
             );
 
-            if ( ! empty( $context['show_autoplay_progress'] ) ) {
+            if ( ! empty( $context['show_autoplay_progress'] ) && 'marquee' !== $context['carousel_mode'] ) {
                 $wrapper_classes[] = 'has-autoplay-progress';
             }
 

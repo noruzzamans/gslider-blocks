@@ -45,9 +45,9 @@ export const buildGlobalDesktop = ( attributes ) => {
 				attributes.autoplayProgressHeight || 4
 			}px;
             --gslider-desktop-grid-columns: ${
-				attributes.desktopGridColumns || 3
+				attributes.desktopGridColumns ?? 3
 			};
-            --gslider-desktop-grid-gap: ${ attributes.desktopGridGap || 24 }px;
+            --gslider-desktop-grid-gap: ${ attributes.desktopGridGap ?? 24 }px;
             ${ bgNormal }
             ${
 				globalMarginDesktopCssStyle
