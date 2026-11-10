@@ -838,6 +838,7 @@ if ( ! class_exists( PostCarouselRenderer::class, false ) ) {
                 'taxonomy_badge_overlay_visibility'      => isset( $attributes['taxonomyBadgeOverlayVisibility'] ) ? sanitize_text_field( (string) $attributes['taxonomyBadgeOverlayVisibility'] ) : 'always',
                 'any_image_enabled'                      => self::is_any_breakpoint_enabled( $show_featured_image ),
                 'any_title_enabled'                      => self::is_any_breakpoint_enabled( $show_post_title ),
+                'all_title_enabled'                      => ! empty( $show_post_title['Desktop'] ) && ! empty( $show_post_title['Tablet'] ) && ! empty( $show_post_title['Mobile'] ),
                 'any_excerpt_enabled'                    => self::is_any_breakpoint_enabled( $show_excerpt ),
                 'any_meta_enabled'                       => self::is_any_breakpoint_enabled( $show_meta ),
                 'any_author_enabled'                     => self::is_any_breakpoint_enabled( $show_meta_author ),

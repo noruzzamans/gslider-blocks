@@ -1215,11 +1215,26 @@ class PostCarouselRendererTest {
 		$this->assert_true( 2 === substr_count( $clickable_no_title_link, 'class="gslider-post-carousel-card-link"' ), 'Standalone .gslider-post-carousel-card-link rendered when title link is disabled' );
 		$this->assert_true( false === strpos( $clickable_no_title_link, 'gslider-post-carousel-title-link' ), 'Title renders without anchor when enablePostTitleLink=false' );
 
-		$doc = new DOMDocument();
-		@$doc->loadHTML( '<?xml encoding="utf-8" ?>' . $clickable_with_title, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
-		$xpath         = new DOMXPath( $doc );
-		$nested_anchor = $xpath->query( '//a[.//a]' );
-		$this->assert_same( 0, $nested_anchor ? $nested_anchor->length : 0, 'Rendered clickable card HTML contains zero nested <a> elements' );
+		$clickable_responsive_title = PostCarouselRenderer::render(
+			array(
+				'blockId'                 => 'gslider-wave3-click-responsive',
+				'enableCardClickableLink' => true,
+				'enablePostTitleLink'     => true,
+				'showPostTitle'           => array( 'Desktop' => true, 'Tablet' => false, 'Mobile' => false ),
+			)
+		);
+		$this->assert_true( 2 === substr_count( $clickable_responsive_title, 'class="gslider-post-carousel-card-link"' ), 'Standalone .gslider-post-carousel-card-link rendered when title is hidden on Tablet/Mobile' );
+
+		foreach ( array( $clickable_with_title, $clickable_no_title_link, $clickable_responsive_title ) as $clickable_html ) {
+			$depth     = 0;
+			$max_depth = 0;
+			preg_match_all( '#<(/?)a\b[^>]*>#i', $clickable_html, $anchor_tags, PREG_SET_ORDER );
+			foreach ( $anchor_tags as $anchor_tag ) {
+				$depth    += ( '' === $anchor_tag[1] ) ? 1 : -1;
+				$max_depth = max( $max_depth, $depth );
+			}
+			$this->assert_same( 1, $max_depth, 'Rendered clickable card HTML contains zero nested <a> elements' );
+		}
 
 		// 7. Custom contentOrder with thumbnail strictly last still wraps preceding content in .gslider-post-carousel-body.
 		$this->reset_state();

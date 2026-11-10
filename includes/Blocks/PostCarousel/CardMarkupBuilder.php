@@ -70,9 +70,9 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 $article_class .= ' gslider-has-tilt';
             }
 
-            $thumbnail_html = self::render_thumbnail( $post_id, $taxonomy_markup, $context );
-            $has_image      = '' !== $thumbnail_html;
-            $has_title_link = ! empty( $context['any_title_enabled'] ) && ! empty( $context['enable_post_title_link'] );
+            $thumbnail_html             = self::render_thumbnail( $post_id, $taxonomy_markup, $context );
+            $has_image                  = '' !== $thumbnail_html;
+            $has_all_devices_title_link = ! empty( $context['all_title_enabled'] ) && ! empty( $context['enable_post_title_link'] );
 
             $before_thumb_html = '';
             $after_thumb_html  = '';
@@ -139,7 +139,7 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                     . '            </div>' . "\n";
             }
 
-            if ( ! empty( $context['enable_card_clickable_link'] ) && ! $has_title_link ) {
+            if ( ! empty( $context['enable_card_clickable_link'] ) && ! $has_all_devices_title_link ) {
                 $elements_html .= '            <a class="gslider-post-carousel-card-link" href="' . esc_url( get_permalink( $post_id ) ) . '" aria-label="' . esc_attr( get_the_title( $post_id ) ) . '"></a>' . "\n";
             }
 
@@ -267,9 +267,22 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 return '';
             }
 
-            $enable_lazy_load = ! empty( $context['enable_lazy_load'] );
-            $raw_fallback_url = isset( $context['fallback_thumbnail_url'] ) ? (string) $context['fallback_thumbnail_url'] : '';
-            $safe_fallback    = '' !== $raw_fallback_url ? esc_url( $raw_fallback_url ) : '';
+            $enable_lazy_load    = ! empty( $context['enable_lazy_load'] );
+            $raw_fallback_url    = isset( $context['fallback_thumbnail_url'] ) ? (string) $context['fallback_thumbnail_url'] : '';
+            $safe_fallback       = '' !== $raw_fallback_url ? esc_url( $raw_fallback_url ) : '';
+            $fallback_id         = isset( $context['fallback_thumbnail_id'] ) ? (int) $context['fallback_thumbnail_id'] : 0;
+            $fallback_attachment = ( $fallback_id > 0 && function_exists( 'wp_get_attachment_image' ) )
+                ? wp_get_attachment_image(
+                    $fallback_id,
+                    'medium_large',
+                    false,
+                    array(
+                        'class'   => 'gslider-post-carousel-fallback-img',
+                        'loading' => $enable_lazy_load ? 'lazy' : 'eager',
+                        'alt'     => get_the_title( $post_id ),
+                    )
+                )
+                : '';
 
             $img_attributes = array(
                 'loading' => $enable_lazy_load ? 'lazy' : 'eager',
@@ -282,6 +295,8 @@ if ( ! class_exists( CardMarkupBuilder::class, false ) ) {
                 <a class="gslider-post-thumb-link" href="<?php the_permalink(); ?>" aria-label="<?php the_title_attribute(); ?>">
                     <?php if ( $has_post_thumb ) : ?>
                         <?php the_post_thumbnail( 'medium_large', $img_attributes ); ?>
+                    <?php elseif ( '' !== $fallback_attachment ) : ?>
+                        <?php echo wp_kses_post( $fallback_attachment ); ?>
                     <?php elseif ( '' !== $safe_fallback ) : ?>
                         <img class="gslider-post-carousel-fallback-img" src="<?php echo esc_url( $raw_fallback_url ); ?>" alt="<?php echo esc_attr( get_the_title( $post_id ) ); ?>" loading="<?php echo esc_attr( $enable_lazy_load ? 'lazy' : 'eager' ); ?>" />
                     <?php else : ?>

@@ -123,11 +123,8 @@
 			}
 
 			/* Elevate inner interactive links above stretched overlay */
-			.gslider-taxonomy-badge,
 			.gslider-post-carousel-categories a,
 			.gslider-post-carousel-tags a,
-			.gslider-post-author-link,
-			.gslider-post-comments-link,
 			.gslider-post-carousel-readmore-btn {
 				position: relative;
 				z-index: 2;
