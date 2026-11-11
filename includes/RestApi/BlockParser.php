@@ -41,6 +41,7 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 		private const SWIPER_ATTRIBUTES = [
 			'sliderType',
 			'slideEffect',
+			'creativePreset',
 			'carouselEffect',
 			'carouselPerColumn',
 			'carouselPerColumnGap',
@@ -64,6 +65,69 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			'enableCardTilt',
 			'cardHoverAnimation',
 			'enableSpotlight',
+		];
+
+		/**
+		 * Swiper creativeEffect config per preset. Keep in sync with src/constants/creativePresets.js.
+		 *
+		 * @var array
+		 */
+		private const CREATIVE_PRESETS = [
+			'classic' => [
+				'prev' => [
+					'shadow'    => true,
+					'translate' => [ 0, 0, -400 ],
+				],
+				'next' => [
+					'translate' => [ '100%', 0, 0 ],
+				],
+			],
+			'stack'   => [
+				'prev' => [
+					'shadow'    => true,
+					'translate' => [ '-120%', 0, -500 ],
+				],
+				'next' => [
+					'shadow'    => true,
+					'translate' => [ '120%', 0, -500 ],
+				],
+			],
+			'tilt'    => [
+				'prev' => [
+					'shadow'    => true,
+					'translate' => [ '-20%', 0, -1 ],
+					'rotate'    => [ 0, 0, -10 ],
+				],
+				'next' => [
+					'shadow'    => true,
+					'translate' => [ '100%', 0, 0 ],
+					'rotate'    => [ 0, 0, 0 ],
+				],
+			],
+			'depth'   => [
+				'prev' => [
+					'shadow'    => true,
+					'translate' => [ 0, 0, -800 ],
+					'rotate'    => [ 180, 0, 0 ],
+				],
+				'next' => [
+					'shadow'    => true,
+					'translate' => [ 0, 0, -800 ],
+					'rotate'    => [ -180, 0, 0 ],
+				],
+			],
+			'shift'   => [
+				'prev' => [
+					'shadow'    => false,
+					'translate' => [ '-20%', 0, -200 ],
+					'opacity'   => 0,
+				],
+				'next' => [
+					'shadow'    => false,
+					'translate' => [ '100%', 0, 0 ],
+					'opacity'   => 1,
+				],
+			],
 		];
 
 		/**
@@ -511,15 +575,17 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			$is_vertical = 'vertical' === ( $attrs['direction'] ?? 'horizontal' );
 
 			if ( $uses_slider_type && 'creative' === $slide_effect ) {
-				$config['creativeEffect'] = [
-					'prev' => [
-						'shadow'    => true,
-						'translate' => [ 0, 0, -400 ],
-					],
-					'next' => [
-						'translate' => $is_vertical ? [ 0, '100%', 0 ] : [ '100%', 0, 0 ],
-					],
-				];
+				$preset                   = isset( $attrs['creativePreset'] ) && is_string( $attrs['creativePreset'] ) ? $attrs['creativePreset'] : 'classic';
+				$config['creativeEffect'] = self::CREATIVE_PRESETS[ $preset ] ?? self::CREATIVE_PRESETS['classic'];
+
+				// Vertical sliders move on Y, so swap the X and Y translate values.
+				if ( $is_vertical ) {
+					foreach ( $config['creativeEffect'] as $side => $values ) {
+						$translate = $values['translate'];
+
+						$config['creativeEffect'][ $side ]['translate'] = [ $translate[1], $translate[0], $translate[2] ];
+					}
+				}
 			}
 
 			if ( $is_vertical ) {

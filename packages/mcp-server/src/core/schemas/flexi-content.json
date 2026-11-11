@@ -68,6 +68,13 @@
       "center",
       "flex-end"
     ],
+    "creativePreset": [
+      "classic",
+      "stack",
+      "tilt",
+      "depth",
+      "shift"
+    ],
     "cursorFollowerFontWeight": [
       "inherit",
       "100",
@@ -348,6 +355,10 @@
     "slideEffect": {
       "type": "string",
       "default": "slide"
+    },
+    "creativePreset": {
+      "type": "string",
+      "default": "classic"
     },
     "carouselEffect": {
       "type": "string",

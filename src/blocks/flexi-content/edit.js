@@ -13,6 +13,7 @@ import { useEffect, useRef } from '@wordpress/element';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
 import Inspector from './inspector';
+import { getCreativePreset } from '@Constants/creativePresets';
 import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generateFlexiContentStyle from './styling';
 import { renderShapeDivider } from '@Constants/shapeDividers';
@@ -46,6 +47,7 @@ export default function Edit( {
 		direction,
 		carouselEffect,
 		slideEffect,
+		creativePreset,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -216,6 +218,14 @@ export default function Edit( {
 			paginationOutsideRef.current.innerHTML = '';
 		}
 
+		// Swiper destroy keeps effect shadow nodes, remove them so a new preset starts clean.
+		// Only this slider's own slides, so nested sliders keep their shadows.
+		swiperContainerRef.current
+			.querySelectorAll(
+				':scope > .swiper-wrapper > .swiper-slide > [class^="swiper-slide-shadow"]'
+			)
+			.forEach( ( shadow ) => shadow.remove() );
+
 		const sliderEffect =
 			sliderType === 'carousel' ? carouselEffect : slideEffect;
 
@@ -309,15 +319,7 @@ export default function Edit( {
 			observeParents: true,
 			resizeObserver: true,
 			...( slideEffect === 'creative' && {
-				creativeEffect: {
-					prev: { shadow: true, translate: [ 0, 0, -400 ] },
-					next: {
-						translate:
-							direction === 'vertical'
-								? [ 0, '100%', 0 ]
-								: [ '100%', 0, 0 ],
-					},
-				},
+				creativeEffect: getCreativePreset( creativePreset, direction ),
 			} ),
 		};
 
@@ -507,6 +509,7 @@ export default function Edit( {
 		sliderType,
 		carouselEffect,
 		slideEffect,
+		creativePreset,
 		carouselPerColumn,
 		carouselPerColumnGap,
 		infiniteLoop,

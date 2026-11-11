@@ -71,6 +71,7 @@ return [
 	'stopOnLastSlide' => false,
 	'reverseDirection' => false,
 	'slideEffect' => 'slide',
+	'creativePreset' => 'classic',
 	'carouselEffect' => 'slide',
 	'mousewheelControl' => false,
 	'keyboardNavigation' => false,

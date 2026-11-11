@@ -109,6 +109,10 @@ const attributes = {
 		type: 'string',
 		default: 'slide',
 	},
+	creativePreset: {
+		type: 'string',
+		default: 'classic',
+	},
 	carouselEffect: {
 		type: 'string',
 		default: 'slide',

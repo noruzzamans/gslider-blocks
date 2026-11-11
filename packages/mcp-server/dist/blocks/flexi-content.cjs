@@ -186,6 +186,10 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  creativePreset: {
+    type: "string",
+    default: "classic"
+  },
   carouselEffect: {
     type: "string",
     default: "slide"
@@ -2119,27 +2123,93 @@ function renderSVG(svg, setAttributes = false, extraProps = {}) {
 }
 var renderIcon_default = renderSVG;
 
-// ../../src/constants/shapeDividers.js
+// ../../src/constants/creativePresets.js
 var import_i18n2 = require("@wordpress/i18n");
+var CREATIVE_PRESET_OPTIONS = [
+  { label: (0, import_i18n2.__)("Classic", "gslider-blocks"), value: "classic" },
+  { label: (0, import_i18n2.__)("3D Stack", "gslider-blocks"), value: "stack" },
+  { label: (0, import_i18n2.__)("Dynamic Tilt", "gslider-blocks"), value: "tilt" },
+  { label: (0, import_i18n2.__)("Depth Flip", "gslider-blocks"), value: "depth" },
+  { label: (0, import_i18n2.__)("Minimal Shift", "gslider-blocks"), value: "shift" }
+];
+var CREATIVE_PRESETS = {
+  classic: {
+    prev: { shadow: true, translate: [0, 0, -400] },
+    next: { translate: ["100%", 0, 0] }
+  },
+  stack: {
+    prev: { shadow: true, translate: ["-120%", 0, -500] },
+    next: { shadow: true, translate: ["120%", 0, -500] }
+  },
+  tilt: {
+    prev: {
+      shadow: true,
+      translate: ["-20%", 0, -1],
+      rotate: [0, 0, -10]
+    },
+    next: {
+      shadow: true,
+      translate: ["100%", 0, 0],
+      rotate: [0, 0, 0]
+    }
+  },
+  depth: {
+    prev: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [180, 0, 0]
+    },
+    next: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [-180, 0, 0]
+    }
+  },
+  shift: {
+    prev: { shadow: false, translate: ["-20%", 0, -200], opacity: 0 },
+    next: { shadow: false, translate: ["100%", 0, 0], opacity: 1 }
+  }
+};
+var getCreativePreset = (preset, direction) => {
+  const config = Object.prototype.hasOwnProperty.call(
+    CREATIVE_PRESETS,
+    preset
+  ) ? CREATIVE_PRESETS[preset] : CREATIVE_PRESETS.classic;
+  if (direction !== "vertical") {
+    return config;
+  }
+  const toVertical = (side) => ({
+    ...side,
+    translate: [
+      side.translate[1],
+      side.translate[0],
+      side.translate[2]
+    ]
+  });
+  return { prev: toVertical(config.prev), next: toVertical(config.next) };
+};
+
+// ../../src/constants/shapeDividers.js
+var import_i18n3 = require("@wordpress/i18n");
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var SHAPE_DIVIDER_OPTIONS = [
-  { label: (0, import_i18n2.__)("Wave", "gslider-blocks"), value: "wave-1" },
-  { label: (0, import_i18n2.__)("Double Wave", "gslider-blocks"), value: "wave-2" },
-  { label: (0, import_i18n2.__)("Curve", "gslider-blocks"), value: "curve" },
+  { label: (0, import_i18n3.__)("Wave", "gslider-blocks"), value: "wave-1" },
+  { label: (0, import_i18n3.__)("Double Wave", "gslider-blocks"), value: "wave-2" },
+  { label: (0, import_i18n3.__)("Curve", "gslider-blocks"), value: "curve" },
   {
-    label: (0, import_i18n2.__)("Curve Asymmetric", "gslider-blocks"),
+    label: (0, import_i18n3.__)("Curve Asymmetric", "gslider-blocks"),
     value: "curve-asymmetric"
   },
-  { label: (0, import_i18n2.__)("Tilt", "gslider-blocks"), value: "tilt" },
-  { label: (0, import_i18n2.__)("Triangle", "gslider-blocks"), value: "triangle" },
-  { label: (0, import_i18n2.__)("Arrow", "gslider-blocks"), value: "arrow" },
-  { label: (0, import_i18n2.__)("Mountains", "gslider-blocks"), value: "mountains" },
-  { label: (0, import_i18n2.__)("Zigzag", "gslider-blocks"), value: "zigzag" },
-  { label: (0, import_i18n2.__)("Scallops", "gslider-blocks"), value: "scallops" }
+  { label: (0, import_i18n3.__)("Tilt", "gslider-blocks"), value: "tilt" },
+  { label: (0, import_i18n3.__)("Triangle", "gslider-blocks"), value: "triangle" },
+  { label: (0, import_i18n3.__)("Arrow", "gslider-blocks"), value: "arrow" },
+  { label: (0, import_i18n3.__)("Mountains", "gslider-blocks"), value: "mountains" },
+  { label: (0, import_i18n3.__)("Zigzag", "gslider-blocks"), value: "zigzag" },
+  { label: (0, import_i18n3.__)("Scallops", "gslider-blocks"), value: "scallops" }
 ];
 var SHAPE_DIVIDER_POSITION = [
-  { label: (0, import_i18n2.__)("Top", "gslider-blocks"), value: "top" },
-  { label: (0, import_i18n2.__)("Bottom", "gslider-blocks"), value: "bottom" }
+  { label: (0, import_i18n3.__)("Top", "gslider-blocks"), value: "top" },
+  { label: (0, import_i18n3.__)("Bottom", "gslider-blocks"), value: "bottom" }
 ];
 var SHAPE_DIVIDER_PATHS = {
   "wave-1": "M0,0 V40 C150,90 350,90 500,50 C650,10 850,10 1000,60 V0 Z",
@@ -2209,6 +2279,7 @@ function Save({ attributes: attributes2 }) {
     direction,
     carouselEffect,
     slideEffect,
+    creativePreset,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -2379,12 +2450,7 @@ function Save({ attributes: attributes2 }) {
     },
     // Creative effect settings if needed
     ...slideEffect === "creative" && {
-      creativeEffect: {
-        prev: { shadow: true, translate: [0, 0, -400] },
-        next: {
-          translate: direction === "vertical" ? [0, "100%", 0] : ["100%", 0, 0]
-        }
-      }
+      creativeEffect: getCreativePreset(creativePreset, direction)
     }
   });
   return /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)(
