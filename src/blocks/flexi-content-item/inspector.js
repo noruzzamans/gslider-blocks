@@ -1,11 +1,26 @@
-/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps, import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import { useEffect, memo } from '@wordpress/element';
 import { PanelBody } from '@wordpress/components';
 import InspectorControl from '@Components/inspector-controls';
 import BackgroundControl from '@Components/background-control';
+import SwitcherControl from '@Components/switcher-control';
+import InputControl from '@Components/input-control';
+import { EMBED_VIDEO_TYPE } from '@Constants';
 import { useDeviceType } from '@Utils/displayType';
 import './editor.scss';
+
+/** Only a strict ID match is stored, so the ID is safe to put in an embed URL later */
+/** The provider host must start the URL, so a provider name inside another URL does not match */
+const VIDEO_ID_PATTERNS = {
+	youtube:
+		/^(?:(?:https?:)?\/\/)?(?:[\w-]+\.)*(?:youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([\w-]{11})(?![\w-])/i,
+	/** A showcase, album, channel, group, On Demand or event ID and the private link hash are not the video ID */
+	vimeo: /^(?:(?:https?:)?\/\/)?(?:[\w-]+\.)*vimeo\.com\/(?:(?:showcase|album|channels|groups|ondemand|event)\/[^/?#]+\/|(?!(?:showcase|album|channels|groups|ondemand|event)\/|\d+\/)[^/?#]+\/)*(\d+)(?:[/?#]|$)/i,
+};
+
+const getVideoId = ( type, url ) =>
+	( url || '' ).trim().match( VIDEO_ID_PATTERNS[ type ] )?.[ 1 ] || '';
 
 const Inspector = ( { attributes, setAttributes } ) => {
 	const {
@@ -36,6 +51,12 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		sliderItemHoverBackgroundImageRepeat,
 		sliderItemHoverBackgroundImageSize,
 		/** End slider Item Background */
+
+		/** Start Embed Video */
+		embedVideoType,
+		embedVideoUrl,
+		embedVideoId,
+		/** End Embed Video */
 	} = attributes;
 
 	/** Get Current Device Type */
@@ -46,18 +67,44 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		setAttributes( { deviceType: currentDeviceType } );
 	}, [ currentDeviceType ] );
 
+	/** Keep the stored video ID in sync with the URL and provider */
+	const handleVideoUrlChange = ( value ) => {
+		setAttributes( {
+			embedVideoUrl: value,
+			embedVideoId: getVideoId( embedVideoType, value ),
+		} );
+	};
+
 	/**
 	 * Inspector General Controls
 	 */
 	const generalControls = (
 		<>
-			<PanelBody title={ __( 'General', 'gslider-blocks' ) } initialOpen>
-				<p>
-					{ __(
-						'No settings available. Move to Style Tab',
-						'gslider-blocks'
-					) }
-				</p>
+			<PanelBody title={ __( 'Video', 'gslider-blocks' ) } initialOpen>
+				<SwitcherControl
+					label={ __( 'Embed Provider', 'gslider-blocks' ) }
+					options={ EMBED_VIDEO_TYPE }
+					value={ embedVideoType }
+					onChange={ ( value ) =>
+						setAttributes( {
+							embedVideoType: value,
+							embedVideoId: getVideoId( value, embedVideoUrl ),
+						} )
+					}
+				/>
+				<InputControl
+					label={ __( 'Video URL', 'gslider-blocks' ) }
+					value={ embedVideoUrl }
+					onChangeValue={ handleVideoUrlChange }
+					helpText={
+						embedVideoUrl && ! embedVideoId
+							? __(
+									'Could not find a video ID in this URL.',
+									'gslider-blocks'
+							  )
+							: ''
+					}
+				/>
 			</PanelBody>
 		</>
 	);
@@ -233,7 +280,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 	return (
 		<>
 			<InspectorControl
-				generalControls={ null }
+				generalControls={ generalControls }
 				styleControls={ styleControls }
 				advancedControls={ null }
 			/>
