@@ -10,52 +10,7 @@
  * @package GSlider\Tests\Blocks\PostCarousel
  */
 
-if ( ! function_exists( 'esc_html' ) ) {
-	/**
-	 * Stub for WordPress esc_html() escaping HTML special characters.
-	 *
-	 * @param string $text Raw text.
-	 * @return string Escaped HTML text.
-	 */
-	function esc_html( $text ) {
-		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
-	}
-}
-
-if ( ! function_exists( 'esc_url' ) ) {
-	/**
-	 * Stub for WordPress esc_url() rejecting unsafe protocols.
-	 *
-	 * @param string $url Raw URL.
-	 * @return string Sanitized URL or empty string for dangerous protocols.
-	 */
-	function esc_url( $url ) {
-		$url = trim( (string) $url );
-		if ( '' === $url ) {
-			return '';
-		}
-		if ( preg_match( '/^\s*(javascript|vbscript|data):/i', $url ) ) {
-			return '';
-		}
-		return htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
-	}
-}
-
-if ( ! function_exists( '_n' ) ) {
-	/**
-	 * Stub for WordPress plural localization _n().
-	 *
-	 * @param string $single Singular text.
-	 * @param string $plural Plural text.
-	 * @param int    $number Quantity.
-	 * @param string $domain Text domain.
-	 * @return string Singular or plural string.
-	 */
-	function _n( $single, $plural, $number, $domain = 'default' ) {
-		unset( $domain );
-		return 1 === (int) $number ? $single : $plural;
-	}
-}
+require_once dirname( __DIR__, 2 ) . '/stubs/wp-kses-escaping.php';
 
 if ( ! function_exists( 'get_post_field' ) ) {
 	/**

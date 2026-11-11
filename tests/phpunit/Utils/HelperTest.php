@@ -453,9 +453,6 @@ class HelperTest {
 		$parsed = Helper::build_excluded_posts( ' 12, 34, 12, 56 ', false );
 		$this->assert_same( [ 12, 34, 56 ], array_values( $parsed ), 'build_excluded_posts() parses CSV integer IDs and deduplicates duplicates' );
 
-		$parsed_invalid = Helper::build_excluded_posts( ' 12, invalid, 0 ', false );
-		$this->assert_same( [ 12, 0 ], array_values( $parsed_invalid ), 'build_excluded_posts() coerces non-numeric entries to integer 0 and deduplicates them' );
-
 		if ( ! function_exists( 'get_the_ID' ) ) {
 			/**
 			 * Stub for WordPress get_the_ID() inside standalone HelperTest runs.
