@@ -364,6 +364,24 @@ if (
 	fail( 'testimonial vertical left inside pagination must set left: 10px' );
 }
 
+const testimonialRightOutsideStyle = testimonialBlock.styling( {
+	...testimonialDefaults,
+	direction: 'vertical',
+	verticalPaginationAlignment: 'right',
+	paginationPositionType: 'outside',
+} );
+if (
+	! testimonialRightOutsideStyle.includes( 'right: -30px !important;' ) ||
+	! testimonialRightOutsideStyle.includes(
+		'.gslider-testimonial-wrapper.has-pagination { margin-right: 30px;'
+	)
+) {
+	fail(
+		'testimonial vertical right outside pagination must set right offset and margin-right'
+	);
+}
+console.log( 'ok testimonial vertical right pagination alignment' );
+
 const testimonialLeftOutsideStyle = testimonialBlock.styling( {
 	...testimonialDefaults,
 	direction: 'vertical',
@@ -371,9 +389,11 @@ const testimonialLeftOutsideStyle = testimonialBlock.styling( {
 	paginationPositionType: 'outside',
 } );
 if (
-	! testimonialLeftOutsideStyle.includes( 'right: auto !important;' ) ||
 	! testimonialLeftOutsideStyle.includes(
-		'.gslider-testimonial-wrapper.has-pagination { margin-left:'
+		'left: -30px !important; right: auto !important;'
+	) ||
+	! testimonialLeftOutsideStyle.includes(
+		'.gslider-testimonial-wrapper.has-pagination { margin-left: 30px; margin-right: 0 !important;'
 	)
 ) {
 	fail(
@@ -399,6 +419,24 @@ if (
 	fail( 'flexi vertical left inside pagination must set left: 10px' );
 }
 
+const flexiRightOutsideStyle = flexiBlock.styling( {
+	...flexiDefaults,
+	direction: 'vertical',
+	verticalPaginationAlignment: 'right',
+	paginationPositionType: 'outside',
+} );
+if (
+	! flexiRightOutsideStyle.includes( 'right: -30px !important;' ) ||
+	! flexiRightOutsideStyle.includes(
+		'.gslider-flexi-content-wrapper.has-pagination { margin-right: 30px;'
+	)
+) {
+	fail(
+		'flexi vertical right outside pagination must set right offset and margin-right'
+	);
+}
+console.log( 'ok flexi-content vertical right pagination alignment' );
+
 const flexiLeftOutsideStyle = flexiBlock.styling( {
 	...flexiDefaults,
 	direction: 'vertical',
@@ -406,9 +444,11 @@ const flexiLeftOutsideStyle = flexiBlock.styling( {
 	paginationPositionType: 'outside',
 } );
 if (
-	! flexiLeftOutsideStyle.includes( 'right: auto !important;' ) ||
 	! flexiLeftOutsideStyle.includes(
-		'.gslider-flexi-content-wrapper.has-pagination { margin-left:'
+		'left: -30px !important; right: auto !important;'
+	) ||
+	! flexiLeftOutsideStyle.includes(
+		'.gslider-flexi-content-wrapper.has-pagination { margin-left: 30px; margin-right: 0 !important;'
 	)
 ) {
 	fail(

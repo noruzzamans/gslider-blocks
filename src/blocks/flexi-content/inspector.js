@@ -1692,21 +1692,22 @@ const Inspector = ( { attributes, setAttributes } ) => {
 						}
 					/>
 
-					{ direction === 'vertical' && (
-						<SwitcherControl
-							label={ __(
-								'Vertical Pagination Alignment',
-								'gslider-blocks'
-							) }
-							options={ VERTICAL_PAGINATION_ALIGNMENT }
-							value={ verticalPaginationAlignment }
-							onChange={ ( value ) =>
-								setAttributes( {
-									verticalPaginationAlignment: value,
-								} )
-							}
-						/>
-					) }
+					{ direction === 'vertical' &&
+						paginationType === 'bullets' && (
+							<SwitcherControl
+								label={ __(
+									'Vertical Pagination Alignment',
+									'gslider-blocks'
+								) }
+								options={ VERTICAL_PAGINATION_ALIGNMENT }
+								value={ verticalPaginationAlignment }
+								onChange={ ( value ) =>
+									setAttributes( {
+										verticalPaginationAlignment: value,
+									} )
+								}
+							/>
+						) }
 
 					<SelectControls
 						label={ __( 'Type', 'gslider-blocks' ) }
