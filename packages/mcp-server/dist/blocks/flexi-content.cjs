@@ -3505,8 +3505,24 @@ var generateFlexiContentStyle = (attributes2) => {
             .${blockId}.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                 top: 50%;
                 bottom: auto !important;
+                z-index: 100 !important;
+                pointer-events: auto !important;
                 ${verticalPaginationAlignment === "left" ? `left: -${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"} !important; right: auto !important;` : `left: auto; right: -${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"} !important;`}
                 transform: translate3d(0, -50%, 0);
+            }
+            .${blockId} .swiper-pagination-vertical.swiper-pagination-clickable .swiper-pagination-bullet {
+                cursor: pointer;
+                pointer-events: auto;
+                position: relative;
+            }
+            .${blockId} .swiper-pagination-vertical.swiper-pagination-clickable .swiper-pagination-bullet::after {
+                content: '';
+                position: absolute;
+                top: -6px;
+                bottom: -6px;
+                left: -10px;
+                right: -10px;
+                pointer-events: auto;
             }
         ` : ""}
 
@@ -3725,6 +3741,8 @@ var generateFlexiContentStyle = (attributes2) => {
                 .${blockId}.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                     top: 50%;
                     bottom: auto !important;
+                    z-index: 100 !important;
+                    pointer-events: auto !important;
                     ${verticalPaginationAlignment === "left" ? `left: -${getResponsiveOutsideOffset(
     paginationOutsideOffset,
     paginationOutsideOffsetUnits,
@@ -3954,6 +3972,8 @@ var generateFlexiContentStyle = (attributes2) => {
                 .${blockId}.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                     top: 50%;
                     bottom: auto !important;
+                    z-index: 100 !important;
+                    pointer-events: auto !important;
                     ${verticalPaginationAlignment === "left" ? `left: -${getResponsiveOutsideOffset(
     paginationOutsideOffset,
     paginationOutsideOffsetUnits,
