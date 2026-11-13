@@ -2221,8 +2221,7 @@ const Inspector = ( {
 					/>
 
 					{ direction === 'vertical' &&
-						paginationType === 'bullets' &&
-						showPagination?.[ deviceType ] && (
+						paginationType === 'bullets' && (
 							<SwitcherControl
 								label={ __(
 									'Vertical Pagination Alignment',
