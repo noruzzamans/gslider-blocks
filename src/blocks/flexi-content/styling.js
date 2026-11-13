@@ -41,6 +41,51 @@ const getResponsiveOutsideOffset = ( offsetObj, unitObj, devices ) => {
 	return '30px';
 };
 
+const getVerticalPaginationWrapperMarginCss = (
+	blockId,
+	device,
+	showPagination,
+	verticalPaginationAlignment,
+	paginationOutsideOffset,
+	paginationOutsideOffsetUnits
+) => {
+	const isLeft = verticalPaginationAlignment === 'left';
+	const marginProp = isLeft ? 'margin-left' : 'margin-right';
+	const oppositeMargin = isLeft ? ' margin-right: 0 !important;' : '';
+
+	if ( device === 'Tablet' ) {
+		if ( showPagination?.Tablet ) {
+			const offset = getResponsiveOutsideOffset(
+				paginationOutsideOffset,
+				paginationOutsideOffsetUnits,
+				[ 'Tablet', 'Desktop' ]
+			);
+			return `.${ blockId }.gslider-flexi-content-wrapper.has-pagination { ${ marginProp }: ${ offset };${ oppositeMargin } }`;
+		}
+		if ( showPagination?.Desktop ) {
+			return `.${ blockId }.gslider-flexi-content-wrapper.has-pagination { ${ marginProp }: 0; }`;
+		}
+		return '';
+	}
+
+	if ( device === 'Mobile' ) {
+		if ( showPagination?.Mobile ) {
+			const offset = getResponsiveOutsideOffset(
+				paginationOutsideOffset,
+				paginationOutsideOffsetUnits,
+				[ 'Mobile', 'Tablet', 'Desktop' ]
+			);
+			return `.${ blockId }.gslider-flexi-content-wrapper.has-pagination { ${ marginProp }: ${ offset };${ oppositeMargin } }`;
+		}
+		if ( showPagination?.Desktop || showPagination?.Tablet ) {
+			return `.${ blockId }.gslider-flexi-content-wrapper.has-pagination { ${ marginProp }: 0; }`;
+		}
+		return '';
+	}
+
+	return '';
+};
+
 const getShapeDividerCss = ( blockId, position, divider, device ) => {
 	const { enable, color, height, heightUnits, opacity, flip, invert } =
 		divider;
@@ -212,6 +257,7 @@ const generateFlexiContentStyle = ( attributes ) => {
 		showNavigation,
 		showPagination,
 		paginationPositionType,
+		verticalPaginationAlignment,
 		/** End Show/Hide Elements */
 
 		/** Start Layout & Content Setting */
@@ -1413,7 +1459,55 @@ const generateFlexiContentStyle = ( attributes ) => {
 		}
 
         ${
-			paginationPositionType === 'outside' && showPagination?.Desktop
+			paginationPositionType === 'inside' &&
+			direction === 'vertical' &&
+			verticalPaginationAlignment === 'left'
+				? `
+            .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-bullets.swiper-pagination-vertical,
+            .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
+                left: 10px !important;
+                right: auto !important;
+            }
+        `
+				: ''
+		}
+
+        ${
+			paginationPositionType === 'outside' && direction === 'vertical'
+				? `
+            .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-bullets.swiper-pagination-vertical,
+            .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
+                top: 50%;
+                bottom: auto !important;
+                ${
+					verticalPaginationAlignment === 'left'
+						? `left: -${
+								paginationOutsideOffset?.Desktop
+									? `${ paginationOutsideOffset.Desktop }${
+											paginationOutsideOffsetUnits?.Desktop ||
+											'px'
+									  }`
+									: '30px'
+						  } !important; right: auto !important;`
+						: `left: auto; right: -${
+								paginationOutsideOffset?.Desktop
+									? `${ paginationOutsideOffset.Desktop }${
+											paginationOutsideOffsetUnits?.Desktop ||
+											'px'
+									  }`
+									: '30px'
+						  } !important;`
+				}
+                transform: translate3d(0, -50%, 0);
+            }
+        `
+				: ''
+		}
+
+        ${
+			paginationPositionType === 'outside' &&
+			showPagination?.Desktop &&
+			( direction !== 'vertical' || paginationType !== 'bullets' )
 				? `
         .${ blockId }.gslider-flexi-content-wrapper.has-pagination {
             margin-bottom: ${
@@ -1423,6 +1517,37 @@ const generateFlexiContentStyle = ( attributes ) => {
 					  }`
 					: '30px'
 			};
+        }
+        `
+				: ''
+		}
+
+        ${
+			paginationPositionType === 'outside' &&
+			showPagination?.Desktop &&
+			direction === 'vertical' &&
+			paginationType === 'bullets'
+				? `
+        .${ blockId }.gslider-flexi-content-wrapper.has-pagination {
+            ${
+				verticalPaginationAlignment === 'left'
+					? `margin-left: ${
+							paginationOutsideOffset?.Desktop
+								? `${ paginationOutsideOffset.Desktop }${
+										paginationOutsideOffsetUnits?.Desktop ||
+										'px'
+								  }`
+								: '30px'
+					  }; margin-right: 0 !important;`
+					: `margin-right: ${
+							paginationOutsideOffset?.Desktop
+								? `${ paginationOutsideOffset.Desktop }${
+										paginationOutsideOffsetUnits?.Desktop ||
+										'px'
+								  }`
+								: '30px'
+					  };`
+			}
         }
         `
 				: ''
@@ -1913,7 +2038,34 @@ const generateFlexiContentStyle = ( attributes ) => {
 			}
 
             ${
-				paginationPositionType === 'outside'
+				paginationPositionType === 'outside' && direction === 'vertical'
+					? `
+                .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-bullets.swiper-pagination-vertical,
+                .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
+                    top: 50%;
+                    bottom: auto !important;
+                    ${
+						verticalPaginationAlignment === 'left'
+							? `left: -${ getResponsiveOutsideOffset(
+									paginationOutsideOffset,
+									paginationOutsideOffsetUnits,
+									[ 'Tablet', 'Desktop' ]
+							  ) } !important; right: auto !important;`
+							: `left: auto; right: -${ getResponsiveOutsideOffset(
+									paginationOutsideOffset,
+									paginationOutsideOffsetUnits,
+									[ 'Tablet', 'Desktop' ]
+							  ) } !important;`
+					}
+                    transform: translate3d(0, -50%, 0);
+                }
+            `
+					: ''
+			}
+
+            ${
+				paginationPositionType === 'outside' &&
+				( direction !== 'vertical' || paginationType !== 'bullets' )
 					? `
                 ${ getHasPaginationCss(
 					blockId,
@@ -1927,6 +2079,21 @@ const generateFlexiContentStyle = ( attributes ) => {
 					)
 				) }
             `
+					: ''
+			}
+
+            ${
+				paginationPositionType === 'outside' &&
+				direction === 'vertical' &&
+				paginationType === 'bullets'
+					? getVerticalPaginationWrapperMarginCss(
+							blockId,
+							'Tablet',
+							showPagination,
+							verticalPaginationAlignment,
+							paginationOutsideOffset,
+							paginationOutsideOffsetUnits
+					  )
 					: ''
 			}
             ${ getShapeDividerCss( blockId, 'top', topDivider, 'Tablet' ) }
@@ -2392,7 +2559,34 @@ const generateFlexiContentStyle = ( attributes ) => {
 			}
 
             ${
-				paginationPositionType === 'outside'
+				paginationPositionType === 'outside' && direction === 'vertical'
+					? `
+                .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-bullets.swiper-pagination-vertical,
+                .${ blockId }.gslider-flexi-content-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
+                    top: 50%;
+                    bottom: auto !important;
+                    ${
+						verticalPaginationAlignment === 'left'
+							? `left: -${ getResponsiveOutsideOffset(
+									paginationOutsideOffset,
+									paginationOutsideOffsetUnits,
+									[ 'Mobile', 'Tablet', 'Desktop' ]
+							  ) } !important; right: auto !important;`
+							: `left: auto; right: -${ getResponsiveOutsideOffset(
+									paginationOutsideOffset,
+									paginationOutsideOffsetUnits,
+									[ 'Mobile', 'Tablet', 'Desktop' ]
+							  ) } !important;`
+					}
+                    transform: translate3d(0, -50%, 0);
+                }
+            `
+					: ''
+			}
+
+            ${
+				paginationPositionType === 'outside' &&
+				( direction !== 'vertical' || paginationType !== 'bullets' )
 					? `
                 ${ getHasPaginationCss(
 					blockId,
@@ -2406,6 +2600,21 @@ const generateFlexiContentStyle = ( attributes ) => {
 					)
 				) }
             `
+					: ''
+			}
+
+            ${
+				paginationPositionType === 'outside' &&
+				direction === 'vertical' &&
+				paginationType === 'bullets'
+					? getVerticalPaginationWrapperMarginCss(
+							blockId,
+							'Mobile',
+							showPagination,
+							verticalPaginationAlignment,
+							paginationOutsideOffset,
+							paginationOutsideOffsetUnits
+					  )
 					: ''
 			}
             ${ getShapeDividerCss( blockId, 'top', topDivider, 'Mobile' ) }
