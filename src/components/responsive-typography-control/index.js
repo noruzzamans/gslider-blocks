@@ -18,6 +18,32 @@ import Select2 from 'react-select';
 import SelectControls from '@Components/select-controls';
 import ResponsiveRangeControl from '@Components/responsive-range-control';
 
+// Pure helper: matches the attribute value against the loaded font options.
+// The attribute can also hold a value that is not a Google font, e.g. a
+// preset font stack, so an unmatched non-empty value is shown as-is
+// instead of claiming "Default".
+const buildFontSelection = ( options, fontFamilyValue ) => {
+	const current = options.find( ( f ) => f.value === fontFamilyValue );
+
+	if ( current ) {
+		return {
+			selection: current,
+			weights: current.weights || [],
+		};
+	}
+
+	return {
+		selection:
+			fontFamilyValue && fontFamilyValue !== 'Default'
+				? { label: fontFamilyValue, value: fontFamilyValue }
+				: {
+						label: __( 'Default', 'gslider-blocks' ),
+						value: 'Default',
+				  },
+		weights: [],
+	};
+};
+
 const ResponsiveTypographyControl = ( {
 	fontFamily,
 	onChangeFontFamily,
@@ -56,31 +82,53 @@ const ResponsiveTypographyControl = ( {
 		GOOGLE_FONTS().then( ( fetchedFonts ) => {
 			setFontOptions( fetchedFonts );
 
-			const current = fetchedFonts.find(
-				( f ) => f.value === fontFamily
+			const { selection, weights } = buildFontSelection(
+				fetchedFonts,
+				fontFamily
 			);
 
-			if ( current ) {
-				setSelectedFontFamilyOption( current );
-				setAvailableFontWeights( current.weights || [] );
-			} else {
-				setSelectedFontFamilyOption( {
-					label: 'Default',
-					value: 'Default',
-				} );
-				setAvailableFontWeights( [] );
-			}
+			setSelectedFontFamilyOption( selection );
+			setAvailableFontWeights( weights );
 		} );
 	}, [] );
+
+	// Re-sync the displayed font when the attribute changes outside the
+	// control, e.g. switching presets or resetting typography.
+	useEffect( () => {
+		if ( ! fontOptions.length ) {
+			return;
+		}
+
+		const { selection, weights } = buildFontSelection(
+			fontOptions,
+			fontFamily
+		);
+
+		setSelectedFontFamilyOption( selection );
+		setAvailableFontWeights( weights );
+	}, [ fontFamily, fontOptions ] );
 
 	const handleFontFamilyChange = ( selectedOption ) => {
 		setSelectedFontFamilyOption( selectedOption );
 
-		const newFontFamily = selectedOption?.value || 'Default';
+		// Store the attribute default so 'Default' never reaches the CSS
+		// output and theme font inheritance keeps working.
+		const newFontFamily =
+			selectedOption?.value && selectedOption.value !== 'Default'
+				? selectedOption.value
+				: '';
 		onChangeFontFamily( newFontFamily );
 
 		setAvailableFontWeights( selectedOption?.weights || [] );
 	};
+
+	const fontFamilyOptions = [
+		{
+			label: __( 'Default', 'gslider-blocks' ),
+			value: 'Default',
+		},
+		...fontOptions,
+	];
 
 	const handleFontSizeChange = ( newFontSize ) => {
 		onChangeFontSize( newFontSize );
@@ -271,7 +319,7 @@ const ResponsiveTypographyControl = ( {
 								className="gslider-setting-typography-family"
 							>
 								<Select2
-									options={ fontOptions }
+									options={ fontFamilyOptions }
 									value={ selectedFontFamilyOption }
 									onChange={ handleFontFamilyChange }
 									className="gslider-select2-control"
@@ -306,6 +354,21 @@ const ResponsiveTypographyControl = ( {
 										),
 										value: 'inherit',
 									},
+									// Keep a stored weight selectable when the
+									// family's weight list does not include it.
+									...( availableFontWeights.length > 0 &&
+									fontWeight &&
+									fontWeight !== 'inherit' &&
+									! availableFontWeights.includes(
+										fontWeight
+									)
+										? [
+												{
+													label: fontWeight,
+													value: fontWeight,
+												},
+										  ]
+										: [] ),
 									...( availableFontWeights.length > 0
 										? availableFontWeights.map(
 												( weight ) => ( {
