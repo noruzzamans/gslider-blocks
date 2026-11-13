@@ -2399,6 +2399,8 @@ const generateBaseSliderStyle = ( attributes ) => {
             .${ blockId }.gslider-testimonial-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                 top: 50%;
                 bottom: auto !important;
+                z-index: 100 !important;
+                pointer-events: auto !important;
                 ${
 					verticalPaginationAlignment === 'left'
 						? `left: -${
@@ -2419,6 +2421,20 @@ const generateBaseSliderStyle = ( attributes ) => {
 						  } !important;`
 				}
                 transform: translate3d(0, -50%, 0);
+            }
+            .${ blockId } .swiper-pagination-vertical.swiper-pagination-clickable .swiper-pagination-bullet {
+                cursor: pointer;
+                pointer-events: auto;
+                position: relative;
+            }
+            .${ blockId } .swiper-pagination-vertical.swiper-pagination-clickable .swiper-pagination-bullet::after {
+                content: '';
+                position: absolute;
+                top: -6px;
+                bottom: -6px;
+                left: -10px;
+                right: -10px;
+                pointer-events: auto;
             }
         `
 				: ''
@@ -3328,6 +3344,8 @@ const generateBaseSliderStyle = ( attributes ) => {
                 .${ blockId }.gslider-testimonial-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                     top: 50%;
                     bottom: auto !important;
+                    z-index: 100 !important;
+                    pointer-events: auto !important;
                     ${
 						verticalPaginationAlignment === 'left'
 							? `left: -${
@@ -4327,6 +4345,8 @@ const generateBaseSliderStyle = ( attributes ) => {
                 .${ blockId }.gslider-testimonial-wrapper .swiper-pagination-vertical.swiper-pagination-bullets {
                     top: 50%;
                     bottom: auto !important;
+                    z-index: 100 !important;
+                    pointer-events: auto !important;
                     ${
 						verticalPaginationAlignment === 'left'
 							? `left: -${
