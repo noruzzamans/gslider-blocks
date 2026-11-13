@@ -393,7 +393,7 @@ if (
 		'left: -30px !important; right: auto !important;'
 	) ||
 	! testimonialLeftOutsideStyle.includes(
-		'.gslider-testimonial-wrapper.has-pagination { margin-left: 30px; margin-right: 0 !important;'
+		'.gslider-testimonial-wrapper.has-pagination { margin-left: 30px; margin-right: 0;'
 	)
 ) {
 	fail(
@@ -448,7 +448,7 @@ if (
 		'left: -30px !important; right: auto !important;'
 	) ||
 	! flexiLeftOutsideStyle.includes(
-		'.gslider-flexi-content-wrapper.has-pagination { margin-left: 30px; margin-right: 0 !important;'
+		'.gslider-flexi-content-wrapper.has-pagination { margin-left: 30px; margin-right: 0;'
 	)
 ) {
 	fail(

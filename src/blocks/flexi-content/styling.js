@@ -51,7 +51,7 @@ const getVerticalPaginationWrapperMarginCss = (
 ) => {
 	const isLeft = verticalPaginationAlignment === 'left';
 	const marginProp = isLeft ? 'margin-left' : 'margin-right';
-	const oppositeMargin = isLeft ? ' margin-right: 0 !important;' : '';
+	const oppositeMargin = isLeft ? ' margin-right: 0;' : '';
 
 	if ( device === 'Tablet' ) {
 		if ( showPagination?.Tablet ) {
@@ -1538,7 +1538,7 @@ const generateFlexiContentStyle = ( attributes ) => {
 										'px'
 								  }`
 								: '30px'
-					  }; margin-right: 0 !important;`
+					  }; margin-right: 0;`
 					: `margin-right: ${
 							paginationOutsideOffset?.Desktop
 								? `${ paginationOutsideOffset.Desktop }${

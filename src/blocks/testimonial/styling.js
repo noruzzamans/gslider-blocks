@@ -2458,7 +2458,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 										'px'
 								  }`
 								: '30px'
-					  }; margin-right: 0 !important;`
+					  }; margin-right: 0;`
 					: `margin-right: ${
 							paginationOutsideOffset?.Desktop
 								? `${ paginationOutsideOffset.Desktop }${
@@ -3429,7 +3429,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 													'px'
 											  }`
 											: '30px'
-								  }; margin-right: 0 !important;`
+								  }; margin-right: 0;`
 								: `margin-right: ${
 										paginationOutsideOffset?.Tablet
 											? `${
@@ -4450,7 +4450,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 													'px'
 											  }`
 											: '30px'
-								  }; margin-right: 0 !important;`
+								  }; margin-right: 0;`
 								: `margin-right: ${
 										paginationOutsideOffset?.Mobile
 											? `${

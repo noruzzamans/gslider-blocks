@@ -2624,7 +2624,7 @@ var getResponsiveOutsideOffset = (offsetObj, unitObj, devices) => {
 var getVerticalPaginationWrapperMarginCss = (blockId, device, showPagination, verticalPaginationAlignment, paginationOutsideOffset, paginationOutsideOffsetUnits) => {
   const isLeft = verticalPaginationAlignment === "left";
   const marginProp = isLeft ? "margin-left" : "margin-right";
-  const oppositeMargin = isLeft ? " margin-right: 0 !important;" : "";
+  const oppositeMargin = isLeft ? " margin-right: 0;" : "";
   if (device === "Tablet") {
     if (showPagination?.Tablet) {
       const offset = getResponsiveOutsideOffset(
@@ -3518,7 +3518,7 @@ var generateFlexiContentStyle = (attributes2) => {
 
         ${paginationPositionType === "outside" && showPagination?.Desktop && direction === "vertical" && paginationType === "bullets" ? `
         .${blockId}.gslider-flexi-content-wrapper.has-pagination {
-            ${verticalPaginationAlignment === "left" ? `margin-left: ${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"}; margin-right: 0 !important;` : `margin-right: ${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"};`}
+            ${verticalPaginationAlignment === "left" ? `margin-left: ${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"}; margin-right: 0;` : `margin-right: ${paginationOutsideOffset?.Desktop ? `${paginationOutsideOffset.Desktop}${paginationOutsideOffsetUnits?.Desktop || "px"}` : "30px"};`}
         }
         ` : ""}
 
