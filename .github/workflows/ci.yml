@@ -39,6 +39,13 @@ jobs:
       - name: Verify Webpack Admin Build
         run: npm run admin:build
 
+      - name: Verify Committed Admin and REST Defaults Match Fresh Builds
+        run: |
+          if ! git diff --exit-code -- assets/admin includes/RestApi/defaults; then
+            echo "::error::Committed admin assets or REST defaults are out of date. Run \"npm run build && npm run admin:build\" and commit assets/admin and includes/RestApi/defaults."
+            exit 1
+          fi
+
       # --ignore-scripts keeps `prepare` (the build) from regenerating the
       # committed schemas before the drift test compares them.
       - name: Install MCP Server Dependencies
