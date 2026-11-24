@@ -29,6 +29,7 @@ export default function Save( { attributes } ) {
 		carouselEffect,
 		mousewheelControl,
 		keyboardNavigation,
+		enableHashNavigation,
 		paginationType,
 		dynamicBullets,
 
@@ -120,6 +121,10 @@ export default function Save( { attributes } ) {
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
 		effect: carouselEffect,
+		// Deep links, serialized only when the option is on
+		...( enableHashNavigation && {
+			hashNavigation: { watchState: true },
+		} ),
 
 		// Responsive breakpoints for Desktop, Tablet, and Mobile
 		breakpoints: {
@@ -212,7 +217,15 @@ export default function Save( { attributes } ) {
 			<div className="swiper" role="region" aria-label="Image Slider">
 				<div className="swiper-wrapper">
 					{ images.map( ( item ) => (
-						<div key={ item.id } className={ `swiper-slide` }>
+						<div
+							key={ item.id }
+							className={ `swiper-slide` }
+							data-hash={
+								enableHashNavigation && item.hash
+									? item.hash
+									: undefined
+							}
+						>
 							<div className="gslider-image-slider-content-wrapper">
 								<div
 									className="gslider-image-item"

@@ -58,6 +58,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		carouselEffect,
 		mousewheelControl,
 		keyboardNavigation,
+		enableHashNavigation,
 		paginationType,
 		dynamicBullets,
 
@@ -917,6 +918,17 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					onChange={ ( value ) =>
 						setAttributes( { keyboardNavigation: value } )
 					}
+				/>
+				<ToggleControl
+					label={ __( 'Hash Navigation', 'gslider-blocks' ) }
+					checked={ enableHashNavigation }
+					onChange={ ( value ) =>
+						setAttributes( { enableHashNavigation: value } )
+					}
+					help={ __(
+						'Deep-link slides with #hash values and update the URL while swiping.',
+						'gslider-blocks'
+					) }
 				/>
 				<ToggleControl
 					label={ __( 'Autoplay', 'gslider-blocks' ) }

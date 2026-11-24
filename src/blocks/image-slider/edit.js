@@ -117,6 +117,7 @@ export default function Edit( {
 		carouselEffect,
 		mousewheelControl,
 		keyboardNavigation,
+		enableHashNavigation,
 		paginationType,
 		dynamicBullets,
 
@@ -287,6 +288,10 @@ export default function Edit( {
 		// Build Swiper settings
 		const swiperSettings = {
 			effect: carouselEffect,
+			// Deep links, used only when the option is on
+			...( enableHashNavigation && {
+				hashNavigation: { watchState: true },
+			} ),
 			breakpoints: {
 				0: {
 					slidesPerView: carouselPerColumn?.[ deviceType ] || 1,

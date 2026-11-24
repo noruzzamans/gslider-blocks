@@ -23,6 +23,7 @@ const attributes = {
 				link: { type: 'string' },
 				caption: { type: 'string' },
 				tooltipText: { type: 'string' },
+				hash: { type: 'string' },
 				/** Old slides have no video keys, which means the same as 'html5' */
 				videoSource: { type: 'string' },
 				videoExternalUrl: { type: 'string' },
@@ -101,6 +102,10 @@ const attributes = {
 		default: false,
 	},
 	keyboardNavigation: {
+		type: 'boolean',
+		default: false,
+	},
+	enableHashNavigation: {
 		type: 'boolean',
 		default: false,
 	},

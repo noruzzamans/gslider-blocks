@@ -12,7 +12,7 @@
       "coverflow"
     ]
   },
-  "totalAttributes": 404,
+  "totalAttributes": 405,
   "slideItemSchema": {
     "type": "object",
     "properties": {
@@ -32,6 +32,9 @@
         "type": "string"
       },
       "tooltipText": {
+        "type": "string"
+      },
+      "hash": {
         "type": "string"
       },
       "videoSource": {
@@ -267,6 +270,9 @@
           "tooltipText": {
             "type": "string"
           },
+          "hash": {
+            "type": "string"
+          },
           "videoSource": {
             "type": "string"
           },
@@ -348,6 +354,10 @@
       "default": false
     },
     "keyboardNavigation": {
+      "type": "boolean",
+      "default": false
+    },
+    "enableHashNavigation": {
       "type": "boolean",
       "default": false
     },

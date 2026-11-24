@@ -108,6 +108,7 @@ var attributes = {
         link: { type: "string" },
         caption: { type: "string" },
         tooltipText: { type: "string" },
+        hash: { type: "string" },
         /** Old slides have no video keys, which means the same as 'html5' */
         videoSource: { type: "string" },
         videoExternalUrl: { type: "string" },
@@ -185,6 +186,10 @@ var attributes = {
     default: false
   },
   keyboardNavigation: {
+    type: "boolean",
+    default: false
+  },
+  enableHashNavigation: {
     type: "boolean",
     default: false
   },
@@ -2728,6 +2733,7 @@ function Save({ attributes: attributes2 }) {
     carouselEffect,
     mousewheelControl,
     keyboardNavigation,
+    enableHashNavigation,
     paginationType,
     dynamicBullets,
     images,
@@ -2783,6 +2789,10 @@ function Save({ attributes: attributes2 }) {
   const linkOnLightboxOff = enableimageLinks && lightboxDevices && lightboxDevices !== "Desktop Tablet Mobile";
   const swiperSettings = JSON.stringify({
     effect: carouselEffect,
+    // Deep links, serialized only when the option is on
+    ...enableHashNavigation && {
+      hashNavigation: { watchState: true }
+    },
     // Responsive breakpoints for Desktop, Tablet, and Mobile
     breakpoints: {
       0: {
@@ -2855,68 +2865,84 @@ function Save({ attributes: attributes2 }) {
       },
       children: [
         /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "swiper", role: "region", "aria-label": "Image Slider", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: images.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: `swiper-slide`, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "gslider-image-slider-content-wrapper", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-              "div",
-              {
-                className: "gslider-image-item",
-                "data-hover-effect": imageLinkHoverEffect,
-                children: [
-                  isExternalVideo(item) ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
-                    "div",
-                    {
-                      className: "gslider-embed-video",
-                      "data-embed-type": item.videoSource,
-                      "data-embed-id": item.videoExternalId,
-                      children: [
-                        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                          "img",
-                          {
-                            className: "gslider-embed-video-poster",
-                            src: item.url,
-                            alt: item.alt || `video ${images.indexOf(item) + 1}`,
-                            loading: enableLazyLoad ? "lazy" : void 0
-                          }
-                        ),
-                        /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                          "button",
-                          {
-                            type: "button",
-                            className: "gslider-embed-video-play",
-                            "aria-label": "Play video"
-                          }
-                        )
-                      ]
-                    }
-                  ) : lightboxDevices ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "a",
-                    {
-                      href: item.url,
-                      "data-fslightbox": blockId,
-                      "data-caption": item.caption,
-                      className: "gslider-image-link",
-                      ...linkOnLightboxOff && item.link && {
-                        "data-image-link": item.link,
-                        "data-image-link-target": imageLinkTarget,
-                        "data-image-link-rel": imageLinkRel
-                      },
-                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        "img",
+          /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "swiper-wrapper", children: images.map((item) => /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+            "div",
+            {
+              className: `swiper-slide`,
+              "data-hash": enableHashNavigation && item.hash ? item.hash : void 0,
+              children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)("div", { className: "gslider-image-slider-content-wrapper", children: [
+                /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+                  "div",
+                  {
+                    className: "gslider-image-item",
+                    "data-hover-effect": imageLinkHoverEffect,
+                    children: [
+                      isExternalVideo(item) ? /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
+                        "div",
                         {
-                          src: item.url,
-                          alt: item.alt || `image ${images.indexOf(item) + 1}`,
-                          loading: enableLazyLoad ? "lazy" : void 0
+                          className: "gslider-embed-video",
+                          "data-embed-type": item.videoSource,
+                          "data-embed-id": item.videoExternalId,
+                          children: [
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                              "img",
+                              {
+                                className: "gslider-embed-video-poster",
+                                src: item.url,
+                                alt: item.alt || `video ${images.indexOf(item) + 1}`,
+                                loading: enableLazyLoad ? "lazy" : void 0
+                              }
+                            ),
+                            /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                              "button",
+                              {
+                                type: "button",
+                                className: "gslider-embed-video-play",
+                                "aria-label": "Play video"
+                              }
+                            )
+                          ]
                         }
-                      )
-                    }
-                  ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: enableimageLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "a",
-                    {
-                      href: item.link,
-                      target: imageLinkTarget,
-                      rel: imageLinkRel,
-                      className: "gslider-image-link",
-                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                      ) : lightboxDevices ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                        "a",
+                        {
+                          href: item.url,
+                          "data-fslightbox": blockId,
+                          "data-caption": item.caption,
+                          className: "gslider-image-link",
+                          ...linkOnLightboxOff && item.link && {
+                            "data-image-link": item.link,
+                            "data-image-link-target": imageLinkTarget,
+                            "data-image-link-rel": imageLinkRel
+                          },
+                          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                            "img",
+                            {
+                              src: item.url,
+                              alt: item.alt || `image ${images.indexOf(item) + 1}`,
+                              loading: enableLazyLoad ? "lazy" : void 0
+                            }
+                          )
+                        }
+                      ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: enableimageLinks && item.link ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                        "a",
+                        {
+                          href: item.link,
+                          target: imageLinkTarget,
+                          rel: imageLinkRel,
+                          className: "gslider-image-link",
+                          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                            "img",
+                            {
+                              src: item.url,
+                              alt: item.alt || `image ${images.indexOf(
+                                item
+                              ) + 1}`,
+                              loading: enableLazyLoad ? "lazy" : void 0
+                            }
+                          )
+                        }
+                      ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                         "img",
                         {
                           src: item.url,
@@ -2925,31 +2951,23 @@ function Save({ attributes: attributes2 }) {
                           ) + 1}`,
                           loading: enableLazyLoad ? "lazy" : void 0
                         }
-                      )
-                    }
-                  ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "img",
-                    {
-                      src: item.url,
-                      alt: item.alt || `image ${images.indexOf(
-                        item
-                      ) + 1}`,
-                      loading: enableLazyLoad ? "lazy" : void 0
-                    }
-                  ) }),
-                  showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-image-tooltip", children: item.tooltipText })
-                ]
-              }
-            ),
-            anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-              "div",
-              {
-                className: "gslider-image-slider-caption",
-                "aria-live": "polite",
-                children: item.caption
-              }
-            ) : null
-          ] }) }, item.id)) }),
+                      ) }),
+                      showTooltip && item.tooltipText && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-image-tooltip", children: item.tooltipText })
+                    ]
+                  }
+                ),
+                anyCaptionEnabled && item.caption ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                  "div",
+                  {
+                    className: "gslider-image-slider-caption",
+                    "aria-live": "polite",
+                    children: item.caption
+                  }
+                ) : null
+              ] })
+            },
+            item.id
+          )) }),
           anyNavigationEnabled && !navigationArrowsIconSwitcher && navigationArrowPositionType === "inside" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
             "div",
             {
