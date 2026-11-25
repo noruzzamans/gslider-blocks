@@ -2,6 +2,8 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, memo } from '@wordpress/element';
 import { PanelBody } from '@wordpress/components';
+import InputControls from '@Components/input-control';
+import SwitcherControl from '@Components/switcher-control';
 import InspectorControl from '@Components/inspector-controls';
 import BackgroundControl from '@Components/background-control';
 import { useDeviceType } from '@Utils/displayType';
@@ -36,6 +38,9 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		sliderItemHoverBackgroundImageRepeat,
 		sliderItemHoverBackgroundImageSize,
 		/** End slider Item Background */
+
+		slideLink,
+		slideLinkOpenInNewTab,
 	} = attributes;
 
 	/** Get Current Device Type */
@@ -215,6 +220,44 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					}
 					setAttributes={ setAttributes }
 				/>
+			</PanelBody>
+
+			<PanelBody
+				title={ __( 'Slide Link', 'gslider-blocks' ) }
+				initialOpen={ false }
+			>
+				<InputControls
+					label={ __( 'Link URL', 'gslider-blocks' ) }
+					value={ slideLink }
+					onChangeValue={ ( value ) =>
+						setAttributes( { slideLink: value } )
+					}
+					helpText={ __(
+						'Makes the whole slide clickable. Leave empty for none.',
+						'gslider-blocks'
+					) }
+				/>
+				{ slideLink && (
+					<SwitcherControl
+						label={ __( 'Open in new tab', 'gslider-blocks' ) }
+						options={ [
+							{
+								label: __( 'No', 'gslider-blocks' ),
+								value: false,
+							},
+							{
+								label: __( 'Yes', 'gslider-blocks' ),
+								value: true,
+							},
+						] }
+						value={ slideLinkOpenInNewTab }
+						onChange={ ( value ) =>
+							setAttributes( {
+								slideLinkOpenInNewTab: value,
+							} )
+						}
+					/>
+				) }
 			</PanelBody>
 		</>
 	);
