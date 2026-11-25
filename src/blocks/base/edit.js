@@ -9,6 +9,7 @@ import {
 import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
+import { creativeEffectFor } from './creativePresets';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
 import { arrayMove } from '@dnd-kit/sortable';
 import Inspector from './inspector';
@@ -41,6 +42,7 @@ export default function Edit( {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		creativePreset,
 		slideEffect,
 		mousewheelControl,
 		keyboardNavigation,
@@ -158,6 +160,10 @@ export default function Edit( {
 		// Build Swiper settings
 		const swiperSettings = {
 			effect: sliderType === 'carousel' ? carouselEffect : slideEffect,
+			// Creative presets, used only while creative is the slide effect
+			...( slideEffect === 'creative' && {
+				creativeEffect: creativeEffectFor( creativePreset ),
+			} ),
 			...( sliderType === 'carousel' && {
 				breakpoints: {
 					0: {
@@ -256,6 +262,7 @@ export default function Edit( {
 		infiniteLoop,
 		autoplay,
 		autoplayDelay,
+		creativePreset,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,

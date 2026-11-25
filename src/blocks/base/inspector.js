@@ -53,6 +53,7 @@ import HtmlTagControl from '@Components/html-tag-control';
 import SelectControls from '@Components/select-controls';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
+import { CREATIVE_PRESETS } from './creativePresets';
 
 const Inspector = ( {
 	attributes,
@@ -81,6 +82,7 @@ const Inspector = ( {
 		reverseDirection,
 		slideEffect,
 		carouselEffect,
+		creativePreset,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -1383,6 +1385,25 @@ const Inspector = ( {
 						value={ slideEffect }
 						onChange={ ( value ) =>
 							setAttributes( { slideEffect: value } )
+						}
+					/>
+				</PanelBody>
+			) }
+
+			{ slideEffect === 'creative' && (
+				<PanelBody
+					title={ __( 'Creative Preset', 'gslider-blocks' ) }
+					opened={ openPanels.general === 'creative-preset' }
+					onToggle={ () =>
+						togglePanel( 'general', 'creative-preset' )
+					}
+				>
+					<SelectControls
+						label={ __( 'Preset', 'gslider-blocks' ) }
+						options={ CREATIVE_PRESETS }
+						value={ creativePreset }
+						onChange={ ( value ) =>
+							setAttributes( { creativePreset: value } )
 						}
 					/>
 				</PanelBody>

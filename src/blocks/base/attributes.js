@@ -469,6 +469,10 @@ const attributes = {
 		type: 'string',
 		default: 'slide',
 	},
+	creativePreset: {
+		type: 'string',
+		default: 'stack',
+	},
 	mousewheelControl: {
 		type: 'boolean',
 		default: false,

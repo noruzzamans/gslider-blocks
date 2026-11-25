@@ -279,6 +279,7 @@ return [
 	'reverseDirection' => false,
 	'slideEffect' => 'slide',
 	'carouselEffect' => 'slide',
+	'creativePreset' => 'stack',
 	'mousewheelControl' => false,
 	'keyboardNavigation' => false,
 	'paginationType' => 'bullets',

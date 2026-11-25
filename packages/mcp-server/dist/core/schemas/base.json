@@ -23,7 +23,7 @@
       "carousel"
     ]
   },
-  "totalAttributes": 498,
+  "totalAttributes": 499,
   "slideItemSchema": {
     "type": "object",
     "properties": {
@@ -922,6 +922,10 @@
     "carouselEffect": {
       "type": "string",
       "default": "slide"
+    },
+    "creativePreset": {
+      "type": "string",
+      "default": "stack"
     },
     "mousewheelControl": {
       "type": "boolean",

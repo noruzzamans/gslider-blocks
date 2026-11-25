@@ -1,5 +1,6 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
+import { creativeEffectFor } from './creativePresets';
 
 export default function Save( { attributes } ) {
 	const {
@@ -17,6 +18,7 @@ export default function Save( { attributes } ) {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		creativePreset,
 		slideEffect,
 		mousewheelControl,
 		keyboardNavigation,
@@ -88,6 +90,10 @@ export default function Save( { attributes } ) {
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
 		effect: sliderType === 'carousel' ? carouselEffect : slideEffect,
+		// Creative presets, serialized only while creative is the slide effect
+		...( slideEffect === 'creative' && {
+			creativeEffect: creativeEffectFor( creativePreset ),
+		} ),
 
 		// Responsive breakpoints for Desktop, Tablet, and Mobile
 		breakpoints: {

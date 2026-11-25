@@ -523,6 +523,10 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  creativePreset: {
+    type: "string",
+    default: "stack"
+  },
   mousewheelControl: {
     type: "boolean",
     default: false
@@ -3632,6 +3636,54 @@ function renderSVG(svg, setAttributes = false, extraProps = {}) {
 }
 var renderIcon_default = renderSVG;
 
+// ../../src/blocks/base/creativePresets.js
+var import_i18n2 = require("@wordpress/i18n");
+var CREATIVE_PRESETS = [
+  { label: (0, import_i18n2.__)("Stack", "gslider-blocks"), value: "stack" },
+  { label: (0, import_i18n2.__)("Tilt", "gslider-blocks"), value: "tilt" },
+  { label: (0, import_i18n2.__)("Depth", "gslider-blocks"), value: "depth" },
+  { label: (0, import_i18n2.__)("Shift", "gslider-blocks"), value: "shift" }
+];
+var EFFECTS = {
+  stack: {
+    prev: { shadow: true, translate: ["-120%", 0, -500] },
+    next: { shadow: true, translate: ["120%", 0, -500] }
+  },
+  tilt: {
+    prev: {
+      shadow: true,
+      translate: ["-20%", 0, -1],
+      rotate: [0, 0, -10]
+    },
+    next: {
+      shadow: true,
+      translate: ["100%", 0, 0],
+      rotate: [0, 0, 0]
+    }
+  },
+  depth: {
+    prev: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [180, 0, 0]
+    },
+    next: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [-180, 0, 0]
+    }
+  },
+  shift: {
+    prev: {
+      shadow: false,
+      translate: ["-20%", 0, -200],
+      opacity: 0
+    },
+    next: { shadow: false, translate: ["100%", 0, 0], opacity: 1 }
+  }
+};
+var creativeEffectFor = (preset) => EFFECTS[preset] ?? EFFECTS.stack;
+
 // ../../src/blocks/base/save.js
 var import_jsx_runtime2 = require("react/jsx-runtime");
 function Save({ attributes: attributes2 }) {
@@ -3650,6 +3702,7 @@ function Save({ attributes: attributes2 }) {
     stopOnLastSlide,
     reverseDirection,
     carouselEffect,
+    creativePreset,
     slideEffect,
     mousewheelControl,
     keyboardNavigation,
@@ -3699,6 +3752,10 @@ function Save({ attributes: attributes2 }) {
   const anyPaginationEnabled = paginationEnabled.Mobile || paginationEnabled.Tablet || paginationEnabled.Desktop;
   const swiperSettings = JSON.stringify({
     effect: sliderType === "carousel" ? carouselEffect : slideEffect,
+    // Creative presets, serialized only while creative is the slide effect
+    ...slideEffect === "creative" && {
+      creativeEffect: creativeEffectFor(creativePreset)
+    },
     // Responsive breakpoints for Desktop, Tablet, and Mobile
     breakpoints: {
       0: {
