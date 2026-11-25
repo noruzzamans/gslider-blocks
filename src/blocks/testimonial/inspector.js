@@ -41,6 +41,7 @@ import {
 	PAGINATION_POSITION_TYPE,
 	VERTICAL_PAGINATION_ALIGNMENT,
 	ICON_IMAGE_ALIGN,
+	AUTOPLAY_PROGRESS_POSITION,
 } from '@Constants';
 
 import './editor.scss';
@@ -104,6 +105,10 @@ const Inspector = ( {
 		speed,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
+		autoplayProgressPosition,
+		autoplayProgressColor,
+		autoplayProgressHeight,
 		infiniteLoop,
 		allowTouchMove,
 		pauseOnHover,
@@ -111,6 +116,8 @@ const Inspector = ( {
 		reverseDirection,
 		slideEffect,
 		carouselEffect,
+		enableSchemaReview,
+		schemaItemReviewed,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -1560,6 +1567,70 @@ const Inspector = ( {
 						isRangeUnit={ false }
 					/>
 				) }
+				{ autoplay && (
+					<ResponsiveToggleControl
+						label={ __(
+							'Autoplay Progress Bar',
+							'gslider-blocks'
+						) }
+						toggleValue={ enableAutoplayProgress }
+						setToggleValue={ ( value ) =>
+							setAttributes( { enableAutoplayProgress: value } )
+						}
+						deviceType={ deviceType }
+						setAttributes={ setAttributes }
+					/>
+				) }
+				{ autoplay &&
+					Object.values( enableAutoplayProgress || {} ).some(
+						Boolean
+					) && (
+						<>
+							<SwitcherControl
+								label={ __(
+									'Progress Position',
+									'gslider-blocks'
+								) }
+								options={ AUTOPLAY_PROGRESS_POSITION }
+								value={ autoplayProgressPosition }
+								onChange={ ( value ) =>
+									setAttributes( {
+										autoplayProgressPosition: value,
+									} )
+								}
+							/>
+							<ColorControl
+								label={ __(
+									'Progress Color',
+									'gslider-blocks'
+								) }
+								color={ autoplayProgressColor }
+								onChangeColor={ ( value ) =>
+									setAttributes( {
+										autoplayProgressColor: value,
+									} )
+								}
+								defaultColor="#007cba"
+							/>
+							<ResponsiveRangeControl
+								min={ 1 }
+								max={ 20 }
+								label={ __(
+									'Progress Height (px)',
+									'gslider-blocks'
+								) }
+								rangeValue={ autoplayProgressHeight }
+								onChangeValue={ ( value ) =>
+									setAttributes( {
+										autoplayProgressHeight: value,
+									} )
+								}
+								deviceType={ deviceType }
+								resetFallbackValue={ '3' }
+								isRangeUnit={ false }
+							/>
+						</>
+					) }
 
 				<ResponsiveRangeControl
 					min={ 100 }
@@ -6332,6 +6403,43 @@ const Inspector = ( {
 								globalBoxShadowHoverCssValue: value,
 							} )
 						}
+					/>
+				) }
+			</PanelBody>
+
+			<PanelBody
+				title={ __( 'SEO & Schema', 'gslider-blocks' ) }
+				opened={ openPanels.advanced === 'seo-schema' }
+				onToggle={ () => togglePanel( 'advanced', 'seo-schema' ) }
+			>
+				<SwitcherControl
+					label={ __( 'Review Structured Data', 'gslider-blocks' ) }
+					options={ [
+						{
+							label: __( 'Off', 'gslider-blocks' ),
+							value: false,
+						},
+						{
+							label: __( 'On', 'gslider-blocks' ),
+							value: true,
+						},
+					] }
+					value={ enableSchemaReview }
+					onChange={ ( value ) =>
+						setAttributes( { enableSchemaReview: value } )
+					}
+				/>
+				{ enableSchemaReview && (
+					<InputControls
+						label={ __( 'Reviewed item name', 'gslider-blocks' ) }
+						value={ schemaItemReviewed }
+						onChangeValue={ ( value ) =>
+							setAttributes( { schemaItemReviewed: value } )
+						}
+						helpText={ __(
+							'The product, service or organisation the reviews are about.',
+							'gslider-blocks'
+						) }
 					/>
 				) }
 			</PanelBody>

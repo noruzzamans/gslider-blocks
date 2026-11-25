@@ -439,6 +439,30 @@ const attributes = {
 			Mobile: 1000,
 		},
 	},
+	enableAutoplayProgress: {
+		type: 'object',
+		default: {
+			Desktop: false,
+			Tablet: false,
+			Mobile: false,
+		},
+	},
+	autoplayProgressPosition: {
+		type: 'string',
+		default: 'bottom',
+	},
+	autoplayProgressColor: {
+		type: 'string',
+		default: '#007cba',
+	},
+	autoplayProgressHeight: {
+		type: 'object',
+		default: {
+			Desktop: 3,
+			Tablet: 3,
+			Mobile: 3,
+		},
+	},
 	infiniteLoop: {
 		type: 'boolean',
 		default: true,
@@ -3947,6 +3971,15 @@ const attributes = {
 		default: '',
 	},
 	/** End Global Border */
+
+	enableSchemaReview: {
+		type: 'boolean',
+		default: false,
+	},
+	schemaItemReviewed: {
+		type: 'string',
+		default: '',
+	},
 };
 
 export default attributes;

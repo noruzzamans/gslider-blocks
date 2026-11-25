@@ -533,6 +533,30 @@ var attributes = {
       Mobile: 1e3
     }
   },
+  enableAutoplayProgress: {
+    type: "object",
+    default: {
+      Desktop: false,
+      Tablet: false,
+      Mobile: false
+    }
+  },
+  autoplayProgressPosition: {
+    type: "string",
+    default: "bottom"
+  },
+  autoplayProgressColor: {
+    type: "string",
+    default: "#007cba"
+  },
+  autoplayProgressHeight: {
+    type: "object",
+    default: {
+      Desktop: 3,
+      Tablet: 3,
+      Mobile: 3
+    }
+  },
   infiniteLoop: {
     type: "boolean",
     default: true
@@ -3954,8 +3978,16 @@ var attributes = {
   globalBoxShadowHoverCssValue: {
     type: "string",
     default: ""
-  }
+  },
   /** End Global Border */
+  enableSchemaReview: {
+    type: "boolean",
+    default: false
+  },
+  schemaItemReviewed: {
+    type: "string",
+    default: ""
+  }
 };
 var attributes_default = attributes;
 
@@ -4133,6 +4165,8 @@ function Save({ attributes: attributes2 }) {
     speed,
     autoplay,
     autoplayDelay,
+    enableAutoplayProgress,
+    autoplayProgressPosition,
     infiniteLoop,
     allowTouchMove,
     pauseOnHover,
@@ -4140,6 +4174,8 @@ function Save({ attributes: attributes2 }) {
     reverseDirection,
     carouselEffect,
     slideEffect,
+    enableSchemaReview,
+    schemaItemReviewed,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -4196,6 +4232,38 @@ function Save({ attributes: attributes2 }) {
     Desktop: !!showPagination?.Desktop
   };
   const anyPaginationEnabled = paginationEnabled.Mobile || paginationEnabled.Tablet || paginationEnabled.Desktop;
+  const schemaReviews = enableSchemaReview ? sliderItems.map((item) => {
+    const rating = Math.min(
+      5,
+      parseFloat(item.ratingNumber || 0)
+    );
+    if (!rating || !item.authorName) {
+      return null;
+    }
+    return {
+      "@type": "Review",
+      itemReviewed: {
+        "@type": "Organization",
+        ...schemaItemReviewed ? { name: schemaItemReviewed } : {}
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: rating,
+        bestRating: 5,
+        worstRating: 1
+      },
+      author: {
+        "@type": "Person",
+        name: item.authorName
+      },
+      ...item.testimonialText ? { reviewBody: item.testimonialText } : {}
+    };
+  }).filter(Boolean) : [];
+  const schemaScript = schemaReviews.length > 0 ? JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": schemaReviews
+  }).replace(/</g, "\\u003c") : "";
+  const showAutoplayProgress = autoplay && (enableAutoplayProgress?.Desktop || enableAutoplayProgress?.Tablet || enableAutoplayProgress?.Mobile);
   const swiperSettings = JSON.stringify({
     effect: sliderType === "carousel" ? carouselEffect : slideEffect,
     breakpoints: {
@@ -4608,7 +4676,15 @@ function Save({ attributes: attributes2 }) {
           className: "swiper-pagination swiper-pagination-testimonial-slider",
           "aria-label": "Carousel pagination"
         }
-      ) })
+      ) }),
+      showAutoplayProgress && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+        "div",
+        {
+          className: `gslider-autoplay-progress ${autoplayProgressPosition}`,
+          "aria-hidden": "true",
+          children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-autoplay-progress-fill" })
+        }
+      )
     ] }),
     anyNavigationEnabled && !navigationArrowsIconSwitcher && navigationArrowPositionType === "outside" && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_jsx_runtime2.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(
       "div",
@@ -4680,11 +4756,53 @@ function Save({ attributes: attributes2 }) {
         className: `swiper-pagination swiper-pagination-testimonial-slider${blockId ? ` swiper-pagination-${blockId}` : ""}`,
         "aria-label": "Carousel pagination"
       }
-    ) })
+    ) }),
+    schemaScript && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("script", { type: "application/ld+json", children: schemaScript })
   ] });
 }
 
 // ../../src/blocks/testimonial/styling.js
+var getAutoplayProgressCss = (blockId, enabled, color, height) => {
+  const deviceRule = (device) => `
+        .${blockId} > .swiper > .gslider-autoplay-progress {
+            ${enabled?.[device] ? `display: block; height: ${height?.[device] ?? 3}px;` : "display: none;"}
+        }
+    `;
+  return `
+        .${blockId} > .swiper > .gslider-autoplay-progress {
+            position: absolute;
+            left: 0;
+            z-index: 10;
+            width: 100%;
+            pointer-events: none;
+        }
+        .${blockId} > .swiper > .gslider-autoplay-progress.top {
+            top: 0;
+        }
+        .${blockId} > .swiper > .gslider-autoplay-progress.bottom {
+            bottom: 0;
+        }
+        .${blockId} > .swiper > .gslider-autoplay-progress > .gslider-autoplay-progress-fill {
+            width: 100%;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            ${color ? `background-color: ${color};` : ""}
+        }
+        ${deviceRule("Desktop")}
+        @media only screen and (max-width: 1024px) {
+            ${deviceRule("Tablet")}
+        }
+        @media only screen and (max-width: 767px) {
+            ${deviceRule("Mobile")}
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .${blockId} > .swiper > .gslider-autoplay-progress {
+                display: none;
+            }
+        }
+    `;
+};
 var generateBaseSliderStyle = (attributes2) => {
   const {
     blockId,
@@ -4697,6 +4815,9 @@ var generateBaseSliderStyle = (attributes2) => {
     speed,
     autoplay,
     autoplayDelay,
+    enableAutoplayProgress,
+    autoplayProgressColor,
+    autoplayProgressHeight,
     infiniteLoop,
     allowTouchMove,
     pauseOnHover,
@@ -6640,7 +6761,13 @@ var generateBaseSliderStyle = (attributes2) => {
             ` : ""}
         }
     `;
-  return `${baseSliderCSS} ${sliderItemColorStyle}`.replace(/\s+/g, " ").trim();
+  const autoplayProgressCSS = autoplay && (enableAutoplayProgress?.Desktop || enableAutoplayProgress?.Tablet || enableAutoplayProgress?.Mobile) ? getAutoplayProgressCss(
+    blockId,
+    enableAutoplayProgress,
+    autoplayProgressColor,
+    autoplayProgressHeight
+  ) : "";
+  return `${baseSliderCSS} ${sliderItemColorStyle} ${autoplayProgressCSS}`.replace(/\s+/g, " ").trim();
 };
 var styling_default = generateBaseSliderStyle;
 

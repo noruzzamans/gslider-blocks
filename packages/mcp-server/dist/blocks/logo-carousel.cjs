@@ -280,6 +280,14 @@ var attributes = {
       Mobile: 300
     }
   },
+  logoFilterPreset: {
+    type: "string",
+    default: "none"
+  },
+  logoHoverTransitionDuration: {
+    type: "string",
+    default: "0.3s"
+  },
   /** End Logo Link Settings */
   /** Layout & Content Setting */
   layoutHeight: {
@@ -3131,6 +3139,29 @@ var getHasPaginationCss = (blockId, showPagination, device, fallbackDevices, off
   }
   return "";
 };
+var getLogoFilterPresetCss = (blockId, preset, duration) => {
+  if (preset !== "grayscale-to-color" && preset !== "invert-dark-mode") {
+    return "";
+  }
+  const transitionDuration = duration || "0.3s";
+  if (preset === "invert-dark-mode") {
+    return `
+        .${blockId} .gslider-logo-item img {
+            filter: invert(1);
+            transition: filter ${transitionDuration} ease;
+        }
+    `;
+  }
+  return `
+        .${blockId} .gslider-logo-item img {
+            filter: grayscale(100%) opacity(0.6);
+            transition: filter ${transitionDuration} ease, opacity ${transitionDuration} ease;
+        }
+        .${blockId} .gslider-logo-item:hover img {
+            filter: grayscale(0%) opacity(1);
+        }
+    `;
+};
 var generateLogoCarouselStyle = (attributes2) => {
   const {
     blockId,
@@ -3171,6 +3202,8 @@ var generateLogoCarouselStyle = (attributes2) => {
     logoLinkHoverLift,
     logoLinkHoverLiftUnits,
     logoLinkTransitionDuration,
+    logoFilterPreset,
+    logoHoverTransitionDuration,
     /** End Logo Link Settings */
     /** Start Layout & Content Setting */
     layoutHeight,
@@ -4599,7 +4632,12 @@ var generateLogoCarouselStyle = (attributes2) => {
             ` : ""}
         }
     `;
-  return `${logoCarouselCSS}`.replace(/\s+/g, " ").trim();
+  const logoFilterPresetCSS = getLogoFilterPresetCss(
+    blockId,
+    logoFilterPreset,
+    logoHoverTransitionDuration
+  );
+  return `${logoCarouselCSS} ${logoFilterPresetCSS}`.replace(/\s+/g, " ").trim();
 };
 var styling_default = generateLogoCarouselStyle;
 

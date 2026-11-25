@@ -831,11 +831,13 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 					: render_block( $inner_block );
 
 				$slides[] = [
-					'id'          => $slide_id,
-					'blockName'   => $inner_name,
-					'innerHtml'   => $inner_html,
-					'css'         => self::collect_inner_block_styles( $inner_block ),
-					'innerBlocks' => $inner_block['innerBlocks'] ?? [],
+					'id'                    => $slide_id,
+					'blockName'             => $inner_name,
+					'innerHtml'             => $inner_html,
+					'css'                   => self::collect_inner_block_styles( $inner_block ),
+					'innerBlocks'           => $inner_block['innerBlocks'] ?? [],
+					'slideLink'             => isset( $inner_attrs['slideLink'] ) ? esc_url_raw( $inner_attrs['slideLink'] ) : '',
+					'slideLinkOpenInNewTab' => ! empty( $inner_attrs['slideLinkOpenInNewTab'] ),
 				];
 			}
 
