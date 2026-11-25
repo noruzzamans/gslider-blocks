@@ -7,7 +7,7 @@
   "slideField": "",
   "presets": [],
   "allowedEffects": {},
-  "totalAttributes": 23,
+  "totalAttributes": 25,
   "slideItemSchema": {
     "type": "childBlock",
     "name": "gslider-blocks/flexi-content-item",
@@ -166,6 +166,14 @@
         "Tablet": "cover",
         "Mobile": "cover"
       }
+    },
+    "slideLink": {
+      "type": "string",
+      "default": ""
+    },
+    "slideLinkOpenInNewTab": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

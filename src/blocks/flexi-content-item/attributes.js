@@ -135,6 +135,17 @@ const attributes = {
 		},
 	},
 	/** End slider Item Background */
+
+	/** Start slide link */
+	slideLink: {
+		type: 'string',
+		default: '',
+	},
+	slideLinkOpenInNewTab: {
+		type: 'boolean',
+		default: false,
+	},
+	/** End slide link */
 };
 
 export default attributes;

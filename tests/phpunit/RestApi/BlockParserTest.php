@@ -1003,6 +1003,35 @@ class BlockParserTest {
 	}
 
 	/**
+	 * Test: Flexi Content slide link fields.
+	 *
+	 * @return void
+	 */
+	public function test_flexi_slide_link_fields_in_rest_output(): void {
+		$flexi = BlockParser::normalize_block(
+			[
+				'blockName'   => 'gslider-blocks/flexi-content',
+				'attrs'       => [],
+				'innerBlocks' => [
+					[
+						'blockName'   => 'gslider-blocks/flexi-content-item',
+						'attrs'       => [
+							'blockId'               => 'gslider-flexi-item-link',
+							'slideLink'             => 'https://example.com/promo',
+							'slideLinkOpenInNewTab' => true,
+						],
+						'innerBlocks' => [],
+					],
+				],
+			]
+		);
+
+		$slide = $flexi['slides'][0];
+		$this->assert_true( 'https://example.com/promo' === $slide['slideLink'], 'flexi slides[].slideLink is exposed' );
+		$this->assert_true( true === $slide['slideLinkOpenInNewTab'], 'flexi slides[].slideLinkOpenInNewTab is exposed' );
+	}
+
+	/**
 	 * Test 7: Flexi Content Vertical Direction.
 	 *
 	 * @return void
