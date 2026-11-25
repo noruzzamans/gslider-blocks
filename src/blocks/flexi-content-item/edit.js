@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 import './editor.scss';
 import Inspector from './inspector';
@@ -11,7 +12,7 @@ export default function Edit( {
 	clientId,
 	isSelected,
 } ) {
-	const { blockId, blockStyle } = attributes;
+	const { blockId, blockStyle, isSlideHidden } = attributes;
 
 	/** Handle block ID generation (handles duplication and initial ID) */
 	useBlockIdGenerator( {
@@ -34,7 +35,9 @@ export default function Edit( {
 	/** End Generate Block Style */
 
 	const blockProps = useBlockProps( {
-		className: `flexi-content-item swiper-slide ${ blockId }`,
+		className: `flexi-content-item swiper-slide ${ blockId }${
+			isSlideHidden ? ' is-slide-hidden' : ''
+		}`,
 	} );
 
 	return (
@@ -47,6 +50,11 @@ export default function Edit( {
 			) }
 
 			<div { ...blockProps }>
+				{ isSlideHidden && (
+					<div className="gslider-hidden-badge">
+						{ __( 'Draft (Hidden)', 'gslider-blocks' ) }
+					</div>
+				) }
 				<div className="gslider-content-wrapper">
 					<div className="gslider-content-inner-wrapper">
 						<InnerBlocks

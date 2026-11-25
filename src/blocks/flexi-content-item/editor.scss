@@ -1,1 +1,22 @@
 // Editor-specific styles for the Flexi Content Item block
+
+// Draft/hidden slides stay editable but read as inactive in the editor.
+.flexi-content-item.is-slide-hidden {
+	opacity: 0.55;
+	filter: grayscale(30%);
+}
+
+.gslider-hidden-badge {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 5;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: #1e1e1e;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	pointer-events: none;
+}

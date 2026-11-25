@@ -537,6 +537,12 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						);
 					}
 
+					// Prune drafted slides before Swiper counts them, so pagination,
+					// loop duplicates and index arithmetic stay exact.
+					swiperElement
+						.querySelectorAll( '.swiper-slide.is-slide-hidden' )
+						.forEach( ( hiddenSlide ) => hiddenSlide.remove() );
+
 					settings.observer = true;
 					settings.observeParents = true;
 					settings.resizeObserver = true;

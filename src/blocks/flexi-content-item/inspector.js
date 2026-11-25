@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps */
 import { __ } from '@wordpress/i18n';
 import { useEffect, memo } from '@wordpress/element';
-import { PanelBody } from '@wordpress/components';
+import { PanelBody, ToggleControl } from '@wordpress/components';
 import InspectorControl from '@Components/inspector-controls';
 import BackgroundControl from '@Components/background-control';
 import { useDeviceType } from '@Utils/displayType';
@@ -12,6 +12,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		blockId,
 		deviceType,
 		blockStyle,
+		isSlideHidden,
 
 		/** Start slider Item Background */
 		sliderItemNormalBackgroundType,
@@ -51,6 +52,22 @@ const Inspector = ( { attributes, setAttributes } ) => {
 	 */
 	const generalControls = (
 		<>
+			<PanelBody
+				title={ __( 'Slide Visibility', 'gslider-blocks' ) }
+				initialOpen={ false }
+			>
+				<ToggleControl
+					label={ __( 'Hide Slide (Draft)', 'gslider-blocks' ) }
+					help={ __(
+						'Temporarily hides this slide on the frontend without deleting its content.',
+						'gslider-blocks'
+					) }
+					checked={ isSlideHidden }
+					onChange={ ( value ) =>
+						setAttributes( { isSlideHidden: value } )
+					}
+				/>
+			</PanelBody>
 			<PanelBody title={ __( 'General', 'gslider-blocks' ) } initialOpen>
 				<p>
 					{ __(

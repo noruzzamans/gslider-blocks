@@ -52,6 +52,7 @@ if ( ! class_exists( BlockParser::class, false ) ) {
 			'paginationType',
 			'dynamicBullets',
 			'infiniteLoop',
+			'isSlideHidden',
 			'allowTouchMove',
 			'enableGrabCursor',
 			'mousewheelControl',

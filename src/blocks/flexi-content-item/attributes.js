@@ -11,6 +11,10 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	isSlideHidden: {
+		type: 'boolean',
+		default: false,
+	},
 
 	/** Start slider Item Background */
 	sliderItemNormalBackgroundType: {
