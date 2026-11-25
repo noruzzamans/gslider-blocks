@@ -96,6 +96,18 @@ const attributes = {
 		type: 'string',
 		default: 'slide',
 	},
+	cardsPerSlideRotate: {
+		type: 'number',
+		default: 2,
+	},
+	cardsPerSlideOffset: {
+		type: 'number',
+		default: 8,
+	},
+	cardsSlideShadows: {
+		type: 'boolean',
+		default: true,
+	},
 	mousewheelControl: {
 		type: 'boolean',
 		default: false,

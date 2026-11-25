@@ -19,7 +19,8 @@
   "allowedEffects": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ]
   },
   "totalAttributes": 964,
@@ -46,7 +47,8 @@
     ],
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ],
     "carouselMode": [
       "carousel",

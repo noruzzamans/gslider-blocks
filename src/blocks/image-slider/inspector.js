@@ -1,7 +1,12 @@
 /* eslint-disable no-unused-vars, jsdoc/require-param, react-hooks/exhaustive-deps, import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback, memo } from '@wordpress/element';
-import { PanelBody, ToggleControl, BaseControl } from '@wordpress/components';
+import {
+	PanelBody,
+	ToggleControl,
+	BaseControl,
+	RangeControl,
+} from '@wordpress/components';
 
 /**
  * Internal Dependencies
@@ -11,7 +16,6 @@ import {
 	VERTICAL_ALIGN,
 	NORMAL_HOVER,
 	BORDER_STYLES,
-	CAROUSEL_EFFECT_OPTIONS,
 	PAGINATION_TYPE,
 	NORMAL_ACTIVE,
 	NAVIGATION_ARROW_POSITION_TYPE,
@@ -56,6 +60,9 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		enableLazyLoad,
 		verticalAlign,
 		carouselEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -1082,13 +1089,70 @@ const Inspector = ( { attributes, setAttributes } ) => {
 			>
 				<SelectControls
 					label={ __( 'Effect Type', 'gslider-blocks' ) }
-					options={ CAROUSEL_EFFECT_OPTIONS }
+					options={ [
+						{
+							label: __( 'Slide', 'gslider-blocks' ),
+							value: 'slide',
+						},
+						{
+							label: __( 'Coverflow', 'gslider-blocks' ),
+							value: 'coverflow',
+						},
+						{
+							label: __( 'Cards', 'gslider-blocks' ),
+							value: 'cards',
+						},
+					] }
 					value={ carouselEffect }
 					onChange={ ( value ) =>
 						setAttributes( { carouselEffect: value } )
 					}
 				/>
 			</PanelBody>
+
+			{ carouselEffect === 'cards' && (
+				<PanelBody
+					title={ __( 'Cards Effect', 'gslider-blocks' ) }
+					opened={ openPanels.general === 'cards-effect' }
+					onToggle={ () => togglePanel( 'general', 'cards-effect' ) }
+				>
+					<RangeControl
+						label={ __( 'Per Slide Rotate', 'gslider-blocks' ) }
+						help={ __(
+							'Rotation of each card behind the active one, in degrees.',
+							'gslider-blocks'
+						) }
+						value={ cardsPerSlideRotate }
+						min={ 0 }
+						max={ 15 }
+						step={ 1 }
+						onChange={ ( value ) =>
+							setAttributes( { cardsPerSlideRotate: value } )
+						}
+					/>
+					<RangeControl
+						label={ __( 'Per Slide Offset', 'gslider-blocks' ) }
+						help={ __(
+							'Distance of each card behind the active one, in pixels.',
+							'gslider-blocks'
+						) }
+						value={ cardsPerSlideOffset }
+						min={ 2 }
+						max={ 30 }
+						step={ 1 }
+						onChange={ ( value ) =>
+							setAttributes( { cardsPerSlideOffset: value } )
+						}
+					/>
+					<ToggleControl
+						label={ __( 'Slide Shadows', 'gslider-blocks' ) }
+						checked={ !! cardsSlideShadows }
+						onChange={ ( value ) =>
+							setAttributes( { cardsSlideShadows: value } )
+						}
+					/>
+				</PanelBody>
+			) }
 
 			{ showNavigation?.[ deviceType ] && (
 				<PanelBody

@@ -180,6 +180,18 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  cardsPerSlideRotate: {
+    type: "number",
+    default: 2
+  },
+  cardsPerSlideOffset: {
+    type: "number",
+    default: 8
+  },
+  cardsSlideShadows: {
+    type: "boolean",
+    default: true
+  },
   mousewheelControl: {
     type: "boolean",
     default: false
@@ -2726,6 +2738,9 @@ function Save({ attributes: attributes2 }) {
     stopOnLastSlide,
     reverseDirection,
     carouselEffect,
+    cardsPerSlideRotate,
+    cardsPerSlideOffset,
+    cardsSlideShadows,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -2783,6 +2798,14 @@ function Save({ attributes: attributes2 }) {
   const linkOnLightboxOff = enableimageLinks && lightboxDevices && lightboxDevices !== "Desktop Tablet Mobile";
   const swiperSettings = JSON.stringify({
     effect: carouselEffect,
+    // Cards effect settings, serialized only while cards is the effect
+    ...carouselEffect === "cards" && {
+      cardsEffect: {
+        perSlideRotate: cardsPerSlideRotate,
+        perSlideOffset: cardsPerSlideOffset,
+        slideShadows: cardsSlideShadows
+      }
+    },
     // Responsive breakpoints for Desktop, Tablet, and Mobile
     breakpoints: {
       0: {

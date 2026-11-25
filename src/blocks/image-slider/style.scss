@@ -331,3 +331,8 @@
 		}
 	}
 }
+
+// Cards effect: let the stacked deck breathe outside the swiper box
+.gslider-image-slider-wrapper .swiper.swiper-cards {
+	overflow: visible;
+}

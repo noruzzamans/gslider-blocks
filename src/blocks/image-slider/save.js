@@ -27,6 +27,9 @@ export default function Save( { attributes } ) {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -120,6 +123,14 @@ export default function Save( { attributes } ) {
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
 		effect: carouselEffect,
+		// Cards effect settings, serialized only while cards is the effect
+		...( carouselEffect === 'cards' && {
+			cardsEffect: {
+				perSlideRotate: cardsPerSlideRotate,
+				perSlideOffset: cardsPerSlideOffset,
+				slideShadows: cardsSlideShadows,
+			},
+		} ),
 
 		// Responsive breakpoints for Desktop, Tablet, and Mobile
 		breakpoints: {
