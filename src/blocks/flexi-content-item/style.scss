@@ -1,1 +1,11 @@
 // Styles for the Flexi Content Item block
+
+// The overlay pseudo-element needs a positioned slide and content above it.
+.flexi-content-item {
+	position: relative;
+}
+
+.flexi-content-item .gslider-content-wrapper {
+	position: relative;
+	z-index: 2;
+}

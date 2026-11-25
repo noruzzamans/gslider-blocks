@@ -35,6 +35,9 @@ const generateFlexiContentItemStyle = ( attributes ) => {
 		sliderItemHoverBackgroundImageAttachment,
 		sliderItemHoverBackgroundImageRepeat,
 		sliderItemHoverBackgroundImageSize,
+		sliderItemOverlaySwitcher,
+		sliderItemOverlayClassicColor,
+		sliderItemOverlayOpacity,
 		/** End slider Item Background */
 	} = attributes;
 
@@ -173,6 +176,24 @@ const generateFlexiContentItemStyle = ( attributes ) => {
 			getSliderItemBackgroundHoverStyles( 'Mobile' )
 		);
 
+	const overlayCSS = sliderItemOverlaySwitcher
+		? `
+        .${ blockId }.flexi-content-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: ${ sliderItemOverlayClassicColor };
+            opacity: ${ sliderItemOverlayOpacity };
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .${ blockId }.flexi-content-item .gslider-content-wrapper {
+            position: relative;
+            z-index: 2;
+        }`
+		: '';
+
 	/** Start All Block Style */
 	const flexiContentItemCSS = `
         .${ blockId }.flexi-content-item {
@@ -209,7 +230,9 @@ const generateFlexiContentItemStyle = ( attributes ) => {
     `;
 	/** End All Block Style */
 
-	return `${ flexiContentItemCSS }`.replace( /\s+/g, ' ' ).trim();
+	return `${ flexiContentItemCSS } ${ overlayCSS }`
+		.replace( /\s+/g, ' ' )
+		.trim();
 };
 
 export default generateFlexiContentItemStyle;

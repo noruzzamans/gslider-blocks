@@ -74,6 +74,18 @@ var attributes = {
     type: "string",
     default: ""
   },
+  sliderItemOverlaySwitcher: {
+    type: "boolean",
+    default: false
+  },
+  sliderItemOverlayClassicColor: {
+    type: "string",
+    default: "rgba(0, 0, 0, 0.5)"
+  },
+  sliderItemOverlayOpacity: {
+    type: "number",
+    default: 0.5
+  },
   /** Start slider Item Background */
   sliderItemNormalBackgroundType: {
     type: "string",
@@ -234,7 +246,10 @@ var generateFlexiContentItemStyle = (attributes2) => {
     sliderItemHoverBackgroundImagePosition,
     sliderItemHoverBackgroundImageAttachment,
     sliderItemHoverBackgroundImageRepeat,
-    sliderItemHoverBackgroundImageSize
+    sliderItemHoverBackgroundImageSize,
+    sliderItemOverlaySwitcher,
+    sliderItemOverlayClassicColor,
+    sliderItemOverlayOpacity
     /** End slider Item Background */
   } = attributes2;
   const getSliderItemBackgroundNormalStyles = (device) => {
@@ -324,6 +339,21 @@ var generateFlexiContentItemStyle = (attributes2) => {
   const sliderItemMobileBackgroundHoverStyles = sliderItemBackgroundStyleObjectToString(
     getSliderItemBackgroundHoverStyles("Mobile")
   );
+  const overlayCSS = sliderItemOverlaySwitcher ? `
+        .${blockId}.flexi-content-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: ${sliderItemOverlayClassicColor};
+            opacity: ${sliderItemOverlayOpacity};
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .${blockId}.flexi-content-item .gslider-content-wrapper {
+            position: relative;
+            z-index: 2;
+        }` : "";
   const flexiContentItemCSS = `
         .${blockId}.flexi-content-item {
             ${sliderItemDesktopBackgroundNormalStyles}
@@ -357,7 +387,7 @@ var generateFlexiContentItemStyle = (attributes2) => {
             }
         }
     `;
-  return `${flexiContentItemCSS}`.replace(/\s+/g, " ").trim();
+  return `${flexiContentItemCSS} ${overlayCSS}`.replace(/\s+/g, " ").trim();
 };
 var styling_default = generateFlexiContentItemStyle;
 

@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars, jsdoc/require-param, jsdoc/check-line-alignment, jsdoc/check-alignment, react-hooks/exhaustive-deps */
 import { __ } from '@wordpress/i18n';
 import { useEffect, memo } from '@wordpress/element';
-import { PanelBody } from '@wordpress/components';
+import { PanelBody, ToggleControl } from '@wordpress/components';
 import InspectorControl from '@Components/inspector-controls';
 import BackgroundControl from '@Components/background-control';
+import ColorControl from '@Components/color-control';
+import ResponsiveRangeControl from '@Components/responsive-range-control';
 import { useDeviceType } from '@Utils/displayType';
 import './editor.scss';
 
@@ -35,6 +37,9 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		sliderItemHoverBackgroundImageAttachment,
 		sliderItemHoverBackgroundImageRepeat,
 		sliderItemHoverBackgroundImageSize,
+		sliderItemOverlaySwitcher,
+		sliderItemOverlayClassicColor,
+		sliderItemOverlayOpacity,
 		/** End slider Item Background */
 	} = attributes;
 
@@ -215,6 +220,42 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					}
 					setAttributes={ setAttributes }
 				/>
+				<ToggleControl
+					label={ __( 'Background Overlay', 'gslider-blocks' ) }
+					help={ __(
+						'Dim the background image so text stays readable.',
+						'gslider-blocks'
+					) }
+					checked={ sliderItemOverlaySwitcher }
+					onChange={ ( value ) =>
+						setAttributes( { sliderItemOverlaySwitcher: value } )
+					}
+				/>
+				{ sliderItemOverlaySwitcher && (
+					<>
+						<ColorControl
+							label={ __( 'Overlay Color', 'gslider-blocks' ) }
+							color={ sliderItemOverlayClassicColor }
+							onChange={ ( value ) =>
+								setAttributes( {
+									sliderItemOverlayClassicColor: value,
+								} )
+							}
+						/>
+						<ResponsiveRangeControl
+							label={ __( 'Overlay Opacity', 'gslider-blocks' ) }
+							value={ sliderItemOverlayOpacity }
+							min={ 0 }
+							max={ 1 }
+							step={ 0.05 }
+							onChange={ ( value ) =>
+								setAttributes( {
+									sliderItemOverlayOpacity: value,
+								} )
+							}
+						/>
+					</>
+				) }
 			</PanelBody>
 		</>
 	);
