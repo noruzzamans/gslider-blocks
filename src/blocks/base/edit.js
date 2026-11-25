@@ -41,6 +41,9 @@ export default function Edit( {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		slideEffect,
 		mousewheelControl,
 		keyboardNavigation,
@@ -158,6 +161,14 @@ export default function Edit( {
 		// Build Swiper settings
 		const swiperSettings = {
 			effect: sliderType === 'carousel' ? carouselEffect : slideEffect,
+			// Cards effect settings, used only while cards is the effect
+			...( carouselEffect === 'cards' && {
+				cardsEffect: {
+					perSlideRotate: cardsPerSlideRotate,
+					perSlideOffset: cardsPerSlideOffset,
+					slideShadows: cardsSlideShadows,
+				},
+			} ),
 			...( sliderType === 'carousel' && {
 				breakpoints: {
 					0: {
@@ -256,6 +267,9 @@ export default function Edit( {
 		infiniteLoop,
 		autoplay,
 		autoplayDelay,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,

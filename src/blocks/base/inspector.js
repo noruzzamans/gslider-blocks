@@ -6,6 +6,7 @@ import { SortableContext } from '@dnd-kit/sortable';
 import {
 	PanelBody,
 	ToggleControl,
+	RangeControl,
 	BaseControl,
 	Button,
 } from '@wordpress/components';
@@ -81,6 +82,9 @@ const Inspector = ( {
 		reverseDirection,
 		slideEffect,
 		carouselEffect,
+		cardsPerSlideRotate,
+		cardsPerSlideOffset,
+		cardsSlideShadows,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -1367,6 +1371,41 @@ const Inspector = ( {
 						value={ carouselEffect }
 						onChange={ ( value ) =>
 							setAttributes( { carouselEffect: value } )
+						}
+					/>
+				</PanelBody>
+			) }
+			{ carouselEffect === 'cards' && (
+				<PanelBody
+					title={ __( 'Cards Effect', 'gslider-blocks' ) }
+					opened={ openPanels.general === 'cards-effect' }
+					onToggle={ () => togglePanel( 'general', 'cards-effect' ) }
+				>
+					<RangeControl
+						label={ __( 'Per Slide Rotate', 'gslider-blocks' ) }
+						value={ cardsPerSlideRotate }
+						min={ 0 }
+						max={ 15 }
+						step={ 1 }
+						onChange={ ( value ) =>
+							setAttributes( { cardsPerSlideRotate: value } )
+						}
+					/>
+					<RangeControl
+						label={ __( 'Per Slide Offset', 'gslider-blocks' ) }
+						value={ cardsPerSlideOffset }
+						min={ 2 }
+						max={ 30 }
+						step={ 1 }
+						onChange={ ( value ) =>
+							setAttributes( { cardsPerSlideOffset: value } )
+						}
+					/>
+					<ToggleControl
+						label={ __( 'Slide Shadows', 'gslider-blocks' ) }
+						checked={ !! cardsSlideShadows }
+						onChange={ ( value ) =>
+							setAttributes( { cardsSlideShadows: value } )
 						}
 					/>
 				</PanelBody>

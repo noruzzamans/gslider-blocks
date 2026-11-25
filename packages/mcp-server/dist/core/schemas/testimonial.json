@@ -11,7 +11,8 @@
   "allowedEffects": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ],
     "slideEffect": [
       "slide",
@@ -233,7 +234,8 @@
     ],
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ],
     "contentAlignment": [
       "left",

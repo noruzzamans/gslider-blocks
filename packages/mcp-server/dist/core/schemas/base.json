@@ -9,7 +9,8 @@
   "allowedEffects": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ],
     "slideEffect": [
       "slide",
@@ -23,7 +24,7 @@
       "carousel"
     ]
   },
-  "totalAttributes": 498,
+  "totalAttributes": 501,
   "slideItemSchema": {
     "type": "object",
     "properties": {
@@ -205,7 +206,8 @@
   "allowedValues": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "cards"
     ],
     "contentAlignment": [
       "left",
@@ -922,6 +924,18 @@
     "carouselEffect": {
       "type": "string",
       "default": "slide"
+    },
+    "cardsPerSlideRotate": {
+      "type": "number",
+      "default": 2
+    },
+    "cardsPerSlideOffset": {
+      "type": "number",
+      "default": 8
+    },
+    "cardsSlideShadows": {
+      "type": "boolean",
+      "default": true
     },
     "mousewheelControl": {
       "type": "boolean",
