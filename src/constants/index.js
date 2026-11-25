@@ -192,6 +192,7 @@ export const SLIDER_EFFECT_OPTIONS = [
 export const CAROUSEL_EFFECT_OPTIONS = [
 	{ label: __( 'Slide', 'gslider-blocks' ), value: 'slide' },
 	{ label: __( 'Coverflow', 'gslider-blocks' ), value: 'coverflow' },
+	{ label: __( 'Creative', 'gslider-blocks' ), value: 'creative' },
 ];
 
 export const SLIDER_TYPE = [

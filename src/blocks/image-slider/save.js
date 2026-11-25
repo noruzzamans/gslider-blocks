@@ -1,4 +1,5 @@
 import { useBlockProps } from '@wordpress/block-editor';
+import { creativeEffectFor } from './creativePresets';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 
 // Same strict ID shapes view.js accepts, a tampered ID renders the plain image instead of a dead facade
@@ -27,6 +28,7 @@ export default function Save( { attributes } ) {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		creativePreset,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -120,6 +122,10 @@ export default function Save( { attributes } ) {
 	// Configure Swiper settings for frontend rendering
 	const swiperSettings = JSON.stringify( {
 		effect: carouselEffect,
+		// Creative presets, serialized only while creative is the effect
+		...( carouselEffect === 'creative' && {
+			creativeEffect: creativeEffectFor( creativePreset ),
+		} ),
 
 		// Responsive breakpoints for Desktop, Tablet, and Mobile
 		breakpoints: {

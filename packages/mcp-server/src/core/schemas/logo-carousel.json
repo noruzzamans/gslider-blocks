@@ -9,7 +9,8 @@
   "allowedEffects": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "creative"
     ]
   },
   "totalAttributes": 413,
@@ -39,7 +40,8 @@
   "allowedValues": {
     "carouselEffect": [
       "slide",
-      "coverflow"
+      "coverflow",
+      "creative"
     ],
     "globalBorder": [
       "none",

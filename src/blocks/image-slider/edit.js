@@ -35,6 +35,7 @@ import {
 } from '@Utils/svgIcons';
 import useBlockIdGenerator from '@Utils/useBlockIdGenerator';
 import generateImageSliderStyle from './styling';
+import { creativeEffectFor } from './creativePresets';
 
 const mapMedia = ( m ) => ( {
 	id: m.id,
@@ -115,6 +116,7 @@ export default function Edit( {
 		stopOnLastSlide,
 		reverseDirection,
 		carouselEffect,
+		creativePreset,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -287,6 +289,10 @@ export default function Edit( {
 		// Build Swiper settings
 		const swiperSettings = {
 			effect: carouselEffect,
+			// Creative presets, used only while creative is the effect
+			...( carouselEffect === 'creative' && {
+				creativeEffect: creativeEffectFor( creativePreset ),
+			} ),
 			breakpoints: {
 				0: {
 					slidesPerView: carouselPerColumn?.[ deviceType ] || 1,

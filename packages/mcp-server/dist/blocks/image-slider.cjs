@@ -180,6 +180,10 @@ var attributes = {
     type: "string",
     default: "slide"
   },
+  creativePreset: {
+    type: "string",
+    default: "stack"
+  },
   mousewheelControl: {
     type: "boolean",
     default: false
@@ -2547,8 +2551,56 @@ var attributes_default = attributes;
 // ../../src/blocks/image-slider/save.js
 var import_block_editor = require("@wordpress/block-editor");
 
-// ../../src/components/icon-picker/components/icon-picker/controls/renderIcon.js
+// ../../src/blocks/image-slider/creativePresets.js
 var import_i18n = require("@wordpress/i18n");
+var CREATIVE_PRESETS = [
+  { label: (0, import_i18n.__)("Stack", "gslider-blocks"), value: "stack" },
+  { label: (0, import_i18n.__)("Tilt", "gslider-blocks"), value: "tilt" },
+  { label: (0, import_i18n.__)("Depth", "gslider-blocks"), value: "depth" },
+  { label: (0, import_i18n.__)("Shift", "gslider-blocks"), value: "shift" }
+];
+var EFFECTS = {
+  stack: {
+    prev: { shadow: true, translate: ["-120%", 0, -500] },
+    next: { shadow: true, translate: ["120%", 0, -500] }
+  },
+  tilt: {
+    prev: {
+      shadow: true,
+      translate: ["-20%", 0, -1],
+      rotate: [0, 0, -10]
+    },
+    next: {
+      shadow: true,
+      translate: ["100%", 0, 0],
+      rotate: [0, 0, 0]
+    }
+  },
+  depth: {
+    prev: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [180, 0, 0]
+    },
+    next: {
+      shadow: true,
+      translate: [0, 0, -800],
+      rotate: [-180, 0, 0]
+    }
+  },
+  shift: {
+    prev: {
+      shadow: false,
+      translate: ["-20%", 0, -200],
+      opacity: 0
+    },
+    next: { shadow: false, translate: ["100%", 0, 0], opacity: 1 }
+  }
+};
+var creativeEffectFor = (preset) => EFFECTS[preset] ?? EFFECTS.stack;
+
+// ../../src/components/icon-picker/components/icon-picker/controls/renderIcon.js
+var import_i18n2 = require("@wordpress/i18n");
 
 // ../../src/components/icon-picker/components/icon-picker/controls/parseIcon.js
 function parseSVG(svg) {
@@ -2591,7 +2643,7 @@ var fetchFromJson = async () => {
     return data;
   } catch (error) {
     console.error(
-      (0, import_i18n.__)("Error fetching icon data:", "gslider-blocks"),
+      (0, import_i18n2.__)("Error fetching icon data:", "gslider-blocks"),
       error
     );
     return null;
@@ -2726,6 +2778,7 @@ function Save({ attributes: attributes2 }) {
     stopOnLastSlide,
     reverseDirection,
     carouselEffect,
+    creativePreset,
     mousewheelControl,
     keyboardNavigation,
     paginationType,
@@ -2783,6 +2836,10 @@ function Save({ attributes: attributes2 }) {
   const linkOnLightboxOff = enableimageLinks && lightboxDevices && lightboxDevices !== "Desktop Tablet Mobile";
   const swiperSettings = JSON.stringify({
     effect: carouselEffect,
+    // Creative presets, serialized only while creative is the effect
+    ...carouselEffect === "creative" && {
+      creativeEffect: creativeEffectFor(creativePreset)
+    },
     // Responsive breakpoints for Desktop, Tablet, and Mobile
     breakpoints: {
       0: {

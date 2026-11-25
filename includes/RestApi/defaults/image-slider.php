@@ -58,6 +58,7 @@ return [
 	'stopOnLastSlide' => false,
 	'reverseDirection' => false,
 	'carouselEffect' => 'slide',
+	'creativePreset' => 'stack',
 	'mousewheelControl' => false,
 	'keyboardNavigation' => false,
 	'paginationType' => 'bullets',

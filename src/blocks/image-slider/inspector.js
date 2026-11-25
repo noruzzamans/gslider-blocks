@@ -34,6 +34,7 @@ import LoadGoogleFont from '@Utils/loadGoogleFont';
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import { useDeviceType } from '@Utils/displayType';
 import InputControls from '@Components/input-control';
+import { CREATIVE_PRESETS } from './creativePresets';
 import SelectControls from '@Components/select-controls';
 import IconPicker from '@Components/icon-picker';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
@@ -56,6 +57,7 @@ const Inspector = ( { attributes, setAttributes } ) => {
 		enableLazyLoad,
 		verticalAlign,
 		carouselEffect,
+		creativePreset,
 		mousewheelControl,
 		keyboardNavigation,
 		paginationType,
@@ -1089,6 +1091,25 @@ const Inspector = ( { attributes, setAttributes } ) => {
 					}
 				/>
 			</PanelBody>
+
+			{ carouselEffect === 'creative' && (
+				<PanelBody
+					title={ __( 'Creative Preset', 'gslider-blocks' ) }
+					opened={ openPanels.general === 'creative-preset' }
+					onToggle={ () =>
+						togglePanel( 'general', 'creative-preset' )
+					}
+				>
+					<SelectControls
+						label={ __( 'Preset', 'gslider-blocks' ) }
+						options={ CREATIVE_PRESETS }
+						value={ creativePreset }
+						onChange={ ( value ) =>
+							setAttributes( { creativePreset: value } )
+						}
+					/>
+				</PanelBody>
+			) }
 
 			{ showNavigation?.[ deviceType ] && (
 				<PanelBody
