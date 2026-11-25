@@ -203,6 +203,14 @@ const attributes = {
 			Mobile: 300,
 		},
 	},
+	logoFilterPreset: {
+		type: 'string',
+		default: 'none',
+	},
+	logoHoverTransitionDuration: {
+		type: 'string',
+		default: '0.3s',
+	},
 	/** End Logo Link Settings */
 
 	/** Layout & Content Setting */

@@ -12,7 +12,7 @@
       "coverflow"
     ]
   },
-  "totalAttributes": 413,
+  "totalAttributes": 415,
   "slideItemSchema": {
     "type": "object",
     "properties": {
@@ -94,6 +94,16 @@
     "logoCaptionColorSwitcher": [
       "normal",
       "hover"
+    ],
+    "logoFilterPreset": [
+      "none",
+      "grayscale-to-color",
+      "invert-dark-mode"
+    ],
+    "logoHoverTransitionDuration": [
+      "0.15s",
+      "0.3s",
+      "0.5s"
     ],
     "logoLinkHoverEffect": [
       "none",
@@ -428,6 +438,14 @@
         "Tablet": 300,
         "Mobile": 300
       }
+    },
+    "logoFilterPreset": {
+      "type": "string",
+      "default": "none"
+    },
+    "logoHoverTransitionDuration": {
+      "type": "string",
+      "default": "0.3s"
     },
     "layoutHeight": {
       "type": "object",

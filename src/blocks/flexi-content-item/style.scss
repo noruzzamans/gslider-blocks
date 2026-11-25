@@ -1,1 +1,8 @@
 // Styles for the Flexi Content Item block
+
+.gslider-slide-overlay-link {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	cursor: pointer;
+}

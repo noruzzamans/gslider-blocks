@@ -60,6 +60,33 @@ const getHasPaginationCss = (
 	return '';
 };
 
+const getLogoFilterPresetCss = ( blockId, preset, duration ) => {
+	if ( preset !== 'grayscale-to-color' && preset !== 'invert-dark-mode' ) {
+		return '';
+	}
+
+	const transitionDuration = duration || '0.3s';
+
+	if ( preset === 'invert-dark-mode' ) {
+		return `
+        .${ blockId } .gslider-logo-item img {
+            filter: invert(1);
+            transition: filter ${ transitionDuration } ease;
+        }
+    `;
+	}
+
+	return `
+        .${ blockId } .gslider-logo-item img {
+            filter: grayscale(100%) opacity(0.6);
+            transition: filter ${ transitionDuration } ease, opacity ${ transitionDuration } ease;
+        }
+        .${ blockId } .gslider-logo-item:hover img {
+            filter: grayscale(0%) opacity(1);
+        }
+    `;
+};
+
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
@@ -108,6 +135,8 @@ const generateLogoCarouselStyle = ( attributes ) => {
 		logoLinkHoverLift,
 		logoLinkHoverLiftUnits,
 		logoLinkTransitionDuration,
+		logoFilterPreset,
+		logoHoverTransitionDuration,
 		/** End Logo Link Settings */
 
 		/** Start Layout & Content Setting */
@@ -2874,7 +2903,15 @@ const generateLogoCarouselStyle = ( attributes ) => {
     `;
 	/** End All Block Style */
 
-	return `${ logoCarouselCSS }`.replace( /\s+/g, ' ' ).trim();
+	const logoFilterPresetCSS = getLogoFilterPresetCss(
+		blockId,
+		logoFilterPreset,
+		logoHoverTransitionDuration
+	);
+
+	return `${ logoCarouselCSS } ${ logoFilterPresetCSS }`
+		.replace( /\s+/g, ' ' )
+		.trim();
 };
 
 export default generateLogoCarouselStyle;

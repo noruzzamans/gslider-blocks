@@ -81,6 +81,8 @@ const Inspector = ( { attributes, setAttributes, clientId } ) => {
 		logoLinkHoverLift,
 		logoLinkHoverLiftUnits,
 		logoLinkTransitionDuration,
+		logoFilterPreset,
+		logoHoverTransitionDuration,
 		/** End Logo Link Settings */
 
 		/** Start Layout & Content Setting */
@@ -994,6 +996,59 @@ const Inspector = ( { attributes, setAttributes, clientId } ) => {
 						setAttributes( { logoLinkHoverEffect: value } )
 					}
 				/>
+
+				<SelectControls
+					label={ __( 'Filter Preset', 'gslider-blocks' ) }
+					options={ [
+						{
+							label: __( 'None', 'gslider-blocks' ),
+							value: 'none',
+						},
+						{
+							label: __( 'Grayscale to Color', 'gslider-blocks' ),
+							value: 'grayscale-to-color',
+						},
+						{
+							label: __(
+								'Invert on Dark Backgrounds',
+								'gslider-blocks'
+							),
+							value: 'invert-dark-mode',
+						},
+					] }
+					value={ logoFilterPreset }
+					onChange={ ( value ) =>
+						setAttributes( { logoFilterPreset: value } )
+					}
+				/>
+				{ logoFilterPreset !== 'none' && (
+					<SelectControls
+						label={ __(
+							'Hover Transition Duration',
+							'gslider-blocks'
+						) }
+						options={ [
+							{
+								label: __( 'Fast (0.15s)', 'gslider-blocks' ),
+								value: '0.15s',
+							},
+							{
+								label: __( 'Normal (0.3s)', 'gslider-blocks' ),
+								value: '0.3s',
+							},
+							{
+								label: __( 'Slow (0.5s)', 'gslider-blocks' ),
+								value: '0.5s',
+							},
+						] }
+						value={ logoHoverTransitionDuration }
+						onChange={ ( value ) =>
+							setAttributes( {
+								logoHoverTransitionDuration: value,
+							} )
+						}
+					/>
+				) }
 
 				{ ( logoLinkHoverEffect === 'opacity' ||
 					logoLinkHoverEffect === 'both' ) && (

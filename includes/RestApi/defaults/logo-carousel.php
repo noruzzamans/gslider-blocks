@@ -108,6 +108,8 @@ return [
 		'Tablet' => 300,
 		'Mobile' => 300,
 	],
+	'logoFilterPreset' => 'none',
+	'logoHoverTransitionDuration' => '0.3s',
 	'layoutHeight' => [
 		'Desktop' => '',
 		'Tablet' => '',
