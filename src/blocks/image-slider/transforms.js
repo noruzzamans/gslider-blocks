@@ -120,8 +120,67 @@ const toImageSlider = ( { anchor, linkTo } = {}, innerBlocks = [] ) => {
 	} );
 };
 
+/**
+ * Transform that converts one or more core/cover blocks into an Image Slider,
+ * one slide per cover. A cover stores its background image in `url`, `id` and
+ * `alt`; that image becomes the slide's own.
+ *
+ * @param {Array} covers Attributes of each selected cover block.
+ * @return {Object} The transformed Image Slider block.
+ */
+const toImageSliderFromCovers = ( covers ) => {
+	const usedIds = new Set();
+	let nextFallbackId = Date.now();
+
+	const images = covers
+		.map( ( cover ) => {
+			let id;
+			if (
+				Number.isInteger( cover.id ) &&
+				cover.id > 0 &&
+				! usedIds.has( cover.id )
+			) {
+				id = cover.id;
+			} else {
+				while ( usedIds.has( nextFallbackId ) ) {
+					nextFallbackId++;
+				}
+				id = nextFallbackId++;
+			}
+			usedIds.add( id );
+
+			return {
+				id,
+				url: cover.url || '',
+				alt: cover.alt || '',
+				caption: toPlainText( cover.caption ),
+				link: '',
+				tooltipText: '',
+			};
+		} )
+		.filter( ( image ) => !! image.url );
+
+	const hasCaptions = images.some( ( image ) => !! image.caption );
+
+	return createBlock( 'gslider-blocks/image-slider', {
+		images,
+		showCaption: {
+			Desktop: hasCaptions,
+			Tablet: hasCaptions,
+			Mobile: hasCaptions,
+		},
+	} );
+};
+
 const transforms = {
 	from: [
+		{
+			type: 'block',
+			blocks: [ 'core/cover' ],
+			isMultiBlock: true,
+			isMatch: ( cover ) => !! cover?.url,
+			transform: toImageSliderFromCovers,
+		},
 		{
 			type: 'block',
 			blocks: [ 'core/gallery' ],
