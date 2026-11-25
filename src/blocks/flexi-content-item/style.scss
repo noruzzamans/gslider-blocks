@@ -1,1 +1,7 @@
 // Styles for the Flexi Content Item block
+
+// InnerBlocks content sits above the generated overlay pseudo-element
+.gslider-flexi-content-item .gslider-content-wrapper {
+	position: relative;
+	z-index: 2;
+}

@@ -74,6 +74,24 @@ var attributes = {
     type: "string",
     default: ""
   },
+  /** Start slider Item Overlay */
+  sliderItemOverlaySwitcher: {
+    type: "boolean",
+    default: false
+  },
+  sliderItemOverlayType: {
+    type: "string",
+    default: "classic"
+  },
+  sliderItemOverlayClassicColor: {
+    type: "string",
+    default: "rgba(0, 0, 0, 0.5)"
+  },
+  sliderItemOverlayOpacity: {
+    type: "number",
+    default: 0.5
+  },
+  /** End slider Item Overlay */
   /** Start slider Item Background */
   sliderItemNormalBackgroundType: {
     type: "string",
@@ -214,6 +232,11 @@ function Save({ attributes: attributes2 }) {
 var generateFlexiContentItemStyle = (attributes2) => {
   const {
     blockId,
+    /** Start slider Item Overlay */
+    sliderItemOverlaySwitcher,
+    sliderItemOverlayClassicColor,
+    sliderItemOverlayOpacity,
+    /** End slider Item Overlay */
     /** Start slider Item Background */
     sliderItemNormalBackgroundType,
     sliderItemNormalClassicColor,
@@ -356,6 +379,18 @@ var generateFlexiContentItemStyle = (attributes2) => {
                 ${sliderItemMobileBackgroundHoverStyles}
             }
         }
+
+        /* The overlay is a pseudo-element, so the saved markup is untouched */
+        ${sliderItemOverlaySwitcher ? `.${blockId}.flexi-content-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: ${sliderItemOverlayClassicColor};
+            opacity: ${sliderItemOverlayOpacity};
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }` : ""}
     `;
   return `${flexiContentItemCSS}`.replace(/\s+/g, " ").trim();
 };

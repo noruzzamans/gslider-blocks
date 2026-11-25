@@ -13,6 +13,12 @@ const generateFlexiContentItemStyle = ( attributes ) => {
 	const {
 		blockId,
 
+		/** Start slider Item Overlay */
+		sliderItemOverlaySwitcher,
+		sliderItemOverlayClassicColor,
+		sliderItemOverlayOpacity,
+		/** End slider Item Overlay */
+
 		/** Start slider Item Background */
 		sliderItemNormalBackgroundType,
 		sliderItemNormalClassicColor,
@@ -206,6 +212,22 @@ const generateFlexiContentItemStyle = ( attributes ) => {
                 ${ sliderItemMobileBackgroundHoverStyles }
             }
         }
+
+        /* The overlay is a pseudo-element, so the saved markup is untouched */
+        ${
+			sliderItemOverlaySwitcher
+				? `.${ blockId }.flexi-content-item::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: ${ sliderItemOverlayClassicColor };
+            opacity: ${ sliderItemOverlayOpacity };
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }`
+				: ''
+		}
     `;
 	/** End All Block Style */
 

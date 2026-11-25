@@ -12,6 +12,25 @@ const attributes = {
 		default: '',
 	},
 
+	/** Start slider Item Overlay */
+	sliderItemOverlaySwitcher: {
+		type: 'boolean',
+		default: false,
+	},
+	sliderItemOverlayType: {
+		type: 'string',
+		default: 'classic',
+	},
+	sliderItemOverlayClassicColor: {
+		type: 'string',
+		default: 'rgba(0, 0, 0, 0.5)',
+	},
+	sliderItemOverlayOpacity: {
+		type: 'number',
+		default: 0.5,
+	},
+	/** End slider Item Overlay */
+
 	/** Start slider Item Background */
 	sliderItemNormalBackgroundType: {
 		type: 'string',
