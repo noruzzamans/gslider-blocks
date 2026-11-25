@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { BLOCK_ID_PREFIX } from '../core/registry.js';
 import { attributeDefaults, loadBundledBlock, prepareBlock, registerCoreBlocksOnce, validationIssues, } from '../core/block-runtime.js';
 import { commentAttributes } from '../core/markup.js';
+import { attributeValueFaults, colorFault, deviceObjectFaults, styleScopeFaults, urlFault, } from '../core/attribute-checks.js';
 export const GENERATABLE_SLUGS = [
     'base',
     'testimonial',
@@ -338,6 +339,38 @@ function generate(input) {
         if (!typeMatches(definition.type, overrides[key])) {
             throw new GeneratorInputError(`Attribute "${key}" must be a ${definition.type}.`);
         }
+        if (definition.type === 'object' &&
+            overrides[key] &&
+            typeof overrides[key] === 'object') {
+            const defaultKeys = Object.keys((definition.default ?? {}));
+            const perDevice = ['Desktop', 'Tablet', 'Mobile'].every((device) => defaultKeys.includes(device));
+            if (perDevice) {
+                const fault = deviceObjectFaults(key, overrides[key], typeof definition.default
+                    .Desktop, schema.allowedValues?.[key])[0];
+                if (fault) {
+                    throw new GeneratorInputError(fault);
+                }
+            }
+        }
+        if (typeof overrides[key] === 'string') {
+            if (/Color$/.test(key)) {
+                const fault = colorFault(overrides[key]);
+                if (fault) {
+                    throw new GeneratorInputError(`Attribute "${key}" ${fault}.`);
+                }
+            }
+            if ([
+                'buttonUrl',
+                'secondaryButtonUrl',
+                'backgroundImageUrl',
+                'authorImageUrl',
+            ].includes(key)) {
+                const fault = urlFault(overrides[key]);
+                if (fault) {
+                    throw new GeneratorInputError(`Attribute "${key}" ${fault}.`);
+                }
+            }
+        }
         const allowed = schema.allowedValues?.[key];
         if (Array.isArray(allowed) &&
             typeof overrides[key] === 'string' &&
@@ -445,7 +478,17 @@ function generate(input) {
         changed.showQuoteIcon === true) {
         throw new GeneratorInputError('Custom arrow icons and the quote icon need the editor icon set, which the generator does not load. Leave navigationArrowsIconSwitcher and showQuoteIcon off.');
     }
+    const valueFault = attributeValueFaults(changed, [
+        schema.slideField,
+    ])[0];
+    if (valueFault) {
+        throw new GeneratorInputError(valueFault);
+    }
     changed.blockStyle = bundled.styling({ ...defaults, ...changed });
+    const scopeFault = styleScopeFaults(String(changed.blockStyle ?? ''), String(changed.blockId))[0];
+    if (scopeFault) {
+        throw new GeneratorInputError(scopeFault);
+    }
     const block = blocks.createBlock(schema.name, changed, isFlexi ? flexiItems : undefined);
     const markup = blocks.serialize([block]);
     const parsed = blocks.parse(markup)[0];

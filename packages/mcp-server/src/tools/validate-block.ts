@@ -6,6 +6,13 @@ import {
 	validationOf,
 } from '../core/block-runtime.js';
 import { blockNameFromMarkup, commentAttributes } from '../core/markup.js';
+import {
+	attributeValueFaults,
+	colorFault,
+	deviceObjectFaults,
+	styleScopeFaults,
+	urlFault,
+} from '../core/attribute-checks.js';
 import { validationIssues } from '../core/block-runtime.js';
 import { GENERATABLE_SLUGS, type GeneratableSlug } from './generate-block.js';
 
@@ -117,6 +124,50 @@ function checkAttributes(
 			} );
 		}
 		const allowed = schema.allowedValues?.[ key ];
+		if (
+			definition.type === 'object' &&
+			value &&
+			typeof value === 'object'
+		) {
+			const defaultKeys = Object.keys(
+				( definition.default ?? {} ) as Record< string, unknown >
+			);
+			const perDevice = [ 'Desktop', 'Tablet', 'Mobile' ].every(
+				( device ) => defaultKeys.includes( device )
+			);
+			if ( perDevice ) {
+				errors.push(
+					...deviceObjectFaults(
+						key,
+						value as Record< string, unknown >,
+						typeof (
+							definition.default as Record< string, unknown >
+						 ).Desktop,
+						allowed
+					)
+				);
+			}
+		}
+		if ( typeof value === 'string' && /Color$/.test( key ) ) {
+			const fault = colorFault( value );
+			if ( fault ) {
+				errors.push( `Attribute "${ key }" ${ fault }.` );
+			}
+		}
+		if (
+			typeof value === 'string' &&
+			[
+				'buttonUrl',
+				'secondaryButtonUrl',
+				'backgroundImageUrl',
+				'authorImageUrl',
+			].includes( key )
+		) {
+			const fault = urlFault( value );
+			if ( fault ) {
+				errors.push( `Attribute "${ key }" ${ fault }.` );
+			}
+		}
 		if (
 			Array.isArray( allowed ) &&
 			typeof value === 'string' &&
@@ -315,6 +366,17 @@ function validate( input: z.infer< typeof validateInputZod > ): Report {
 		throw new Error( 'Pass markup, or blockSlug with attributes.' );
 	}
 	const errors = checkAttributes( input.blockSlug, input.attributes );
+	if (
+		typeof input.attributes.blockStyle === 'string' &&
+		typeof input.attributes.blockId === 'string'
+	) {
+		errors.push(
+			...styleScopeFaults(
+				input.attributes.blockStyle,
+				input.attributes.blockId
+			)
+		);
+	}
 	const warning = styleWarning( input.blockSlug, input.attributes );
 	return {
 		isValid: errors.length === 0,

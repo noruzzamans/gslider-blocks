@@ -888,6 +888,71 @@ if (
 }
 console.log( 'ok a non-slide child of flexi-content is refused' );
 
+// Values that would escape their declaration, or carry a script scheme, are
+// refused by generate and reported by validate
+const scriptUrl = await handleGenerateBlock( {
+	blockSlug: 'base',
+	slides: [
+		{
+			title: 'A',
+			description: 'B',
+			buttonUrl: 'javascript:alert(1)',
+		},
+	],
+} );
+if (
+	! scriptUrl.isError ||
+	! scriptUrl.content[ 0 ].text.includes( 'http(s)' )
+) {
+	fail(
+		`a script-scheme slide URL was accepted: ${ scriptUrl.content[ 0 ].text }`
+	);
+}
+console.log( 'ok a script-scheme URL is refused' );
+
+const cssPayload = await handleGenerateBlock( {
+	blockSlug: 'base',
+	slides: [ { title: 'A', description: 'B' } ],
+	attributes: {
+		contentAlignment: { Desktop: 'left;} body{display:none' },
+	},
+} );
+if ( ! cssPayload.isError ) {
+	fail( 'an out-of-scope per-device value was accepted' );
+}
+console.log( 'ok an out-of-scope per-device value is refused' );
+
+const colorPayload = await handleGenerateBlock( {
+	blockSlug: 'base',
+	slides: [ { title: 'A', description: 'B' } ],
+	attributes: { titleColor: 'red;} body{display:none' },
+} );
+if ( ! colorPayload.isError ) {
+	fail( 'an out-of-scope colour was accepted' );
+}
+console.log( 'ok an out-of-scope colour is refused' );
+
+const leakedStyle = await handleValidateBlock( {
+	blockSlug: 'base',
+	attributes: {
+		blockId: 'gslider-abcd1234',
+		blockStyle: '.gslider-abcd1234{color:red} body{display:none}',
+	},
+} );
+const leakedReport = JSON.parse( leakedStyle.content[ 0 ].text );
+if (
+	! leakedReport.errors.some( ( item ) =>
+		item.includes( 'outside .gslider-abcd1234' )
+	)
+) {
+	fail(
+		`an out-of-scope blockStyle was accepted: ${ JSON.stringify(
+			leakedReport.errors
+		) }`
+	);
+}
+console.log( 'ok an out-of-scope blockStyle is reported' );
+
 if ( failed ) {
 	process.exit( 1 );
 }

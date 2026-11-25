@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { BLOCK_ID_PREFIX } from '../core/registry.js';
 import { attributeDefaults, prepareBlock, } from '../core/block-runtime.js';
 import { blockNameFromMarkup, commentAttributes } from '../core/markup.js';
+import { colorFault, deviceObjectFaults, styleScopeFaults, urlFault, } from '../core/attribute-checks.js';
 import { validationIssues } from '../core/block-runtime.js';
 import { GENERATABLE_SLUGS } from './generate-block.js';
 const validateInputZod = z
@@ -85,6 +86,33 @@ function checkAttributes(slug, raw) {
             });
         }
         const allowed = schema.allowedValues?.[key];
+        if (definition.type === 'object' &&
+            value &&
+            typeof value === 'object') {
+            const defaultKeys = Object.keys((definition.default ?? {}));
+            const perDevice = ['Desktop', 'Tablet', 'Mobile'].every((device) => defaultKeys.includes(device));
+            if (perDevice) {
+                errors.push(...deviceObjectFaults(key, value, typeof definition.default.Desktop, allowed));
+            }
+        }
+        if (typeof value === 'string' && /Color$/.test(key)) {
+            const fault = colorFault(value);
+            if (fault) {
+                errors.push(`Attribute "${key}" ${fault}.`);
+            }
+        }
+        if (typeof value === 'string' &&
+            [
+                'buttonUrl',
+                'secondaryButtonUrl',
+                'backgroundImageUrl',
+                'authorImageUrl',
+            ].includes(key)) {
+            const fault = urlFault(value);
+            if (fault) {
+                errors.push(`Attribute "${key}" ${fault}.`);
+            }
+        }
         if (Array.isArray(allowed) &&
             typeof value === 'string' &&
             !allowed.includes(value)) {
@@ -225,6 +253,10 @@ function validate(input) {
         throw new Error('Pass markup, or blockSlug with attributes.');
     }
     const errors = checkAttributes(input.blockSlug, input.attributes);
+    if (typeof input.attributes.blockStyle === 'string' &&
+        typeof input.attributes.blockId === 'string') {
+        errors.push(...styleScopeFaults(input.attributes.blockStyle, input.attributes.blockId));
+    }
     const warning = styleWarning(input.blockSlug, input.attributes);
     return {
         isValid: errors.length === 0,

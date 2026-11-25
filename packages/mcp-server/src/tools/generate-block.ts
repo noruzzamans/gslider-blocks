@@ -9,6 +9,13 @@ import {
 	validationIssues,
 } from '../core/block-runtime.js';
 import { commentAttributes } from '../core/markup.js';
+import {
+	attributeValueFaults,
+	colorFault,
+	deviceObjectFaults,
+	styleScopeFaults,
+	urlFault,
+} from '../core/attribute-checks.js';
 
 export const GENERATABLE_SLUGS = [
 	'base',
@@ -427,6 +434,55 @@ function generate( input: GenerateInput ) {
 				`Attribute "${ key }" must be a ${ definition.type }.`
 			);
 		}
+		if (
+			definition.type === 'object' &&
+			overrides[ key ] &&
+			typeof overrides[ key ] === 'object'
+		) {
+			const defaultKeys = Object.keys(
+				( definition.default ?? {} ) as Record< string, unknown >
+			);
+			const perDevice = [ 'Desktop', 'Tablet', 'Mobile' ].every(
+				( device ) => defaultKeys.includes( device )
+			);
+			if ( perDevice ) {
+				const fault = deviceObjectFaults(
+					key,
+					overrides[ key ] as Record< string, unknown >,
+					typeof ( definition.default as Record< string, unknown > )
+						.Desktop,
+					schema.allowedValues?.[ key ]
+				)[ 0 ];
+				if ( fault ) {
+					throw new GeneratorInputError( fault );
+				}
+			}
+		}
+		if ( typeof overrides[ key ] === 'string' ) {
+			if ( /Color$/.test( key ) ) {
+				const fault = colorFault( overrides[ key ] as string );
+				if ( fault ) {
+					throw new GeneratorInputError(
+						`Attribute "${ key }" ${ fault }.`
+					);
+				}
+			}
+			if (
+				[
+					'buttonUrl',
+					'secondaryButtonUrl',
+					'backgroundImageUrl',
+					'authorImageUrl',
+				].includes( key )
+			) {
+				const fault = urlFault( overrides[ key ] as string );
+				if ( fault ) {
+					throw new GeneratorInputError(
+						`Attribute "${ key }" ${ fault }.`
+					);
+				}
+			}
+		}
 		const allowed = schema.allowedValues?.[ key ];
 		if (
 			Array.isArray( allowed ) &&
@@ -599,7 +655,21 @@ function generate( input: GenerateInput ) {
 		);
 	}
 
+	const valueFault = attributeValueFaults( changed, [
+		schema.slideField,
+	] )[ 0 ];
+	if ( valueFault ) {
+		throw new GeneratorInputError( valueFault );
+	}
+
 	changed.blockStyle = bundled.styling( { ...defaults, ...changed } );
+	const scopeFault = styleScopeFaults(
+		String( changed.blockStyle ?? '' ),
+		String( changed.blockId )
+	)[ 0 ];
+	if ( scopeFault ) {
+		throw new GeneratorInputError( scopeFault );
+	}
 	const block = blocks.createBlock(
 		schema.name,
 		changed,
