@@ -420,7 +420,22 @@ document.addEventListener( 'DOMContentLoaded', () => {
 						}
 
 						// Initialize Swiper with parsed settings
-						new Swiper( swiperEl, settings );
+						const swiper = new Swiper( swiperEl, settings );
+
+						const progressFill = swiperEl.querySelector(
+							':scope > .gslider-autoplay-progress > .gslider-autoplay-progress-fill'
+						);
+						if ( progressFill ) {
+							// Progress goes from 1 to 0 while the delay runs out
+							swiper.on(
+								'autoplayTimeLeft',
+								( s, timeLeft, progress ) => {
+									progressFill.style.transform = `scaleX(${
+										1 - progress
+									})`;
+								}
+							);
+						}
 
 						// Refresh fsLightbox to detect new slides
 						if ( typeof refreshFsLightbox === 'function' ) {

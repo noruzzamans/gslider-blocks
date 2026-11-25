@@ -109,6 +109,8 @@ export default function Edit( {
 		speed,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
+		autoplayProgressPosition,
 		infiniteLoop,
 		allowTouchMove,
 		pauseOnHover,
@@ -234,6 +236,7 @@ export default function Edit( {
 	/** Refs for vanilla JS Swiper */
 	const swiperContainerRef = useRef( null );
 	const swiperInstanceRef = useRef( null );
+	const autoplayProgressFillRef = useRef( null );
 
 	/** State for link editing popover */
 	const [ editingimageId, setEditingimageId ] = useState( null );
@@ -353,6 +356,19 @@ export default function Edit( {
 			swiperSettings
 		);
 
+		if ( autoplayProgressFillRef.current ) {
+			swiperInstanceRef.current.on(
+				'autoplayTimeLeft',
+				( swiper, timeLeft, progress ) => {
+					if ( autoplayProgressFillRef.current ) {
+						autoplayProgressFillRef.current.style.transform = `scaleX(${
+							1 - progress
+						})`;
+					}
+				}
+			);
+		}
+
 		// Cleanup on unmount or before re-initialization
 		return () => {
 			if ( swiperInstanceRef.current ) {
@@ -370,6 +386,8 @@ export default function Edit( {
 		infiniteLoop,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
+		autoplayProgressPosition,
 		pauseOnHover,
 		stopOnLastSlide,
 		reverseDirection,
@@ -1209,6 +1227,19 @@ export default function Edit( {
 							className="swiper-pagination swiper-pagination-image-slider"
 							ref={ paginationInsideRef }
 						></div>
+
+						{ autoplay &&
+							enableAutoplayProgress?.[ deviceType ] && (
+								<div
+									className={ `gslider-autoplay-progress ${ autoplayProgressPosition }` }
+									aria-hidden="true"
+								>
+									<div
+										ref={ autoplayProgressFillRef }
+										className="gslider-autoplay-progress-fill"
+									></div>
+								</div>
+							) }
 					</div>
 				) }
 

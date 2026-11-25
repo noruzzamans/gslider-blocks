@@ -60,6 +60,53 @@ const getHasPaginationCss = (
 	return '';
 };
 
+const getAutoplayProgressCss = ( blockId, enabled, color, height ) => {
+	const deviceRule = ( device ) => `
+        .${ blockId } > .swiper > .gslider-autoplay-progress {
+            ${
+				enabled?.[ device ]
+					? `display: block; height: ${ height?.[ device ] ?? 3 }px;`
+					: 'display: none;'
+			}
+        }
+    `;
+
+	return `
+        .${ blockId } > .swiper > .gslider-autoplay-progress {
+            position: absolute;
+            left: 0;
+            z-index: 10;
+            width: 100%;
+            pointer-events: none;
+        }
+        .${ blockId } > .swiper > .gslider-autoplay-progress.top {
+            top: 0;
+        }
+        .${ blockId } > .swiper > .gslider-autoplay-progress.bottom {
+            bottom: 0;
+        }
+        .${ blockId } > .swiper > .gslider-autoplay-progress > .gslider-autoplay-progress-fill {
+            width: 100%;
+            height: 100%;
+            transform: scaleX(0);
+            transform-origin: left;
+            ${ color ? `background-color: ${ color };` : '' }
+        }
+        ${ deviceRule( 'Desktop' ) }
+        @media only screen and (max-width: 1024px) {
+            ${ deviceRule( 'Tablet' ) }
+        }
+        @media only screen and (max-width: 767px) {
+            ${ deviceRule( 'Mobile' ) }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .${ blockId } > .swiper > .gslider-autoplay-progress {
+                display: none;
+            }
+        }
+    `;
+};
+
 /**
  * Generate block styles from attributes
  * @param {Object} attributes - Block attributes
@@ -75,6 +122,9 @@ const generateImageSliderStyle = ( attributes ) => {
 		speed,
 		autoplay,
 		autoplayDelay,
+		enableAutoplayProgress,
+		autoplayProgressColor,
+		autoplayProgressHeight,
 		infiniteLoop,
 		allowTouchMove,
 		pauseOnHover,
@@ -2817,7 +2867,22 @@ const generateImageSliderStyle = ( attributes ) => {
     `;
 	/** End All Block Style */
 
-	return `${ imageSliderCSS }`.replace( /\s+/g, ' ' ).trim();
+	const autoplayProgressCSS =
+		autoplay &&
+		( enableAutoplayProgress?.Desktop ||
+			enableAutoplayProgress?.Tablet ||
+			enableAutoplayProgress?.Mobile )
+			? getAutoplayProgressCss(
+					blockId,
+					enableAutoplayProgress,
+					autoplayProgressColor,
+					autoplayProgressHeight
+			  )
+			: '';
+
+	return `${ imageSliderCSS } ${ autoplayProgressCSS }`
+		.replace( /\s+/g, ' ' )
+		.trim();
 };
 
 export default generateImageSliderStyle;
